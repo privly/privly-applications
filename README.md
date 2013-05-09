@@ -6,7 +6,7 @@ For more information on what Privly is, [read about us](https://priv.ly/pages/ab
 
 ## About this Repository ##
 
-This repository is oriented to cross-platform development of "Injectable Applications," which are web applications viewed within the context of other web applications. Use cases of Injectable Applications include:
+This repository is oriented to cross-platform development of "Injectable Applications," which are web applications viewed within the context of other web applications. This repository is currently included in [privly-chrome](http://github.com/privly/privly-chrome) Using a fake submodule method that can be found in the readme in chrome's injectable application [folder.](https://github.com/privly/privly-chrome/tree/master/injectable_applications) Use cases of Injectable Applications include:
 
 * **Injection into a host page:** When a user encounters a Privly-type URL on a web page, it is injected in-place.
 * **Generation of a new link:** The extensions and content servers both provide the ability to generate a new link for posting to host pages.
@@ -53,3 +53,10 @@ irc.freenode.net #privly
 
 **Issue Queue**:  
 If you open a bug on this repository, you'll get someone's attention.
+
+This repository is incorporated into the following extensions: chrome, web.
+The repository is incorporated as a fake submodule using the command 
+git clone git://github.com/privly/privly-applications privly-applications
+git add privly-applications/
+emphasis on the slash at the end making git see the files in the subdirectory
+ignoring the fact that it is in itself a different repository.
