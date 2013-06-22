@@ -46,6 +46,7 @@ var privlyExtension = {
       // iframe = null;
     } else if(privlyNetworkService.platformName() === "ANDROID") {
       //visham todo, send the privlyUrl to the android platform
+	androidJSBridge.receiveNewPrivlyURL(url);
     }
   }
 };
