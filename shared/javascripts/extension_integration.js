@@ -45,7 +45,7 @@ var privlyExtension = {
       // iframe.parentNode.removeChild(iframe);
       // iframe = null;
     } else if(privlyNetworkService.platformName() === "ANDROID") {
-	androidJBridge.receiveNewPrivlyURL(url);
+	androidJsBridge.receiveNewPrivlyURL(url);
     }
   }
 };
