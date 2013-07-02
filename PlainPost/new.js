@@ -21,7 +21,7 @@ function submit() {
   // callback for all callbacks because we don't assume the content
   // server uses the account details endpoint that the Privly content
   // server hosts.
-  privlyNetworkService.initPrivlyService(successCallback, successCallback, 
+  privlyNetworkService.initPrivlyService(true, successCallback, successCallback, 
                                          successCallback);
   
 

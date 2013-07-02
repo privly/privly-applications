@@ -18,12 +18,12 @@ var privlyNetworkService = {
    * @return {string} the name of the platform.
    */
   platformName: function() {
-    if (typeof chrome !== undefined && typeof chrome.extension !== undefined) {
-      return "CHROME";
-    } else if (navigator.userAgent.indexOf("privly-ios") >= 0) {
+    if (navigator.userAgent.indexOf("iPhone") >= 0 || navigator.userAgent.indexOf("iPad") >= 0) {
       return "IOS";
     } else if(typeof androidJsBridge !== undefined) {
       return "ANDROID";
+    }  else if (typeof chrome !== undefined && typeof chrome.extension !== undefined) {
+      return "CHROME";
     } else {
       return "HOSTED";
     }
