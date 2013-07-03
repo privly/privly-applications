@@ -18,12 +18,12 @@ var privlyNetworkService = {
    * @return {string} the name of the platform.
    */
   platformName: function() {
-    if (typeof chrome !== undefined && typeof chrome.extension !== undefined) {
-      return "CHROME";
+    if (typeof androidJsBridge !== undefined) {
+      return "ANDROID";
     } else if (navigator.userAgent.indexOf("privly-ios") >= 0) {
       return "IOS";
-    } else if(typeof androidJsBridge !== undefined) {
-      return "ANDROID";
+    } else if(typeof chrome !== undefined && typeof chrome.extension !== undefined) {
+      return "CHROME";
     } else {
       return "HOSTED";
     }
@@ -50,11 +50,16 @@ var privlyNetworkService = {
   initPrivlyService: function(setCSRF, canPostCallback, loginCallback, errorCallback) {
     var csrfTokenAddress = privlyNetworkService.contentServerDomain() + 
                            "/posts/user_account_data";
+    if (privlyNetworkService.platformName() === "ANDROID") {
+    	csrfTokenAddress = csrfTokenAddress + "?auth_token=" + androidJsBridge.fetchAuthToken();
+    }
+    console.log(csrfTokenAddress);
     if (setCSRF) {
       $.ajax({
         url: csrfTokenAddress,
         dataType: "json",
         success: function (json, textStatus, jqXHR) {
+          console.log(json.csrf);
           $.ajaxSetup({
             beforeSend: function(xhr) {
               xhr.setRequestHeader('X-CSRF-Token', json.csrf);
@@ -96,7 +101,10 @@ var privlyNetworkService = {
       return protocolDomainPort;
     } else if (privlyNetworkService.platformName() === "CHROME") {
       return localStorage["posting_content_server_url"];
-    } else {
+    } else if (privlyNetworkService.platformName() === "ANDROID") {
+      console.log(androidJsBridge.fetchDomainName());
+      return androidJsBridge.fetchDomainName();	
+	} else {
       return protocolDomainPort;
     }
   },
