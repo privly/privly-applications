@@ -53,7 +53,7 @@ var privlyNetworkService = {
     if (privlyNetworkService.platformName() === "ANDROID") {
     	csrfTokenAddress = csrfTokenAddress + "?auth_token=" + androidJsBridge.fetchAuthToken();
     }
-
+    console.log(csrfTokenAddress);
     if (setCSRF) {
       $.ajax({
         url: csrfTokenAddress,
@@ -102,6 +102,7 @@ var privlyNetworkService = {
     } else if (privlyNetworkService.platformName() === "CHROME") {
       return localStorage["posting_content_server_url"];
     } else if (privlyNetworkService.platformName() === "ANDROID") {
+      console.log(androidJsBridge.fetchDomainName());
       return androidJsBridge.fetchDomainName();	
 	} else {
       return protocolDomainPort;
