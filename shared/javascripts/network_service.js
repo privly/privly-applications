@@ -59,7 +59,6 @@ var privlyNetworkService = {
         url: csrfTokenAddress,
         dataType: "json",
         success: function (json, textStatus, jqXHR) {
-          console.log(json.csrf);
           $.ajaxSetup({
             beforeSend: function(xhr) {
               xhr.setRequestHeader('X-CSRF-Token', json.csrf);
