@@ -96,6 +96,8 @@ var privlyNetworkService = {
       return protocolDomainPort;
     } else if (privlyNetworkService.platformName() === "CHROME") {
       return localStorage["posting_content_server_url"];
+    } else if (privlyNetworkService.platformName() === "IOS") {
+        return "https://privlyalpha.org"; // domain used to test successful creation of posts
     } else {
       return protocolDomainPort;
     }
