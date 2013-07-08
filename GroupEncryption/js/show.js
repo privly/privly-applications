@@ -61,6 +61,69 @@ function contentCallback(response) {
   }
 }
 
+/*
+ * Decrypts the GEobj with the supplied privKey
+ *  @param {GEobjobject}  GEobject having three fields
+ *  'GEciphertext' : @{string} The cipher text obtained after encryption of message
+ *  'GElinkkey' : @{string} The link key used to encrypt the message
+ *  'GEcontentkey'  : @{string} The content key after being encrypted first by GElinkkey
+ *  then by pubKey
+ *  @param {privKey} string openpgpjs private key in armored format
+ *  @param {password} string : the password used to generate the keys
+ *  @return {string} plaintext
+ */
+function decrypt(GEobj, privKey, password){
+  var priv_key = openpgp.read_privateKey(privKey);
+
+  if (priv_key.length < 1) {
+    console.log("No private key found!")
+    return;
+  }
+
+  var msg = openpgp.read_message(GEobj['GEcontentkey']);
+  var keymat = null;
+  var sesskey = null;
+  var DecCK1;
+  // Find the private (sub)key for the session key of the message
+  for (var i = 0; i< msg[0].sessionKeys.length; i++) {
+    if (priv_key[0].privateKeyPacket.publicKey.getKeyId() == msg[0].sessionKeys[i].keyId.bytes) {
+      keymat = { key: priv_key[0], keymaterial: priv_key[0].privateKeyPacket};
+      sesskey = msg[0].sessionKeys[i];
+      break;
+    }
+    for (var j = 0; j < priv_key[0].subKeys.length; j++) {
+      if (priv_key[0].subKeys[j].publicKey.getKeyId() == msg[0].sessionKeys[i].keyId.bytes) {
+        keymat = { key: priv_key[0], keymaterial: priv_key[0].subKeys[j]};
+        sesskey = msg[0].sessionKeys[i];
+        break;
+      }
+    }
+  }
+  if (keymat != null) {
+    if (!keymat.keymaterial.decryptSecretMPIs(password)) {
+      console.log("Password for secrect key was incorrect!");
+      return;
+
+    }
+    DecCK1 = msg[0].decrypt(keymat, sesskey);
+    console.log(DecCK1);
+  } else {
+    console.log("No private key found!");
+  }
+  var linkKey = GEobj['GElinkkey'];
+  DecCK1 = JSON.parse(DecCK1);
+  var DecCK2;
+  console.log(DecCK1);
+  if (DecCK1.match("{")){
+    console.log("Its jasonized");
+    DecCK2 = decipher(linkKey,DecCK1);
+    //$('#twiceDecCK').html(DecCK2);
+  }
+  else{
+    console.log('Its raw');
+  }
+  return decipher(DecCK2, JSON.parse(GEobj['GEciphertext']));
+}
 
 /**
  * Opens the injected content in a new window. If the user clicked a link
@@ -73,6 +136,7 @@ function singleClick(evt) {
     window.open(webApplicationURL, '_blank');
   }
 };
+
 
 /**
  * On Page load, the forms and layouts are initialized.

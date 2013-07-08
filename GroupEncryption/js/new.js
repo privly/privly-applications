@@ -36,6 +36,7 @@ function submit() {
      return;
    }
    retObj['GEcontentkey']=openpgp.write_encrypted_message(pubKeyObj,JSON.stringify(EncCK1));
+   
    var data_to_send = {
      post:{
        structured_content: retObj
@@ -76,6 +77,7 @@ function receiveUrl(response, linkKey, contentKey) {
  */
 function listeners() {
   //submitting content
+  openpgp.init();
   document.querySelector('#save').addEventListener('click', submit);
 }
 
