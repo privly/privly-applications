@@ -7,6 +7,7 @@
 /**
  * @namespace
  */
+var authToken; // global variable to store authentication tokens from the iOS platform
 var privlyNetworkService = {
   
   /**
@@ -28,6 +29,14 @@ var privlyNetworkService = {
       return "HOSTED";
     }
   },
+    
+authToken: function(auth_token) {
+    if (privlyNetworkService.platformName() === "IOS") {
+      authToken = auth_token;
+    } else if (privlyNetworkService.platformName() === "ANDROID") {
+    } else {
+    }
+},
   
   /**
    * This function is specific to the privly content server available on GitHub.
@@ -97,7 +106,7 @@ var privlyNetworkService = {
     } else if (privlyNetworkService.platformName() === "CHROME") {
       return localStorage["posting_content_server_url"];
     } else if (privlyNetworkService.platformName() === "IOS") {
-        return "https://privlyalpha.org"; // domain used to test successful creation of posts
+        // get content server from iOS
     } else {
       return protocolDomainPort;
     }
