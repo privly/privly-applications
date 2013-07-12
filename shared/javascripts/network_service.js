@@ -7,7 +7,7 @@
 /**
  * @namespace
  */
-var authTokenString; // global variable to store authentication tokens from the iOS platform
+var authTokenString; // Global variable storing authentication tokens from the iOS platform.
 var privlyNetworkService = {
   
   /**
@@ -106,8 +106,10 @@ var privlyNetworkService = {
     } else if (privlyNetworkService.platformName() === "CHROME") {
       return localStorage["posting_content_server_url"];
     } else if (privlyNetworkService.platformName() === "IOS") {
-        // get content server from iOS
-        return "http://privlyalpha.org"; // test URL; to be fetched from iOS
+      /**
+       * Get content server from iOS.
+       * May be a global variable like auth_token.
+       */
     } else {
       return protocolDomainPort;
     }
