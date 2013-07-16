@@ -12,7 +12,7 @@ var privlyNetworkService = {
   /**
    * If this variable is assigned, it will be appended as a get parameter
    * on all requests, eg, `?auth_token=AUTH_TOKEN_HERE`. This should never
-   * be referenced by anything but the auth token setters.
+   * be referenced by antrhing but the auth token setters.
    */
   authToken: "",
   
@@ -23,12 +23,11 @@ var privlyNetworkService = {
    */
   setAuthTokenString: function(authTokenString) {
     if (authTokenString !== undefined) {
-      privlyNetworkService.authTokenString = "auth_token=" + authToken;
+      privlyNetworkService.authToken = "auth_token=" + authTokenString;
     } else if(privlyNetworkService.platformName() === "ANDROID") {
+      console.log("js bridge auth token" + androidJsBridge.fetchAuthToken());
       privlyNetworkService.authToken = "auth_token=" + 
                                               androidJsBridge.fetchAuthToken();
-      console.log(androidJsBridge.fetchAuthToken());
-      console.log(privlyNetworkService.authToken);
     }
   },
   
@@ -41,9 +40,8 @@ var privlyNetworkService = {
    *
    */
   getAuthenticatedUrl: function(url) {
-    
+    privlyNetworkService.setAuthTokenString();
     if(privlyNetworkService.authToken === "") {
-      console.log("authToken is null");
       return url;
     }
     
@@ -101,10 +99,9 @@ var privlyNetworkService = {
   initPrivlyService: function(setCSRF, canPostCallback, loginCallback, errorCallback) {
     var csrfTokenAddress = privlyNetworkService.contentServerDomain() + 
                            "/posts/user_account_data";
-    console.log("setting Auth Token");
-    privlyNetworkService.setAuthTokenString();
+    
     csrfTokenAddress =  privlyNetworkService.getAuthenticatedUrl(csrfTokenAddress);
-    console.log(csrfTokenAddress);
+    
     if (setCSRF) {
       $.ajax({
         url: csrfTokenAddress,
