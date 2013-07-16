@@ -12,7 +12,7 @@ var privlyNetworkService = {
   /**
    * If this variable is assigned, it will be appended as a get parameter
    * on all requests, eg, `?auth_token=AUTH_TOKEN_HERE`. This should never
-   * be referenced by antrhing but the auth token setters.
+   * be referenced by anything but the auth token setters.
    */
   authToken: "",
   
@@ -23,10 +23,12 @@ var privlyNetworkService = {
    */
   setAuthTokenString: function(authTokenString) {
     if (authTokenString !== undefined) {
-      privlyNetworkService.authTokenString = "auth_token=" + authTokenString;
+      privlyNetworkService.authTokenString = "auth_token=" + authToken;
     } else if(privlyNetworkService.platformName() === "ANDROID") {
-      privlyNetworkService.authTokenString = "auth_token=" + 
+      privlyNetworkService.authToken = "auth_token=" + 
                                               androidJsBridge.fetchAuthToken();
+      console.log(androidJsBridge.fetchAuthToken());
+      console.log(privlyNetworkService.authToken);
     }
   },
   
@@ -41,6 +43,7 @@ var privlyNetworkService = {
   getAuthenticatedUrl: function(url) {
     
     if(privlyNetworkService.authToken === "") {
+      console.log("authToken is null");
       return url;
     }
     
@@ -50,7 +53,7 @@ var privlyNetworkService = {
       return url.replace("?", "?" + privlyNetworkService.authToken + "&");
       
     // else if there is an anchor
-    } else if(rl.indexOf("#") >= 0) {
+    } else if(url.indexOf("#") >= 0) {
       return url.replace("#", "?" + privlyNetworkService.authToken + "#");
     } else {
       return url + "?" + privlyNetworkService.authToken;
@@ -98,9 +101,10 @@ var privlyNetworkService = {
   initPrivlyService: function(setCSRF, canPostCallback, loginCallback, errorCallback) {
     var csrfTokenAddress = privlyNetworkService.contentServerDomain() + 
                            "/posts/user_account_data";
-    
+    console.log("setting Auth Token");
+    privlyNetworkService.setAuthTokenString();
     csrfTokenAddress =  privlyNetworkService.getAuthenticatedUrl(csrfTokenAddress);
-    
+    console.log(csrfTokenAddress);
     if (setCSRF) {
       $.ajax({
         url: csrfTokenAddress,
