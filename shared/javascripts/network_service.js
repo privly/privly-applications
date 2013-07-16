@@ -25,7 +25,6 @@ var privlyNetworkService = {
     if (authTokenString !== undefined) {
       privlyNetworkService.authToken = "auth_token=" + authTokenString;
     } else if(privlyNetworkService.platformName() === "ANDROID") {
-      console.log("js bridge auth token" + androidJsBridge.fetchAuthToken());
       privlyNetworkService.authToken = "auth_token=" + 
                                               androidJsBridge.fetchAuthToken();
     }
