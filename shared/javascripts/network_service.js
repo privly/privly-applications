@@ -39,7 +39,6 @@ var privlyNetworkService = {
    *
    */
   getAuthenticatedUrl: function(url) {
-      alert("auth token: " + privlyNetworkService.authToken);
     
     if(privlyNetworkService.authToken === "") {
       return url;
@@ -101,7 +100,6 @@ var privlyNetworkService = {
                            "/posts/user_account_data";
     
     csrfTokenAddress =  privlyNetworkService.getAuthenticatedUrl(csrfTokenAddress);
-      alert(csrfTokenAddress);
     
     if (setCSRF) {
       $.ajax({
@@ -146,13 +144,11 @@ var privlyNetworkService = {
     
     if (privlyNetworkService.platformName() === "HOSTED") {
       return protocolDomainPort;
-    } else if (privlyNetworkService.platformName() === "CHROME") {
+    } else if (privlyNetworkService.platformName() === "CHROME" ||
+              (privlyNetworkService.platformName() === "IOS")) {
       return localStorage["posting_content_server_url"];
     } else if (privlyNetworkService.platformName() === "ANDROID") {
       return androidJsBridge.fetchDomainName();	
-    } else if (privlyNetworkService.platformName() === "IOS") {
-        
-      return localStorage["posting_content_server_url"];
     } else {
       return protocolDomainPort;
     }
