@@ -1,5 +1,13 @@
 
-This guide is considered a checklist for developers of injectable application. We recommend you copy an existing application when you are getting started since it will simplify the process.
+This guide is intended to teach you the basics of developing a Privly injectable application.
+
+# Quick Start #
+
+If you are developing these applications, the easiest way to begin is to clone the [Google Chrome Extension](https://github.com/privly/privly-chrome) and hack on the privly-applications directory. That directory is the a copy of the privly-applications repository. You can also setup a development environment for the [Rails-based content server](https://github.com/privly/privly-chrome) if you like, but that is not the focus of this guide.
+
+For basic experimentation, we recommend simply changing the code found in PlainPost for your needs. Please note that PlainPost is intentionally left simple to make hacking easier, but what functionality that is in place is critical to integrating with various platforms.
+
+For more information on how injectable apps are structured, please read below.
 
 # Directory Structure #
 
@@ -10,7 +18,14 @@ The applications are all in their own directory. The directory is determined by 
                     new.html
     shared/
            css/
+               common.css
                tooltip.css
+               injected/
+                        injected.css
+               top/
+                   bootstrap-responsive.min.css
+                   bootstrap.min.css
+                   top.css
            images/
                   ajax-loader.gif
            javascripts/
@@ -20,6 +35,7 @@ The applications are all in their own directory. The directory is determined by 
                        host_page_integration.js
                        network_service.js
                        tooltip.js
+                       meta_loader.js
     
     
 
@@ -35,10 +51,11 @@ Several JavaScripts are required to ease integration issues and are guaranteed t
 * `parameters.js`: Grabs the parameters found on both the query string and the anchor of the link.
 * `host_page_integration.js`: (required) Interfaces the application with the host page. This is primarily used to resize the height of the application when it is viewed in the context of other web applications.
 * `network_service.js`: Facilitates same-origin requests when served from an extension or application that permits it. This is generally not used when the application is hosted by the user's content server.
-* `tooltip.js`: (required) Defines a tooltip that gives application metadata when it is injected into a host page.
+* `tooltip.js`: (required) Defines a tooltip that gives application metadata when it is injected into a host page. For the tooltip JavaScript to work, you must also include the `tooltip.css` in every injectable page. 
 * `extension_integration.js`:  (required) Defines functions for integrating with extension platforms. This is primarily used for sending hyperlinks to extensions for their posting to host pages.
+* `meta_loader.js`: "show.html" may be shown injected into a page, or as a normal top level web page. The meta loader checks for special meta tags defining CSS for specific contexts, which will be loaded dynamically. For more information, see the JavaScript file's source.
 
-For the tooltip JavaScript to work, you must also include the `tooltip.css` in every injectable page. The shared CSS folder also has some recommended CSS for apps.
+The shared CSS folder also has some recommended CSS for apps. The `top` and `injected` folders contain stylsheets which should only be applied when the page is viewed as the top application or an injected application, respectably.
 
 # Connecting to Data Storage #
 
@@ -61,7 +78,7 @@ Many platforms allow the developer to make same-origin requests to a content ser
 
 **Mobile Apps**
 
-Todo: Hery and Shivam should contribute to this.
+Mobile applications use an authentication token (essentially an API secret token) to gain access to the user's account. This is all handled by the `network_service.js` file without you needing to worry about it. Keep in find that if you need an authentication scheme, you will need to support the auth_token or implement the auth scheme inside the injectable application.
 
 # Integration #
 
@@ -77,7 +94,7 @@ Make sure the html file is named "new.html." All other functionality for this po
 
 ## Reading a Link Discovered on the Web ##
 
-When viewing an existing application (ie after it has been posted to a host page like a webmail provider) then it could be viewed in several different fashions. We are making efforts to abstract away the differences in platforms using the shared JavaScript files, but you should take note of a few unique aspects of the different platforms.
+When viewing an existing application (ie after it has been posted to a host page like a webmail provider) then it could be viewed in several different contexts. We are making efforts to abstract away the differences in platforms using the shared JavaScript files, but you should take note of a few unique aspects of the different platforms.
 
 Make sure the html file is named "show.html." All other functionality for this posting application is up to the developer.
 
@@ -89,7 +106,7 @@ The injected view is triggered whenever the application sees that it is not the 
 
 `window.self === window.top`
 
-When this statement evaluates to true, then the current window (self) is the top window and it is not in an iframe. Conversely, if it evaluates to false, the application is being displayed in an iframe.
+When this statement evaluates to true, then the current window (self) is the top window and it is not in an iframe. Conversely, if it evaluates to false, the application is being displayed in an iframe. There is a helper in `host_page_integration.js` that makes this easier.
 
 **Setting the Height of the iframe**
 
