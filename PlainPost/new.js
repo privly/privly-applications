@@ -25,7 +25,10 @@ var callbacks = {
   /**
    * Assign the CSRF token if it is a Privly server.
    */
-  pendingLogin: function() {
+  pendingLogin: function() { 
+    if (privlyNetworkService.platformName() === "ANDROID") {
+       androidJsBridge.showWaitDialog("Logging you in");
+    }
     privlyNetworkService.initPrivlyService(true, callbacks.pendingPost, 
                                             callbacks.loginFailure, 
                                             callbacks.loginFailure);
@@ -36,6 +39,11 @@ var callbacks = {
    * server's sign in endpoint is at "/users/sign_in".
    */
   loginFailure: function() {
+    if (privlyNetworkService.platformName() === "ANDROID") {
+       androidJsBridge.hideWaitDialog();
+       androidJsBridge.showLoginActivity();
+       androidJsBridge.showToast("Your session has expired. Please login again");
+    }
     var message = "We were unable to sign you into your content server please " + 
                   "<a href='" + privlyNetworkService.contentServerDomain() + "/users/sign_in' target='_blank'>sign in</a> to " +
                   "<a href=''>continue</a>";
@@ -46,6 +54,9 @@ var callbacks = {
    * Tell the user they can create their post
    */
   pendingPost: function() {
+    if (privlyNetworkService.platformName() === "ANDROID") {
+       androidJsBridge.hideWaitDialog();
+    }
     $("#messages").text("Login successful, you may create a post.");
   },
   
@@ -61,6 +72,9 @@ var callbacks = {
    * it to the end user.
    */
   postCompleted: function(response) {
+    if (privlyNetworkService.platformName() === "ANDROID") {
+       androidJsBridge.hideWaitDialog();
+    }
     var url = response.jqXHR.getResponseHeader("X-Privly-Url");
     privlyExtension.firePrivlyURLEvent(url);
     $("#messages").text("Post completed");
@@ -74,6 +88,10 @@ var callbacks = {
  * event for the extension to capture.
  */
 function submit() {
+
+  if (privlyNetworkService.platformName() === "ANDROID") {
+     androidJsBridge.showWaitDialog("Creating..");
+  }
   
   privlyNetworkService.sameOriginPostRequest("/posts", 
                                         callbacks.postCompleted, 
