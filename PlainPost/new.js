@@ -40,9 +40,15 @@ var callbacks = {
    */
   loginFailure: function() {
     if (privlyNetworkService.platformName() === "ANDROID") {
-       androidJsBridge.hideWaitDialog();
-       androidJsBridge.showLoginActivity();
-       androidJsBridge.showToast("Your session has expired. Please login again");
+       if (androidJsBridge.isDataConnectionAvailable() === "false") {
+          androidJsBridge.hideWaitDialog();
+          androidJsBridge.showHomeActivity();
+          androidJsBridge.showToast("Seems like there's no data connection. Please enable data and login again");
+       } else {
+         androidJsBridge.hideWaitDialog();
+         androidJsBridge.showLoginActivity();
+         androidJsBridge.showToast("Your session has expired. Please login again");
+       }
     }
     var message = "We were unable to sign you into your content server please " + 
                   "<a href='" + privlyNetworkService.contentServerDomain() + "/users/sign_in' target='_blank'>sign in</a> to " +
