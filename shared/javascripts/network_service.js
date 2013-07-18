@@ -121,7 +121,6 @@ var privlyNetworkService = {
           }
         },
         error: function (jqXHR, textStatus, errorThrown) {
-          console.log("incomplete ajax request");
           errorCallback(jqXHR, textStatus, errorThrown);
         }
       });
