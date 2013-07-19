@@ -25,7 +25,7 @@ var privlyNetworkService = {
     if (authTokenString !== undefined) {
       privlyNetworkService.authToken = "auth_token=" + authTokenString;
     } else if(privlyNetworkService.platformName() === "ANDROID") {
-      privlyNetworkService.authToken = "auth_token=" +
+      privlyNetworkService.authToken = "auth_token=" + 
                                               androidJsBridge.fetchAuthToken();
     }
   },
@@ -39,7 +39,7 @@ var privlyNetworkService = {
    *
    */
   getAuthenticatedUrl: function(url) {
-    
+    privlyNetworkService.setAuthTokenString();
     if(privlyNetworkService.authToken === "") {
       return url;
     }
@@ -165,7 +165,6 @@ var privlyNetworkService = {
    */
   sameOriginGetRequest: function(url, callback) {
     url = privlyNetworkService.getAuthenticatedUrl(url);
-    alert(url);
     $.ajax({
       url: url,
       dataType: "json",
@@ -197,7 +196,6 @@ var privlyNetworkService = {
     
     var url = privlyNetworkService.contentServerDomain() + path;
     url = privlyNetworkService.getAuthenticatedUrl(url);
-    alert(url);
     $.ajax({
       url: url,
       cache: false,
