@@ -143,7 +143,10 @@ var privlyNetworkService = {
             if(androidJsBridge.isDataConnectionAvailable() === "false") {
               androidJsBridge.showToast("Seems like there's no data connection. Please enable data and try again");
             } 
+            else {
             androidJsBridge.showToast("There has been some error. Please Try again!");
+          }  
+            androidJsBridge.showHomeActivity();
             androidJsBridge.hideWaitDialog();
           } else {
             errorCallback(jqXHR, textStatus, errorThrown);
