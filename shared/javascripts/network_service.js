@@ -123,7 +123,7 @@ var privlyNetworkService = {
           } else if(json.signedIn) {
             if(privlyNetworkService.platformName() === "ANDROID") {
               androidJsBridge.hideWaitDialog();
-              androidJsBridge.showToast("Sorry, You cannot create new Posts. Please login again.");
+              androidJsBridge.showToast("Sorry, You dont have the permission to create new posts. Please login again.");
               androidJsBridge.showLoginActivity();
             } else {
               cantPostLoginCallback(json, textStatus, jqXHR);
