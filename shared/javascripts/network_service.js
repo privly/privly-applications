@@ -101,11 +101,17 @@ var privlyNetworkService = {
     
     csrfTokenAddress =  privlyNetworkService.getAuthenticatedUrl(csrfTokenAddress);
     
-    if (setCSRF) {
+    if(setCSRF) {
+       if(privlyNetworkService.platformName() === "ANDROID") {
+         androidJsBridge.showWaitDialog("Verifying session..");
+       }
       $.ajax({
         url: csrfTokenAddress,
         dataType: "json",
         success: function (json, textStatus, jqXHR) {
+          if(privlyNetworkService.platformName() === "ANDROID") {
+             androidJsBridge.hideWaitDialog();
+          }
           $.ajaxSetup({
             beforeSend: function(xhr) {
               xhr.setRequestHeader('X-CSRF-Token', json.csrf);
@@ -115,13 +121,33 @@ var privlyNetworkService = {
           if(json.signedIn && json.canPost) {
             canPostCallback(json, textStatus, jqXHR);
           } else if(json.signedIn) {
-            cantPostLoginCallback(json, textStatus, jqXHR);
+            if(privlyNetworkService.platformName() === "ANDROID") {
+              androidJsBridge.hideWaitDialog();
+              androidJsBridge.showToast("Sorry, You cannot create new Posts. Please login again.");
+              androidJsBridge.showLoginActivity();
+            } else {
+              cantPostLoginCallback(json, textStatus, jqXHR);
+            }
           } else {
-            loginCallback(json, textStatus, jqXHR);
+            if(privlyNetworkService.platformName() === "ANDROID") {
+              androidJsBridge.hideWaitDialog();
+              androidJsBridge.showToast("Your session has expired! Please Login Again.");
+              androidJsBridge.showLoginActivity();
+            } else {
+              loginCallback(json, textStatus, jqXHR);
+            }
           }
         },
         error: function (jqXHR, textStatus, errorThrown) {
-          errorCallback(jqXHR, textStatus, errorThrown);
+          if(privlyNetworkService.platformName() === "ANDROID") {
+            if(androidJsBridge.isDataConnectionAvailable() === "false") {
+              androidJsBridge.hideWaitDialog();
+              androidJsBridge.showHomeActivity();
+              androidJsBridge.showToast("Seems like there's no data connection. Please enable data and try again");
+            }
+          } else {
+            errorCallback(jqXHR, textStatus, errorThrown);
+          }
         }
       });
     } else {
@@ -202,6 +228,9 @@ var privlyNetworkService = {
     
     var url = privlyNetworkService.contentServerDomain() + path;
     url = privlyNetworkService.getAuthenticatedUrl(url);
+    if(privlyNetworkService.platformName() === "ANDROID") {
+      androidJsBridge.showWaitDialog("Requesting server");
+    }
     $.ajax({
       url: url,
       cache: false,
@@ -209,9 +238,15 @@ var privlyNetworkService = {
       data: data,
       dataType: "json",
       success: function (json, textStatus, jqXHR) {
+        if(privlyNetworkService.platformName() === "ANDROID") {
+          androidJsBridge.hideWaitDialog();
+        }
         callback({json: json, textStatus: textStatus, jqXHR: jqXHR});
       },
       error: function (jqXHR, textStatus, errorThrown) {
+        if(privlyNetworkService.platformName() === "ANDROID") {
+          androidJsBridge.hideWaitDialog();
+        }
         callback({json: {}, textStatus: textStatus, jqXHR: jqXHR});
       }
     });

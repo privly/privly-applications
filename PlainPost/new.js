@@ -3,7 +3,8 @@
  **/
 
 /**
- * The callbacks assign the state of the application.
+ * The callbacks assign the state of the application. These are bound to the 
+ * appropriate events in the listeners function.
  *
  * This application can be placed into the following states:
  * 1. Pending Login Check: The app is currently requesting the CSRF
@@ -25,10 +26,7 @@ var callbacks = {
   /**
    * Assign the CSRF token if it is a Privly server.
    */
-  pendingLogin: function() { 
-    if (privlyNetworkService.platformName() === "ANDROID") {
-       androidJsBridge.showWaitDialog("Logging you in");
-    }
+  pendingLogin: function() {
     privlyNetworkService.initPrivlyService(true, callbacks.pendingPost, 
                                             callbacks.loginFailure, 
                                             callbacks.loginFailure);
@@ -39,17 +37,6 @@ var callbacks = {
    * server's sign in endpoint is at "/users/sign_in".
    */
   loginFailure: function() {
-    if (privlyNetworkService.platformName() === "ANDROID") {
-       if (androidJsBridge.isDataConnectionAvailable() === "false") {
-          androidJsBridge.hideWaitDialog();
-          androidJsBridge.showHomeActivity();
-          androidJsBridge.showToast("Seems like there's no data connection. Please enable data and login again");
-       } else {
-         androidJsBridge.hideWaitDialog();
-         androidJsBridge.showLoginActivity();
-         androidJsBridge.showToast("Your session has expired. Please login again");
-       }
-    }
     var message = "We were unable to sign you into your content server please " + 
                   "<a href='" + privlyNetworkService.contentServerDomain() + "/users/sign_in' target='_blank'>sign in</a> to " +
                   "<a href=''>continue</a>";
@@ -60,9 +47,6 @@ var callbacks = {
    * Tell the user they can create their post
    */
   pendingPost: function() {
-    if (privlyNetworkService.platformName() === "ANDROID") {
-       androidJsBridge.hideWaitDialog();
-    }
     $("#messages").text("Login successful, you may create a post.");
   },
   
@@ -78,12 +62,9 @@ var callbacks = {
    * it to the end user.
    */
   postCompleted: function(response) {
-    if (privlyNetworkService.platformName() === "ANDROID") {
-       androidJsBridge.hideWaitDialog();
-    }
     var url = response.jqXHR.getResponseHeader("X-Privly-Url");
     privlyExtension.firePrivlyURLEvent(url);
-    $("#messages").text("Post completed");
+    $("#messages").text("Copy the address found above to any website you want to share this information through");
     $(".privlyUrl").text(url);
     $(".privlyUrl").attr("href", url);
   }
@@ -94,10 +75,6 @@ var callbacks = {
  * event for the extension to capture.
  */
 function submit() {
-
-  if (privlyNetworkService.platformName() === "ANDROID") {
-     androidJsBridge.showWaitDialog("Creating..");
-  }
   
   privlyNetworkService.sameOriginPostRequest("/posts", 
                                         callbacks.postCompleted, 
@@ -111,15 +88,24 @@ function submit() {
  * Sets the listeners on the UI elements of the page.
  */
 function listeners() {
-  //submitting content
+  
+  // Monitor the submit button
   document.querySelector('#save').addEventListener('click', submit);
   
-  // Listener for the initial content that should be dropped into the form
+  // Set the UI to match the domain we will be posting to
+  var domain = privlyNetworkService.contentServerDomain();
+  $(".home_domain").attr("href", domain);
+  $(".home_domain").text(domain.split("/")[2]);
+  
+  // Listener for the initial content that should be dropped into the form.
+  // This may be sent by a browser extension.
   privlyExtension.initialContent = function(data) {
     $("#content")[0].value = data.initialContent;
   }
   
-  // Request the initial content from the extension
+  // Request the initial content from the extension. This callback is executed
+  // after the extension successfully messages the secret message back to the
+  // application.
   privlyExtension.messageSecret = function(data) {
     privlyExtension.messageExtension("initialContent", "");
   }
@@ -127,9 +113,10 @@ function listeners() {
   // Initialize message pathway to the extension.
   privlyExtension.firePrivlyMessageSecretEvent();
   
+  //Initialize the application.
   callbacks.pendingLogin();
   
 }
 
-// Listen for UI events
+// Initialize the application
 document.addEventListener('DOMContentLoaded', listeners);
