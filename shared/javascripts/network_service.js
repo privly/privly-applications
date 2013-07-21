@@ -141,10 +141,10 @@ var privlyNetworkService = {
         error: function (jqXHR, textStatus, errorThrown) {
           if(privlyNetworkService.platformName() === "ANDROID") {
             if(androidJsBridge.isDataConnectionAvailable() === "false") {
-              androidJsBridge.hideWaitDialog();
-              androidJsBridge.showHomeActivity();
               androidJsBridge.showToast("Seems like there's no data connection. Please enable data and try again");
-            }
+            } 
+            androidJsBridge.hideWaitDialog();
+            androidJsBridge.showHomeActivity();
           } else {
             errorCallback(jqXHR, textStatus, errorThrown);
           }
