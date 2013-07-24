@@ -101,7 +101,7 @@ var privlyNetworkService = {
     
     csrfTokenAddress =  privlyNetworkService.getAuthenticatedUrl(csrfTokenAddress);
     
-    if(setCSRF) {
+    if (setCSRF) {
       $.ajax({
         url: csrfTokenAddress,
         dataType: "json",
@@ -115,13 +115,13 @@ var privlyNetworkService = {
           if(json.signedIn && json.canPost) {
             canPostCallback(json, textStatus, jqXHR);
           } else if(json.signedIn) {
-              cantPostLoginCallback(json, textStatus, jqXHR);
+            cantPostLoginCallback(json, textStatus, jqXHR);
           } else {
-              loginCallback(json, textStatus, jqXHR);
+            loginCallback(json, textStatus, jqXHR);
           }
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            errorCallback(jqXHR, textStatus, errorThrown);
+          errorCallback(jqXHR, textStatus, errorThrown);
         }
       });
     } else {
