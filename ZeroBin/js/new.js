@@ -63,7 +63,7 @@
    postCompleted: function(response) {
      var url = response.jqXHR.getResponseHeader("X-Privly-Url");
      privlyExtension.firePrivlyURLEvent(url);
-     $("#messages").text("Post completed");
+     $("#messages").text("Copy the address found above to any website you want to share this information through");
      $(".privlyUrl").text(url);
      $(".privlyUrl").attr("href", url);
    }
@@ -81,7 +81,8 @@ function submit() {
    var data_to_send = {
      post:{
        structured_content: cipher_json,
-        "privly_application":"ZeroBin"
+        "privly_application":"ZeroBin",
+        "public":true
      }};
   
   function successCallback(response) {
@@ -107,22 +108,22 @@ function receiveUrl(response, randomkey) {
     url = url + "#privlyLinkKey=" + randomkey;
   }
   privlyExtension.firePrivlyURLEvent(url);
-}
-
-/**
- * Sets the listeners on the UI elements of the page.
- */
-function listeners() {
-  //submitting content
-  document.querySelector('#save').addEventListener('click', submit);
   
-  initPosting();
+  $("#messages").text("Copy the address found above to any website you want to share this information through");
+  $(".privlyUrl").text(url);
+  $(".privlyUrl").attr("href", url);
 }
 
 /**
  * Get the CSRF token and starting content for the form element. 
  */
 function initPosting() {
+  
+  document.querySelector('#save').addEventListener('click', submit);
+  
+  var domain = privlyNetworkService.contentServerDomain();
+  $(".home_domain").attr("href", domain);
+  $(".home_domain").text(domain.split("/")[2]);
   
   // Assign the CSRF token if it is a Privly server. We use the success
   // callback for all callbacks because we don't assume the content
@@ -150,7 +151,7 @@ function initPosting() {
   
 }
 
-document.addEventListener('DOMContentLoaded', listeners);
+document.addEventListener('DOMContentLoaded', initPosting);
 
 //Add listeners to show loading animation while making ajax requests
 $(document.ajaxStart(function() {
