@@ -105,7 +105,10 @@ jQuery(window).load(function(){
   } else {
     $(".home_domain").attr("href", dataProtocol + "//" + dataDomain);
     $(".home_domain").text(dataDomain);
-    $(".privly_manage_link").attr("href", webApplicationURL);
+    
+    var manageURL = jsonURL.replace("format=json", "format=html");
+    manageURL = manageURL.replace(".json", ".html");
+    $(".privly_manage_link").attr("href", manageURL);
     loadTopCSS();
   }
   

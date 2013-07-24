@@ -123,7 +123,7 @@ function listeners() {
 document.addEventListener('DOMContentLoaded', listeners);
 
 //Add listeners to show loading animation while making ajax requests
-$(document.ajaxStart(function() {
+$(document).ajaxStart(function() {
   $('#loadingDiv').show(); 
 });
 $(document).ajaxStop(function() { 
