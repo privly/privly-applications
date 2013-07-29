@@ -1,1 +1,0 @@
-This is the Group encryption posting and injecting application for privly.
