@@ -1,0 +1,37 @@
+<html>
+<head>
+<script type="text/javascript" src="./../openpgp.js" ></script>
+<script type="text/javascript" src="./../../shared/javascripts/jquery.min.js"></script>
+
+<script type="text/javascript">
+openpgp.init();
+function generate(){
+	var keyPair = openpgp.generate_key_pair(1,1024,$('#uname').val(),$('#password').val());
+	console.log($('#uname').val());
+	openpgp.keyring.importPrivateKey(keyPair.privateKeyArmored, $('#password').val());
+    openpgp.keyring.importPublicKey(keyPair.publicKeyArmored);
+    openpgp.keyring.store();
+    var keys = openpgp.keyring.privateKeys;
+    var key = keys[keys.length - 1];
+
+	console.log(keys.length);
+	$('#privKey').html(key.armored.replace(/\n/g,'<br/ >'));
+	keys = openpgp.keyring.publicKeys;
+    key = keys[keys.length - 1];
+	//console.log(key.armored);
+	$('#pubKey').html(key.armored.replace(/\n/g,'<br/ >'));
+}
+</script>
+</head>
+<body>
+	<h2> Here you can generate a key pair of 1024 bits </h2>
+	Username : <input type = 'text' id='uname' />(in form "Mohit Gahlot &lt;mohit.www@gmail.com&gt;")<br/>
+	Password : <input type='text' id='password' /><br/>
+	<input type='button' value = 'Generate Key' onclick='generate()'/>
+	<h2> Generated Private key  </h2>
+	<p id="privKey"><i>This will be replaced by private key</i></p><br/>
+
+	<h2> Generated Public key </h2>
+	<p id="pubKey"><i>This will be replaced by public key</i></p><br/>
+	</body>
+</html>
