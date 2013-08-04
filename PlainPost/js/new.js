@@ -47,6 +47,10 @@ var callbacks = {
       $('#loadingDiv').hide(); 
     });
     
+    // Generate the previewed content
+    var contentElement = document.getElementById("content");
+    contentElement.addEventListener('keyup', previewMarkdown);
+    
     privlyNetworkService.initPrivlyService(true, callbacks.pendingPost, 
                                             callbacks.loginFailure, 
                                             callbacks.loginFailure);
@@ -155,6 +159,15 @@ var messaging = {
     privlyExtension.messageExtension("initialContent", "");
   }
   
+}
+
+/**
+ * Display rendered markdown as a preview of the post.
+ */
+function previewMarkdown() {
+  document.getElementById("preview_heading").style.display = "inherit";
+  preview.innerHTML = markdown.toHTML(document.getElementById("content").value);
+
 }
 
 // Initialize the application

@@ -29,6 +29,8 @@
     </script>
     
     <!-- Application Specific JavaScripts -->
+    <script type="text/javascript" src="../vendor/markdown.js">
+    </script>
     <script type="text/javascript" src="js/new.js">
     </script>
 
@@ -57,14 +59,20 @@
     </div>
 
     <div class="container">
-      <div class="starter-template">
-        <p><a class="privlyUrl" href="" data-privly-exclude="true"></a></p>
-        <p id="messages">Pending server check. The application is checking its connection with the remote server.</p>
-        <p id="loadingDiv"> <img src="../shared/images/ajax-loader.gif"/> </p>
-        <p>Privly is still in Alpha, <strong>do not</strong> post private information until the system reaches a Beta release.</p>
-        <textarea id="content" rows="4" cols="200" title="Enter a message to Post to Privly here." placeholder='' style='width:500px;'></textarea>
-        <br>
-        <button id="save" disabled>Save</button>
+      <div class="row">
+        <div class="col-lg-8">
+          <p><a class="privlyUrl" href="" data-privly-exclude="true"></a></p>
+          <p id="messages">Pending server check. The application is checking its connection with the remote server.</p>
+          <p id="loadingDiv"> <img src="../shared/images/ajax-loader.gif"/> </p>
+          <p>Privly is still in Alpha, <strong>do not</strong> post private information until the system reaches a Beta release. You can use Markdown for these posts.</p>
+          <textarea id="content" rows="4" cols="200" title="Enter a message to Post to Privly here." placeholder='' style='width:500px;'></textarea>
+          <br>
+          <button id="save" disabled>Save</button>
+        </div>
+        <div class="col-lg-4">
+          <h2 id="preview_heading" style="display:none;">Preview<hr></h2>
+          <div id="preview"></div>
+        </div>
       </div>
     </div><!-- /.container -->
   </body>
