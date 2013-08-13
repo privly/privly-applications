@@ -32,9 +32,14 @@ function cipherTextUrl() {
 function contentCallback(response) {
   if( response.jqXHR.status === 200 ) {
     
+    var url = window.location.href;
+    var key = privlyParameters.getParameterHash(url).privlyLinkKey;
     var json = response.json;
-    if (json.structured_content !== undefined) {
-      var cleartext = zeroDecipher(pageKey(), json.structured_content);
+    
+    if (key === undefined) {
+      $('div#cleartext').text("You do not have the key required to decrypt this content.");
+    } else if(json.structured_content !== undefined) {
+      var cleartext = zeroDecipher(pageKey(key), json.structured_content);
       $('div#cleartext').text(cleartext);
       urls2links($('div#cleartext')); // Convert URLs to clickable links.
     } else {
@@ -103,12 +108,10 @@ jQuery(window).load(function(){
     
     loadInjectedCSS();
   } else {
-    $(".home_domain").attr("href", dataProtocol + "//" + dataDomain);
-    $(".home_domain").text(dataDomain);
+    // Set the nav bar to the proper domain
+    privlyNetworkService.initializeNavigation();
+    privlyNetworkService.showLoggedInNav();
     
-    var manageURL = jsonURL.replace("format=json", "format=html");
-    manageURL = manageURL.replace(".json", ".html");
-    $(".privly_manage_link").attr("href", manageURL);
     loadTopCSS();
   }
   

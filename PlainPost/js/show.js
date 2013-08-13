@@ -88,7 +88,7 @@ function contentCallback(response) {
     if( privlyHostPage.isInjected() ) {
       $('a').attr("target", "_blank");
     } else {
-      $('a').attr("target", "_self");
+      $('#post_content a').attr("target", "_blank");
     }
     
   } else if(response.jqXHR.status === 403) {
@@ -132,12 +132,14 @@ jQuery(window).load(function(){
     
     loadInjectedCSS();
   } else {
-    $(".home_domain").attr("href", dataProtocol + "//" + dataDomain);
-    $(".home_domain").text(dataDomain);
     
-    var manageURL = jsonURL.replace("format=json", "format=html");
-    manageURL = manageURL.replace(".json", ".html");
-    $(".privly_manage_link").attr("href", manageURL);
+    // Set the nav bar to the proper domain
+    privlyNetworkService.initializeNavigation();
+    
+    //todo, the user is not necessarily logged in but the post does not currently have
+    //a universal method for checking.
+    privlyNetworkService.showLoggedInNav();
+    
     loadTopCSS();
   }
   
