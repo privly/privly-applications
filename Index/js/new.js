@@ -37,6 +37,9 @@ var callbacks = {
     // Initialize message pathway to the extension.
     messaging.initialize();
     
+    // Watch for the preview iframe's messages so it can be resized
+    window.addEventListener('message', resizeIframePostedMessage, false);
+    
     // Add listeners to show loading animation while making ajax requests
     $(document).ajaxStart(function() {
       $('#loadingDiv').show(); 
@@ -121,8 +124,41 @@ var callbacks = {
       var params = href.substr(href.indexOf("?") + 1);
       var app = privlyParameters.parameterStringToHash(params).privlyApp;
       if(/^[a-zA-Z]+$/.test(app)) {
-        $(".privly_iframe").html("<iframe src='../" + 
-                                    app + "/show.html?" + params + "'></iframe>");
+        
+        var iFrame = document.createElement('iframe');
+
+        // Styling and display attributes that mirror those
+        // of the privly.js content script
+        iFrame.setAttribute("frameborder","0");
+        iFrame.setAttribute("vspace","0");
+        iFrame.setAttribute("hspace","0");
+        iFrame.setAttribute("width","100%");
+        iFrame.setAttribute("marginwidth","0");
+        iFrame.setAttribute("marginheight","0");
+        iFrame.setAttribute("height","1px");
+        iFrame.setAttribute("frameborder","0");
+        iFrame.setAttribute("style","width: 100%; height: 32px; " +
+          "overflow: hidden;");
+        iFrame.setAttribute("scrolling","no");
+        iFrame.setAttribute("overflow","hidden");
+        iFrame.setAttribute("data-privly-accept-resize","true");
+        
+        //Set the source URL
+        iFrame.setAttribute("src", "../" + 
+                                    app + "/show.html?" + params);
+        
+        //The id and the name are the same so that the iframe can be 
+        //uniquely identified and resized by resizeIframePostedMessage()
+        iFrame.setAttribute("id", "ifrm0");
+        iFrame.setAttribute("name", "ifrm0");
+        
+        // Clear the old iframe and insert the new one
+        $(".privly_iframe").html("");                          
+        $(".privly_iframe").append(iFrame);
+        
+        // Label the iframe
+        $("#privly_iframe_title").text(app);
+        $("#privly_iframe_meta").text("The App's contents are below.");
       }
     });
   }
@@ -164,6 +200,17 @@ var messaging = {
    */
   messageSecret: function(data) {}
   
+}
+
+/**
+ * Resize eligible iframes to the proper height based on their contents.
+ *
+ * @param {message} e The message posted by an iframe. 
+ */
+function resizeIframePostedMessage(e) {
+  if(e.origin == window.location.origin) {
+    document.getElementById("ifrm0").style.height = e.data.split(",")[1] + "px";
+  }
 }
 
 // Initialize the application
