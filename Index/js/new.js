@@ -37,11 +37,17 @@ var callbacks = {
     // Initialize message pathway to the extension.
     messaging.initialize();
     
+    // Show or hide the posting button depending on whether
+    // there is likely an extension watching for its events.
+    if( privlyNetworkService.platformName() === "HOSTED" ) {
+      $("#message_link_button")[0].setAttribute("style","display:none");
+    } else {
+      document.getElementById("message_link_button").addEventListener(
+        'click', postUrl, false);
+    }
+    
     // Watch for the preview iframe's messages so it can be resized
     window.addEventListener('message', resizeIframePostedMessage, false);
-    
-    document.getElementById("message_link_button").addEventListener(
-      'click', postUrl, false);
     
     // Add listeners to show loading animation while making ajax requests
     $(document).ajaxStart(function() {
