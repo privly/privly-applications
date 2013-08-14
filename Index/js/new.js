@@ -40,6 +40,9 @@ var callbacks = {
     // Watch for the preview iframe's messages so it can be resized
     window.addEventListener('message', resizeIframePostedMessage, false);
     
+    document.getElementById("message_link_button").addEventListener(
+      'click', postUrl, false);
+    
     // Add listeners to show loading animation while making ajax requests
     $(document).ajaxStart(function() {
       $('#loadingDiv').show(); 
@@ -143,6 +146,9 @@ var callbacks = {
         iFrame.setAttribute("overflow","hidden");
         iFrame.setAttribute("data-privly-accept-resize","true");
         
+        // The href of the original link as dictated by the remote server
+        iFrame.setAttribute("data-canonical-href", href);
+        
         //Set the source URL
         iFrame.setAttribute("src", "../" + 
                                     app + "/show.html?" + params);
@@ -211,6 +217,15 @@ function resizeIframePostedMessage(e) {
   if(e.origin == window.location.origin) {
     document.getElementById("ifrm0").style.height = e.data.split(",")[1] + "px";
   }
+}
+
+/**
+ * Sends the currently displayed URL to the extension or mobile framework
+ * running the applicaiton so it can be submitted to a host page webform.
+ */
+function postUrl() {
+  privlyExtension.firePrivlyURLEvent(
+    document.getElementById("ifrm0").getAttribute("data-canonical-href"));
 }
 
 // Initialize the application

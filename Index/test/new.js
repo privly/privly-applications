@@ -11,6 +11,11 @@ describe ("Index New Suite", function() {
     expect(domain.split("/")[2]).toBe($(".home_domain").text());
   });
   
+  it("does not result in an error", function() {
+    resizeIframePostedMessage("sham");
+    expect(true).toBe(true);
+  });
+  
 });
 
 (function() {
