@@ -80,8 +80,6 @@ var callbacks = {
     
     privlyNetworkService.showLoggedInNav();
     
-    $('#posts').dataTable();
-    
     privlyNetworkService.sameOriginGetRequest(
       privlyNetworkService.contentServerDomain() + "/posts", 
       callbacks.postCompleted);
@@ -107,20 +105,50 @@ var callbacks = {
    * Display the table of posts stored at the server.
    */
   postCompleted: function(response) {
+    
+    var tableBody = document.getElementById("table_body");
     for(var i = 0; i < response.json.length; i++) {
       
-      var privlyDataURL = privlyParameters.parameterStringToHash(response.json[i].privly_URL).privlyDataURL;
-      var manageURL = privlyDataURL.replace("format=json", "format=html");
-      manageURL = manageURL.replace(".json", ".html");
+      var href = response.json[i].privly_URL;
+      var params = href.substr(href.indexOf("?") + 1);
+      var app = privlyParameters.parameterStringToHash(params).privlyApp;
       
-      $('#posts').dataTable().fnAddData( ["<a href='#' class='view_link' data-privly-app-link='" + response.json[i].privly_URL + "'>View</a>",
-                                          "<a target='_blank' href=" + manageURL + ">Manage</a>",
-                                          response.json[i].created_at,
-                                          response.json[i].burn_after_date,
-                                          response.json[i].updated_at,
-                                          response.json[i].privly_application,
-                                          response.json[i].public] );
+      var tr = document.createElement('tr');
+      
+      var td1 = document.createElement('td');
+      var td1a = document.createElement('a');
+      td1a.setAttribute("href", "#");
+      td1a.setAttribute("class", "view_link");
+      td1a.setAttribute("data-privly-app-name", app);
+      td1a.textContent = response.json[i].privly_application;
+      td1.appendChild(td1a);
+      tr.appendChild(td1);
+      
+      var td2 = document.createElement('td');
+      var td2a = document.createElement('a');
+      td2a.setAttribute("href", "../" + response.json[i].privly_application + "/show.html?" + params);
+      td2a.setAttribute("target", "_blank");
+      td2a.textContent = "manage";
+      td2.appendChild(td2a);
+      tr.appendChild(td2);
+      
+      var td3 = document.createElement('td');
+      td3.textContent = response.json[i].created_at;
+      tr.appendChild(td3);
+      
+      var td4 = document.createElement('td');
+      td4.textContent = response.json[i].burn_after_date;
+      tr.appendChild(td4);
+      
+      var td5 = document.createElement('td');
+      td5.textContent = response.json[i].updated_at;
+      tr.appendChild(td5);
+      
+      tableBody.appendChild(tr)
+      
     }
+    $('#posts').dataTable();
+    
     
     $('body').on('click', 'a.view_link', function() {
       
@@ -129,9 +157,7 @@ var callbacks = {
       $('#table_col').addClass('col-lg-8');
       $('#iframe_col').css('display', 'inherit');
       
-      var href = $(this).attr("data-privly-app-link");
-      var params = href.substr(href.indexOf("?") + 1);
-      var app = privlyParameters.parameterStringToHash(params).privlyApp;
+      var app = $(this).attr("data-privly-app-name");
       if(/^[a-zA-Z]+$/.test(app)) {
         
         var iFrame = document.createElement('iframe');
