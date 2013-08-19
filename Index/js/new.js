@@ -120,6 +120,8 @@ var callbacks = {
       td1a.setAttribute("href", "#");
       td1a.setAttribute("class", "view_link");
       td1a.setAttribute("data-privly-app-name", app);
+      td1a.setAttribute("data-privly-app-parameters", params);
+      td1a.setAttribute("data-canonical-href", href);
       td1a.textContent = response.json[i].privly_application;
       td1.appendChild(td1a);
       tr.appendChild(td1);
@@ -128,7 +130,7 @@ var callbacks = {
       var td2a = document.createElement('a');
       td2a.setAttribute("href", "../" + response.json[i].privly_application + "/show.html?" + params);
       td2a.setAttribute("target", "_blank");
-      td2a.textContent = "manage";
+      td2a.textContent = "open";
       td2.appendChild(td2a);
       tr.appendChild(td2);
       
@@ -144,11 +146,18 @@ var callbacks = {
       td5.textContent = response.json[i].updated_at;
       tr.appendChild(td5);
       
+      var td6 = document.createElement('td');
+      td6.textContent = response.json[i].content;
+      tr.appendChild(td6);
+      
       tableBody.appendChild(tr)
       
     }
-    $('#posts').dataTable();
     
+    var dataTable = $('#posts').dataTable();
+    
+    // Hide the markdown column after initialisation
+    dataTable.fnSetColumnVis( 5, false );
     
     $('body').on('click', 'a.view_link', function() {
       
@@ -179,11 +188,13 @@ var callbacks = {
         iFrame.setAttribute("data-privly-accept-resize","true");
         
         // The href of the original link as dictated by the remote server
-        iFrame.setAttribute("data-canonical-href", href);
+        var canonicalHref = $(this).attr("data-canonical-href");
+        iFrame.setAttribute("data-canonical-href", canonicalHref);
         
         //Set the source URL
+        var localParams = $(this).attr("data-privly-app-parameters");
         iFrame.setAttribute("src", "../" + 
-                                    app + "/show.html?" + params);
+                                    app + "/show.html?" + localParams);
         
         //The id and the name are the same so that the iframe can be 
         //uniquely identified and resized by resizeIframePostedMessage()
