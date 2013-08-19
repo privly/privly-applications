@@ -96,9 +96,16 @@ jQuery(window).load(function(){
   var dataDomain = jsonURL.split("/")[2];
   
   if(privlyHostPage.isInjected()) {
+    
     // Creates a tooptip which indicates the content is not a 
     // natural element of the page
     privlyTooltip.tooltip();
+    
+    // Send the height of the iframe everytime the window size changes.
+    // This usually results from the user resizing the window.
+    $(window).resize(function(){
+      privlyHostPage.resizeToWrapper();
+    });
     
     // Display the domain of the content in the glyph
     privlyTooltip.updateMessage(dataDomain + " ZeroBin: Read Only");
