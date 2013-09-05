@@ -40,9 +40,7 @@ var privlyParameters = {
    * @return {object} An associative array of parameters derived from the url.
    **/
   getParameterHash: function(url)
-  {
-    url = privlyParameters.getApplicationUrl(url);
-    
+  {    
     var parameters = {};
     var hashIndex = url.indexOf("#");
     if (hashIndex >= 0) {
@@ -56,7 +54,7 @@ var privlyParameters = {
       } else {
         param2 = privlyParameters.parameterStringToHash(url.substr(paramIndex + 1));
       }
-      for (var attrname in param2) { parameters[attrname] = param2[attrname]; }
+      for (var attrname in param2) { parameters[attrname] = param2[attrname]; console.log(parameters[attrname]);}
     }
     return parameters;
   },
@@ -69,7 +67,7 @@ var privlyParameters = {
    * @return string the address of the application.
    */
   getApplicationUrl: function(url) {
-    
+    url = decodeURIComponent(url);
     //handles the Chrome platform
     if (url.indexOf("privlyOriginalURL=") >= 0) {
       
