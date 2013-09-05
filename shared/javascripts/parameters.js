@@ -54,7 +54,7 @@ var privlyParameters = {
       } else {
         param2 = privlyParameters.parameterStringToHash(url.substr(paramIndex + 1));
       }
-      for (var attrname in param2) { parameters[attrname] = param2[attrname]; console.log(parameters[attrname]);}
+      for (var attrname in param2) { parameters[attrname] = param2[attrname];}
     }
     return parameters;
   },
