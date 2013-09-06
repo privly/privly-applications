@@ -29,9 +29,6 @@
      // Set the nav bar to the proper domain
      privlyNetworkService.initializeNavigation();
      
-     privlyNetworkService.initPrivlyService(true, callbacks.pendingPost, 
-                                             callbacks.loginFailure, 
-                                             callbacks.loginFailure);
    },
 
    /**
@@ -76,11 +73,12 @@
      function successCallback(response) {
        callbacks.postCompleted(response, randomkey);
      }
-
-     privlyNetworkService.sameOriginPostRequest("/posts", 
-                                                successCallback, 
-                                                data_to_send,
-                                                {"format":"json"});
+     
+     privlyNetworkService.sameOriginPostRequest(
+       privlyNetworkService.contentServerDomain() + "/posts", 
+       successCallback, 
+       data_to_send,
+       {"format":"json"});
    },
 
    /**
@@ -116,9 +114,11 @@ function initPosting() {
   // callback for all callbacks because we don't assume the content
   // server uses the account details endpoint that the Privly content
   // server hosts.
-  privlyNetworkService.initPrivlyService(true, callbacks.pendingPost, 
-                                          callbacks.loginFailure, 
-                                          callbacks.loginFailure);
+  privlyNetworkService.initPrivlyService(
+    privlyNetworkService.contentServerDomain(), 
+    callbacks.pendingPost, 
+    callbacks.loginFailure, 
+    callbacks.loginFailure);
                                          
   // Listener for the extension sending initial content
   privlyExtension.initialContent = function(data) {

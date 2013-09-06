@@ -67,10 +67,10 @@ var privlyParameters = {
    * @return string the address of the application.
    */
   getApplicationUrl: function(url) {
-    url = decodeURIComponent(url);
+    
     //handles the Chrome platform
     if (url.indexOf("privlyOriginalURL=") >= 0) {
-      
+      url = decodeURIComponent(url);
       return url.substr(url.indexOf("privlyOriginalURL=") + 18);
     } else {
       //deprecated

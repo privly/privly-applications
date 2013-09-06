@@ -57,9 +57,11 @@ var callbacks = {
       $('#loadingDiv').hide(); 
     });
     
-    privlyNetworkService.initPrivlyService(true, callbacks.pendingPost, 
-                                            callbacks.loginFailure, 
-                                            callbacks.loginFailure);
+    privlyNetworkService.initPrivlyService(
+      privlyNetworkService.contentServerDomain(),
+      callbacks.pendingPost, 
+      callbacks.loginFailure, 
+      callbacks.loginFailure);
   },
   
   /**

@@ -49,9 +49,11 @@ var callbacks = {
     var contentElement = document.getElementById("content");
     contentElement.addEventListener('keyup', previewMarkdown);
     
-    privlyNetworkService.initPrivlyService(true, callbacks.pendingPost, 
-                                            callbacks.loginFailure, 
-                                            callbacks.loginFailure);
+    privlyNetworkService.initPrivlyService(
+      privlyNetworkService.contentServerDomain(), 
+      callbacks.pendingPost, 
+      callbacks.loginFailure, 
+      callbacks.loginFailure);
   },
   
   /**
@@ -84,13 +86,14 @@ var callbacks = {
    */
   postSubmit: function() {
     $("#save").prop('disabled', true);
-    privlyNetworkService.sameOriginPostRequest("/posts", 
-                                          callbacks.postCompleted, 
-                                          {"post":
-                                            {"content": $("#content")[0].value,
-                                             "privly_application":"PlainPost",
-                                             "public":true},
-                                             "format":"json"});
+    privlyNetworkService.sameOriginPostRequest(
+      privlyNetworkService.contentServerDomain() + "/posts", 
+      callbacks.postCompleted, 
+      {"post":
+        {"content": $("#content")[0].value,
+         "privly_application":"PlainPost",
+         "public":true},
+         "format":"json"});
   },
   
   /**
