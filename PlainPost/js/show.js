@@ -203,6 +203,12 @@ var callbacks = {
           );
       }
       
+      if( json.burn_after_date ) {
+        var destroyedDate = new Date(json.burn_after_date);
+        $("#destroyed_around").text("Destroyed Around " + 
+          destroyedDate.toDateString() + ". ");
+      }
+      
       // If the response did not include JSON, then we can simply display
       // the returned HTML.
       if( html === null ) {
