@@ -89,7 +89,9 @@ var privlyNetworkService = {
    * @return {string} the name of the platform.
    */
   platformName: function() {
-    if (navigator.userAgent.indexOf("iPhone") >= 0 || navigator.userAgent.indexOf("iPad") >= 0) {
+    if (navigator.userAgent.indexOf("iPhone") >= 0 || 
+      navigator.userAgent.indexOf("iPad") >= 0) {
+      if( navigator.userAgent.indexOf("Safari") >= 0 ) return "HOSTED";
       return "IOS";
     } else if(typeof androidJsBridge !== "undefined") {
       return "ANDROID";
