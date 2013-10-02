@@ -72,6 +72,7 @@ var callbacks = {
     $("#messages").text("");
     $("#refresh_link").click(function(){location.reload(true);});
     $("#login_message").show();
+    privlyNetworkService.showLoggedOutNav();
   },
   
   /**
