@@ -13,14 +13,7 @@
  *    Callback=loginFailure
  * 3. Pending post: The user can make the post at this point.
  *    Callback=pendingPost
- * 4. postSubmit: The user submitted the form so the content is being
- *    sent to the remote server. Once it is returned, the URL will
- *    be messaged to the extension (if present) by calling the
- *    "postCompleted" callback.
- * 5. Error creating post: The remote server would not accept the user's
- *    content. The app should display an error message.
- *    Callback=createError
- * 6. Completed post: The remote server has returned a URL. This app should
+ * 4. Completed post: The remote server has returned a URL. This app should
  *    display it and fire the URL event.
  *    Callback=postCompleted
  */
@@ -86,20 +79,6 @@ var callbacks = {
       callbacks.postCompleted);
     
     $("#messages").text("");
-  },
-  
-  /**
-   * Submit the posting form and await the return of the post.
-   */
-  postSubmit: function() {
-    //pass
-  },
-  
-  /**
-   * Tell the user that there was a problem.
-   */
-  createError: function() {
-    $("#messages").text("There was an error fetching your posts.");
   },
   
   /**
