@@ -114,3 +114,6 @@ function loadInjectedCSS(){
   }
   return "Top CSS files loaded.";
 }
+
+// Uncomment to always run tests.
+// setTimeout(function(){runTests();},1000)

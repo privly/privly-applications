@@ -60,6 +60,8 @@ function initializeApp(loggedOut) {
   }, "The app was not initialized", 1000);
 }
 
+// WARNING: These tests require the existence of an authentication_token
+// equal to: "pE8dHprCJ79QENLedELx"
 describe ("Index Logged In New Suite", function() {
   
   beforeEach(function(){initializeApp(false);});
