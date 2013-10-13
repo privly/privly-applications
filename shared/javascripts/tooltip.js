@@ -76,7 +76,7 @@ var privlyTooltip = {
       jQuery("body").mousemove(function(e){
         jQuery("#tooltip").css("top", (e.pageY - xOffset) + "px")
                           .css("left", (e.pageX + yOffset) + "px")
-                          .html("<p>" + privlyTooltip.tooltipMessage + "</p>" + glyph);
+                          .html("<p style='margin-bottom:0px'>" + privlyTooltip.tooltipMessage + "</p>" + glyph);
       });
     },
     
@@ -99,6 +99,10 @@ var privlyTooltip = {
       
       //Add the CSS for the glyph
       var glyphString = localStorage["privly_glyph"];
+      if (localStorage.getItem("privly_glyph") === null) {
+        glyphString = "000000,000000,000000,000000,000000";
+      }
+      
       var glyphArray = glyphString.split(",");
       for(var i = 0; i < glyphArray.length; i++) {
         var rule = '.glyph' + i + '{background-color:#' + glyphArray[i] +'}';
