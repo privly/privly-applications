@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+  <head>
+    <title>New PGP Post</title>
+    
+    <!-- Le styles -->
+    <link href="../vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+    <link href="../vendor/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="../shared/css/common.css" rel="stylesheet">
+    <link href="./PGP_post.css" rel="stylesheet">
+    
+    <script src="openpgp.js"></script>
+    <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+    <script type="text/javascript" src="../vendor/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/parameters.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/network_service.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/extension_integration.js"></script>
+    <script src="new.js"></script>
+  </head>
+  <body id="firstrun">
+    
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand lobster">Privly</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="">New PGP Post</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+    
+    <div class="container">
+      <section id="whitelist">
+        <p>Privly is still in Alpha, do not post private information until the system reaches a Beta release.</p>
+        <textarea id="content" rows="4" cols="200" title="Enter a message to Post to Privly here." placeholder='' style='width:500px;'></textarea>
+        <br>
+        <input type="radio" name="type" value="1" checked> Add a new Person.<br>
+        <input type="radio" name="type" value="2" disabled> Choose from your friends list.(Option not yet available)<br>
+        Name :<input type="text" name="uname">
+        <p> Public Key:</p>
+        <textarea id="PGPkey" rows="4" cols="200" title="Enter the Public Key." placeholder='' style='width:   500px;'></textarea>
+        <br>
+        <button id="save">Save</button>
+      </section>
+    </div> <!-- /container -->
+  </body>
+</html>
