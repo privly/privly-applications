@@ -120,8 +120,16 @@ function contentCallback(response) {
         }
       }
     }
+    // Get private key and password stored at user's end.
+    var privatePGPKey;
+    var password;
+    if ( privatePGPKey != null && password != null ) {
+      $("#post_content").html(PGPDecrypt(html_sanitize(html)), privatePGPKey, password);
+    }
+    else {
+      $("#post_content").html("Something wrong with privatekey or password");
+    }
     
-    $("#post_content").html(PGPDecrypt(html_sanitize(html)));
     
     // Tells the parent document how tall the iframe is so that
     // the iframe height can be changed to its content's height
