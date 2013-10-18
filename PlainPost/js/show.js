@@ -152,13 +152,13 @@ var callbacks = {
       privlyNetworkService.permissions.canShow = true;
       
       var json = response.json;
-      var html = null;
+      var serverMarkdown = null;
       
       if( json !== null ) {
         
         // Assign the HTML from the JSON
-        if( json.rendered_markdown ) {
-          html = json.rendered_markdown;
+        if( json.content ) {
+          serverMarkdown = json.content;
         }
         
         // Assign the permissions
@@ -209,23 +209,16 @@ var callbacks = {
           destroyedDate.toDateString() + ". ");
       }
       
-      // If the response did not include JSON, then we can simply display
-      // the returned HTML.
-      if( html === null ) {
-        html = response.jqXHR.responseText;
+      if( serverMarkdown === null ) {
+        sandboxedContentFrame(response.jqXHR.responseText);
+      } else {
+        var markdownHTML = markdown.toHTML(serverMarkdown);
+
+        $("#post_content").html(markdownHTML);
+
+        // Make all user-submitted links open a new window
+        $('#post_content a').attr("target", "_blank");
       }
-      
-      // Google Caja clean the remote HTML of anything potentially harmful.
-      // All http URLs are allowed in hyperlinks.
-      function urlX(url) { if(/^https?:\/\//.test(url)) { return url }}
-      function idX(id) { return id }
-      var sanitizedHTML = html_sanitize(html, urlX, idX);
-      
-      // Put the content in the page
-      $("#post_content").html(sanitizedHTML);
-      
-      // Make all user-submitted links open a new window
-      $('#post_content a').attr("target", "_blank");
       
       // Tells the parent document how tall the iframe is so that
       // the iframe height can be changed to its content's height
@@ -326,6 +319,85 @@ var callbacks = {
    }
   }
  
+}
+
+/**
+ * Load content inside a sanboxed iframe.
+ * The iframe will be surrounded by the Privly glyph in order to indicate that 
+ * the content is not a normal element of the page. Normally the Glyph would 
+ * be loaded as a tooltip, but in this case we are deactivating scripting
+ * inside the content area as a security measure, which prohibits the loading
+ * of the gyph as a tooltip.
+ *
+ * The sandbox settings are currently: allow-top-navigation allow-same-origin
+ * Since we are setting the document using a string, we can script it from
+ * outside the iframe when the allow-same-origin is set. Combined with
+ * allow-top-navigation, which allows the iframe to change the window that is
+ * being viewed, we can integrate the apps properly.
+ *
+ * Warning: Never set the sandbox flag "allow-scripts". It will totally remove
+ * any security guarantees of this method.
+ * 
+ * This is only used for more suspicious circumstances like when the returned 
+ * content is not in markdown. The Markdown parser includes a built in 
+ * sanitizer, but this method does not. It relies on the HTML5 iframe sandbox 
+ * property to secure the content. Since the content is loaded via the srcdoc 
+ * attribute, this content method will not work for older browsers, which is 
+ * desired because iframe sandboxing is a newer web standard. 
+ *
+ * @param {string} unstrustedHTML The HTML we are going to put in a sandbox.
+ *
+ */
+function sandboxedContentFrame(untrustedHTML) {
+    
+    $("#cleartext").hide();
+    
+    // Start the trusted region of the page
+    var glyph = privlyTooltip.glyphHTML();
+    $("#post_content").append("<p>Start of Unkown Content</p>" + glyph);
+    
+    var iFrame = document.createElement('iframe');
+    
+    //Styling and display attributes
+    iFrame.setAttribute("sandbox", "allow-top-navigation allow-same-origin");
+    
+    iFrame.setAttribute("frameborder","0");
+    iFrame.setAttribute("vspace","0");
+    iFrame.setAttribute("hspace","0");
+    iFrame.setAttribute("width","100%");
+    iFrame.setAttribute("marginwidth","0");
+    iFrame.setAttribute("marginheight","0");
+    iFrame.setAttribute("frameborder","0");
+    iFrame.setAttribute("style","width: 100%;" +
+      "overflow: hidden;height:2px;");
+    iFrame.setAttribute("scrolling","no");
+    iFrame.setAttribute("overflow","hidden");
+    
+    // Make all user-submitted links open a new window
+    $(untrustedHTML).attr("target", "_blank");
+    
+    //Set the source URL
+    iFrame.setAttribute("srcdoc", untrustedHTML);
+    iFrame.setAttribute("id", "UntrustedIframe");
+    
+    // Put the content in the page
+    $("#post_content").append(iFrame);
+    
+    // End the trusted region of the page
+    $("#post_content").append(glyph + "<p>End of Unknown Content</p>");
+    
+    // Gives the doc time to render
+    setTimeout(function(){
+      iFrame = document.getElementById("UntrustedIframe");
+      
+      // set all links to open in the current window
+      $(iFrame.contentDocument).find('a').attr("target", "_top");
+      $(iFrame.contentDocument).find("img").remove();
+      $(iFrame.contentDocument).find("link").remove();
+      var height = iFrame.contentDocument.height;
+      iFrame.style.height = height + "px";
+      privlyHostPage.resizeToWrapper();
+    }, 0)
 }
 
 // Initialize the application
