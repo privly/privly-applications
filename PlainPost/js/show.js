@@ -68,7 +68,9 @@ var callbacks = {
      //deprecated
      state.jsonURL = state.webApplicationURL.replace("format=iframe", "format=json");
     }
-
+    
+    $(".meta_source_domain").text("Source URL: " + state.jsonURL);
+    
     // Register the click listener.
     $("body").on("click", callbacks.click);
 
@@ -188,6 +190,7 @@ var callbacks = {
                 
                 var dataDomain = privlyNetworkService.getProtocolAndDomain(state.jsonURL);
                 privlyTooltip.updateMessage(dataDomain + " PlainPost: Editable");
+                $(".meta_canupdate").text("You can update this content.");
               }
 
               // Initialize the form for destroying the post
@@ -196,6 +199,7 @@ var callbacks = {
                 $("#destroy_link").show();
                 $("#no_permissions_nav").hide();
                 $("#permissions_nav").show();
+                $(".meta_candestroy").text("You can destroy this content.");
               }
             }, 
             function(){}, // otherwise assume no permissions
@@ -203,9 +207,15 @@ var callbacks = {
           );
       }
       
+      if( json.created_at ) {
+        var createdDate = new Date(json.created_at);
+        $(".meta_created_at").text("Created Around " + 
+          createdDate.toDateString() + ". ");
+      }
+      
       if( json.burn_after_date ) {
         var destroyedDate = new Date(json.burn_after_date);
-        $("#destroyed_around").text("Destroyed Around " + 
+        $(".meta_destroyed_around").text("Destroyed Around " + 
           destroyedDate.toDateString() + ". ");
       }
       
