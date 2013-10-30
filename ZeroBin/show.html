@@ -66,11 +66,13 @@
                 <li style="display:none;" class="logged_in_nav mobile_hide">
                   <a href="../Index/new.html">Index</a>
                 </li>
-                <li style="display:none;" class="logged_in_nav mobile_hide">
-                  <a href="../PlainPost/new.html">New PlainPost</a>
-                </li>
-                <li style="display:none;" class="logged_in_nav mobile_hide">
-                  <a href="../ZeroBin/new.html">New ZeroBin</a>
+                <li class="dropdown logged_in_nav mobile_hide" style="display:none;">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">New <b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                    <li class="dropdown-header">Select Application</li>
+                    <li><a href="../PlainPost/new.html">New PlainPost</a></li>
+                    <li><a href="../ZeroBin/new.html">New ZeroBin</a></li>
+                  </ul>
                 </li>
                 <li style="display:none;" class="logged_in_nav mobile_hide">
                   <a href="#" target="_blank" class="account_url">Account</a>
