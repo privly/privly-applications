@@ -93,9 +93,12 @@ var callbacks = {
 
       // Send the height of the iframe everytime the window size changes.
       // This usually results from the user resizing the window.
-      $(window).resize(function(){
-        privlyHostPage.resizeToWrapper();
-      });
+      // This causes performance issues on Firefox.
+      if( privlyNetworkService.platformName() !== "FIREFOX" ) {
+        $(window).resize(function(){
+          privlyHostPage.resizeToWrapper();
+        });
+      }
 
       // Display the domain of the content in the glyph
       var dataDomain = state.jsonURL.split("/")[2];

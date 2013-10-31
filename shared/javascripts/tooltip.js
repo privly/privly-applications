@@ -98,9 +98,17 @@ var privlyTooltip = {
     glyphHTML: function() {
       
       //Add the CSS for the glyph
-      var glyphString = localStorage["privly_glyph"];
-      if (localStorage.getItem("privly_glyph") === null) {
-        glyphString = "000000,000000,000000,000000,000000";
+      var glyphString;
+      if ( privlyNetworkService.platformName() === "FIREFOX" ) {
+        privlyNetworkService.firefoxPrefs = Components.classes["@mozilla.org/preferences-service;1"]
+                              .getService(Components.interfaces.nsIPrefService)
+                              .getBranch("extensions.privly.");
+        glyphString = privlyNetworkService.firefoxPrefs.getCharPref("glyph");
+      }else{
+        glyphString = localStorage["privly_glyph"];
+        if (localStorage.getItem("privly_glyph") === null) {
+          glyphString = "000000,000000,000000,000000,000000";
+        }
       }
       
       var glyphArray = glyphString.split(",");
