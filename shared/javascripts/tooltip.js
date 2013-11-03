@@ -51,6 +51,28 @@ var privlyTooltip = {
     },
     
     /**
+     * Generate new glyph values.
+     *
+     * The generated string is not cryptographically secure and should not be used
+     * for anything other than the glyph.
+     *
+     * @return {string} Gives a string of comma separated hex 
+     * color values that are used to display the security glyph.
+     */
+    generateNewGlyph: function(){
+      return Math.floor(Math.random()*16777215).toString(16) + "," +
+        Math.floor(Math.random()*16777215).toString(16) + "," +
+        Math.floor(Math.random()*16777215).toString(16) + "," +
+        Math.floor(Math.random()*16777215).toString(16) + "," +
+        Math.floor(Math.random()*16777215).toString(16) + "," +
+        Math.floor(Math.random()*16777215).toString(16) + "," +
+        Math.floor(Math.random()*16777215).toString(16) + "," +
+        Math.floor(Math.random()*16777215).toString(16) + "," +
+        Math.floor(Math.random()*16777215).toString(16) + "," +
+        Math.floor(Math.random()*16777215).toString(16);
+    },
+    
+    /**
      * Tooltip script 
      * powered by jquery (http://www.jquery.com)
      * written by Alen Grakalic (http://cssglobe.com)
@@ -92,6 +114,9 @@ var privlyTooltip = {
      *
      * eg: ffffff,f0f0f0,3f3f3f
      *
+     * Note: Since the Mozilla architecture does not support localStorage,
+     * it uses the preferences API.
+     *
      * @return {string} An HTML table of the glyph.
      *
      */
@@ -100,10 +125,15 @@ var privlyTooltip = {
       //Add the CSS for the glyph
       var glyphString;
       if ( privlyNetworkService.platformName() === "FIREFOX" ) {
-        privlyNetworkService.firefoxPrefs = Components.classes["@mozilla.org/preferences-service;1"]
+        var firefoxPrefs = Components.classes["@mozilla.org/preferences-service;1"]
                               .getService(Components.interfaces.nsIPrefService)
                               .getBranch("extensions.privly.");
-        glyphString = privlyNetworkService.firefoxPrefs.getCharPref("glyph");
+        try {
+          glyphString = firefoxPrefs.getCharPref("glyph");
+        } catch(err) {
+          glyphString = privlyTooltip.generateNewGlyph();
+          firefoxPrefs.setCharPref("glyph", glyphString);
+        }
       }else{
         glyphString = localStorage["privly_glyph"];
         if (localStorage.getItem("privly_glyph") === null) {
