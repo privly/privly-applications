@@ -18,6 +18,7 @@
      <script type="text/javascript" src="../shared/javascripts/meta_loader.js">
      </script>
      <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+     <script type="text/javascript" src="../vendor/markdown.js"></script>
      <script type="text/javascript" src="js/sjcl.js"></script>
      <script type="text/javascript" src="js/base64.js"></script>
      <script type="text/javascript" src="js/rawdeflate.js"></script>
@@ -83,7 +84,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-lg-12">
+          <div class="col-lg-8">
             <noscript>
               <h1>Your browser has scripting turned off. 
                 This application requires scripting to function properly</h1>
@@ -94,6 +95,11 @@
             <textarea id="content" class="form-control" rows="4" title="Enter a message to Post to Privly here." placeholder=''></textarea>
             <br>
             <button id="save" disabled>Save</button>
+          </div>
+          <div class="col-lg-4">
+            <h2 id="preview_heading">Preview</h2>
+            <hr>
+            <div id="preview"></div>
           </div>
         </div>
       </div><!-- /.container -->
@@ -109,8 +115,13 @@
                 privacy application</a> on Privly. ZeroBins encrypt your content 
               with a key that is attached to the link you share across the web.
               If someone has access to the server where the content is stored, 
-              and to the link you create, they will be able to decrypt your content. You can 
-              <a href="http://www.privly.org/content/introducing-privly-applications" target="_blank">
+              and to the link you create, they will be able to decrypt your content. 
+              You can use 
+              <a href="http://daringfireball.net/projects/markdown/basics">
+                Markdown</a>
+              to format your posts. You can 
+              <a href="http://www.privly.org/content/introducing-privly-applications"
+               target="_blank">
                 read more</a> about Privly Applications or about 
               <a href="https://github.com/privly/privly-organization/wiki/ZeroBin" 
                 target="_blank">

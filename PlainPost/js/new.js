@@ -168,7 +168,6 @@ var messaging = {
  */
 function previewMarkdown() {
   preview.innerHTML = markdown.toHTML(document.getElementById("content").value);
-
 }
 
 // Initialize the application

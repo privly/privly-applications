@@ -170,11 +170,10 @@ var callbacks = {
         $('div#cleartext').text("You do not have the key required to decrypt this content.");
         return;
       } else if(json.structured_content !== undefined) {
-        
         var cleartext = zeroDecipher(pageKey(state.key), json.structured_content);
         $("#edit_text").val(cleartext);
-        $('div#cleartext').text(cleartext);
-        urls2links($('div#cleartext')); // Convert URLs to clickable links.
+        var markdownHTML = markdown.toHTML(cleartext);
+        $('div#cleartext').html(markdownHTML);
       } else {
         $('div#cleartext').text("The data behind this link is corrupted.");
         return;
