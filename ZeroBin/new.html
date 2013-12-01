@@ -39,15 +39,18 @@
     <!-- Wrap all page content here -->
     <div id="wrap">
     
-      <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a href="" class="navbar-brand lobster home_domain" target="_blank">Privly</a>
-          <div class="nav-collapse collapse">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a href="" class="navbar-brand lobster home_domain" target="_blank">Privly</a>
+          </div>
+          <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
               <li style="display:none;" class="logged_in_nav">
                 <a href="../Index/new.html">Index</a>
@@ -57,7 +60,7 @@
                 <ul class="dropdown-menu">
                   <li class="dropdown-header">Select Application</li>
                   <li><a href="../PlainPost/new.html">New PlainPost</a></li>
-                  <li><a href="../ZeroBin/new.html">New ZeroBin</a></li>
+                  <li class="active"><a href="../ZeroBin/new.html">New ZeroBin</a></li>
                 </ul>
               </li>
               <li style="display:none;" class="logged_in_nav mobile_hide">
