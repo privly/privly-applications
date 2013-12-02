@@ -1,0 +1,60 @@
+{% extends "templates/new.html.template" %}
+
+{% block specs %}
+  <meta name="PrivlySpec"
+   content="test/new.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js">
+{% endblock %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+  <script type="text/javascript" src="../vendor/markdown.js"></script>
+  <script type="text/javascript" src="js/new.js"></script>
+{% endblock %}
+
+{% block form %}
+  <div class="col-lg-8">
+    <noscript>
+      <h1>Your browser has scripting turned off. 
+        This application requires scripting to function properly</h1>
+    </noscript>
+    <h2>Enter PlainPost Content</h2>
+    <p id="loadingDiv"> <img src="../shared/images/ajax-loader.gif"/> </p>
+    <textarea id="content" class="form-control" rows="4" title="Enter a message to Post to Privly here." placeholder=''></textarea>
+    <br>
+    <button id="save" disabled>Save</button>
+  </div>
+  <div class="col-lg-4">
+    <h2 id="preview_heading">Preview</h2>
+    <hr>
+    <div id="preview"></div>
+  </div>
+{% endblock %}
+
+{% block app_info %}
+  <hr>
+  <div class="col-lg-5">
+    <h2>What is a PlainPost?</h2>
+    <p>
+      PlainPosts are the simplest example of a 
+      <a href="http://www.privly.org/content/introducing-privly-applications"
+       target="_blank">privacy application</a> on Privly. They provide 
+      no protection from wherever you are hosting your content because 
+      it is <strong>not</strong> encrypted. You can use 
+      <a href="http://daringfireball.net/projects/markdown/basics">
+        Markdown</a>
+      to format your posts. You can 
+      <a href="http://www.privly.org/content/introducing-privly-applications"
+       target="_blank">read more</a> about Privly Applications or about 
+       <a href="https://github.com/privly/privly-organization/wiki/Posts"
+        target="_blank">PlainPosts</a> specifically.
+    </p>
+  </div>
+  <div class="col-lg-offset-2 col-lg-5">
+    <h2>Warnings</h2>
+    <ul>
+      <li>Privly is still in Alpha, <strong>do not</strong> post private information until the system reaches a Beta release.</li>
+      <li>This post is <strong>temporary.</strong> All new content is destroyed within <strong>30 days</strong>.</li>
+      <li>This post will be stored in cleartext, meaning it is not encrypted.</li>
+    </ul>
+  </div>
+{% endblock %}

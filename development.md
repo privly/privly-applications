@@ -4,18 +4,25 @@ This guide is intended to teach you the basics of developing a Privly injectable
 # Quick Start #
 
 If you are developing these applications, the easiest way to begin is to clone 
-the [Google Chrome Extension](https://github.com/privly/privly-chrome) and hack 
-on the privly-applications directory. That directory is the a copy of the 
-privly-applications repository. You can also setup a development environment for 
-the [Rails-based content server](https://github.com/privly/privly-chrome) if you 
-like, but that is not the focus of this guide.
+the [Google Chrome Extension](https://github.com/privly/privly-chrome) or 
+[Mozilla Firefox Extension](https://github.com/privly/privly-firefox) and hack 
+on the privly-applications directory. That directory has the privly-applications
+repository included as a git module. You can also setup a development
+environment for the 
+[Rails-based content server](https://github.com/privly/privly-web) if you 
+like, but it would be fast if you asked for a development account on dev.privly.org. 
 
-For basic experimentation, we recommend simply changing the code found in 
-PlainPost for your needs. Please note that PlainPost is intentionally left simple 
-to make hacking easier, but what functionality that is in place is critical to 
-integrating with various platforms.
+For experimentation, we recommend changing the code found in the
+PlainPost directory. Please note that PlainPost is intentionally left simple 
+to make hacking easier.
 
 For more information on how injectable apps are structured, please read below.
+
+# Templating #
+
+When developing Privly applications, you can either edit one of the existing 
+applications directly, or modify their .subtemplate files. If you use the
+templating system, you should look at the `build.py` script for details.
 
 # Directory Structure #
 
@@ -45,11 +52,10 @@ directory. The required directory structure is:
                        tooltip.js
                        meta_loader.js
            vendor/
-                  html-sanitizer-minified.js
                   jquery.min.js
                   markdown.js
                   jasmine/
-                  datatables-1.9.4/
+                  jquery.dataTables.min.js
                   bootstrap/
     
     
@@ -84,9 +90,6 @@ for their posting to host pages.
 top level web page. The meta loader checks for special meta tags defining CSS for 
 specific contexts, which will be loaded dynamically. For more information, see 
 the JavaScript file's source.
-* `html-sanitizer-minified.js`: This is a library that ensures there are no 
-script tags in content returned from remote servers. Use with care: HTML 
-sanitization is a dangerous art and is prone to exploits.
 * `jquery.min.js`: Jquery gives better cross-browser support for a number of 
 operations. Try to live without it if you can, since it can create more overhead 
 for your application than is necessary. If you don't know what jquery is, then 
@@ -95,7 +98,7 @@ you probably are going to have difficulty developing an application.
 previewing content typed in markdown.
 * `jasmine/`: Jasmine is a JavaScript testing library. See 
 [testing](https://github.com/privly/privly-organization/wiki/Testing).
-* `datatables-1.9.4/`: Datatables provides a table view rendered in JavaScript
+* `jquery.dataTables.min.js`: Datatables provides a table view rendered in JavaScript
 that is searchable.
 * `bootstrap/`: Bootstrap provides mobile-responsive layout.
 

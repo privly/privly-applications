@@ -1,0 +1,51 @@
+{% extends "templates/show.html.template" %}
+
+{% block specs %}
+  <meta name="PrivlySpec" content="test/show.js,../shared/test/parameters.js,../shared/test/network_service.js,../shared/test/host_page_integration.js,../shared/test/tooltip.js">
+{% endblock %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+  <script type="text/javascript" src="../vendor/markdown.js"></script>
+  <script type="text/javascript" src="js/show.js"></script>
+{% endblock %}
+
+
+{% block main %}
+  <div class="row">
+   <div class="col-lg-8">
+     <div id="edit_form" style="display:none;">
+       <h1>Edit Existing PlainPost</h1>
+       <textarea id="edit_text" class="form-control" rows="4"></textarea>
+       <br>
+       <button id="update">Update</button> &nbsp; <button id="cancel_button">Cancel</button>
+       <hr>
+     </div>
+     <div id="post_content">
+       <div id="cleartext">Privly PlainPost 
+         <img src="../shared/images/ajax-loader.gif" alt="loading">
+         <noscript>
+           <h1>Your browser has scripting turned off. 
+             This application requires scripting to function properly</h1>
+         </noscript>
+       </div>
+     </div>
+   </div>
+   <div class="col-lg-4 injected_hide">
+     <div id="side_block">
+       <h2>Metadata</h2>
+       <p class="meta_created_at"></p>
+       <p class="meta_destroyed_around"></p>
+       <p class="meta_updated_at"></p>
+       <p class="meta_candestroy"></p>
+       <p class="meta_canupdate"></p>
+       <p class="meta_source_domain"></p>
+       <p>
+         <strong>Warning:</strong> 
+         This metadata has not been verified cryptographically. 
+         The metadata may be altered at the source.
+       </p>
+     </div>
+   </div>
+  </div>
+{% endblock %}
