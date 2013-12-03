@@ -10,7 +10,7 @@ on the privly-applications directory. That directory has the privly-applications
 repository included as a git module. You can also setup a development
 environment for the 
 [Rails-based content server](https://github.com/privly/privly-web) if you 
-like, but it would be fast if you asked for a development account on dev.privly.org. 
+like, but it would be faster if you asked for a development account on dev.privly.org. 
 
 For experimentation, we recommend changing the code found in the
 PlainPost directory. Please note that PlainPost is intentionally left simple 
@@ -37,26 +37,22 @@ directory. The required directory structure is:
            css/
                common.css
                tooltip.css
-               injected/
-                        injected.css
-               top/
-                   bootstrap-responsive.min.css
-                   bootstrap.min.css
-                   top.css
-           images/
-                  ajax-loader.gif
+               injected/injected.css
+               top/top.css
+           images/ajax-loader.gif
            javascripts/
                        parameters.js
                        host_page_integration.js
+                       extension_integration.js
                        network_service.js
                        tooltip.js
                        meta_loader.js
-           vendor/
-                  jquery.min.js
-                  markdown.js
-                  jasmine/
-                  jquery.dataTables.min.js
-                  bootstrap/
+    vendor/
+           jquery.min.js
+           markdown.js
+           jasmine/
+           jquery.dataTables.min.js
+           bootstrap/
     
     
 

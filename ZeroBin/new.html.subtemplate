@@ -2,7 +2,7 @@
 
 {% block specs %}
   <meta name="PrivlySpec" 
-  content="test/new.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js">
+  content="test/new.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js"/>
 {% endblock %}
 
 {% block javascripts %}
@@ -25,20 +25,20 @@
     </noscript>
     
     <h2>Enter ZeroBin Content</h2>
-    <p id="loadingDiv"> <img src="../shared/images/ajax-loader.gif"/> </p>
+    <p id="loadingDiv"> <img src="../shared/images/ajax-loader.gif" alt="loading"/> </p>
     <textarea id="content" class="form-control" rows="4" title="Enter a message to Post to Privly here." placeholder=''></textarea>
-    <br>
+    <br/>
     <button id="save" disabled>Save</button>
   </div>
   <div class="col-lg-4">
     <h2 id="preview_heading">Preview</h2>
-    <hr>
+    <hr/>
     <div id="preview"></div>
   </div>
 {% endblock %}
 
 {% block app_info %}
-  <hr>
+  <hr/>
   <div class="col-lg-5">
     <h2>What is a ZeroBin?</h2>
     <p>ZeroBins are a 

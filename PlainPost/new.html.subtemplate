@@ -2,7 +2,7 @@
 
 {% block specs %}
   <meta name="PrivlySpec"
-   content="test/new.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js">
+   content="test/new.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js"/>
 {% endblock %}
 
 {% block javascripts %}
@@ -18,33 +18,33 @@
         This application requires scripting to function properly</h1>
     </noscript>
     <h2>Enter PlainPost Content</h2>
-    <p id="loadingDiv"> <img src="../shared/images/ajax-loader.gif"/> </p>
+    <p id="loadingDiv"> <img src="../shared/images/ajax-loader.gif" alt="loading"/> </p>
     <textarea id="content" class="form-control" rows="4" title="Enter a message to Post to Privly here." placeholder=''></textarea>
-    <br>
+    <br/>
     <button id="save" disabled>Save</button>
   </div>
   <div class="col-lg-4">
     <h2 id="preview_heading">Preview</h2>
-    <hr>
+    <hr/>
     <div id="preview"></div>
   </div>
 {% endblock %}
 
 {% block app_info %}
-  <hr>
+  <hr/>
   <div class="col-lg-5">
     <h2>What is a PlainPost?</h2>
     <p>
       PlainPosts are the simplest example of a 
       <a href="http://www.privly.org/content/introducing-privly-applications"
-       target="_blank">privacy application</a> on Privly. They provide 
-      no protection from wherever you are hosting your content because 
+       target="_blank">privacy application</a> on Privly. They provide
+      no protection from wherever you are hosting your content because
       it is <strong>not</strong> encrypted. You can use 
       <a href="http://daringfireball.net/projects/markdown/basics">
         Markdown</a>
-      to format your posts. You can 
+      to format your posts. You can
       <a href="http://www.privly.org/content/introducing-privly-applications"
-       target="_blank">read more</a> about Privly Applications or about 
+       target="_blank">read more</a> about Privly Applications or about
        <a href="https://github.com/privly/privly-organization/wiki/Posts"
         target="_blank">PlainPosts</a> specifically.
     </p>

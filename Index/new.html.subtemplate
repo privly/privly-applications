@@ -2,7 +2,7 @@
 
 {% block specs %}
   <meta name="PrivlySpec" 
-    content="test/new.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js">
+    content="test/new.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js"/>
 {% endblock %}
 
 {% block javascripts %}
@@ -15,7 +15,7 @@
 {% endblock %}
 
 {% block css %}
-  <link href="css/new.css" rel="stylesheet">
+  <link href="css/new.css" rel="stylesheet"/>
 {% endblock %}
 
 {% block pre_form %}
@@ -24,10 +24,10 @@
       <div id="iframe_col" style="display:none;">
         <h1 id="privly_iframe_title"></h1>
         <p id="privly_iframe_meta"></p>
-        <hr>
+        <hr/>
         <div class="privly_iframe">
         </div>
-        <hr>
+        <hr/>
         <button id="message_link_button">Send Link to Host Page</button>
       </div>
     </div>
@@ -38,11 +38,6 @@
 
  <div class="col-md-12" id="table_col">
     <h1>Index</h1>
-    <p id="messages">
-      Pending server check. The application is checking its connection with the remote server.
-    </p>
-    <p style="display:none;" id="login_message">You are not currently signed into your content server.
-      Please <a href="#" target="_blank" class="login_url">login</a> then <a id='refresh_link'>refresh</a> the page</p>
     <p id="loadingDiv">
       <img src="../shared/images/ajax-loader.gif" alt="loading..." />
     </p>
@@ -74,7 +69,7 @@
 {% endblock %}
 
 {% block app_info %}
-  <hr>
+  <hr/>
   <div class="col-lg-5">
     <h2>What is Index?</h2>
     <p>Index is a special type of 

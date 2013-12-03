@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+
+    <!--
+      This was likely rendered from the Privly-application templating system
+      See: https://github.com/privly/privly-applications/pull/19
+     -->
+
     <title>{{name}}</title>
     
     {% block specs %}{% endblock %}
     
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     
     <!-- Common Styles -->
     <link href="../shared/css/common.css" media="screen" rel="stylesheet"
-     type="text/css">
+     type="text/css"/>
     <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet"
-     type="text/css">
+     type="text/css"/>
     
     <!-- Shared JavaScripts -->  
     <script type="text/javascript" src="../shared/javascripts/meta_loader.js"></script>
@@ -25,11 +31,11 @@
     {% block javascripts %}{% endblock %}
     
     <!-- Top Styles, will be added by JS if not viewed in iframe -->
-    <meta name="PrivlyTopCSS" content="../vendor/bootstrap/css/bootstrap.min.css;../shared/css/top/top.css">
+    <meta name="PrivlyTopCSS" content="../vendor/bootstrap/css/bootstrap.min.css;../shared/css/top/top.css"/>
     
     <!-- Injected Styles, will be added by JS if viewed in iframe -->
     <meta name="PrivlyInjectedCSS"
-     content="../shared/css/injected/injected.css">
+     content="../shared/css/injected/injected.css"/>
      
   </head>
   <body data-privly-exclude="true">

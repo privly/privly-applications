@@ -1,7 +1,7 @@
 {% extends "templates/show.html.template" %}
 
 {% block specs %}
-  <meta name="PrivlySpec" content="test/show.js,../shared/test/parameters.js,../shared/test/network_service.js,../shared/test/host_page_integration.js,../shared/test/tooltip.js">
+  <meta name="PrivlySpec" content="test/show.js,../shared/test/parameters.js,../shared/test/network_service.js,../shared/test/host_page_integration.js,../shared/test/tooltip.js"/>
 {% endblock %}
 
 {% block javascripts %}
@@ -17,13 +17,13 @@
      <div id="edit_form" style="display:none;">
        <h1>Edit Existing PlainPost</h1>
        <textarea id="edit_text" class="form-control" rows="4"></textarea>
-       <br>
+       <br/>
        <button id="update">Update</button> &nbsp; <button id="cancel_button">Cancel</button>
-       <hr>
+       <hr/>
      </div>
      <div id="post_content">
        <div id="cleartext">Privly PlainPost 
-         <img src="../shared/images/ajax-loader.gif" alt="loading">
+         <img src="../shared/images/ajax-loader.gif" alt="loading"/>
          <noscript>
            <h1>Your browser has scripting turned off. 
              This application requires scripting to function properly</h1>
