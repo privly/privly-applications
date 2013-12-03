@@ -97,7 +97,8 @@ var privlyNetworkService = {
       return "ANDROID";
     }  else if (typeof chrome !== "undefined" && typeof chrome.extension !== "undefined") {
       return "CHROME";
-    } else if(navigator.userAgent.indexOf("Firefox") >= 0) {
+    } else if(typeof Components !== "undefined" &&
+    typeof Components.classes !== "undefined") {
       return "FIREFOX";
     } else {
       return "HOSTED";
