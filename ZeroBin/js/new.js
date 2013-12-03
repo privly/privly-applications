@@ -64,11 +64,10 @@
    submit: function() {
       var randomkey = sjcl.codec.base64.fromBits(sjcl.random.randomWords(8, 0), 0);
       var cipherdata = zeroCipher(randomkey, $("#content")[0].value);
-      var cipher_json = JSON.parse(cipherdata);
 
       var data_to_send = {
         post:{
-          structured_content: cipher_json,
+          structured_content: cipherdata,
            "privly_application":"ZeroBin",
            "public":true
         }};

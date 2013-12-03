@@ -310,10 +310,9 @@ var callbacks = {
    */
   update: function() {
     var cipherdata = zeroCipher(state.key + "=", $("#edit_text")[0].value);
-    var cipher_json = JSON.parse(cipherdata);
     privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
       callbacks.contentReturned, 
-      {post: {structured_content: cipher_json}});
+      {post: {structured_content: cipherdata}});
     
     // Close the editing form
     $("#edit_form").slideUp("slow");
