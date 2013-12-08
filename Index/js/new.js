@@ -92,13 +92,6 @@ var callbacks = {
     for(var i = 0; i < response.json.length; i++) {
       
       var href = response.json[i].privly_URL;
-      
-      //deprecated, delete after September 2013
-      if( href === undefined ) { 
-        alert("Your content server is pending an update to work with this" + 
-              " application. Check back in a week."); 
-      }
-      
       var params = href.substr(href.indexOf("?") + 1);
       var app = privlyParameters.parameterStringToHash(params).privlyApp;
       
