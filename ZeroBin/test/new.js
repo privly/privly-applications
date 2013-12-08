@@ -12,3 +12,4 @@ describe ("ZeroBin New Suite", function() {
   });
   
 });
+
