@@ -114,7 +114,9 @@ var callbacks = {
       privlyExtension.firePrivlyURLEvent(url);
       $("#messages").text("Copy the address found below to any website you want to share this information through");
       $(".privlyUrl").text(url);
-      $(".privlyUrl").attr("href", url);
+      var localCodeURL = "show.html?privlyOriginalURL=" + encodeURIComponent(url);
+      $(".privlyUrl").attr("href", localCodeURL);
+      $("#messages").show();
     } else {
       callbacks.createError();
     }
