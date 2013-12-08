@@ -9,7 +9,7 @@
 describe ("SJCL sanity check suite", function() {
   
   it("has sufficient entropy", function() {
-    expect(sjcl.random.isReady()).toBe(2);
+    expect(sjcl.random.isReady()).toBeGreaterThan(1);
   });
   
   it("does not quickly generate duplicate keys", function() {
