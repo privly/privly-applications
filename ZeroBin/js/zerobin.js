@@ -66,7 +66,13 @@ function zeroCipher(key, message) {
  *  @return {string} readable message
  */
 function zeroDecipher(key, data) {
-    return decompress(sjcl.decrypt(key,JSON.stringify(data)));
+    
+    // Patch for old versions of sjcl
+    if( typeof data !== "string" ) {
+      data = JSON.stringify(data);
+    }
+    
+    return decompress(sjcl.decrypt(key,data));
 }
 
 /**

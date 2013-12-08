@@ -10,8 +10,10 @@
 # Prerequisites for running this script include
 # BeautifulSoup and Jinja2. You can install
 # them both with:
+# `sudo easy_install beautifulsoup4 jinja2`
 #
-# sudo easy_install beautifulsoup4 jinja2
+# This assumes you have python-setuptools:
+# `sudo apt-get install python-setuptools`
 #
 # This script uses the jinja2 templating system:
 # http://jinja.pocoo.org/docs/

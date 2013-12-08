@@ -109,17 +109,17 @@
    <div class="container">
     <div class="row">
      <div class="col-lg-12">
-      <p id="messages">
-       Pending server check. The application is checking its connection with the remote server.
+      <p class="flash notice" id="messages">
+       Pending server check. The application is checking its connection 
+              with the remote server.
       </p>
-      <p id="login_message" style="display:none;">
-       You are not currently signed into your content server.
-              Please
-       <a class="login_url" href="#" target="_blank">
+      <p class="flash notice" id="login_message" style="display:none;">
+       You are not currently signed into your content server. Please
+       <a class="login_url btn btn-default" href="#" target="_blank">
         login
        </a>
        then
-       <a id="refresh_link">
+       <a class="btn btn-default" href="#" id="refresh_link">
         refresh
        </a>
        the page
@@ -147,64 +147,66 @@
       </div>
      </div>
     </div>
-    <div class="row">
-     <div class="col-md-12" id="table_col">
-      <h1>
-       Index
-      </h1>
-      <p id="loadingDiv">
-       <img alt="loading..." src="../shared/images/ajax-loader.gif"/>
-      </p>
-      <table class="display" id="posts" style="width:100%">
-       <thead>
-        <tr>
-         <th>
-          Preview
-         </th>
-         <th>
-          Open
-         </th>
-         <th>
-          Created At
-         </th>
-         <th>
-          Burnt After
-         </th>
-         <th>
-          Updated At
-         </th>
-         <th>
-          Markdown
-         </th>
-        </tr>
-       </thead>
-       <tbody id="table_body">
-       </tbody>
-       <tfoot>
-        <tr>
-         <th>
-          Preview
-         </th>
-         <th>
-          Open
-         </th>
-         <th>
-          Created At
-         </th>
-         <th>
-          Burnt After
-         </th>
-         <th>
-          Updated At
-         </th>
-         <th>
-          Markdown
-         </th>
-        </tr>
-       </tfoot>
-      </table>
+    <div id="form" style="display:none;">
+     <div class="row">
+      <div class="col-md-12" id="table_col">
+       <h1>
+        Index
+       </h1>
+       <p id="loadingDiv">
+        <img alt="loading..." src="../shared/images/ajax-loader.gif"/>
+       </p>
+       <table class="display" id="posts" style="width:100%">
+        <thead>
+         <tr>
+          <th>
+           Preview
+          </th>
+          <th>
+           Open
+          </th>
+          <th>
+           Created At
+          </th>
+          <th>
+           Burnt After
+          </th>
+          <th>
+           Updated At
+          </th>
+          <th>
+           Markdown
+          </th>
+         </tr>
+        </thead>
+        <tbody id="table_body">
+        </tbody>
+        <tfoot>
+         <tr>
+          <th>
+           Preview
+          </th>
+          <th>
+           Open
+          </th>
+          <th>
+           Created At
+          </th>
+          <th>
+           Burnt After
+          </th>
+          <th>
+           Updated At
+          </th>
+          <th>
+           Markdown
+          </th>
+         </tr>
+        </tfoot>
+       </table>
+      </div>
+      <!-- /.col-md-12 -->
      </div>
-     <!-- /.col-md-12 -->
     </div>
    </div>
    <!-- /.container -->

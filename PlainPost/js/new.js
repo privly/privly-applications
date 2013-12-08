@@ -61,9 +61,9 @@ var callbacks = {
    * server's sign in endpoint is at "/users/sign_in".
    */
   loginFailure: function() {
-    $("#messages").text("");
-    $("#refresh_link").click(function(){location.reload(true);});
+    $("#messages").hide();
     $("#login_message").show();
+    $("#refresh_link").click(function(){location.reload(true);});
   },
   
   /**
@@ -76,8 +76,8 @@ var callbacks = {
     // Monitor the submit button
     document.querySelector('#save').addEventListener('click', callbacks.postSubmit);
     $("#save").prop('disabled', false);
-    
-    $("#messages").text("Login successful, you may create a post.");
+    $("#messages").toggle("slow");
+    $("#form").toggle("slow");
   },
   
   /**
@@ -91,7 +91,8 @@ var callbacks = {
       {"post":
         {"content": $("#content")[0].value,
          "privly_application":"PlainPost",
-         "public":true},
+         "public":true,
+         "seconds_until_burn": $( "#seconds_until_burn" ).val()},
          "format":"json"});
   },
   
@@ -114,7 +115,9 @@ var callbacks = {
       privlyExtension.firePrivlyURLEvent(url);
       $("#messages").text("Copy the address found below to any website you want to share this information through");
       $(".privlyUrl").text(url);
-      $(".privlyUrl").attr("href", url);
+      var localCodeURL = "show.html?privlyOriginalURL=" + encodeURIComponent(url);
+      $(".privlyUrl").attr("href", localCodeURL);
+      $("#messages").show();
     } else {
       callbacks.createError();
     }

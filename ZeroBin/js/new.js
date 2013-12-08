@@ -40,9 +40,9 @@
     * server's sign in endpoint is at "/users/sign_in".
     */
    loginFailure: function() {
-     $("#messages").text("");
-     $("#refresh_link").click(function(){location.reload(true);});
+     $("#messages").hide();
      $("#login_message").show();
+     $("#refresh_link").click(function(){location.reload(true);});
    },
 
    /**
@@ -55,7 +55,8 @@
      // Monitor the submit button
      document.querySelector('#save').addEventListener('click', callbacks.submit);
      $("#save").prop('disabled', false);
-     $("#messages").text("Login successful, you may create a post.");
+     $("#messages").toggle("slow");
+     $("#form").toggle("slow");
    },
 
    /**
@@ -64,13 +65,13 @@
    submit: function() {
       var randomkey = sjcl.codec.base64.fromBits(sjcl.random.randomWords(8, 0), 0);
       var cipherdata = zeroCipher(randomkey, $("#content")[0].value);
-      var cipher_json = JSON.parse(cipherdata);
 
       var data_to_send = {
         post:{
-          structured_content: cipher_json,
-           "privly_application":"ZeroBin",
-           "public":true
+          structured_content: cipherdata,
+          "privly_application":"ZeroBin",
+          "public":true,
+          "seconds_until_burn": $( "#seconds_until_burn" ).val()
         }};
 
      function successCallback(response) {
@@ -103,7 +104,9 @@
 
      $("#messages").text("Copy the address found below to any website you want to share this information through");
      $(".privlyUrl").text(url);
-     $(".privlyUrl").attr("href", url);
+     var localCodeURL = "show.html?privlyOriginalURL=" + encodeURIComponent(url);
+     $(".privlyUrl").attr("href", localCodeURL);
+     $("#messages").show();
    }
  }
 

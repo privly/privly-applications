@@ -108,17 +108,17 @@
    <div class="container">
     <div class="row">
      <div class="col-lg-12">
-      <p id="messages">
-       Pending server check. The application is checking its connection with the remote server.
+      <p class="flash notice" id="messages">
+       Pending server check. The application is checking its connection 
+              with the remote server.
       </p>
-      <p id="login_message" style="display:none;">
-       You are not currently signed into your content server.
-              Please
-       <a class="login_url" href="#" target="_blank">
+      <p class="flash notice" id="login_message" style="display:none;">
+       You are not currently signed into your content server. Please
+       <a class="login_url btn btn-default" href="#" target="_blank">
         login
        </a>
        then
-       <a id="refresh_link">
+       <a class="btn btn-default" href="#" id="refresh_link">
         refresh
        </a>
        the page
@@ -129,32 +129,56 @@
       </p>
      </div>
     </div>
-    <div class="row">
-     <div class="col-lg-8">
-      <noscript>
-       <h1>
-        Your browser has scripting turned off. 
+    <div id="form" style="display:none;">
+     <div class="row">
+      <div class="col-lg-8">
+       <noscript>
+        <h1>
+         Your browser has scripting turned off. 
         This application requires scripting to function properly
-       </h1>
-      </noscript>
-      <h2>
-       Enter PlainPost Content
-      </h2>
-      <p id="loadingDiv">
-       <img alt="loading" src="../shared/images/ajax-loader.gif"/>
-      </p>
-      <textarea class="form-control" id="content" placeholder="" rows="4" title="Enter a message to Post to Privly here."></textarea>
-      <br/>
-      <button disabled="" id="save">
-       Save
-      </button>
-     </div>
-     <div class="col-lg-4">
-      <h2 id="preview_heading">
-       Preview
-      </h2>
-      <hr/>
-      <div id="preview">
+        </h1>
+       </noscript>
+       <h2>
+        Create New PlainPost Link
+       </h2>
+       <p id="loadingDiv">
+        <img alt="loading" src="../shared/images/ajax-loader.gif"/>
+       </p>
+       <label for="edit_text">
+        Content
+       </label>
+       <textarea class="form-control" id="content" placeholder="" rows="4" title="Enter a message to Post to Privly here."></textarea>
+       <div id="destruction_select_block">
+        <label for="seconds_until_burn">
+         Time until content is destroyed
+        </label>
+        <select class="form-control" id="seconds_until_burn" name="seconds_until_burn">
+         <option value="86400">
+          1 Day
+         </option>
+         <option value="604800">
+          7 Days
+         </option>
+         <option value="1209600">
+          14 Days
+         </option>
+         <option selected="" value="2419200">
+          28 Days
+         </option>
+        </select>
+       </div>
+       <br/>
+       <button disabled="" id="save">
+        Save
+       </button>
+      </div>
+      <div class="col-lg-4">
+       <h2 id="preview_heading">
+        Preview
+       </h2>
+       <hr/>
+       <div id="preview">
+       </div>
       </div>
      </div>
     </div>

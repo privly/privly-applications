@@ -2,14 +2,14 @@
 
 
 {% block specs %}
-  <meta name="PrivlySpec" content="test/show.js,../shared/test/parameters.js,../shared/test/network_service.js"/>
+  <meta name="PrivlySpec" content="test/show.js,test/sjcl.js,test/ZeroBin.js,../shared/test/parameters.js,../shared/test/network_service.js"/>
 {% endblock %}
 
 
 {% block javascripts %}
   <script type="text/javascript" src="../vendor/markdown.js"></script>
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
-  <script type="text/javascript" src="js/sjcl.js"></script>
+  <script type="text/javascript" src="../vendor/sjcl.js"></script>
   <script type="text/javascript" src="js/base64.js"></script>
   <script type="text/javascript" src="js/rawdeflate.js"></script>
   <script type="text/javascript" src="js/rawinflate.js"></script>
@@ -23,7 +23,18 @@
     <div class="col-lg-8">
       <div id="edit_form" style="display:none;">
         <h1>Edit Existing ZeroBin</h1>
+        <label for="edit_text">Content</label>
         <textarea id="edit_text" class="form-control" rows="4"></textarea>
+        <div id="destruction_select_block" style="display:none;">
+         <label for="seconds_until_burn">Time until content is destroyed</label>
+         <select id="seconds_until_burn" name="seconds_until_burn" class="form-control">
+           <option value="" id="current_destruction_time" selected></option>
+           <option value="86400">1 Day</option>
+           <option value="604800">7 Days</option>
+           <option value="1209600">14 Days</option>
+           <option value="2419200">28 Days</option>
+         </select>
+       </div>
         <br/>
         <button id="update">Update</button> &nbsp; <button id="cancel_button">Cancel</button>
         <hr/>
