@@ -138,6 +138,11 @@ var callbacks = {
   * hosting the content.
   */
   pendingLogin: function() {
+    
+    $("#messages").hide();
+    $("#login_message").show();
+    $("#refresh_link").click(function(){location.reload(true);});
+    
     $("#post_content").html("<p>You do not have access to this.</p>");
     
     // Tells the parent document how tall the iframe is so that

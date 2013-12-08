@@ -61,9 +61,9 @@ var callbacks = {
    * server's sign in endpoint is at "/users/sign_in".
    */
   loginFailure: function() {
-    $("#messages").text("");
-    $("#refresh_link").click(function(){location.reload(true);});
+    $("#messages").hide();
     $("#login_message").show();
+    $("#refresh_link").click(function(){location.reload(true);});
   },
   
   /**
@@ -76,8 +76,8 @@ var callbacks = {
     // Monitor the submit button
     document.querySelector('#save').addEventListener('click', callbacks.postSubmit);
     $("#save").prop('disabled', false);
-    
-    $("#messages").text("Login successful, you may create a post.");
+    $("#messages").toggle("slow");
+    $("#form").toggle("slow");
   },
   
   /**

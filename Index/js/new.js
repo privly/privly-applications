@@ -62,9 +62,9 @@ var callbacks = {
    * server's sign in endpoint is at "/users/sign_in".
    */
   loginFailure: function() {
-    $("#messages").text("");
-    $("#refresh_link").click(function(){location.reload(true);});
+    $("#messages").hide();
     $("#login_message").show();
+    $("#refresh_link").click(function(){location.reload(true);});
     privlyNetworkService.showLoggedOutNav();
   },
   
@@ -78,8 +78,9 @@ var callbacks = {
     privlyNetworkService.sameOriginGetRequest(
       privlyNetworkService.contentServerDomain() + "/posts", 
       callbacks.postCompleted);
-    
-    $("#messages").text("");
+    $("#save").prop('disabled', false);
+    $("#messages").toggle("slow");
+    $("#form").toggle("slow");
   },
   
   /**
