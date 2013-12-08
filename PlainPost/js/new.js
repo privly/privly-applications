@@ -91,7 +91,8 @@ var callbacks = {
       {"post":
         {"content": $("#content")[0].value,
          "privly_application":"PlainPost",
-         "public":true},
+         "public":true,
+         "seconds_until_burn": $( "#seconds_until_burn" ).val()},
          "format":"json"});
   },
   

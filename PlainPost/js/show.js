@@ -208,6 +208,7 @@ var callbacks = {
                 $("#no_permissions_nav").hide();
                 $("#permissions_nav").show();
                 $(".meta_candestroy").text("You can destroy this content.");
+                $("#destruction_select_block").show();
               }
             }, 
             function(){}, // otherwise assume no permissions
@@ -225,6 +226,13 @@ var callbacks = {
         var destroyedDate = new Date(json.burn_after_date);
         $(".meta_destroyed_around").text("Destroyed Around " + 
           destroyedDate.toDateString() + ". ");
+        
+        var currentSecondsUntilDestruction = Math.floor((destroyedDate - Date.now())/1000);
+        
+        $("#current_destruction_time")
+          .attr("value", currentSecondsUntilDestruction)
+          .text(Math.floor(currentSecondsUntilDestruction / 86400) + " Days");
+        $("#seconds_until_burn").val(currentSecondsUntilDestruction);
       }
       
       if( serverMarkdown === null ) {
@@ -316,7 +324,9 @@ var callbacks = {
   update: function() {
     privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
       callbacks.contentReturned, 
-      {post: {content: $("#edit_text").val()}});
+      {post: 
+        {content: $("#edit_text").val(), 
+        seconds_until_burn: $( "#seconds_until_burn" ).val()}});
       
     // Close the editing form
     $("#edit_form").slideUp("slow");

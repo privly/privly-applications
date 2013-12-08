@@ -69,8 +69,9 @@
       var data_to_send = {
         post:{
           structured_content: cipherdata,
-           "privly_application":"ZeroBin",
-           "public":true
+          "privly_application":"ZeroBin",
+          "public":true,
+          "seconds_until_burn": $( "#seconds_until_burn" ).val()
         }};
 
      function successCallback(response) {
