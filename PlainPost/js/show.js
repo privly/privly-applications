@@ -165,9 +165,9 @@ var callbacks = {
       var serverMarkdown = null;
       
       if( json !== null ) {
-        
-        // Assign the HTML from the JSON
-        if( json.content ) {
+
+        // Assign the Markdown from the JSON
+        if( typeof json.content === "string" ) {
           serverMarkdown = json.content;
         }
         
