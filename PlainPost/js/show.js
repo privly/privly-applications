@@ -288,7 +288,7 @@ var callbacks = {
       // Tell the user the content was probably destroyed
       $("#post_content").html(
         "<p class='flash notice'>The remote server says it destroyed the content. " + 
-        "If the server cannot be trusted, then it may have coppies.</p>");
+        "If the server cannot be trusted, then it may have copies.</p>");
       
       // Hide the drop down menu
       $("#no_permissions_nav").show();
