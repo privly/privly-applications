@@ -65,8 +65,8 @@ function runTests(){
     return "Failed to load spec";
   }
   var testFiles= new Array();
-  testFiles.push("../vendor/jasmine/lib/jasmine-1.3.1/jasmine.js");
-  testFiles.push("../vendor/jasmine/src/jasmine.console_reporter.js");
+  testFiles.push("../vendor/jasmine/jasmine-1.3.1/jasmine.js");
+  testFiles.push("../vendor/jasmine/jasmine.console_reporter.js");
   specToLoad.split(",").forEach(function(el){testFiles.push(el);});
   testFiles.push("../shared/test/execute.js");
   

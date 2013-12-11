@@ -165,9 +165,9 @@ var callbacks = {
       var serverMarkdown = null;
       
       if( json !== null ) {
-        
-        // Assign the HTML from the JSON
-        if( json.content ) {
+
+        // Assign the Markdown from the JSON
+        if( typeof json.content === "string" ) {
           serverMarkdown = json.content;
         }
         
@@ -252,14 +252,14 @@ var callbacks = {
       
     } else if(response.jqXHR.status === 403) {
       $("#post_content").html(
-        "<p>Your current user account does not have access to this. " + 
+        "<p class='flash notice'>Your current user account does not have access to this. " + 
         "It is also possible that the content was destroyed at the source.</p>");
 
       // Tells the parent document how tall the iframe is so that
       // the iframe height can be changed to its content's height
       privlyHostPage.resizeToWrapper();
     } else {
-      $("#post_content").html("<p>You do not have access to this.</p>");
+      $("#post_content").html("<p class='flash notice'>You do not have access to this.</p>");
 
       // Tells the parent document how tall the iframe is so that
       // the iframe height can be changed to its content's height
@@ -287,8 +287,8 @@ var callbacks = {
       
       // Tell the user the content was probably destroyed
       $("#post_content").html(
-        "<p>The remote server says it destroyed the content. " + 
-        "If the server cannot be trusted, then it may have coppies.</p>");
+        "<p class='flash notice'>The remote server says it destroyed the content. " + 
+        "If the server cannot be trusted, then it may have copies.</p>");
       
       // Hide the drop down menu
       $("#no_permissions_nav").show();
