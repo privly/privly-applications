@@ -1,8 +1,7 @@
 {% extends "templates/new.html.template" %}
 
 {% block specs %}
-  <meta name="PrivlySpec"
-   content="test/new.js"/>
+  <meta name="PrivlySpec" content="test/new.js" />
 {% endblock %}
 
 {% block javascripts %}
@@ -13,7 +12,7 @@
 {% block form %}
   <div class="col-lg-12 form-group">
     <p id="loadingDiv">
-     <img alt="loading" src="../shared/images/ajax-loader.gif"/>
+     <img alt="loading" src="../shared/images/ajax-loader.gif" />
     </p>
     <h1>Sign In to Content Server</h1>
     <noscript>
@@ -44,12 +43,14 @@
 {% endblock %}
 
 {% block app_info %}
-  <hr/>
+  <hr />
   <div class="col-lg-3">
     <h2>Sign in Issues</h2>
-      <a href="/users/password/new">Forgot your password?</a><br />
-      <a href="/users/confirmation/new">Didn&#x27;t receive confirmation instructions?</a><br />
-      <a href="/users/unlock/new">Didn&#x27;t receive unlock instructions?</a><br />
+    <a href="/users/password/new">Forgot your password?</a>
+    <br />
+    <a href="/users/confirmation/new">Didn't receive confirmation instructions?</a>
+    <br />
+    <a href="/users/unlock/new">Didn't receive unlock instructions?</a>
   </div>
   
   <div class="col-lg-7">
@@ -67,7 +68,5 @@
     <p>Your password will be sent to the current content server: 
       <span class="content_server"></span>
     </p>
-
-    </ul>
   </div>
 {% endblock %}

@@ -78,8 +78,7 @@ var callbacks = {
   
   
   /**
-   * Send the URL to the extension or mobile device if it exists and display
-   * it to the end user.
+   * Check to see if the user's credentials were accepted by the server.
    */
   checkCredentials: function(response) {
     
@@ -91,16 +90,16 @@ var callbacks = {
   },
   
   /**
-   * Prompt the user to sign into their server. This assumes the remote
-   * server's sign in endpoint is at "/users/sign_in".
+   * Tell the user their credentials were rejected.
    */
   loginFailure: function() {
-    $("#messages").text("Bad username or password");
+    $("#messages").text("Bad username or password. " + 
+      "Too many failed attempts will lock the account.");
     $("#messages").show("slow");
   },
   
   /**
-   * Tell the user they can create their post by updating the UI.
+   * Tell the user they are now logged in to the server.
    */
   pendingPost: function() {
     privlyNetworkService.showLoggedInNav();
