@@ -62,7 +62,7 @@ env = Environment(loader=FileSystemLoader('.'))
 # new: These packages generate new privly-type links
 # show: These packages show existing privly-type content
 packages = {
-  "nav": ["Index"],
+  "nav": ["Index", "Login"],
   "new": ["ZeroBin", "PlainPost"],
   "show": ["ZeroBin", "PlainPost"]
 }
@@ -71,7 +71,8 @@ packages = {
 for news in packages["new"]:
   f = open(news + "/new.html", 'w')
   subtemplate = env.get_template(news + "/new.html.subtemplate")
-  html = subtemplate.render({"packages": packages, "name": news})
+  html = subtemplate.render({"packages": packages, "name": news, 
+    "action": "new"})
   prettyHTML = make_readable(html)
   f.write(prettyHTML)
   f.close()
@@ -80,7 +81,8 @@ for news in packages["new"]:
 for shows in packages["show"]:
   f = open(shows + "/show.html", 'w')
   subtemplate = env.get_template(shows + "/show.html.subtemplate")
-  html = subtemplate.render({"packages": packages, "name": shows})
+  html = subtemplate.render({"packages": packages, "name": shows, 
+    "action": "show"})
   prettyHTML = make_readable(html)
   f.write(prettyHTML)
   f.close()
@@ -90,7 +92,8 @@ for shows in packages["show"]:
 for navs in packages["nav"]:
   f = open(navs + "/new.html", 'w')
   subtemplate = env.get_template(navs + "/new.html.subtemplate")
-  html = subtemplate.render({"packages": packages, "name": navs})
+  html = subtemplate.render({"packages": packages, "name": navs, 
+    "action": "nav"})
   prettyHTML = make_readable(html)
   f.write(prettyHTML)
   f.close()

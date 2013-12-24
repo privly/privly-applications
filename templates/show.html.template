@@ -81,13 +81,13 @@
                   </ul>
                 </li>
                 <li style="display:none;" class="logged_in_nav mobile_hide">
-                  <a href="#" target="_blank" class="account_url">Account</a>
+                  <a href="#" target="_blank" class="account_url">Server Account</a>
                 </li>
                 <li style="display:none;" class="logged_in_nav mobile_hide">
                   <a href="#" id="logout_link" class="logout_url">Logout</a>
                 </li>
                 <li class="logged_out_nav mobile_hide">
-                  <a href="#" target="_blank" class="login_url">Login</a>
+                  <a href="../Login/new.html" class="login_url">Login</a>
                 </li>
               </ul>
             </div><!--/.nav-collapse -->

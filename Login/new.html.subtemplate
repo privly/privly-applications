@@ -1,0 +1,72 @@
+{% extends "templates/new.html.template" %}
+
+{% block specs %}
+  <meta name="PrivlySpec" content="test/new.js" />
+{% endblock %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+  <script type="text/javascript" src="js/new.js"></script>
+{% endblock %}
+
+{% block form %}
+  <div class="col-lg-12 form-group">
+    <p id="loadingDiv">
+     <img alt="loading" src="../shared/images/ajax-loader.gif" />
+    </p>
+    <h1>Sign In to Content Server</h1>
+    <noscript>
+      <h1>Your browser has scripting turned off. 
+        This application requires scripting to function properly</h1>
+    </noscript>
+    <br />
+    <div class="form-group">
+      <label for="user_email">Email</label>
+      <br />
+      <input id="user_email" name="user[email]" size="30" type="email" 
+        value="" placeholder="Enter email" />
+    </div>
+    <div class="form-group">
+      <label for="user_password">Password</label>
+      <br />
+      <input id="user_password" name="user[password]" size="30" 
+        type="password" placeholder="Enter Password" />
+    </div>
+
+    <br />
+    <div class="form-group">
+      <button id="login" class="btn btn-default">Login to 
+        <span class="content_server"></span>
+      </button>
+    </div>
+  </div>
+{% endblock %}
+
+{% block app_info %}
+  <hr />
+  <div class="col-lg-3">
+    <h2>Sign in Issues</h2>
+    <a href="/users/password/new">Forgot your password?</a>
+    <br />
+    <a href="/users/confirmation/new">Didn't receive confirmation instructions?</a>
+    <br />
+    <a href="/users/unlock/new">Didn't receive unlock instructions?</a>
+  </div>
+  
+  <div class="col-lg-7">
+    <h2>What is this Page?</h2>
+    <p>
+      This page logs you into the content server you host your content with.
+      Your password will be sent to the remote server so make sure the button
+      has the proper address. You don't want to send your password to the 
+      wrong server.
+    </p>
+  </div>
+  
+  <div class="col-lg-2">
+    <h2>Warning</h2>
+    <p>Your password will be sent to the current content server: 
+      <span class="content_server"></span>
+    </p>
+  </div>
+{% endblock %}

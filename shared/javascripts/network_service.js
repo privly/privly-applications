@@ -157,7 +157,8 @@ var privlyNetworkService = {
       url: csrfTokenAddress,
       dataType: "json",
       headers: { 
-              Accept: "application/json"
+              Accept: "application/json",
+              "X-Requested-With": "XMLHttpRequest"
           },
       success: function (json, textStatus, jqXHR) {
         // set the CSRF
@@ -275,7 +276,8 @@ var privlyNetworkService = {
       url: url,
       dataType: "json",
       headers: { 
-              Accept: "application/json"
+              Accept: "application/json",
+              "X-Requested-With": "XMLHttpRequest"
           },
       success: function (json, textStatus, jqXHR) {
         callback({json: json, textStatus: textStatus, jqXHR: jqXHR});
@@ -311,7 +313,8 @@ var privlyNetworkService = {
       dataType: "json",
       headers: { 
               Accept: "application/json",
-              "X-CSRF-Token": privlyNetworkService.getCSRFToken(url)
+              "X-CSRF-Token": privlyNetworkService.getCSRFToken(url),
+              "X-Requested-With": "XMLHttpRequest"
           },
       success: function (json, textStatus, jqXHR) {
         callback({json: json, textStatus: textStatus, jqXHR: jqXHR});
@@ -347,7 +350,8 @@ var privlyNetworkService = {
       dataType: "json",
       headers: { 
               Accept: "application/json",
-              "X-CSRF-Token": privlyNetworkService.getCSRFToken(url)
+              "X-CSRF-Token": privlyNetworkService.getCSRFToken(url),
+              "X-Requested-With": "XMLHttpRequest"
           },
       success: function (json, textStatus, jqXHR) {
         callback({json: json, textStatus: textStatus, jqXHR: jqXHR});
@@ -383,7 +387,8 @@ var privlyNetworkService = {
       dataType: "json",
       headers: { 
               Accept: "application/json",
-              "X-CSRF-Token": privlyNetworkService.getCSRFToken(url)
+              "X-CSRF-Token": privlyNetworkService.getCSRFToken(url),
+              "X-Requested-With": "XMLHttpRequest"
           },
       success: function (json, textStatus, jqXHR) {
         callback({json: json, textStatus: textStatus, jqXHR: jqXHR});
@@ -401,7 +406,6 @@ var privlyNetworkService = {
     var domain = privlyNetworkService.contentServerDomain();
     $(".home_domain").attr("href", domain);
     $(".home_domain").text(domain.split("/")[2]);  
-    $(".login_url").attr("href", domain + "/users/sign_in");
     $(".account_url").attr("href", domain + "/pages/account");
     $(".legal_nav").attr("href", domain + "/pages/privacy");
     document.getElementById("logout_link").addEventListener('click', function(){
@@ -414,7 +418,6 @@ var privlyNetworkService = {
     // by a remote server.
     if( privlyNetworkService.platformName() === "HOSTED" ) {
       $(".home_domain").attr("target", "_self"); 
-      $(".login_url").attr("target", "_self");
       $(".account_url").attr("target", "_self");
       $(".legal_nav").attr("target", "_self");
     }
