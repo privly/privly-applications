@@ -63,7 +63,7 @@
               <li style="display:none;" class="logged_in_nav {% if name == 'Index' %}active{% endif %}">
                 <a href="../Index/new.html">Index</a>
               </li>
-              <li class="{% if name != 'Index' %}active{% endif %} dropdown logged_in_nav mobile_hide" style="display:none;">
+              <li class="{% if action == 'new' %}active{% endif %} dropdown logged_in_nav mobile_hide" style="display:none;">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">New <b class="caret"></b></a>
                 
                 <ul class="dropdown-menu">
@@ -74,13 +74,13 @@
                 </ul>
               </li>
               <li style="display:none;" class="logged_in_nav mobile_hide">
-                <a href="#" target="_blank" class="account_url">Account</a>
+                <a href="#" target="_blank" class="account_url">Server Account</a>
               </li>
               <li style="display:none;" class="logged_in_nav mobile_hide">
                 <a href="#" id="logout_link" class="logout_url">Logout</a>
               </li>
-              <li class="logged_out_nav mobile_hide">
-                <a href="#" target="_blank" class="login_url">Login</a>
+              <li class="logged_out_nav mobile_hide {% if name == 'Login' %}active{% endif %}">
+                <a href="../Login/new.html" class="login_url">Login</a>
               </li>
             </ul>
           </div><!--/.nav-collapse -->
@@ -96,10 +96,7 @@
             </p>
             <p style="display:none;" class="flash notice" id="login_message">
               You are not currently signed into your content server. Please
-              <a href="#" target="_blank" class="login_url btn btn-default">login</a>
-              then
-              <a href="#" id="refresh_link" class="btn btn-default">refresh</a>
-              the page
+              <a href="../Login/new.html" class="login_url btn btn-default">login</a>
             </p>
             <p><a class="privlyUrl" href="" data-privly-exclude="true"></a></p>
           </div>
