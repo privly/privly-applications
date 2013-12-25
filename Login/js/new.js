@@ -15,7 +15,8 @@
  * 5. Check Credentials: The credentials check has returned from the
  *    server and is being checked for acceptance.
  * 6. Login Failure: The server did not grant the user a session.
- * 7. Pending Post: The user is properly logged in and can create content.
+ * 7. Login Error: The server could not be reached or had an internal error.
+ * 8. Pending Post: The user is properly logged in and can create content.
  */
 var callbacks = {
   
@@ -51,7 +52,7 @@ var callbacks = {
       privlyNetworkService.contentServerDomain(), 
       callbacks.pendingPost, 
       callbacks.notLoggedIn, 
-      callbacks.notLoggedIn);
+      callbacks.loginError);
   },
   
   /**
@@ -95,6 +96,14 @@ var callbacks = {
   loginFailure: function() {
     $("#messages").text("Bad username or password. " + 
       "Too many failed attempts will lock the account.");
+    $("#messages").show("slow");
+  },
+  
+  /**
+   * Tell the user their content server could not be reached.
+   */
+  loginError: function() {
+    $("#messages").text("Your content server is unavailable.");
     $("#messages").show("slow");
   },
   
