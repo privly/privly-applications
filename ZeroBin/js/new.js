@@ -104,12 +104,14 @@ var callbacks = {
 
     $("#messages").text("Copy the address found below to any website you want to share this information through");
     $(".privlyUrl").text(url);
-    var localCodeURL = "show.html?privlyOriginalURL=" + encodeURIComponent(url);
     $(".privlyUrl").attr("href", url);
     
     // Keep the user in local code if possible, but display the remote code link
     // so the user does not accidentally copy the local code url
-    $('.privlyUrl').one('click', function (e) {this.href = localCodeURL;});
+    if ( privlyNetworkService.platformName() !== "HOSTED" ) {
+      var localCodeURL = "show.html?privlyOriginalURL=" + encodeURIComponent(url);
+      $('.privlyUrl').one('click', function (e) {this.href = localCodeURL;});
+    }
     $("#messages").show();
   }
 }
