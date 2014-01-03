@@ -62,6 +62,7 @@ var callbacks = {
     var href = window.location.href;
     state.webApplicationURL = privlyParameters.getApplicationUrl(href);
     state.parameters = privlyParameters.getParameterHash(state.webApplicationURL);
+    state.jsonURL = state.webApplicationURL;
     if (state.parameters["privlyDataURL"] !== undefined) {
      state.jsonURL = state.parameters["privlyDataURL"];
     }
