@@ -119,7 +119,7 @@ var callbacks = {
       
       // Keep the user in local code if possible, but display the remote code link
       // so the user does not accidentally copy the local code url
-      if ( privlyNetworkService.platformName() === "HOSTED" ) {
+      if ( privlyNetworkService.platformName() !== "HOSTED" ) {
         var localCodeURL = "show.html?privlyOriginalURL=" + encodeURIComponent(url);
         $('.privlyUrl').one('click', function (e) {this.href = localCodeURL;});
       }
