@@ -62,11 +62,9 @@ var callbacks = {
     var href = window.location.href;
     state.webApplicationURL = privlyParameters.getApplicationUrl(href);
     state.parameters = privlyParameters.getParameterHash(state.webApplicationURL);
+    state.jsonURL = state.webApplicationURL;
     if (state.parameters["privlyDataURL"] !== undefined) {
      state.jsonURL = state.parameters["privlyDataURL"];
-    } else {
-     //deprecated
-     state.jsonURL = state.webApplicationURL.replace("format=iframe", "format=json");
     }
     
     $(".meta_source_domain").text("Source URL: " + state.jsonURL);

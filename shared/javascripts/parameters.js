@@ -72,12 +72,8 @@ var privlyParameters = {
     if (url.indexOf("privlyOriginalURL=") >= 0) {
       url = decodeURIComponent(url);
       return url.substr(url.indexOf("privlyOriginalURL=") + 18);
-    } else {
-      //deprecated
-      url = url.replace("format=iframe", "format=html");
-      
-      return url;
     }
+    return url;
   },
   
   /**
