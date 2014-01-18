@@ -31,7 +31,9 @@
       </select>
     </div>
     <br/>
-    <button id="save" disabled>Save</button>
+    <button id="save" disabled class="btn btn-default">
+      <span class="glyphicon glyphicon-cloud-upload"></span> Save
+    </button>
   </div>
   <div class="col-lg-4">
     <h2 id="preview_heading">Preview</h2>

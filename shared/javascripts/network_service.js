@@ -410,7 +410,7 @@ var privlyNetworkService = {
     $(".legal_nav").attr("href", domain + "/pages/privacy");
     document.getElementById("logout_link").addEventListener('click', function(){
       $.post(domain + "/users/sign_out", "_method=delete", function(data) {
-        location.reload(true);
+        window.location = "../Login/new.html";
       });
     });
     

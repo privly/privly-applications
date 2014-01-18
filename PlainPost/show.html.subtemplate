@@ -29,7 +29,13 @@
          </select>
        </div>
        <br/>
-       <button id="update">Update</button> &nbsp; <button id="cancel_button">Cancel</button>
+       <button id="update" class="btn btn-default">
+         <span class="glyphicon glyphicon-cloud-upload"></span> Update
+       </button>
+       &nbsp;
+       <button id="cancel_button" class="btn btn-default">
+         <span class="glyphicon glyphicon-remove"></span> Cancel
+       </button>
        <hr/>
      </div>
      <div id="post_content">

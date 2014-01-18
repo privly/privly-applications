@@ -103,4 +103,7 @@ if __name__ == "__main__":
       subtemplate_dict = {"packages": packages, "name": package, 
         "action": package_type}
       render(outfile_path, subtemplate_path, subtemplate_dict)
-
+  
+  render("Help/new.html", "Help/new.html.subtemplate", {"packages": packages, 
+        "name": "Help", 
+        "action": "new"})
