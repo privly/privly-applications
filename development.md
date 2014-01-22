@@ -113,7 +113,7 @@ more complicated.
 
 * "Get" requests are universally permitted
 * All other request types should make an effort to verify that the content 
-server's data will not be mangled by interacting with you application. This can 
+server's data will not be mangled by interacting with your application. This can 
 be most easily accomplished by storing a string in JSON data that specifies the 
 list of supported applications.
 
@@ -147,7 +147,7 @@ support.
 
 Mobile applications use an authentication token (essentially an API secret token) 
 to gain access to the user's account. This is all handled by the 
-`network_service.js` file without you needing to worry about it. Keep in find 
+`network_service.js` file without you needing to worry about it. Keep in mind 
 that if you need an authentication scheme, you will need to support the 
 auth_token or implement the auth scheme inside the injectable application.
 
