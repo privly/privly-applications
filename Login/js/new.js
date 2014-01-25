@@ -111,12 +111,7 @@ var callbacks = {
    * Tell the user they are now logged in to the server.
    */
   pendingPost: function() {
-    privlyNetworkService.showLoggedInNav();
-    $("#messages").text("You are currently logged in to " + 
-      privlyNetworkService.contentServerDomain());
-    $("#messages").show("slow");
-    $("#form").hide("slow");
-    $("#currently_logged_in").show("slow");
+    window.location = "../Help/new.html";
   }
 }
 
