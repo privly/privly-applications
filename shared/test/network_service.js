@@ -129,7 +129,7 @@ describe ("Network Service Test Suite", function() {
    
    expect($(".home_domain").attr("href")).toBe(domain);
    expect($(".home_domain").text()).toBe(domain.split("/")[2]);
-   expect($(".login_url").attr("href")).toBe(domain + "/users/sign_in");
+   expect($(".login_url").attr("href")).toBe("../Login/new.html");
    expect($(".account_url").attr("href")).toBe(domain + "/pages/account");
    expect($(".legal_nav").attr("href")).toBe(domain + "/pages/privacy");
    
