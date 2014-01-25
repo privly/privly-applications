@@ -201,6 +201,8 @@ var callbacks = {
                 $("#edit_link").show();
                 $("#no_permissions_nav").hide();
                 $("#permissions_nav").show();
+                var dataDomain = state.jsonURL.split("/")[2];
+                privlyTooltip.updateMessage(dataDomain + " ZeroBin: Editable");
                 $(".meta_canupdate").text("You can update this content.");
               }
 

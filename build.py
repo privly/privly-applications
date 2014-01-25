@@ -38,7 +38,6 @@ from jinja2 import Environment, FileSystemLoader
 from bs4 import BeautifulSoup as bs
 import re
 
-
 # Make the rendered HTML formatting readable
 def make_readable(html):
   
@@ -52,48 +51,59 @@ def make_readable(html):
                "</textarea>",
                prettyHTML)
 
-# Templates are all referenced relative to the current
-# working directory
-env = Environment(loader=FileSystemLoader('.'))
-
-# List the packages. They are grouped by different types:
-# nav: These packages are included in the top level
-#      navigation.
-# new: These packages generate new privly-type links
-# show: These packages show existing privly-type content
-packages = {
-  "nav": ["Index", "Login"],
-  "new": ["ZeroBin", "PlainPost"],
-  "show": ["ZeroBin", "PlainPost"]
-}
-
-# New packages are apps that can generate new Privly-type links.
-for news in packages["new"]:
-  f = open(news + "/new.html", 'w')
-  subtemplate = env.get_template(news + "/new.html.subtemplate")
-  html = subtemplate.render({"packages": packages, "name": news, 
-    "action": "new"})
+def render(outfile_path, subtemplate_path, subtemplate_dict):
+  """
+  @param outfile String. The relative path to the file which we are rendering
+    to.
+  @param subtemplate_path String. The relative path to the file of the subtemplate
+    to be rendered.
+  @param subtemplate_dict Dictionary. The variables required by the subtemplate.
+  """
+  f = open(outfile_path, 'w')
+  subtemplate = env.get_template(subtemplate_path)
+  html = subtemplate.render(subtemplate_dict)
   prettyHTML = make_readable(html)
   f.write(prettyHTML)
   f.close()
 
-# Show packages are apps that can be injected into a host page.
-for shows in packages["show"]:
-  f = open(shows + "/show.html", 'w')
-  subtemplate = env.get_template(shows + "/show.html.subtemplate")
-  html = subtemplate.render({"packages": packages, "name": shows, 
-    "action": "show"})
-  prettyHTML = make_readable(html)
-  f.write(prettyHTML)
-  f.close()
+if __name__ == "__main__":
 
-# Nav packages are specialized applications that may be rendered into the top
-# level navigation of the packages.
-for navs in packages["nav"]:
-  f = open(navs + "/new.html", 'w')
-  subtemplate = env.get_template(navs + "/new.html.subtemplate")
-  html = subtemplate.render({"packages": packages, "name": navs, 
-    "action": "nav"})
-  prettyHTML = make_readable(html)
-  f.write(prettyHTML)
-  f.close()
+  # Templates are all referenced relative to the current
+  # working directory
+  env = Environment(loader=FileSystemLoader('.'))
+
+  # List the packages. They are grouped by different types:
+  # nav: These packages are included in the top level
+  #      navigation.
+  # new: These packages generate new privly-type links
+  # show: These packages show existing privly-type content
+  packages = {
+  
+    # Nav packages are specialized applications that may be rendered into the top
+    # level navigation of the packages.
+    "nav": ["Index", "Login"],
+    
+    # New packages are apps that can generate new Privly-type links.
+    "new": ["ZeroBin", "PlainPost"],
+    
+    # Show packages are apps that can be injected into a host page.
+    "show": ["ZeroBin", "PlainPost"]
+  }
+  
+  for package_type in packages:
+    for package in packages[package_type]:
+      file_string = package_type
+      
+      # The navigational pages render the new.html template
+      if file_string == "nav":
+        file_string = "new"
+        
+      outfile_path = package + "/" + file_string + ".html"
+      subtemplate_path = package + "/" + file_string + ".html.subtemplate"
+      subtemplate_dict = {"packages": packages, "name": package, 
+        "action": package_type}
+      render(outfile_path, subtemplate_path, subtemplate_dict)
+  
+  render("Help/new.html", "Help/new.html.subtemplate", {"packages": packages, 
+        "name": "Help", 
+        "action": "new"})
