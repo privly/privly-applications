@@ -60,16 +60,12 @@ var privlyTooltip = {
      * color values that are used to display the security glyph.
      */
     generateNewGlyph: function(){
-      return Math.floor(Math.random()*16777215).toString(16) + "," +
-        Math.floor(Math.random()*16777215).toString(16) + "," +
-        Math.floor(Math.random()*16777215).toString(16) + "," +
-        Math.floor(Math.random()*16777215).toString(16) + "," +
-        Math.floor(Math.random()*16777215).toString(16) + "," +
-        Math.floor(Math.random()*16777215).toString(16) + "," +
-        Math.floor(Math.random()*16777215).toString(16) + "," +
-        Math.floor(Math.random()*16777215).toString(16) + "," +
-        Math.floor(Math.random()*16777215).toString(16) + "," +
-        Math.floor(Math.random()*16777215).toString(16);
+      var i = 0;
+      var glyphString = Math.floor(Math.random()*16777215).toString(16);
+      for(;i<9;i++) {
+         glyphString += "," + Math.floor(Math.random()*16777215).toString(16);
+      }
+      return glyphString;
     },
     
     /**
