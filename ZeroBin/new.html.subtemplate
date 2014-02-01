@@ -18,7 +18,7 @@
 
 
 {% block form %}
-  <div class="col-lg-8">
+  <div class="col-md-8">
     <noscript>
       <h1>Your browser has scripting turned off. 
         This application requires scripting to function properly</h1>
@@ -42,7 +42,7 @@
       <span class="glyphicon glyphicon-cloud-upload"></span> Save
     </button>
   </div>
-  <div class="col-lg-4">
+  <div class="col-md-4">
     <h2 id="preview_heading">Preview</h2>
     <hr/>
     <div id="preview"></div>
@@ -51,7 +51,7 @@
 
 {% block app_info %}
   <hr/>
-  <div class="col-lg-5">
+  <div class="col-md-6">
     <h2>What is a ZeroBin?</h2>
     <p>ZeroBins are a 
       <a href="http://www.privly.org/content/introducing-privly-applications" target="_blank">
@@ -72,7 +72,7 @@
       </a> specifically.
     </p>
   </div>
-  <div class="col-lg-offset-2 col-lg-5">
+  <div class="col-md-6">
     <h2>Warnings</h2>
     <ul>
       <li>Privly is still in Alpha, <strong>do not</strong> post private information until the system reaches a Beta release.</li>

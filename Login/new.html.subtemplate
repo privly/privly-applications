@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block form %}
-  <div class="col-lg-12 form-group">
+  <div class="col-md-12 form-group">
     <p id="loadingDiv">
      <img alt="loading" src="../shared/images/ajax-loader.gif" />
     </p>
@@ -44,7 +44,7 @@
 
 {% block app_info %}
   <hr />
-  <div class="col-lg-3">
+  <div class="col-md-3">
     <h2>Sign in Issues</h2>
     <a href="/users/password/new">Forgot your password?</a>
     <br />
@@ -53,7 +53,7 @@
     <a href="/users/unlock/new">Didn't receive unlock instructions?</a>
   </div>
   
-  <div class="col-lg-7">
+  <div class="col-md-7">
     <h2>What is this Page?</h2>
     <p>
       This page logs you into the content server you host your content with.
@@ -63,7 +63,7 @@
     </p>
   </div>
   
-  <div class="col-lg-2">
+  <div class="col-md-2">
     <h2>Warning</h2>
     <p>Your password will be sent to the current content server: 
       <span class="content_server"></span>
