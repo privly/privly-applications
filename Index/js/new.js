@@ -79,8 +79,8 @@ var callbacks = {
       privlyNetworkService.contentServerDomain() + "/posts", 
       callbacks.postCompleted);
     $("#save").prop('disabled', false);
-    $("#messages").toggle("slow");
-    $("#form").toggle("slow");
+    $("#messages").toggle();
+    $("#form").toggle();
   },
   
   /**

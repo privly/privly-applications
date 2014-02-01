@@ -76,8 +76,8 @@ var callbacks = {
     // Monitor the submit button
     document.querySelector('#save').addEventListener('click', callbacks.postSubmit);
     $("#save").prop('disabled', false);
-    $("#messages").toggle("slow");
-    $("#form").toggle("slow");
+    $("#messages").toggle();
+    $("#form").toggle();
   },
   
   /**

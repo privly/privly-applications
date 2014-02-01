@@ -60,8 +60,8 @@ var callbacks = {
    * server's sign in endpoint is at "/users/sign_in".
    */
   notLoggedIn: function() {
-    $("#messages").hide("slow");
-    $("#form").show("slow");
+    $("#messages").hide();
+    $("#form").show();
   },
   
   /**
@@ -96,7 +96,7 @@ var callbacks = {
   loginFailure: function() {
     $("#messages").text("Bad username or password. " + 
       "Too many failed attempts will lock the account.");
-    $("#messages").show("slow");
+    $("#messages").show();
   },
   
   /**
@@ -104,7 +104,7 @@ var callbacks = {
    */
   loginError: function() {
     $("#messages").text("Your content server is unavailable.");
-    $("#messages").show("slow");
+    $("#messages").show();
   },
   
   /**

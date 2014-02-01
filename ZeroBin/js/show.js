@@ -269,7 +269,7 @@ var callbacks = {
    * in callbacks.destroyed.
    */
   destroy: function() {
-    $("#edit_form").slideUp("slow");
+    $("#edit_form").slideUp();
     privlyNetworkService.sameOriginDeleteRequest(state.jsonURL, callbacks.destroyed, {});
   },
   
@@ -308,7 +308,7 @@ var callbacks = {
    * supported in injected mode.
    */
   edit: function() {
-    $("#edit_form").slideDown("slow");
+    $("#edit_form").slideDown();
   },
   
   /**
@@ -325,7 +325,7 @@ var callbacks = {
       seconds_until_burn: $( "#seconds_until_burn" ).val()}});
 
     // Close the editing form
-    $("#edit_form").slideUp("slow");
+    $("#edit_form").slideUp();
   },
   
   /**
