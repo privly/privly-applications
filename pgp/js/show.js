@@ -119,20 +119,20 @@ var callbacks = {
 
       // Load CSS to show the nav and the rest of the non-injected page
       loadTopCSS();
-   }
+    }
    
    // Ensure whitelist compliance of the data parameter when the content is
    // injected
-   if( !privlyHostPage.isInjected() || 
-    privlyNetworkService.isWhitelistedDomain(state.jsonURL) ) {
-     // Make the cross origin request as if it were on the same origin.
-     // The "same origin" requirement is only possible on extension frameworks
-     privlyNetworkService.sameOriginGetRequest(state.jsonURL, 
-       callbacks.contentReturned);
-   } else {
+    if( !privlyHostPage.isInjected() || 
+      privlyNetworkService.isWhitelistedDomain(state.jsonURL) ) {
+      // Make the cross origin request as if it were on the same origin.
+      // The "same origin" requirement is only possible on extension frameworks
+      privlyNetworkService.sameOriginGetRequest(state.jsonURL, 
+        callbacks.contentReturned);
+    } else {
      $("#post_content").html("<p>Click to view this content.</p>");
-   }
-   
+    }
+
   },
   
   /**
