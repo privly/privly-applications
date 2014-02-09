@@ -63,16 +63,16 @@ var callbacks = {
    * The user hit the submit button.
    */
   submit: function() {
-     var randomkey = sjcl.codec.base64.fromBits(sjcl.random.randomWords(8, 0), 0);
-     var cipherdata = zeroCipher(randomkey, $("#content")[0].value);
+    var randomkey = sjcl.codec.base64.fromBits(sjcl.random.randomWords(8, 0), 0);
+    var cipherdata = zeroCipher(randomkey, $("#content")[0].value);
 
-     var data_to_send = {
-       post:{
-         structured_content: cipherdata,
-         "privly_application":"ZeroBin",
-         "public":true,
-         "seconds_until_burn": $( "#seconds_until_burn" ).val()
-       }};
+    var data_to_send = {
+      post:{
+        structured_content: cipherdata,
+        "privly_application":"ZeroBin",
+        "public":true,
+        "seconds_until_burn": $( "#seconds_until_burn" ).val()
+      }};
 
     function successCallback(response) {
       callbacks.postCompleted(response, randomkey);
