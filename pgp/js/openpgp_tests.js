@@ -82,6 +82,8 @@ var privKeys = openpgp.key.readArmored(priv_key);
 
 var pass = "hello world";
 privKey = privKeys.keys[0].decrypt(pass);
+var decrypted = openpgp.decrypMessage(privkey,message);
+console.log(decrypted);
+console.log(message);
+console.log(decrypted === message);
 
-// get key IDs the message is encrypted for
-keyids = message.getEncryptionKeyIds()
