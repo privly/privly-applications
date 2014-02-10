@@ -67,12 +67,26 @@ var priv_key =
     '-----END PGP PRIVATE KEY BLOCK-----'].join('\n');
 
 
-
+// pub keys
 var pubKeys = openpgp.key.readArmored(pub_key);
 var pubKey = pubKeys.keys[0];
+//console.log(pubKey);
 
+// private keys
 var privKeys = openpgp.key.readArmored(priv_key);
-var pass = "hello world";
-var keyids = message.getEncryptionKeyIds();
-var success = privKey.decryptKeyPacket(keyids,pass);
+var privKey = privKeys.keys[0];
+var privKeyPassphrase = "hello world";
 
+/*
+// encrypt message
+var cleartext = "this is a message";
+var ciphertext = openpgp.encryptMessage([pubKey],cleartext);
+var message = openpgp.message.readArmored(ciphertext);
+
+// decrypt message
+var keyids = message.getEncryptionKeyIds();
+var success = privKey.decryptKeyPacket(keyids,privKeyPassphrase);
+var decrypted = openpgp.decryptMessage(privKey,message);
+console.log(decrypted===cleartext);
+
+*/
