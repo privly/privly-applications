@@ -64,12 +64,15 @@ var callbacks = {
    */
   submit: function() {
     var randomkey = sjcl.codec.base64.fromBits(sjcl.random.randomWords(8, 0), 0);
-    var message = JSON.parse('{"message":"'+$("#content")[0].value+'"}');
-    var cipherdata = openpgp.encryptMessage([pubKey],message);
+    // Here we convert the plaintext into a json string. We do this to check if
+    // the decryption occured with the correct string.  If it's formated as json
+    // it is extremely unlikely to have been decrypted with the wrong key.
+    var plaintext_as_json = JSON.stringify({message: $("#content")[0].value});
+    var ciphertext = openpgp.encryptMessage([pubKey],plaintext_as_json);
 
     var data_to_send = {
       post:{
-        structured_content: cipherdata,
+        structured_content: ciphertext,
         "privly_application":"pgp",
         "public":true,
         "seconds_until_burn": $( "#seconds_until_burn" ).val()
