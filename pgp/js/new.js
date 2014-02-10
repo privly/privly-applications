@@ -64,12 +64,13 @@ var callbacks = {
    */
   submit: function() {
     var randomkey = sjcl.codec.base64.fromBits(sjcl.random.randomWords(8, 0), 0);
-    var cipherdata = zeroCipher(randomkey, $("#content")[0].value);
+    var message = JSON.parse('{"message":"'+$("#content")[0].value+'"}');
+    var cipherdata = openpgp.encryptMessage([pubKey],message);
 
     var data_to_send = {
       post:{
         structured_content: cipherdata,
-        "privly_application":"ZeroBin",
+        "privly_application":"pgp",
         "public":true,
         "seconds_until_burn": $( "#seconds_until_burn" ).val()
       }};
