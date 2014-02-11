@@ -1,6 +1,6 @@
-describe("OpenPGP correctness",function(){
+describe("Basic OpenPGP tests",function(){
 
-  it("Should hold the property of correctness",function(){
+  it("Correctness test",function(){
     var pub_key =
       ['-----BEGIN PGP PUBLIC KEY BLOCK-----',
       'Version: GnuPG v2.0.19 (GNU/Linux)',
@@ -89,4 +89,51 @@ describe("OpenPGP correctness",function(){
 
     expect(decrypted).toEqual(plaintext);
   });
+
+  it("Should generate keys",function(){
+    var key = openpgp.generateKeyPair(
+                openpgp.enums.publicKey.rsa_encrypt_sign, // integer key type
+                512, // bit size of key, using small value to not drain entropy
+                "User Name", // user id
+                "testing"); // passphrase
+
+    expect(key).toBeDefined(); // toBeDefined compares against undefined
+    expect(key.key).toBeDefined();
+    expect(key.privateKeyArmored).toBeDefined();
+    expect(key.publicKeyArmored).toBeDefined();
+  
+    var privKeys = openpgp.key.readArmored(key.privateKeyArmored);
+    expect(privKeys).toBeDefined();
+    expect(privKeys.err).not.toBeDefined();
+    expect(privKeys.keys.length).toEqual(1);
+    
+    var pubKeys = openpgp.key.readArmored(key.publicKeyArmored);
+    expect(pubKeys).toBeDefined();
+    expect(pubKeys.err).not.toBeDefined();
+    expect(pubKeys.keys.length).toEqual(1);
+  });
+
+  it("Should sign, encrypt, decrypt, and validate messages",function(){
+    var passphrase1 = "testing";
+    var key1 = openpgp.generateKeyPair(1,512,"Bob",passphrase1);
+    var privkey1 = openpgp.key.readArmored(key1.privateKeyArmored).keys[0];
+    var pubkey1 = openpgp.key.readArmored(key1.publicKeyArmored).keys[0];
+
+    var passphrase2 = "testing123";
+    var key2 = openpgp.generateKeyPair(1,512,"Alice",passphrase2);
+    var privkey2 = openpgp.key.readArmored(key2.privateKeyArmored).keys[0];
+    var pubkey2 = openpgp.key.readArmored(key2.publicKeyArmored).keys[0];
+    privkey2.decrypt(passphrase2);
+
+    var plaintext = "all the secrets";
+    var encrypted = openpgp.signAndEncryptMessage([pubkey1],privkey2,plaintext);
+    var message = openpgp.message.readArmored(encrypted);
+
+    var keyids1 = message.getEncryptionKeyIds();
+    var success1 = privkey1.decryptKeyPacket(keyids1,passphrase1);
+
+    var decrypted = openpgp.decryptAndVerifyMessage(privkey1,[pubkey2],message);
+    expect(decrypted.text).toEqual(plaintext);
+  });
+
 });
