@@ -83,9 +83,10 @@ describe("OpenPGP correctness",function(){
 
     var keyids = message.getEncryptionKeyIds();
     var success = privKey.decryptKeyPacket(keyids,pass);
+    expect(success).toBe(true);
 
     var decrypted = openpgp.decryptMessage(privKey,message);
 
-    expect(decrypted).toEqual(message);
+    expect(decrypted).toEqual(plaintext);
   });
 });
