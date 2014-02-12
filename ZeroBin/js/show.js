@@ -159,7 +159,6 @@ var callbacks = {
       
       var url = state.webApplicationURL;
       state.key = privlyParameters.getParameterHash(url).privlyLinkKey;
-      var json = response.json;
       
       privlyNetworkService.permissions.canShow = true;
       
