@@ -153,16 +153,6 @@ var callbacks = {
   * @param {object} response The response from the remote server. In cases
   * without error, the response body will be in response.response.
   */
-  /*
-  isJSON: function(plaintext){
-    try {
-      JSON.parse(plaintext);
-      return true;
-    } catch {
-      return false;
-    }
-  }
-*/
   contentReturned: function(response) {
     
     if( response.jqXHR.status === 200 ) {
@@ -184,11 +174,14 @@ var callbacks = {
         var keyids = encrypted_message.getEncryptionKeyIds();
         var success = privKey.decryptKeyPacket(keyids,privKeyPassphrase);
         var cleartext = openpgp.decryptMessage(privKey,encrypted_message);
-        //if isJSON(cleartext){
-        //}
-        // if cleartext is valid JSON object then JSON.stringify it, otherwise indicate wrong private key used
-        $("#edit_text").val(cleartext);
-        var markdownHTML = markdown.toHTML(cleartext);
+        var message;
+        try { // try to parse cleartext as json object
+          message = JSON.parse(cleartext);
+        } catch(e) {
+          message = JSON.parse('{"message":"The data behind this link cannot be decrypted with your key"}');
+        }
+        $("#edit_text").val(message.message);
+        var markdownHTML = markdown.toHTML(message.message);
         $('div#cleartext').html(markdownHTML);
       } else {
         $('div#cleartext').text("The data behind this link is corrupted.");
