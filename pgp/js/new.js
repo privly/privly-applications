@@ -63,7 +63,6 @@ var callbacks = {
    * The user hit the submit button.
    */
   submit: function() {
-    var randomkey = sjcl.codec.base64.fromBits(sjcl.random.randomWords(8, 0), 0);
     // Here we convert the plaintext into a json string. We do this to check if
     // the decryption occured with the correct string.  If it's formated as json
     // it is extremely unlikely to have been decrypted with the wrong key.
@@ -79,7 +78,7 @@ var callbacks = {
       }};
 
     function successCallback(response) {
-      callbacks.postCompleted(response, randomkey);
+      callbacks.postCompleted(response); 
     }
     
     privlyNetworkService.sameOriginPostRequest(
