@@ -9,12 +9,9 @@
 {% block javascripts %}
   <script type="text/javascript" src="../vendor/markdown.js"></script>
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
-  <script type="text/javascript" src="../vendor/sjcl.js"></script>
-  <script type="text/javascript" src="js/base64.js"></script>
-  <script type="text/javascript" src="js/rawdeflate.js"></script>
-  <script type="text/javascript" src="js/rawinflate.js"></script>
-  <script type="text/javascript" src="js/zerobin.js"></script>
   <script type="text/javascript" src="js/show.js"></script>
+  <script type="text/javascript" src="js/openpgp.min.js"></script>
+  <script type="text/javascript" src="js/openpgp_test_keys.js"></script>
 {% endblock %}
 
 
@@ -22,7 +19,7 @@
   <div class="row">
     <div class="col-md-8">
       <div id="edit_form" style="display:none;">
-        <h1>Edit Existing ZeroBin</h1>
+        <h1>Edit Existing PGP</h1>
         <label for="edit_text">Content</label>
         <textarea id="edit_text" class="form-control" rows="4"></textarea>
         <div id="destruction_select_block" style="display:none;">
@@ -46,7 +43,7 @@
         <hr/>
       </div>
       <div id="post_content">
-        <div id="cleartext">Privly ZeroBin 
+        <div id="cleartext">Privly PGP
           <img src="../shared/images/ajax-loader.gif" alt="loading"/>
           <noscript>
             <h1>Your browser has scripting turned off. 
