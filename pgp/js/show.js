@@ -1,8 +1,8 @@
 /**
  * @fileOverview
- * This JavaScript acts as the driver for the ZeroBin injectable application.
+ * This JavaScript acts as the driver for the PGP injectable application.
  * It defines the behavior specifc to this application. For more information
- * about the ZeroBin application, view the README.
+ * about the PGP application, view the README.
  **/
 
 /**
@@ -102,7 +102,7 @@ var callbacks = {
 
       // Display the domain of the content in the glyph
       var dataDomain = state.jsonURL.split("/")[2];
-      privlyTooltip.updateMessage(dataDomain + " ZeroBin: Read Only");
+      privlyTooltip.updateMessage(dataDomain + " PGP: Read Only");
 
       // Load CSS to show the tooltip and other injected styling
       loadInjectedCSS();
