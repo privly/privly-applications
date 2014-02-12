@@ -158,7 +158,6 @@ var callbacks = {
     if( response.jqXHR.status === 200 ) {
       
       var url = state.webApplicationURL;
-      state.key = privlyParameters.getParameterHash(url).privlyLinkKey;
       var json = response.json;
       
       privlyNetworkService.permissions.canShow = true;
@@ -166,10 +165,7 @@ var callbacks = {
       var json = response.json;
       if( json === null ) return;
       
-      if (state.key === undefined || state.key === "") {
-        $('div#cleartext').text("You do not have the key required to decrypt this content.");
-        return;
-      } else if(json.structured_content !== undefined) {
+      if(json.structured_content !== undefined) {
         var encrypted_message = openpgp.message.readArmored(json.structured_content);
         var keyids = encrypted_message.getEncryptionKeyIds();
         var success = privKey.decryptKeyPacket(keyids,privKeyPassphrase);
