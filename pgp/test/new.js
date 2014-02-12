@@ -3,7 +3,7 @@
  * This spec is managed by the Jasmine testing library.
  **/
  
-describe ("ZeroBin New Suite", function() {
+describe ("PGP New Suite", function() {
   
   it("initializes properly", function() {
     var domain = privlyNetworkService.contentServerDomain();
