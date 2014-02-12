@@ -162,7 +162,6 @@ var callbacks = {
       
       privlyNetworkService.permissions.canShow = true;
       
-      var json = response.json;
       if( json === null ) return;
       
       if(json.structured_content !== undefined) {
