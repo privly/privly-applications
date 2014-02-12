@@ -200,7 +200,7 @@ var callbacks = {
         privlyNetworkService.permissions.canShare = (
           json.permissions.canshare === true);
         privlyNetworkService.permissions.canUpdate = (
-          json.permissions.canupdate === true);
+          json.permissions.canupdate === false);
         privlyNetworkService.permissions.canDestroy = (
           json.permissions.candestroy === true);
       }
@@ -333,6 +333,13 @@ var callbacks = {
    * initial response had the permission object, and the update
    * flag was set to true. This prevents some CSRF issues.
    */
+
+  /**
+   * The update feature is not currently supported in the PGP app.
+   * In the future exchanging a symmetric key via PGP could allow
+   * this feature, but currently it is not supported.
+   */
+  /**
   update: function() {
     var cipherdata = zeroCipher(state.key + "=", $("#edit_text")[0].value);
     privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
@@ -343,6 +350,7 @@ var callbacks = {
     // Close the editing form
     $("#edit_form").slideUp();
   },
+  */
   
   /**
   * This is an event listener for click events. When the applicaiton is injected
