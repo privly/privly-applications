@@ -28,12 +28,7 @@ var state = {
   /**
   * The URL of the data endpoint for this application.
   */
-  jsonURL: "",
-  
-  /**
-   * The symmetric key that is added to the anchortext
-   */
-  key: ""
+  jsonURL: ""
 }
 
 
@@ -282,31 +277,6 @@ var callbacks = {
   edit: function() {
     $("#edit_form").slideDown();
   },
-  
-  /**
-   * Update the remote server's content with the new value.
-   * This function should only be called if the remote server's
-   * initial response had the permission object, and the update
-   * flag was set to true. This prevents some CSRF issues.
-   */
-
-  /**
-   * The update feature is not currently supported in the PGP app.
-   * In the future exchanging a symmetric key via PGP could allow
-   * this feature, but currently it is not supported.
-   */
-  /**
-  update: function() {
-    var cipherdata = zeroCipher(state.key + "=", $("#edit_text")[0].value);
-    privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
-      callbacks.contentReturned, 
-      {post: {structured_content: cipherdata,
-      seconds_until_burn: $( "#seconds_until_burn" ).val()}});
-
-    // Close the editing form
-    $("#edit_form").slideUp();
-  },
-  */
   
   /**
   * This is an event listener for click events. When the applicaiton is injected
