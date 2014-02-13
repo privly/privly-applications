@@ -93,16 +93,10 @@ var callbacks = {
    * it to the end user.
    *
    * @param {response} response The response object returned from the remote server
-   * @param {string} randomkey The key used to encrypt the data.
    *
    */
-  postCompleted: function(response, randomkey) {
+  postCompleted: function(response) {
     var url = response.jqXHR.getResponseHeader("X-Privly-Url");
-    if( url.indexOf("#") > 0 ) {
-      url = url.replace("#", "#privlyLinkKey="+randomkey);
-    } else {
-      url = url + "#privlyLinkKey=" + randomkey;
-    }
     privlyExtension.firePrivlyURLEvent(url);
 
     $("#messages").text("Copy the address found below to any website you want to share this information through");
