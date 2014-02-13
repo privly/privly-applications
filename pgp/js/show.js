@@ -193,38 +193,6 @@ var callbacks = {
           json.permissions.candestroy === true);
       }
       
-      if( privlyNetworkService.permissions.canUpdate || 
-        privlyNetworkService.permissions.canDestroy ) {
-          // Check whether the user is signed into their content server
-          privlyNetworkService.initPrivlyService(
-            state.jsonURL, 
-            function(){
-              // Initialize the form for updating the post
-              // if the user has permission.
-              if( privlyNetworkService.permissions.canUpdate) {
-                $("#edit_link").show();
-                $("#no_permissions_nav").hide();
-                $("#permissions_nav").show();
-                var dataDomain = state.jsonURL.split("/")[2];
-                privlyTooltip.updateMessage(dataDomain + " ZeroBin: Editable");
-                $(".meta_canupdate").text("You can update this content.");
-              }
-
-              // Initialize the form for destroying the post
-              // if the user has permission.
-              if( privlyNetworkService.permissions.canDestroy) {
-                $("#destroy_link").show();
-                $("#no_permissions_nav").hide();
-                $("#permissions_nav").show();
-                $(".meta_candestroy").text("You can destroy this content.");
-                $("#destruction_select_block").show();
-              }
-            }, 
-            function(){}, // otherwise assume no permissions
-            function(){} // otherwise assume no permissions
-          );
-      }
-      
       if( json.created_at ) {
         var createdDate = new Date(json.created_at);
         $(".meta_created_at").text("Created Around " + 
