@@ -17,6 +17,7 @@
  * 6. Login Failure: The server did not grant the user a session.
  * 7. Login Error: The server could not be reached or had an internal error.
  * 8. Pending Post: The user is properly logged in and can create content.
+ * 9. genPGPkeys: The extension is checking PGP keys exist and are not expired.
  */
 var callbacks = {
   
@@ -53,6 +54,9 @@ var callbacks = {
       callbacks.pendingPost, 
       callbacks.notLoggedIn, 
       callbacks.loginError);
+
+    // Generate a PGP Keypair if needed
+    callbacks.genPGPKeys();
   },
   
   /**
@@ -112,8 +116,28 @@ var callbacks = {
    */
   pendingPost: function() {
     window.location = "../Help/new.html";
+  },
+
+  /**
+   * Genereate a PGP key if it does not exist or is nearly expired
+   */
+  genPGPKeys: function(){
+    // Determine if a key is already in local storage
+    localforage.getItem('keypair',function(keypair){
+
+      if (keypair === null){ // it does not exist, make it
+        localforage.setItem('keypair',openpgp.generateKeyPair(
+            openpgp.enums.publicKey.rsa_encrypt_sign,
+            2048,'username','passphrase'));
+        );
+
+      } else { // it does exist, do nothing for now
+        // eventually check if key is about to expire and regen if needed
+      }
+    });
   }
 }
+
 
 // Start the application
 document.addEventListener('DOMContentLoaded', callbacks.pendingLogin);
