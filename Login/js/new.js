@@ -129,8 +129,6 @@ var callbacks = {
         localforage.setItem('keypair',openpgp.generateKeyPair(
             openpgp.enums.publicKey.rsa_encrypt_sign,
             2048,'username','passphrase'));
-        );
-
       } else { // it does exist, do nothing for now
         // eventually check if key is about to expire and regen if needed
       }
