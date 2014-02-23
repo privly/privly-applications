@@ -18,6 +18,9 @@
  * 5. Completed post: The remote server has returned a URL. This app should
  *    display it and fire the URL event.
  *    Callback=postCompleted
+ * 6. Key Search: Check localForage and remote directory for keys associated 
+ *    with email address. Should return public key of message recipient.
+ *    Callback=findPubKey
  */
 var callbacks = {
 
@@ -110,6 +113,62 @@ var callbacks = {
       $('.privlyUrl').one('click', function (e) {this.href = localCodeURL;});
     }
     $("#messages").show();
+  },
+
+  /**
+   * Attempt to find the public key of a given email address.  Looks at local
+   * resources before querying remote resources. 
+   *
+   * @param {email} email The email that the user wants to find the associated 
+   * pub key of.
+   *
+   */
+  findPubKey: function(email){
+    var pub_keys = null;
+
+    // query localForage 
+    localforage.getItem('pubKeys',function(pubkey_email_hash){
+      if (email in pubkey_email_hash) {
+
+        pub_keys = [pubkey_email_hash[email]]; 
+        return pub_keys; //array of pub keys associated with email
+
+      } else { // not found locally, query DirP
+        pub_keys = findPubKeyRemote(email);
+        if (pub_keys === null){
+          console.log("No public key associated with email found");
+          console.log("Invite friend to share privately here");
+        }
+        return pub_keys;
+      }
+    });
+  },
+
+  findPubKeyRemote: function(email){
+    var remote_directory = "https://127.0.0.1:10001";
+    var pub_keys = null;
+    $.get(
+      remote_directory,
+      {email: email},
+      function(response){
+        if (response.status === 200) {
+          var data = response.responseText;
+          if (data !== null) {
+            // The format of the response is not currently known.  Once data
+            // structure of UC & IA with extra pub key is known, update with
+            // appropriate values.
+            pub_keys = data; // this line is wrong, update me
+            return pub_keys;
+          } else {
+            return null;
+          }
+        } else {
+          // handle other status responses in the future
+          console.log("Response status was not 200");
+          return null;
+        }
+      }
+    );
   }
 }
 
