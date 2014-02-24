@@ -127,12 +127,15 @@ var PersonaPGP = {
   /**
    * This function uses openpgpjs to encrypt a message as json.
    *
-   * @param {pubKeys} pubKeys A list of public keys that should be able to 
+   * @param {pubKeys} pubKeys An array of public keys that should be able to 
    * decrypt the message.
    * @param {plaintext} plaintext The message being encrypted.
    *
    */
   encrypt: function(pubKeys,plaintext){
+    // TODO:Check if additional arguments have been passed, 
+    // sign and encrypt if private key passed or just encrypt if not.
+    // For now, not signing messages.
     var plaintext_as_json = JSON.stringify({message: plaintext});
     var ciphertext = openpgp.encryptMessage(pubKeys,plaintext);
     return ciphertext;
@@ -147,18 +150,51 @@ var PersonaPGP = {
   decrypt: function(ciphertext){
     var encrypted_message = openpgp.message.readArmored(ciphertext);
     var keyids = encrypted_message.getEncryptionKeyIds();
-    var success = privKey.decryptKeyPacket(keyids,passphrase);
-    // TODO: Add function that reads from localForage all available private
-    // keys.  Tries to decrypt using each key.  This variable is assumed to
-    // exist in the next line as privKey.
+
+    localforage.getItem('my_keypairs',function(keys_to_try){
+      if (keys_to_try.length === 0 || keys_to_try === null){
+        console.log("No private keys found.  Decryption exiting");
+        return "No private keys found. Failed to decrypt.";
+      }
+      for(var i = 0; i < keys_to_try.length; i++){
+        var privKey = openpgp.key.readArmored(
+                        keys_to_try[i].privateKeyArmored).keys[0];
+        // hard coded passphrase for now
+        var success = privKey.decryptKeyPacket(keyids,"passphrase");
+        var message = decryptHelper(privKey,encrypted_message);
+        if (message !== "next"){ // decrypted successfully
+          return message;
+        }
+        if (i === (keys_to_try.length - 1)) {
+          console.log("Tried all available private keys, none worked");
+          return "The data behind this lnke cannot be decrypted with your key.";
+        }
+      }
+    });
+  },
+
+  decryptHelper: function(privKey,encrypted_message){
+    // Should determine if message is signed or not, and use appropriate
+    // decryption method accordingly. If it is signed, find public key and
+    // then verify signature. 
+    // For now assuming message is not signed.
+    var decryptFailedMsg = "The data behind this link cannot be" +
+                                 " decrypted with your key.";
     var cleartext = openpgp.decryptMessage(privKey,encrypted_message);
-    var message;
+    var message = null;
+
     try { // try to parse cleartext as json object
       message = JSON.parse(cleartext);
     } catch(e) {
-      message = JSON.parse('{"message":' +
-        '"The data behind this link cannot be decrypted with your key"}');
+      console.log(e.message);
+      message = JSON.parse('{"message":' + "'" + decryptFailedMsg + "}'");
     }
-    return message.message;
+
+    if (message.message !== decryptFailedMsg){
+      return message.message;
+    } else {
+      console.log("Wrong key, trying next one");
+      return "next";
+    }
   }
 }
