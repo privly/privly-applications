@@ -160,18 +160,10 @@ var callbacks = {
       if( json === null ) return;
       
       if(json.structured_content !== undefined) {
-        var encrypted_message = openpgp.message.readArmored(json.structured_content);
-        var keyids = encrypted_message.getEncryptionKeyIds();
-        var success = privKey.decryptKeyPacket(keyids,privKeyPassphrase);
-        var cleartext = openpgp.decryptMessage(privKey,encrypted_message);
-        var message;
-        try { // try to parse cleartext as json object
-          message = JSON.parse(cleartext);
-        } catch(e) {
-          message = JSON.parse('{"message":"The data behind this link cannot be decrypted with your key"}');
-        }
-        $("#edit_text").val(message.message);
-        var markdownHTML = markdown.toHTML(message.message);
+        var cleartext = PersonaPGP.decrypt(json.structured_content);
+        $("#edit_text").val(cleartext);
+
+        var markdownHTML = markdown.toHTML(cleartext);
         $('div#cleartext').html(markdownHTML);
       } else {
         $('div#cleartext').text("The data behind this link is corrupted.");
@@ -292,7 +284,6 @@ var callbacks = {
      }
    }
   }
- 
 }
 
 // Initialize the application

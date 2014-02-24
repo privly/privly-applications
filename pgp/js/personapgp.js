@@ -88,7 +88,7 @@ var PersonaPGP = {
    * @param {pub_key} pub_key The public key to be verified.
    */
   verifyPubKey: function(pub_key){
-
+    
     // data structure assumed may be wrong
     var assertion = findPubKey(pub_key);
 
@@ -127,17 +127,29 @@ var PersonaPGP = {
   /**
    * This function uses openpgpjs to encrypt a message as json.
    *
-   * @param {pubKeys} pubKeys An array of public keys that should be able to 
-   * decrypt the message.
+   * @param {pubKeys} keys An array of key objects that should be able to be 
+   * used to decrypt the message.
    * @param {plaintext} plaintext The message being encrypted.
    *
    */
-  encrypt: function(pubKeys,plaintext){
+  encrypt: function(Keys,plaintext){
     // TODO:Check if additional arguments have been passed, 
     // sign and encrypt if private key passed or just encrypt if not.
     // For now, not signing messages.
+    
+    // Here we convert the plaintext into a json string. We do this to check if
+    // the decryption occured with the correct string.  If it's formated as json
+    // it is extremely unlikely to have been decrypted with the wrong key.
     var plaintext_as_json = JSON.stringify({message: plaintext});
-    var ciphertext = openpgp.encryptMessage(pubKeys,plaintext);
+
+    // Extract all keys from passed array
+    // This will need to be updated once the underlying data structure is fixed
+    var pubKeys = new Array();
+    for (var i = 0; i < Keys.length; i++){
+      pub_key = openpgp.key.readArmored(Keys[i].publicKeyArmored).keys[0];
+      pubKeys.push(pub_key);
+    }
+    var ciphertext = openpgp.encryptMessage(pubKeys,plaintext_as_json);
     return ciphertext;
   },
 
