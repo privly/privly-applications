@@ -159,27 +159,28 @@ var PersonaPGP = {
    * @param {ciphertext} ciphertext The message being decrypted.
    *
    */
-  decrypt: function(ciphertext){
+  decrypt: function(ciphertext,callback){
     var encrypted_message = openpgp.message.readArmored(ciphertext);
     var keyids = encrypted_message.getEncryptionKeyIds();
 
     localforage.getItem('my_keypairs',function(keys_to_try){
+      // for now, define as an array
+      keys_to_try = [keys_to_try];
       if (keys_to_try.length === 0 || keys_to_try === null){
         console.log("No private keys found.  Decryption exiting");
-        return "No private keys found. Failed to decrypt.";
+        callback("No private keys found. Failed to decrypt.");
       }
       for(var i = 0; i < keys_to_try.length; i++){
         var privKey = openpgp.key.readArmored(
                         keys_to_try[i].privateKeyArmored).keys[0];
         // hard coded passphrase for now
         var success = privKey.decryptKeyPacket(keyids,"passphrase");
-        var message = decryptHelper(privKey,encrypted_message);
+        var message = PersonaPGP.decryptHelper(privKey,encrypted_message);
         if (message !== "next"){ // decrypted successfully
-          return message;
-        }
-        if (i === (keys_to_try.length - 1)) {
+          callback(message);
+        } else if (i === (keys_to_try.length - 1)) {
           console.log("Tried all available private keys, none worked");
-          return "The data behind this lnke cannot be decrypted with your key.";
+          callback("The data behind this link cannot be decrypted with your key.");
         }
       }
     });
@@ -204,7 +205,8 @@ var PersonaPGP = {
 
     if (message.message !== decryptFailedMsg){
       return message.message;
-    } else {
+    } else { // figure out a better solution long term, this prevents sending 
+      // a message consisting only of "next".  works for now
       console.log("Wrong key, trying next one");
       return "next";
     }
