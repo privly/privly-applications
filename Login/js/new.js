@@ -123,10 +123,10 @@ var callbacks = {
    */
   genPGPKeys: function(){
     // Determine if a key is already in local storage
-    localforage.getItem('keypair',function(keypair){
+    localforage.getItem('my_keypairs',function(keypair){
 
       if (keypair === null){ // it does not exist, make it
-        localforage.setItem('keypair',openpgp.generateKeyPair(
+        localforage.setItem('my_keypairs',openpgp.generateKeyPair(
             openpgp.enums.publicKey.rsa_encrypt_sign,
             2048,'username','passphrase'));
       } else { // it does exist, do nothing for now
