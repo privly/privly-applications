@@ -22,6 +22,7 @@
  *    with email address. Should return public key of message recipient.
  *    Callback=findPubKey
  */
+
 var callbacks = {
 
   /**
@@ -66,11 +67,12 @@ var callbacks = {
    * The user hit the submit button.
    */
   submit: function() {
-    // Here we convert the plaintext into a json string. We do this to check if
-    // the decryption occured with the correct string.  If it's formated as json
-    // it is extremely unlikely to have been decrypted with the wrong key.
-    var plaintext_as_json = JSON.stringify({message: $("#content")[0].value});
-    var ciphertext = openpgp.encryptMessage([pubKey],plaintext_as_json);
+    var plaintext = $("#content")[0].value;
+    //var recipient = $("#email")[0].value;
+    // Will eventually take email from input form, and then search for pubkey
+    // for now using key found in localforage, ie encrypting message to self
+
+    var ciphertext = PersonaPGP.encrypt([pubKey],plaintext);
 
     var data_to_send = {
       post:{
@@ -78,7 +80,8 @@ var callbacks = {
         "privly_application":"pgp",
         "public":true,
         "seconds_until_burn": $( "#seconds_until_burn" ).val()
-      }};
+      }
+    };
 
     function successCallback(response) {
       callbacks.postCompleted(response); 
@@ -221,4 +224,8 @@ $(document).ajaxStart(function() {
 });
 $(document).ajaxStop(function() { 
   $('#loadingDiv').hide(); 
+});
+var pubKey = null;
+localforage.getItem('my_keypairs',function(keypair){
+  pubKey = keypair;//openpgp.key.readArmored(keypair.publicKeyArmored).keys[0];
 });
