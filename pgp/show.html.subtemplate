@@ -13,7 +13,6 @@
   <script type="text/javascript" src="../vendor/localforage.min.js"></script>
   <script type="text/javascript" src="js/show.js"></script>
   <script type="text/javascript" src="js/personapgp.js"></script>
-  <script type="text/javascript" src="js/openpgp_test_keys.js"></script>
 {% endblock %}
 
 
