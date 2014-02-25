@@ -72,7 +72,10 @@ var callbacks = {
     // Will eventually take email from input form, and then search for pubkey
     // for now using key found in localforage, ie encrypting message to self
 
-    var ciphertext = PersonaPGP.encrypt([pubKey],plaintext);
+    // Will pull from a form element eventually, hard coded for now
+    var emails = ["bob@example.com"];
+
+    var ciphertext = PersonaPGP.encrypt(emails,plaintext);
 
     var data_to_send = {
       post:{
@@ -130,6 +133,7 @@ var callbacks = {
     var pub_keys = null;
 
     // query localForage 
+    console.log("Querying local storage");
     localforage.getItem('pubKeys',function(pubkey_email_hash){
       if (email in pubkey_email_hash) {
 
@@ -155,6 +159,7 @@ var callbacks = {
    *
    */
   findPubKeyRemote: function(email){
+    console.log("Querying directory provider");
     var remote_directory = "https://127.0.0.1:10001";
     var pub_keys = null;
     $.get(
@@ -168,6 +173,7 @@ var callbacks = {
             // structure of UC & IA with extra pub key is known, update with
             // appropriate values.
             pub_keys = data; // this line is wrong, update me
+            //callbacks.addRemoteKeyToLocal(email,data);
             return pub_keys;
           } else {
             return null;
