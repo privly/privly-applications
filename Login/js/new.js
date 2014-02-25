@@ -128,10 +128,47 @@ var callbacks = {
       if (keypair === null){ // it does not exist, make it
         localforage.setItem('my_keypairs',openpgp.generateKeyPair(
             openpgp.enums.publicKey.rsa_encrypt_sign,
-            2048,'username','passphrase'));
+            2048,'username','passphrase')
+        );
       } else { // it does exist, do nothing for now
         // eventually check if key is about to expire and regen if needed
       }
+    });
+    // remove me later, just here for testing
+    // at the very least add conditional logic to only upload on generation
+    callbacks.uploadKey();
+  },
+
+  /**
+   * Upload a signed key along with associated user certificate to directory
+   */
+  uploadKey: function(){
+    localforage.getItem('my_keypairs',function(keypair){
+      if (keypair === null){
+        console.log("No key to upload found");
+        return false;
+      }
+      console.log(keypair);
+      var email = "bob@example.com";
+      var directoryURL = "http://127.0.0.1:8989/"
+      var pubkey = "foo";
+      console.log("Oh noes");
+      console.log(pubkey);
+      $.post(
+        directoryURL,
+        {email:email, 
+          uc: "uc", 
+          ia: "ia", 
+          pgp_pub: pubkey,
+          sign_pgp_pub: "foo_signed"
+        },
+        function(response){
+          if (response.status === 200){
+            console.log(response);
+          }
+        }
+      );
+      console.log("sent");
     });
   }
 }
