@@ -147,6 +147,10 @@ var PersonaPGP = {
     // Here we convert the plaintext into a json string. We do this to check if
     // the decryption occured with the correct string.  If it's formated as json
     // it is extremely unlikely to have been decrypted with the wrong key.
+    // There are mechanisms built into OpenPGP.js that allow you to know in 
+    // advance if you posses the appropriate key for decryption. However, this
+    // means revealing the identity of your intended recipient. Converting to
+    // json will (eventually) allow us to preserve the identity of recipients.
     var plaintext_as_json = JSON.stringify({message: plaintext});
 
     // Extract all keys from passed array
