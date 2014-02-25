@@ -147,6 +147,13 @@ var callbacks = {
     });
   },
 
+  /**
+   * Attempt to find the public key of a given email address from the remote
+   * directory.
+   *
+   * @param {email} email The email that the user wants to send a message to.
+   *
+   */
   findPubKeyRemote: function(email){
     var remote_directory = "https://127.0.0.1:10001";
     var pub_keys = null;
