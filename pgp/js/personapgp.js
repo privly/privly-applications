@@ -132,10 +132,17 @@ var PersonaPGP = {
    * @param {plaintext} plaintext The message being encrypted.
    *
    */
-  encrypt: function(Keys,plaintext){
+  encrypt: function(emails,plaintext){
     // TODO:Check if additional arguments have been passed, 
     // sign and encrypt if private key passed or just encrypt if not.
     // For now, not signing messages.
+    
+    // Find all pub keys from emails
+    var Keys = new Array();
+    for (var i = 0; i < emails.length; i++){
+      //makes async calls but code does not expect this, fix me!
+      Keys.push( PersonaPGP.findPubKey(emails[i]) );
+    }
     
     // Here we convert the plaintext into a json string. We do this to check if
     // the decryption occured with the correct string.  If it's formated as json
