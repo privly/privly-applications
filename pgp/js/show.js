@@ -160,11 +160,14 @@ var callbacks = {
       if( json === null ) return;
       
       if(json.structured_content !== undefined) {
-        var cleartext = PersonaPGP.decrypt(json.structured_content);
-        $("#edit_text").val(cleartext);
+        PersonaPGP.decrypt(json.structured_content,
+        function(cleartext){
+          console.log(cleartext);
+          $("#edit_text").val(cleartext);
 
-        var markdownHTML = markdown.toHTML(cleartext);
-        $('div#cleartext').html(markdownHTML);
+          var markdownHTML = markdown.toHTML(cleartext);
+          $('div#cleartext').html(markdownHTML);
+        });
       } else {
         $('div#cleartext').text("The data behind this link is corrupted.");
         return;
