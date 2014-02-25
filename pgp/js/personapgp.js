@@ -36,7 +36,7 @@ var PersonaPGP = {
     var pub_keys = null;
 
     // query localForage 
-    localforage.getItem('pubKeys',function(pubkey_email_hash){
+    localforage.getItem('my_contacts',function(pubkey_email_hash){
       if (email in pubkey_email_hash) {
 
         pub_keys = [pubkey_email_hash[email]]; 
