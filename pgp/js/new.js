@@ -179,6 +179,31 @@ var callbacks = {
         }
       }
     );
+  },
+
+  /**
+   * Add the key that was found remotely to localforage. Entry is keyed by
+   * email address and has a value of every component that is needed in order
+   * to authenticate with the verifier. 
+   *
+   * TODO: describe params
+   */
+  addRemoteKeyToLocal: function(email,ballOwax){
+    console.log("Adding remotely discovered key to local contacts");
+    // authenticate email with verifier -> return false on failure
+    // ignoring for now
+    // verifyPubKey(email,ballOwax).then( the rest of the function );
+
+    // Get existing list of contacts
+    localforage.getItem('my_contacts',function(data){
+      // Append new contact to old list
+      data[email] = ballOwax;
+
+      // Update localforage with new contact added
+      localforage.setItem('my_contacts',data).then(function(outcome){
+        return outcome;
+      });
+    });
   }
 }
 
