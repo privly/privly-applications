@@ -18,9 +18,6 @@
  * 5. Completed post: The remote server has returned a URL. This app should
  *    display it and fire the URL event.
  *    Callback=postCompleted
- * 6. Key Search: Check localForage and remote directory for keys associated 
- *    with email address. Should return public key of message recipient.
- *    Callback=findPubKey
  */
 
 var callbacks = {
@@ -119,97 +116,6 @@ var callbacks = {
       $('.privlyUrl').one('click', function (e) {this.href = localCodeURL;});
     }
     $("#messages").show();
-  },
-
-  /**
-   * Attempt to find the public key of a given email address.  Looks at local
-   * resources before querying remote resources. 
-   *
-   * @param {email} email The email that the user wants to find the associated 
-   * pub key of.
-   *
-   */
-  findPubKey: function(email){
-    var pub_keys = null;
-
-    // query localForage 
-    console.log("Querying local storage");
-    localforage.getItem('pubKeys',function(pubkey_email_hash){
-      if (email in pubkey_email_hash) {
-
-        pub_keys = [pubkey_email_hash[email]]; 
-        return pub_keys; //array of pub keys associated with email
-
-      } else { // not found locally, query DirP
-        pub_keys = findPubKeyRemote(email);
-        if (pub_keys === null){
-          console.log("No public key associated with email found");
-          console.log("Invite friend to share privately here");
-        }
-        return pub_keys;
-      }
-    });
-  },
-
-  /**
-   * Attempt to find the public key of a given email address from the remote
-   * directory.
-   *
-   * @param {email} email The email that the user wants to send a message to.
-   *
-   */
-  findPubKeyRemote: function(email){
-    console.log("Querying directory provider");
-    var remote_directory = "https://127.0.0.1:10001";
-    var pub_keys = null;
-    $.get(
-      remote_directory,
-      {email: email},
-      function(response){
-        if (response.status === 200) {
-          var data = response.responseText;
-          if (data !== null) {
-            // The format of the response is not currently known.  Once data
-            // structure of UC & IA with extra pub key is known, update with
-            // appropriate values.
-            pub_keys = data; // this line is wrong, update me
-            //callbacks.addRemoteKeyToLocal(email,data);
-            return pub_keys;
-          } else {
-            return null;
-          }
-        } else {
-          // handle other status responses in the future
-          console.log("Response status was not 200");
-          return null;
-        }
-      }
-    );
-  },
-
-  /**
-   * Add the key that was found remotely to localforage. Entry is keyed by
-   * email address and has a value of every component that is needed in order
-   * to authenticate with the verifier. 
-   *
-   * TODO: describe params
-   */
-  addRemoteKeyToLocal: function(email,ballOwax){
-    console.log("Adding remotely discovered key to local contacts");
-    // authenticate email with verifier -> return false on failure
-    // ignoring for now
-    // verifyPubKey(email,ballOwax).then( the rest of the function );
-
-    // Get existing list of contacts
-    localforage.getItem('my_contacts',function(data){
-      // Append new contact to old list
-      data[email] = ballOwax;
-
-      // Update localforage with new contact added
-      localforage.setItem('my_contacts',data).then(function(outcome){
-        return outcome;
-      });
-    });
   }
 }
 
