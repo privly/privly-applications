@@ -36,6 +36,7 @@ var PersonaPGP = {
     var pub_keys = null;
 
     // query localForage 
+    console.log("Querying local storage");
     localforage.getItem('my_contacts',function(pubkey_email_hash){
       if (email in pubkey_email_hash) {
 
@@ -53,7 +54,15 @@ var PersonaPGP = {
     });
   },
 
+  /**
+   * Attempt to find the public key of a given email address from the remote
+   * directory.
+   *
+   * @param {email} email The email that the user wants to send a message to.
+   *
+   */
   findPubKeyRemote: function(email){
+    console.log("Querying directory provider");
     var remote_directory = "https://127.0.0.1:10001";
     var pub_keys = null;
     $.get(
@@ -67,6 +76,7 @@ var PersonaPGP = {
             // structure of UC & IA with extra pub key is known, update with
             // appropriate values.
             pub_keys = data; // this line is wrong, update me
+            //PersonaPGP.addRemoteKeyToLocal(email,data);
             return pub_keys;
           } else {
             return null;
@@ -78,6 +88,31 @@ var PersonaPGP = {
         }
       }
     );
+  },
+
+  /**
+   * Add the key that was found remotely to localforage. Entry is keyed by
+   * email address and has a value of every component that is needed in order
+   * to authenticate with the verifier. 
+   *
+   * TODO: describe params
+   */
+  addRemoteKeyToLocal: function(email,ballOwax){
+    console.log("Adding remotely discovered key to local contacts");
+    // authenticate email with verifier -> return false on failure
+    // ignoring for now
+    // verifyPubKey(email,ballOwax).then( the rest of the function );
+
+    // Get existing list of contacts
+    localforage.getItem('my_contacts',function(data){
+      // Append new contact to old list
+      data[email] = ballOwax;
+
+      // Update localforage with new contact added
+      localforage.setItem('my_contacts',data).then(function(outcome){
+        return outcome;
+      });
+    });
   },
 
   /**
