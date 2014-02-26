@@ -126,9 +126,14 @@ var callbacks = {
     localforage.getItem('my_keypairs',function(keypair){
 
       if (keypair === null){ // it does not exist, make it
-        localforage.setItem('my_keypairs',openpgp.generateKeyPair(
-            openpgp.enums.publicKey.rsa_encrypt_sign,
-            2048,'username','passphrase')
+        var workerProxy = new openpgp.AsyncProxy('../vendor/openpgp.worker.js');
+        workerProxy.seedRandom(10); // TODO: evaluate best value to use
+        workerProxy.generateKeyPair(
+          openpgp.enums.publicKey.rsa_encrypt_sign,
+          4096,'username','passphrase',function(err,data){
+            console.log(data);
+            localforage.setItem('my_keypairs',data).then(callbacks.uploadKey());
+          }
         );
       } else { // it does exist, do nothing for now
         // eventually check if key is about to expire and regen if needed
@@ -136,7 +141,6 @@ var callbacks = {
     });
     // remove me later, just here for testing
     // at the very least add conditional logic to only upload on generation
-    callbacks.uploadKey();
   },
 
   /**
