@@ -213,7 +213,7 @@ var PersonaPGP = {
    * @param {ciphertext} ciphertext The message being decrypted.
    *
    */
-  decrypt: function(ciphertext,callback){
+  decrypt: function(ciphertext){
     var encrypted_message = openpgp.message.readArmored(ciphertext);
     var keyids = encrypted_message.getEncryptionKeyIds();
 
@@ -222,7 +222,7 @@ var PersonaPGP = {
       keys_to_try = [keys_to_try];
       if (keys_to_try.length === 0 || keys_to_try === null){
         console.log("No private keys found.  Decryption exiting");
-        callback("No private keys found. Failed to decrypt.");
+        return "No private keys found. Failed to decrypt.";
       }
       for(var i = 0; i < keys_to_try.length; i++){
         var privKey = openpgp.key.readArmored(
@@ -231,10 +231,10 @@ var PersonaPGP = {
         var success = privKey.decryptKeyPacket(keyids,"passphrase");
         var message = PersonaPGP.decryptHelper(privKey,encrypted_message);
         if (message !== "next"){ // decrypted successfully
-          callback(message);
+          return message;
         } else if (i === (keys_to_try.length - 1)) {
           console.log("Tried all available private keys, none worked");
-          callback("The data behind this link cannot be decrypted with your key.");
+          return "The data behind this link cannot be decrypted with your key.";
         }
       }
     });
