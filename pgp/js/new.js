@@ -72,26 +72,26 @@ var callbacks = {
     // Will pull from a form element eventually, hard coded for now
     var emails = ["bob@example.com"];
 
-    var ciphertext = PersonaPGP.encrypt(emails,plaintext);
+    PersonaPGP.encrypt(emails,plaintext).then(function(ciphertext){
+      var data_to_send = {
+        post:{
+          structured_content: ciphertext,
+          "privly_application":"pgp",
+          "public":true,
+          "seconds_until_burn": $( "#seconds_until_burn" ).val()
+        }
+      };
 
-    var data_to_send = {
-      post:{
-        structured_content: ciphertext,
-        "privly_application":"pgp",
-        "public":true,
-        "seconds_until_burn": $( "#seconds_until_burn" ).val()
+      function successCallback(response) {
+        callbacks.postCompleted(response); 
       }
-    };
-
-    function successCallback(response) {
-      callbacks.postCompleted(response); 
-    }
-    
-    privlyNetworkService.sameOriginPostRequest(
-      privlyNetworkService.contentServerDomain() + "/posts", 
-      successCallback, 
-      data_to_send,
-      {"format":"json"});
+      
+      privlyNetworkService.sameOriginPostRequest(
+        privlyNetworkService.contentServerDomain() + "/posts", 
+        successCallback, 
+        data_to_send,
+        {"format":"json"});
+    });
   },
 
   /**
