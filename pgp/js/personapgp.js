@@ -37,10 +37,13 @@ var PersonaPGP = {
 
     // query localForage 
     console.log("Querying local storage");
-    localforage.getItem('my_contacts',function(pubkey_email_hash){
+    // Only look at your own keypairs for now
+    //localforage.getItem('my_contacts',function(pubkey_email_hash){
+    localforage.getItem('my_keypairs',function(pubkey_email_hash){
       if (email in pubkey_email_hash) {
 
         pub_keys = [pubkey_email_hash[email]]; 
+        console.log("Returning " + pub_keys);
         return pub_keys; //array of pub keys associated with email
 
       } else { // not found locally, query DirP
@@ -49,6 +52,7 @@ var PersonaPGP = {
           console.log("No public key associated with email found");
           console.log("Invite friend to share privately goes here");
         }
+        console.log("Returning2 " + pub_keys);
         return pub_keys;
       }
     });
@@ -173,30 +177,34 @@ var PersonaPGP = {
     // For now, not signing messages.
     
     // Find all pub keys from emails
-    var Keys = new Array();
-    for (var i = 0; i < emails.length; i++){
+    //var Keys = new Array();
+    //for (var i = 0; i < emails.length; i++){
       //makes async calls but code does not expect this, fix me!
-      Keys.push( PersonaPGP.findPubKey(emails[i]) );
-    }
+      //Keys.push( PersonaPGP.findPubKey(emails[i]) );
+    //}
     
-    // Here we convert the plaintext into a json string. We do this to check if
-    // the decryption occured with the correct string.  If it's formated as json
-    // it is extremely unlikely to have been decrypted with the wrong key.
-    // There are mechanisms built into OpenPGP.js that allow you to know in 
-    // advance if you posses the appropriate key for decryption. However, this
-    // means revealing the identity of your intended recipient. Converting to
-    // json will (eventually) allow us to preserve the identity of recipients.
-    var plaintext_as_json = JSON.stringify({message: plaintext});
+    // Only encrypt for the first email for now
+    PersonaPGP.findPubKey(emails[0]).then(function(key){
+      var Keys = [key];
+      // Here we convert the plaintext into a json string. We do this to check if
+      // the decryption occured with the correct string.  If it's formated as json
+      // it is extremely unlikely to have been decrypted with the wrong key.
+      // There are mechanisms built into OpenPGP.js that allow you to know in 
+      // advance if you posses the appropriate key for decryption. However, this
+      // means revealing the identity of your intended recipient. Converting to
+      // json will (eventually) allow us to preserve the identity of recipients.
+      var plaintext_as_json = JSON.stringify({message: plaintext});
 
-    // Extract all keys from passed array
-    // This will need to be updated once the underlying data structure is fixed
-    var pubKeys = new Array();
-    for (var i = 0; i < Keys.length; i++){
-      pub_key = openpgp.key.readArmored(Keys[i].publicKeyArmored).keys[0];
-      pubKeys.push(pub_key);
-    }
-    var ciphertext = openpgp.encryptMessage(pubKeys,plaintext_as_json);
-    return ciphertext;
+      // Extract all keys from passed array
+      // This will need to be updated once the underlying data structure is fixed
+      var pubKeys = new Array();
+      for (var i = 0; i < Keys.length; i++){
+        pub_key = openpgp.key.readArmored(Keys[i].publicKeyArmored).keys[0];
+        pubKeys.push(pub_key);
+      }
+      var ciphertext = openpgp.encryptMessage(pubKeys,plaintext_as_json);
+      return ciphertext;
+    });
   },
 
   /**
