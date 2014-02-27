@@ -33,7 +33,12 @@ var state = {
   /**
    * The symmetric key that is added to the anchortext
    */
-  key: ""
+  key: "",
+  
+  /**
+  * The check to see if the ctrl Key is pressed for editing or not
+  **/
+  ctrlKeyDown: false
 }
 
 
@@ -75,10 +80,30 @@ var callbacks = {
     $(".meta_source_domain").text("Source URL: " + state.jsonURL);
     // Register the click listener.
     $("body").on("click", callbacks.click);
+    
+    // Register ctrl keydown event to check for inline editing
+    $(window).keydown(function(evt){
+      if (evt.ctrlKey){
+        state.ctrlKeyDown = true;
+      }
+      else{
+        state.ctrlKeyDown = false;
+      }
+    });
+    $(window).keyup(function(evt){
+      state.ctrlKeyDown = false;
+    });
 
     // Register the link and button listeners.
     $("#destroy_link").click(callbacks.destroy);
-    $("#cancel_button").click(function(){$("#edit_form").slideUp()});
+    $("#cancel_button").click(function(){
+      $("#edit_form").slideUp();
+      // Register the click event if the user clicks cancel button
+      // Needed for inline editing
+      $("body").bind("click", callbacks.click);
+      // Resize the iframe to its wrapper
+      privlyHostPage.resizeToWrapper();
+    });
     document.getElementById("update").addEventListener('click', callbacks.update);
     $("#edit_link").click(callbacks.edit);
 
@@ -325,6 +350,9 @@ var callbacks = {
 
     // Close the editing form
     $("#edit_form").slideUp();
+    // After updating bind the click event again
+    // Needed after inline editing
+    $('body').bind("click",callbacks.click);
   },
   
   /**
@@ -336,11 +364,24 @@ var callbacks = {
   */
   click: function(evt) {
    if(privlyHostPage.isInjected()) {
-     if(evt.target.nodeName !== "A" || evt.target.href === ""){
+     if (state.ctrlKeyDown){
+      callbacks.inlineEdit();
+     }
+     else if(evt.target.nodeName !== "A" || evt.target.href === ""){
        window.open(location.href, '_blank');
      }
    }
+  },
+  inlineEdit:function() {
+    $("#edit_form h1").hide();
+    callbacks.edit();
+    // unbind click event so it doesn't open a new window every time
+    // user clicks on the editing text area
+    $('body').unbind("click");
+    // Resize to show the text ara update cancel buttons and burn after
+    privlyHostPage.dispatchResize('500');
   }
+
  
 }
 
