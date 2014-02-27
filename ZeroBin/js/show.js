@@ -96,10 +96,11 @@ var callbacks = {
 
     // Register the link and button listeners.
     $("#destroy_link").click(callbacks.destroy);
-    $("#cancel_button").click(function(){
+    $("#cancel_button").click(function(evt){
       $("#edit_form").slideUp();
       // Register the click event if the user clicks cancel button
       // Needed for inline editing
+      evt.stopPropagation();
       $("body").bind("click", callbacks.click);
       // Resize the iframe to its wrapper
       privlyHostPage.resizeToWrapper();
@@ -341,13 +342,14 @@ var callbacks = {
    * initial response had the permission object, and the update
    * flag was set to true. This prevents some CSRF issues.
    */
-  update: function() {
+  update: function(evt) {
     var cipherdata = zeroCipher(state.key + "=", $("#edit_text")[0].value);
     privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
       callbacks.contentReturned, 
       {post: {structured_content: cipherdata,
       seconds_until_burn: $( "#seconds_until_burn" ).val()}});
 
+    evt.stopPropagation();
     // Close the editing form
     $("#edit_form").slideUp();
     // After updating bind the click event again
