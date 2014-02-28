@@ -102,8 +102,10 @@ var callbacks = {
       // Needed for inline editing
       evt.stopPropagation();
       $("body").bind("click", callbacks.click);
-      // Resize the iframe to its wrapper
-      privlyHostPage.resizeToWrapper();
+      // Resize to its wrapper
+      setTimeout(function(){
+        privlyHostPage.resizeToWrapper();
+      },100);
     });
     document.getElementById("update").addEventListener('click', callbacks.update);
     $("#edit_link").click(callbacks.edit);
@@ -376,6 +378,7 @@ var callbacks = {
   },
   inlineEdit:function() {
     $("#edit_form h1").hide();
+    $('#edit_text').css('width',"95%");
     callbacks.edit();
     // unbind click event so it doesn't open a new window every time
     // user clicks on the editing text area
