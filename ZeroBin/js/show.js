@@ -103,9 +103,7 @@ var callbacks = {
       evt.stopPropagation();
       $("body").bind("click", callbacks.click);
       // Resize to its wrapper
-      setTimeout(function(){
-        privlyHostPage.resizeToWrapper();
-      },100);
+      setTimeout(privlyHostPage.resizeToWrapper,100);
     });
     document.getElementById("update").addEventListener('click', callbacks.update);
     $("#edit_link").click(callbacks.edit);
@@ -376,7 +374,7 @@ var callbacks = {
      }
    }
   },
-  inlineEdit:function() {
+  inlineEdit: function() {
     $("#edit_form h1").hide();
     $('#edit_text').css('width',"95%");
     callbacks.edit();

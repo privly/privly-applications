@@ -28,7 +28,12 @@ var state = {
   /**
   * The URL of the data endpoint for this application.
   */
-  jsonURL: ""
+  jsonURL: "",
+
+  /**
+  * The check to see if the ctrl Key is pressed for editing or not
+  **/
+  ctrlKeyDown: false
 }
 
 
@@ -72,9 +77,30 @@ var callbacks = {
     // Register the click listener.
     $("body").on("click", callbacks.click);
 
+    // Register ctrl keydown event to check for inline editing
+    $(window).keydown(function(evt){
+      if (evt.ctrlKey){
+        state.ctrlKeyDown = true;
+      }
+      else{
+        state.ctrlKeyDown = false;
+      }
+    });
+    $(window).keyup(function(evt){
+      state.ctrlKeyDown = false;
+    });
+
     // Register the link and button listeners.
     $("#destroy_link").click(callbacks.destroy);
-    $("#cancel_button").click(function(){$("#edit_form").slideUp()});
+    $("#cancel_button").click(function(evt){
+      $("#edit_form").slideUp();
+      // Register the click event if the user clicks cancel button
+      // Needed for inline editing
+      evt.stopPropagation();
+      $("body").bind("click", callbacks.click);
+      // Resize to its wrapper
+      setTimeout(privlyHostPage.resizeToWrapper,1000);
+    });
     document.getElementById("update").addEventListener('click', callbacks.update);
     $("#edit_link").click(callbacks.edit);
 
@@ -319,15 +345,19 @@ var callbacks = {
    * initial response had the permission object, and the update
    * flag was set to true. This prevents some CSRF issues.
    */
-  update: function() {
+  update: function(evt) {
     privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
       callbacks.contentReturned, 
       {post: 
         {content: $("#edit_text").val(), 
         seconds_until_burn: $( "#seconds_until_burn" ).val()}});
       
+    evt.stopPropagation();
     // Close the editing form
     $("#edit_form").slideUp();
+    // After updating bind the click event again
+    // Needed after inline editing
+    $('body').bind("click",callbacks.click);
   },
   
   /**
@@ -339,10 +369,23 @@ var callbacks = {
   */
   click: function(evt) {
    if(privlyHostPage.isInjected()) {
-     if(evt.target.nodeName !== "A" || evt.target.href === ""){
+     if (state.ctrlKeyDown){
+      callbacks.inlineEdit();
+     }
+     else if(evt.target.nodeName !== "A" || evt.target.href === ""){
        window.open(location.href, '_blank');
      }
    }
+  },
+  inlineEdit: function() {
+    $("#edit_form h1").hide();
+    $('#edit_text').css('width',"95%");
+    callbacks.edit();
+    // unbind click event so it doesn't open a new window every time
+    // user clicks on the editing text area
+    $('body').unbind("click");
+    // Resize to show the text ara update cancel buttons and burn after
+    privlyHostPage.dispatchResize('500');
   }
  
 }
