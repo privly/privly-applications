@@ -33,7 +33,12 @@ var state = {
   /**
   * The check to see if the ctrl Key is pressed for editing or not
   **/
-  ctrlKeyDown: false
+  ctrlKeyDown: false,
+
+  /**
+  * The check if the editing is inline or not
+  **/
+  isInlineEdit: false
 }
 
 
@@ -93,13 +98,19 @@ var callbacks = {
     // Register the link and button listeners.
     $("#destroy_link").click(callbacks.destroy);
     $("#cancel_button").click(function(evt){
-      $("#edit_form").slideUp();
+      if(state.isInlineEdit){
+        $("#edit_form").hide();
+        state.isInlineEdit = false;
+      }
+      else{
+        $("#edit_form").slideUp();
+      }
       // Register the click event if the user clicks cancel button
       // Needed for inline editing
       evt.stopPropagation();
       $("body").bind("click", callbacks.click);
       // Resize to its wrapper
-      setTimeout(privlyHostPage.resizeToWrapper,1000);
+      privlyHostPage.resizeToWrapper();
     });
     document.getElementById("update").addEventListener('click', callbacks.update);
     $("#edit_link").click(callbacks.edit);
@@ -354,7 +365,13 @@ var callbacks = {
       
     evt.stopPropagation();
     // Close the editing form
-    $("#edit_form").slideUp();
+    if(state.isInlineEdit){
+      $("#edit_form").hide();
+      state.isInlineEdit = false;
+    }
+    else{
+      $("#edit_form").slideUp();
+    }
     // After updating bind the click event again
     // Needed after inline editing
     $('body').bind("click",callbacks.click);
@@ -370,6 +387,7 @@ var callbacks = {
   click: function(evt) {
    if(privlyHostPage.isInjected()) {
      if (state.ctrlKeyDown){
+      state.isInlineEdit = true;
       callbacks.inlineEdit();
      }
      else if(evt.target.nodeName !== "A" || evt.target.href === ""){
