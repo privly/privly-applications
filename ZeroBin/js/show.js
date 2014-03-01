@@ -87,26 +87,26 @@ var callbacks = {
     $("body").on("click", callbacks.click);
     
     // Register ctrl keydown event to check for inline editing
-    $(window).keydown(function(evt){
-      if (evt.ctrlKey){
+    $(window).keydown(function(evt) {
+      if (evt.ctrlKey) {
         state.ctrlKeyDown = true;
       }
-      else{
+      else {
         state.ctrlKeyDown = false;
       }
     });
-    $(window).keyup(function(evt){
+    $(window).keyup(function(evt) {
       state.ctrlKeyDown = false;
     });
 
     // Register the link and button listeners.
     $("#destroy_link").click(callbacks.destroy);
-    $("#cancel_button").click(function(evt){
-      if(state.isInlineEdit){
+    $("#cancel_button").click(function(evt) {
+      if (state.isInlineEdit) {
         $("#edit_form").hide();
         state.isInlineEdit = false;
       }
-      else{
+      else {
         $("#edit_form").slideUp();
       }
       // Register the click event if the user clicks cancel button
@@ -362,11 +362,11 @@ var callbacks = {
 
     evt.stopPropagation();
     // Close the editing form
-    if(state.isInlineEdit){
+    if (state.isInlineEdit) {
       $("#edit_form").hide();
       state.isInlineEdit = false;
     }
-    else{
+    else {
       $("#edit_form").slideUp();
     }
     // After updating bind the click event again
@@ -382,17 +382,25 @@ var callbacks = {
   *
   */
   click: function(evt) {
-   if(privlyHostPage.isInjected()) {
-     if (state.ctrlKeyDown){
+   if (privlyHostPage.isInjected()) {
+     if (state.ctrlKeyDown) {
       state.isInlineEdit = true;
       callbacks.inlineEdit();
      }
-     else if(evt.target.nodeName !== "A" || evt.target.href === ""){
+     else if (evt.target.nodeName !== "A" || evt.target.href === "") {
        window.open(location.href, '_blank');
      }
    }
   },
+
+  /**
+  * This is the function called when user presses ctrl + click
+  * and is used to edit the post content inplace.
+  *
+  */
   inlineEdit: function() {
+    $("#edit_form").show();
+    // Hide the Heading when editing inplace
     $("#edit_form h1").hide();
     $('#edit_text').css('width',"95%");
     callbacks.edit();
@@ -400,10 +408,8 @@ var callbacks = {
     // user clicks on the editing text area
     $('body').unbind("click");
     // Resize to show the text ara update cancel buttons and burn after
-    privlyHostPage.dispatchResize('500');
+    privlyHostPage.resizeToWrapper();
   }
-
- 
 }
 
 // Initialize the application
