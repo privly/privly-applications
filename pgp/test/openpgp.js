@@ -1,6 +1,6 @@
-describe("Basic OpenPGP tests",function(){
+describe("OpenPGP tests",function(){
 
-  it("Correctness test",function(){
+  it("tests for Correctness property",function(){
     var pub_key =
       ['-----BEGIN PGP PUBLIC KEY BLOCK-----',
       'Version: GnuPG v2.0.19 (GNU/Linux)',
@@ -134,6 +134,21 @@ describe("Basic OpenPGP tests",function(){
 
     var decrypted = openpgp.decryptAndVerifyMessage(privkey1,[pubkey2],message);
     expect(decrypted.text).toEqual(plaintext);
+  });
+
+  it("Should sign a message",function(){
+    
+  });
+
+  it("Should verify a signed message",function(){
+    
+  });
+
+  it("Should allow decryption by all privkeys intended",function(){
+    
+  });
+  it("Should not allow decryption by wrong privkeys",function(){
+    
   });
 
 });
