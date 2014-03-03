@@ -130,9 +130,11 @@ var callbacks = {
         workerProxy.seedRandom(10); // TODO: evaluate best value to use
         workerProxy.generateKeyPair(
           openpgp.enums.publicKey.rsa_encrypt_sign,
-          4096,'username','passphrase',function(err,data){
+          1028,'username','passphrase',function(err,data){ // small key size for now
             console.log(data);
-            localforage.setItem('my_keypairs',data).then(callbacks.uploadKey());
+            // eventually need to already know user's email, hard coded for now
+            var datas = { "bob@example.com": data };
+            localforage.setItem('my_keypairs',datas).then(callbacks.uploadKey());
           }
         );
       } else { // it does exist, do nothing for now
