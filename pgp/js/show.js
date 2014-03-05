@@ -160,7 +160,7 @@ var callbacks = {
       if( json === null ) return;
       
       if(json.structured_content !== undefined) {
-        PersonaPGP.decrypt(json.structured_content).then(function(cleartext){
+        PersonaPGP.decrypt(json.structured_content,function(cleartext){
           console.log(cleartext);
           $("#edit_text").val(cleartext);
 
