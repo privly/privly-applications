@@ -126,6 +126,7 @@ var callbacks = {
     localforage.getItem('my_keypairs',function(keypair){
 
       if (keypair === null){ // it does not exist, make it
+        console.log("Generating New Key");
         var workerProxy = new openpgp.AsyncProxy('../vendor/openpgp.worker.js');
         workerProxy.seedRandom(10); // TODO: evaluate best value to use
         workerProxy.generateKeyPair(
@@ -134,10 +135,12 @@ var callbacks = {
             console.log(data);
             // eventually need to already know user's email, hard coded for now
             var datas = { "bob@example.com": data };
-            localforage.setItem('my_keypairs',datas).then(callbacks.uploadKey());
+            //localforage.setItem('my_keypairs',datas).then(callbacks.uploadKey());
+            localforage.setItem('my_keypairs',datas);  // don't upload for now
           }
         );
       } else { // it does exist, do nothing for now
+        console.log("Already have a key");
         // eventually check if key is about to expire and regen if needed
       }
     });
