@@ -72,7 +72,7 @@ var callbacks = {
     // Will pull from a form element eventually, hard coded for now
     var emails = ["bob@example.com"];
 
-    PersonaPGP.encrypt(emails,plaintext).then(function(ciphertext){
+    PersonaPGP.encrypt(emails,plaintext,function(ciphertext){
       var data_to_send = {
         post:{
           structured_content: ciphertext,
