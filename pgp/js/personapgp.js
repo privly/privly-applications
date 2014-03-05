@@ -186,7 +186,7 @@ var PersonaPGP = {
     
     // Only encrypt for the first email for now
     PersonaPGP.findPubKey(emails[0],function(key){
-      var Keys = [key];
+      var Keys = key;
       // Here we convert the plaintext into a json string. We do this to check if
       // the decryption occured with the correct string.  If it's formated as json
       // it is extremely unlikely to have been decrypted with the wrong key.
@@ -223,11 +223,14 @@ var PersonaPGP = {
       keys_to_try = [keys_to_try];
       if (keys_to_try.length === 0 || keys_to_try === null){
         console.log("No private keys found.  Decryption exiting");
-        callback"No private keys found. Failed to decrypt.");
+        callback("No private keys found. Failed to decrypt.");
       }
       for(var i = 0; i < keys_to_try.length; i++){
-        var privKey = openpgp.key.readArmored(
-                        keys_to_try[i].privateKeyArmored).keys[0];
+        emails = Object.keys(keys_to_try[i]);
+        for(var j = 0; j < emails.length; j++){
+          var privKey = openpgp.key.readArmored(
+                          keys_to_try[i][emails[j]].privateKeyArmored).keys[0];
+        }
         // hard coded passphrase for now
         var success = privKey.decryptKeyPacket(keyids,"passphrase");
         var message = PersonaPGP.decryptHelper(privKey,encrypted_message);
