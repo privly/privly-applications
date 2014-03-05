@@ -32,7 +32,7 @@ var PersonaPGP = {
    * pub key of.
    *
    */
-  findPubKey: function(email){
+  findPubKey: function(email,callback){
     var pub_keys = null;
 
     // query localForage 
@@ -44,16 +44,17 @@ var PersonaPGP = {
 
         pub_keys = [pubkey_email_hash[email]]; 
         console.log("Returning " + pub_keys);
-        return pub_keys; //array of pub keys associated with email
+        callback(pub_keys); //array of pub keys associated with email
 
       } else { // not found locally, query DirP
-        pub_keys = findPubKeyRemote(email);
-        if (pub_keys === null){
-          console.log("No public key associated with email found");
-          console.log("Invite friend to share privately goes here");
-        }
-        console.log("Returning2 " + pub_keys);
-        return pub_keys;
+        pub_keys = findPubKeyRemote(email,function(pub_keys){
+          if (pub_keys === null){
+            console.log("No public key associated with email found");
+            console.log("Invite friend to share privately goes here");
+          }
+          console.log("Returning2 " + pub_keys);
+          callback(pub_keys);
+        });
       }
     });
   },
@@ -65,7 +66,7 @@ var PersonaPGP = {
    * @param {email} email The email that the user wants to send a message to.
    *
    */
-  findPubKeyRemote: function(email){
+  findPubKeyRemote: function(email,callback){
     console.log("Querying directory provider");
     var remote_directory = "https://127.0.0.1:10001";
     var pub_keys = null;
@@ -81,14 +82,14 @@ var PersonaPGP = {
             // appropriate values.
             pub_keys = data; // this line is wrong, update me
             //PersonaPGP.addRemoteKeyToLocal(email,data);
-            return pub_keys;
+            callback(pub_keys);
           } else {
-            return null;
+            callback(null);
           }
         } else {
           // handle other status responses in the future
           console.log("Response status was not 200");
-          return null;
+          callback(null);
         }
       }
     );
@@ -171,7 +172,7 @@ var PersonaPGP = {
    * @param {plaintext} plaintext The message being encrypted.
    *
    */
-  encrypt: function(emails,plaintext){
+  encrypt: function(emails,plaintext,callback){
     // TODO:Check if additional arguments have been passed, 
     // sign and encrypt if private key passed or just encrypt if not.
     // For now, not signing messages.
@@ -184,7 +185,7 @@ var PersonaPGP = {
     //}
     
     // Only encrypt for the first email for now
-    PersonaPGP.findPubKey(emails[0]).then(function(key){
+    PersonaPGP.findPubKey(emails[0],function(key){
       var Keys = [key];
       // Here we convert the plaintext into a json string. We do this to check if
       // the decryption occured with the correct string.  If it's formated as json
@@ -203,7 +204,7 @@ var PersonaPGP = {
         pubKeys.push(pub_key);
       }
       var ciphertext = openpgp.encryptMessage(pubKeys,plaintext_as_json);
-      return ciphertext;
+      callback(ciphertext);
     });
   },
 
@@ -213,7 +214,7 @@ var PersonaPGP = {
    * @param {ciphertext} ciphertext The message being decrypted.
    *
    */
-  decrypt: function(ciphertext){
+  decrypt: function(ciphertext,callback){
     var encrypted_message = openpgp.message.readArmored(ciphertext);
     var keyids = encrypted_message.getEncryptionKeyIds();
 
@@ -222,7 +223,7 @@ var PersonaPGP = {
       keys_to_try = [keys_to_try];
       if (keys_to_try.length === 0 || keys_to_try === null){
         console.log("No private keys found.  Decryption exiting");
-        return "No private keys found. Failed to decrypt.";
+        callback"No private keys found. Failed to decrypt.");
       }
       for(var i = 0; i < keys_to_try.length; i++){
         var privKey = openpgp.key.readArmored(
@@ -231,10 +232,10 @@ var PersonaPGP = {
         var success = privKey.decryptKeyPacket(keyids,"passphrase");
         var message = PersonaPGP.decryptHelper(privKey,encrypted_message);
         if (message !== "next"){ // decrypted successfully
-          return message;
+          callback(message);
         } else if (i === (keys_to_try.length - 1)) {
           console.log("Tried all available private keys, none worked");
-          return "The data behind this link cannot be decrypted with your key.";
+          callback("The data behind this link cannot be decrypted with your key.");
         }
       }
     });
