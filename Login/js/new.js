@@ -17,6 +17,7 @@
  * 6. Login Failure: The server did not grant the user a session.
  * 7. Login Error: The server could not be reached or had an internal error.
  * 8. Pending Post: The user is properly logged in and can create content.
+ * 9. genPGPkeys: The extension is checking PGP keys exist and are not expired.
  */
 var callbacks = {
   
@@ -61,6 +62,9 @@ var callbacks = {
       callbacks.pendingPost, 
       callbacks.notLoggedIn, 
       callbacks.loginError);
+
+    // Generate a PGP Keypair if needed
+    callbacks.genPGPKeys();
   },
   
   /**
@@ -120,8 +124,72 @@ var callbacks = {
    */
   pendingPost: function() {
     window.location = "../Help/new.html";
+  },
+
+  /**
+   * Genereate a PGP key if it does not exist or is nearly expired
+   */
+  genPGPKeys: function(){
+    // Determine if a key is already in local storage
+    localforage.getItem('my_keypairs',function(keypair){
+
+      if (keypair === null){ // it does not exist, make it
+        console.log("Generating New Key");
+        var workerProxy = new openpgp.AsyncProxy('../vendor/openpgp.worker.js');
+        workerProxy.seedRandom(10); // TODO: evaluate best value to use
+        workerProxy.generateKeyPair(
+          openpgp.enums.publicKey.rsa_encrypt_sign,
+          1028,'username','passphrase',function(err,data){ // small key size for now
+            console.log(data);
+            // eventually need to already know user's email, hard coded for now
+            var datas = { "bob@example.com": data };
+            //localforage.setItem('my_keypairs',datas).then(callbacks.uploadKey());
+            localforage.setItem('my_keypairs',datas);  // don't upload for now
+          }
+        );
+      } else { // it does exist, do nothing for now
+        console.log("Already have a key");
+        // eventually check if key is about to expire and regen if needed
+      }
+    });
+    // remove me later, just here for testing
+    // at the very least add conditional logic to only upload on generation
+  },
+
+  /**
+   * Upload a signed key along with associated user certificate to directory
+   */
+  uploadKey: function(){
+    localforage.getItem('my_keypairs',function(keypair){
+      if (keypair === null){
+        console.log("No key to upload found");
+        return false;
+      }
+      console.log(keypair);
+      var email = "bob@example.com";
+      var directoryURL = "http://127.0.0.1:8989/"
+      var pubkey = "foo";
+      console.log("Oh noes");
+      console.log(pubkey);
+      $.post(
+        directoryURL,
+        {email:email, 
+          uc: "uc", 
+          ia: "ia", 
+          pgp_pub: pubkey,
+          sign_pgp_pub: "foo_signed"
+        },
+        function(response){
+          if (response.status === 200){
+            console.log(response);
+          }
+        }
+      );
+      console.log("sent");
+    });
   }
 }
+
 
 // Start the application
 document.addEventListener('DOMContentLoaded', callbacks.pendingLogin);
