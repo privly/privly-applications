@@ -141,17 +141,16 @@ var callbacks = {
         );
       } else { // it does exist, do nothing for now
         console.log("Already have a key");
+        console.log(keypair["bob@example.com"][0]);
         // TODO: check if key is about to expire and gen a new one if needed
       }
     });
-    // remove me later, just here for testing
-    // at the very least add conditional logic to only upload on generation
   },
 
   /**
    * Upload a signed key along with associated user certificate to directory
    */
-  uploadKey: function(){
+  uploadKey: function(email,ballOwax){
     localforage.getItem('my_keypairs',function(keypair){
       if (keypair === null){
         console.log("No key to upload found");
