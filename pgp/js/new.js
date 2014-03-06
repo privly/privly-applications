@@ -66,10 +66,11 @@ var callbacks = {
   submit: function() {
     var plaintext = $("#content")[0].value;
     //var recipient = $("#email")[0].value;
+    // TODO: send message to someone besides yourself
     // Will eventually take email from input form, and then search for pubkey
     // for now using key found in localforage, ie encrypting message to self
 
-    // Will pull from a form element eventually, hard coded for now
+    // TODO: pull email from a form element, hard coded for now
     var emails = ["bob@example.com"];
 
     PersonaPGP.encrypt(emails,plaintext,function(ciphertext){
