@@ -17,4 +17,4 @@ The remote resources that are involved in this app are:
   *  A directory provider.  This provides a remote key-value store for public keys.
   *  A remote verifier.  This authenticates an email address with a public key. Long term the intent is to port the verifier to run locally on the browser.
 
-For more details on the protocol for this app, see the [protocol](https://github.com/privly/privly-applications/blob/irdan/PersonaPGP/protocol.md) document.
+For more details on the protocol for this app, see the [protocol](https://github.com/irdan/privly-applications/blob/irdan/PersonaPGP/protocol.md) document.
