@@ -1,24 +1,31 @@
 /**
  * @fileOverview 
- * This JavaScript acts as a source for pgp related functionality.
+ * This JavaScript is set of functions for pgp related functionality.
  *
  **/
 
 /**
- * The functions in PersonaPGP
+ * The functions in PersonaPGP:
  *
- * 1. Key Search: Check localForage and remote directory for keys associated 
- *    with email address. Should return public key of message recipient.
+ * 1. Key Search: Check localForage and remote directory for keys associated
+ *    with email address. Should return public key of message recipient. If the
+ *    email is found remotely, it is verified and then added to localForage.
  *    Callback=findPubKey
- * 2. Verify Public Key: Verifies if a public key is in fact associated with
- *    an email address.
+ * 2. Remote Key Search: The function that queries the remote directory for
+ *    email addresses. If it is found, calls addRemoteKeyToLocal.
+ *    Callback=findPubKeyRemote
+ * 3. Add Key to Local Storage: This function authenticates a key with the
+ *    verifyPubKey function, and adds it to localforage if it is valid.
+ *    Callback=addRemoteKeyToLocal
+ * 4. Verify Public Key: Verifies if a public key is in fact associated with
+ *    an email address using the remote verifier.
  *    Callback=verifyPubKey
- * 3. Encrypt a message: Converts a message to json and then encrypts it using
+ * 5. Encrypt a message: Converts a message to json and then encrypts it using
  *    openpgp.js.  The conversion to json is used as a method to later ensure
  *    that decryption occurred successfully.  This is needed when the keyid used
  *    to encrypt a message is not disclosed.
  *    Callback=encrypt
- * 4. Decrypt a message: Converts ciphertext into cleartext. As an additional
+ * 6. Decrypt a message: Converts ciphertext into cleartext. As an additional
  *    assurance verifies that decrypted message is valid json.
  *
  */
@@ -41,9 +48,7 @@ var PersonaPGP = {
     //localforage.getItem('my_contacts',function(pubkey_email_hash)
     localforage.getItem('my_keypairs',function(pubkey_email_hash){
       if (email in pubkey_email_hash) {
-
-        pub_keys = [pubkey_email_hash[email]]; 
-        console.log("Returning " + pub_keys);
+        pub_keys = pubkey_email_hash[email]; 
         callback(pub_keys); //array of pub keys associated with email
 
       } else { // not found locally, query DirP
@@ -51,9 +56,12 @@ var PersonaPGP = {
           if (pub_keys === null){
             console.log("No public key associated with email found");
             console.log("Invite friend to share privately goes here");
+            callback(pub_keys);
+          } else {
+            console.log("Returning2 " + pub_keys);
+            //addRemoteKeyToLocal(email,ballOwax);
+            callback(pub_keys);
           }
-          console.log("Returning2 " + pub_keys);
-          callback(pub_keys);
         });
       }
     });
@@ -100,9 +108,12 @@ var PersonaPGP = {
    * email address and has a value of every component that is needed in order
    * to authenticate with the verifier. 
    *
-   * TODO: describe params
+   * @param {email} email The email address the public key belongs to.
+   * @param {assertion} ballOwax The backed identity assertion and accompanying
+   * privly public key.
    */
   addRemoteKeyToLocal: function(email,ballOwax){
+    // TODO: use callback 
     console.log("Adding remotely discovered key to local contacts");
     // authenticate email with verifier -> return false on failure
     // TODO: authenticate with verifier
@@ -128,11 +139,13 @@ var PersonaPGP = {
    * @param {pub_key} pub_key The public key to be verified.
    */
   verifyPubKey: function(pub_key){
+    //TODO: use callback instead of return
     
     // data structure assumed may be wrong
     var assertion = findPubKey(pub_key);
 
-    // audience does not matter, the assertion is made public knowledge
+    // audience should be the directory provider URL
+    // TODO: get rid of magic string url, pull from a localforage 
     var audience = "https://publicknowledge.com:443";
 
     $.post(
@@ -186,8 +199,8 @@ var PersonaPGP = {
     
     // Only encrypt for the first email for now
     // TODO: encrypt for entire array of emails
-    PersonaPGP.findPubKey(emails[0],function(key){
-      var Keys = key;
+    PersonaPGP.findPubKey(emails[0],function(Keys){
+
       // Here we convert the plaintext into a json string. We do this to check if
       // the decryption occured with the correct string.  If it's formated as json
       // it is extremely unlikely to have been decrypted with the wrong key.
@@ -219,32 +232,55 @@ var PersonaPGP = {
     var encrypted_message = openpgp.message.readArmored(ciphertext);
     var keyids = encrypted_message.getEncryptionKeyIds();
 
-    localforage.getItem('my_keypairs',function(keys_to_try){
-      // for now, define as an array
-      keys_to_try = [keys_to_try];
-      if (keys_to_try.length === 0 || keys_to_try === null){
+    localforage.getItem('my_keypairs',function(my_keys){
+      console.log(my_keys[0]);
+      if (my_keys.length === 0 || my_keys === null){
         console.log("No private keys found.  Decryption exiting");
         callback("No private keys found. Failed to decrypt.");
       }
-      for(var i = 0; i < keys_to_try.length; i++){
-        emails = Object.keys(keys_to_try[i]);
-        for(var j = 0; j < emails.length; j++){
+      emails = Object.keys(my_keys);
+      for(var i = 0; i < emails.length; i++){
+        console.log(emails[i]);
+        for(var j = 0; j < my_keys[emails[i]].length; j++){
+          console.log(my_keys[emails[i]][j]);
           var privKey = openpgp.key.readArmored(
-                          keys_to_try[i][emails[j]].privateKeyArmored).keys[0];
-        }
-        // hard coded passphrase for now
-        // TODO: get passphrase from user 
-        var success = privKey.decryptKeyPacket(keyids,"passphrase");
-        var message = PersonaPGP.decryptHelper(privKey,encrypted_message);
-        if (message !== "next"){ // decrypted successfully
-          callback(message);
-        } else if (i === (keys_to_try.length - 1)) {
-          console.log("Tried all available private keys, none worked");
-          callback("The data behind this link cannot be decrypted with your key.");
+                          my_keys[emails[i]][j].privateKeyArmored).keys[0];
+          // hard coded passphrase for now
+          // TODO: get passphrase from user 
+          var success = privKey.decryptKeyPacket(keyids,"passphrase");
+          if (success === true){
+            var message = PersonaPGP.decryptHelper(privKey,encrypted_message);
+            if (message !== "next"){ // decrypted successfully
+              callback(message);
+            } else if ( i === (my_keys.length - 1) &&
+                        j === (my_keys[email[i]].length -1) ) {
+              console.log("Tried all available private keys, none worked");
+              callback("The data cannot be viewed with your keys.");
+            }
+          } else {
+            console.log("Wrong key!");
+            if ( i === (my_keys.length - 1) &&
+                 j === (my_keys[email[i]].length -1) ) {
+              console.log("Tried all available private keys, none worked");
+              callback("The data cannot be viewed with your keys.");
+            }
+          }
         }
       }
     });
   },
+
+  /**
+   * This function helps to decrypt a json encoded message. It verifies that
+   * the decrypted contents of the message is in json format. If a keyid is
+   * not included in a message, this is the only way to know with certainty
+   * if the decryption occurred with the correct key.
+   *
+   * @param {Private Key} privKey The key to attempt to decrypt the message
+   * with.
+   * @param {Decoded Message} encrypted_message The dearmored ciphertext.
+   *
+   */
 
   decryptHelper: function(privKey,encrypted_message){
     // Should determine if message is signed or not, and use appropriate
