@@ -31,14 +31,16 @@ var state = {
   jsonURL: "",
 
   /**
-  * The check to see if the ctrl Key is pressed for editing or not
+  * Reference to the setTimeout so that we can clear it
+  * in case user double clicks for inline editing
   **/
-  ctrlKeyDown: false,
+  timeoutRef: "",
 
   /**
-  * The check if the editing is inline or not
+  * Variable to check if the iframe has been clicked before
+  * for inline editing
   **/
-  isInlineEdit: false
+  isClicked: false
 }
 
 
@@ -82,29 +84,10 @@ var callbacks = {
     // Register the click listener.
     $("body").on("click", callbacks.click);
 
-    // Register ctrl keydown event to check for inline editing
-    $(window).keydown(function(evt) {
-      if (evt.ctrlKey) {
-        state.ctrlKeyDown = true;
-      }
-      else {
-        state.ctrlKeyDown = false;
-      }
-    });
-    $(window).keyup(function(evt) {
-      state.ctrlKeyDown = false;
-    });
-
     // Register the link and button listeners.
     $("#destroy_link").click(callbacks.destroy);
     $("#cancel_button").click(function(evt) {
-      if (state.isInlineEdit) {
-        $("#edit_form").hide();
-        state.isInlineEdit = false;
-      }
-      else {
-        $("#edit_form").slideUp();
-      }
+      $("#edit_form").hide();
       // Register the click event if the user clicks cancel button
       // Needed for inline editing
       evt.stopPropagation();
@@ -365,13 +348,8 @@ var callbacks = {
       
     evt.stopPropagation();
     // Close the editing form
-    if (state.isInlineEdit) {
-      $("#edit_form").hide();
-      state.isInlineEdit = false;
-    }
-    else {
-      $("#edit_form").slideUp();
-    }
+    
+    $("#edit_form").hide();
     // After updating bind the click event again
     // Needed after inline editing
     $('body').bind("click",callbacks.click);
@@ -385,22 +363,37 @@ var callbacks = {
   *
   */
   click: function(evt) {
-   if (privlyHostPage.isInjected()) {
-     if (state.ctrlKeyDown){
-      state.isInlineEdit = true;
-      callbacks.inlineEdit();
-     }
-     else if (evt.target.nodeName !== "A" || evt.target.href === "") {
+    if (state.isClicked) {
+      clearTimeout(state.timeoutRef);
+      state.isClicked = false;
+      callbacks.doubleClick();
+    }
+    else{
+      state.isClicked = true;
+      state.timeoutRef = setTimeout(function(){
+        callbacks.singleClick(evt);
+      },200);
+    }
+  },
+  /**
+  * This is the handler for single click event on the iframe
+  * It opens a new tab with the post content
+  *
+  **/
+  singleClick: function(evt) {
+    state.isClicked = false;
+    if (privlyHostPage.isInjected()) {
+      if (evt.target.nodeName !== "A" || evt.target.href === "") {
        window.open(location.href, '_blank');
      }
    }
   },
   /**
-  * This is the function called when user presses ctrl + click
-  * and is used to edit the post content inplace.
+  * This is the function called when user presses double clicks
+  * on the iframe and is used for inline editing
   *
   */
-  inlineEdit: function() {
+  doubleClick: function() {
     $("#edit_form").show();
     // Hide the Heading when editing inplace
     $("#edit_form h1").hide();
