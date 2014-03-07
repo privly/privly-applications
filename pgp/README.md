@@ -30,6 +30,22 @@ Storage is not currently supported across all browsers and platforms.
 localForage acts as a shim that provides support on [all
 platforms](https://hacks.mozilla.org/2014/02/localforage-offline-storage-improved/).
 
+The data that is stored in localforage is of two types. Your own keypairs, and
+the public keys of your contacts.
+
+```
+{ 
+  my_keypairs: { email: [keypairs]    },
+  my_contacts: { email: [public keys] }
+}
+```
+
+In other words, localforage is a hash with two entries, `my_contacts` and
+`my_keypairs`.  Both entires have values that are a hash where emails are keys
+with a corresponding value of an array of public keys or keypairs,
+respectively. In the case of your keypairs, the key is naturally your own
+email.
+
 The remote resources that are involved in this app are: 
 
   *  A directory provider.  This provides a remote key-value store for public
