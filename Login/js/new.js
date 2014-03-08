@@ -134,7 +134,7 @@ var callbacks = {
           1028,'username','passphrase',function(err,data){ // TODO: increase key size 
             console.log(data);
             // TODO: need to already know user's email, hard coded for now
-            var datas = { "bob@example.com": data };
+            var datas = { "bob@example.com": [data] };
             //localforage.setItem('my_keypairs',datas).then(callbacks.uploadKey());
             localforage.setItem('my_keypairs',datas);  // TODO: actually upload key
           }
