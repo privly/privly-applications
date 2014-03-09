@@ -123,27 +123,29 @@ var callbacks = {
    */
   genPGPKeys: function(){
     // Determine if a key is already in local storage
-    localforage.getItem('my_keypairs',function(keypair){
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('my_keypairs',function(keypair){
 
-      if (keypair === null){ // it does not exist, make it
-        console.log("Generating New Key");
-        var workerProxy = new openpgp.AsyncProxy('../vendor/openpgp.worker.js');
-        workerProxy.seedRandom(10); // TODO: evaluate best value to use
-        workerProxy.generateKeyPair(
-          openpgp.enums.publicKey.rsa_encrypt_sign,
-          1028,'username','passphrase',function(err,data){ // TODO: increase key size 
-            console.log(data);
-            // TODO: need to already know user's email, hard coded for now
-            var datas = { "bob@example.com": [data] };
-            //localforage.setItem('my_keypairs',datas).then(callbacks.uploadKey());
-            localforage.setItem('my_keypairs',datas);  // TODO: actually upload key
-          }
-        );
-      } else { // it does exist, do nothing for now
-        console.log("Already have a key");
-        console.log(keypair["bob@example.com"][0]);
-        // TODO: check if key is about to expire and gen a new one if needed
-      }
+        if (keypair === null){ // it does not exist, make it
+          console.log("Generating New Key");
+          var workerProxy = new openpgp.AsyncProxy('../vendor/openpgp.worker.js');
+          workerProxy.seedRandom(10); // TODO: evaluate best value to use
+          workerProxy.generateKeyPair(
+            openpgp.enums.publicKey.rsa_encrypt_sign,
+            1028,'username','passphrase',function(err,data){ // TODO: increase key size
+              console.log(data);
+              // TODO: need to already know user's email, hard coded for now
+              var datas = { "bob@example.com": [data] };
+              //localforage.setItem('my_keypairs',datas).then(callbacks.uploadKey());
+              localforage.setItem('my_keypairs',datas);  // TODO: actually upload key
+            }
+          );
+        } else { // it does exist, do nothing for now
+          console.log("Already have a key");
+          console.log(keypair["bob@example.com"][0]);
+          // TODO: check if key is about to expire and gen a new one if needed
+        }
+      });
     });
   },
 
