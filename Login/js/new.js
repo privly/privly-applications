@@ -133,11 +133,17 @@ var callbacks = {
           workerProxy.generateKeyPair(
             openpgp.enums.publicKey.rsa_encrypt_sign,
             1028,'username','passphrase',function(err,data){ // TODO: increase key size
-              console.log(data);
               // TODO: need to already know user's email, hard coded for now
-              var datas = { "bob@example.com": [data] };
+              var email = "bob@example.com";
+              var datas = {}
+              datas[email] = [data];
               //localforage.setItem('my_keypairs',datas).then(callbacks.uploadKey());
               localforage.setItem('my_keypairs',datas);  // TODO: actually upload key
+              // Make sure you can send encrypted messages to yourself
+              // Just pub key in contacts
+              var pub = {}
+              pub[email] = [data.publicKeyArmored]; 
+              localforage.setItem('my_contacts',pub);  
             }
           );
         } else { // it does exist, do nothing for now
