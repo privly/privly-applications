@@ -1,7 +1,7 @@
 /**
- * @fileOverview 
- * This JavaScript is set of functions for pgp related functionality.
- *
+ * @fileOverview This JavaScript is set of functions for pgp related actions.
+ * These actions include Finding keys, calling a key verifier, encrypting, and
+ * decrypting.
  **/
 
 /**
@@ -27,9 +27,7 @@
  *    Callback=encrypt
  * 6. Decrypt a message: Converts ciphertext into cleartext. As an additional
  *    assurance verifies that decrypted message is valid json.
- *
  */
-
 var PersonaPGP = {
   /**
    * Attempt to find the public key of a given email address.  Looks at local
@@ -37,7 +35,6 @@ var PersonaPGP = {
    *
    * @param {email} email The email that the user wants to find the associated 
    * pub key of.
-   *
    */
   findPubKey: function(email,callback){
     // query localForage 
@@ -68,7 +65,6 @@ var PersonaPGP = {
    * directory.
    *
    * @param {email} email The email that the user wants to send a message to.
-   *
    */
   findPubKeyRemote: function(email,callback){
     var remote_directory = "https://127.0.0.1:10001";
@@ -177,7 +173,6 @@ var PersonaPGP = {
    * @param {pubKeys} keys An array of key objects that should be able to be 
    * used to decrypt the message.
    * @param {plaintext} plaintext The message being encrypted.
-   *
    */
   encrypt: function(emails,plaintext,callback){
     // TODO:Check if additional arguments have been passed, 
@@ -218,7 +213,6 @@ var PersonaPGP = {
    * This function uses openpgpjs to decrypt a json encoded message.
    *
    * @param {ciphertext} ciphertext The message being decrypted.
-   *
    */
   decrypt: function(ciphertext,callback){
     var encrypted_message = openpgp.message.readArmored(ciphertext);
@@ -266,7 +260,6 @@ var PersonaPGP = {
    * @param {Private Key} privKey The key to attempt to decrypt the message
    * with.
    * @param {Decoded Message} encrypted_message The dearmored ciphertext.
-   *
    */
 
   decryptHelper: function(privKey,encrypted_message){
