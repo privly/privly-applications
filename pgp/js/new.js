@@ -170,7 +170,3 @@ $(document).ajaxStart(function() {
 $(document).ajaxStop(function() { 
   $('#loadingDiv').hide(); 
 });
-var pubKey = null;
-localforage.getItem('my_keypairs',function(keypair){
-  pubKey = keypair;//openpgp.key.readArmored(keypair.publicKeyArmored).keys[0];
-});
