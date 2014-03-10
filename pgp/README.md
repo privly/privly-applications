@@ -6,7 +6,7 @@ applications](https://github.com/privly/privly-organization/wiki/Injectable-Appl
 ------------------------------------------------------------------------------
 
 
-=== THIS IS ALPHA SOFTWARE - USE AT YOUR OWN RISKS ====
+=== THIS IS PRE-ALPHA SOFTWARE - USE AT YOUR OWN RISKS ====
 
 Currently the app supports basic encryption/decryption of content posted and
 retrieved from a content server. This is currently done with keys read from

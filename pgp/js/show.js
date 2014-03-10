@@ -9,7 +9,6 @@
  * @namespace
  *
  * State variables used accross all the callbacks.
- *
  */
 var state = {
 
