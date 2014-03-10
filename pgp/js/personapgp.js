@@ -71,7 +71,6 @@ var PersonaPGP = {
    *
    */
   findPubKeyRemote: function(email,callback){
-    console.log("Querying directory provider");
     var remote_directory = "https://127.0.0.1:10001";
     var pub_keys = null;
     $.get(
@@ -110,7 +109,6 @@ var PersonaPGP = {
    */
   addRemoteKeyToLocal: function(email,ballOwax){
     // TODO: use callback 
-    console.log("Adding remotely discovered key to local contacts");
     // authenticate email with verifier -> return false on failure
     // TODO: authenticate with verifier
     // verifyPubKey(email,ballOwax).then( the rest of the function );
@@ -228,16 +226,12 @@ var PersonaPGP = {
 
     localforage.setDriver('localStorageWrapper',function(){
       localforage.getItem('my_keypairs',function(my_keys){
-        console.log(my_keys[0]);
         if (my_keys.length === 0 || my_keys === null){
-          console.log("No private keys found.  Decryption exiting");
           callback("No private keys found. Failed to decrypt.");
         }
         emails = Object.keys(my_keys);
         for(var i = 0; i < emails.length; i++){
-          console.log(emails[i]);
           for(var j = 0; j < my_keys[emails[i]].length; j++){
-            console.log(my_keys[emails[i]][j]);
             var privKey = openpgp.key.readArmored(
                             my_keys[emails[i]][j].privateKeyArmored).keys[0];
             // hard coded passphrase for now
@@ -249,14 +243,11 @@ var PersonaPGP = {
                 callback(message);
               } else if ( i === (my_keys.length - 1) &&
                           j === (my_keys[email[i]].length -1) ) {
-                console.log("Tried all available private keys, none worked");
                 callback("The data cannot be viewed with your keys.");
               }
             } else {
-              console.log("Wrong key!");
               if ( i === (my_keys.length - 1) &&
                    j === (my_keys[email[i]].length -1) ) {
-                console.log("Tried all available private keys, none worked");
                 callback("The data cannot be viewed with your keys.");
               }
             }
@@ -291,7 +282,6 @@ var PersonaPGP = {
     try { // try to parse cleartext as json object
       message = JSON.parse(cleartext);
     } catch(e) {
-      console.log(e.message);
       message = JSON.parse('{"message":' + "'" + decryptFailedMsg + "}'");
     }
 
@@ -301,7 +291,6 @@ var PersonaPGP = {
       // TODO: make this more robust
       // figure out a better solution long term. currently this prevents
       // sending a message consisting only of "next".  
-      console.log("Wrong key, trying next one");
       return "next";
     }
   }
