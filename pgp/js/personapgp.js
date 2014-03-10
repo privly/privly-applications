@@ -126,21 +126,22 @@ var PersonaPGP = {
    * Long term this functionality should be implemented to run locally.
    * This will remove the need to trust the remote verifier.
    *
+   * This function should: 
+   *   1) verify the signature on the public key 
+   *   2) verify the backed identity assertion passed to it using the remote
+   *      verifier.
+   *
    * @param {pub_key} pub_key The public key to be verified.
+   * @param {bia} bia The backed identity assertion.
    */
-  verifyPubKey: function(pub_key){
-    //TODO: use callback instead of return
-    
-    // data structure assumed may be wrong
-    var assertion = findPubKey(pub_key);
-
+  verifyPubKey: function(pub_key,bia,callback){
     // audience should be the directory provider URL
     // TODO: get rid of magic string url, pull from a localforage 
     var audience = "https://publicknowledge.com:443";
 
     $.post(
       "https://verifier.login.persona.org/verify",
-      {assertion: assertion, audience: audience},
+      {assertion: bia, audience: audience},
       function(response){
 
         if (response.status === 200){
@@ -148,20 +149,20 @@ var PersonaPGP = {
           if (data.status === "okay"){
             // The data structure is wrong, correct later
             if (assertion.email === data.email){
-              return true;
+              callback(true);
             } else {
               console.log("Email mismatch");
-              return false;
+              callback(false);
             }
           } else {
             // data.reason is likely wrong
             var reason = data.reason;
             console.log("Verification not okay because" + reason);
-            return false;
+            callback(false);
           }
         } else {
           console.log("Status 200 was not returned");
-          return false;
+          callback(false);
         }
       }
     );
