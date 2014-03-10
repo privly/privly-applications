@@ -169,20 +169,26 @@ var callbacks = {
   },
 
   /**
-   * Upload a signed key along with associated user certificate to directory
+   * Upload a backed identity assertion and public key to a directory provider.
+   * Currently this is not called because the remote resources this function
+   * depends on are not mature. 
+   *
+   * On a high level, this function needs to:
+   *   1) Generate a Backed Identity Assertion or have access to one
+   *   2) Take the public key out of the BIA and sign the key that was just
+   *      generated above in the genPGP function.
+   *   3) Upload the BIA and signed public key to the directory provider.
    */
-  uploadKey: function(email,ballOwax){
+  uploadKey: function(email){
     localforage.getItem('my_keypairs',function(keypair){
       if (keypair === null){
         console.log("No key to upload found");
         return false;
       }
-      console.log(keypair);
-      var email = "bob@example.com";
+      keypair = keypair[email]; // array of keypairs associated with email
+      keypair = keypair[keypair.length-1]; // most recently added key
       var directoryURL = "http://127.0.0.1:8989/"
       var pubkey = "foo";
-      console.log("Oh noes");
-      console.log(pubkey);
       $.post(
         directoryURL,
         {email:email, 
@@ -197,7 +203,6 @@ var callbacks = {
           }
         }
       );
-      console.log("sent");
     });
   }
 }
