@@ -41,15 +41,11 @@ var PersonaPGP = {
    */
   findPubKey: function(email,callback){
     // query localForage 
-    console.log("Querying local storage");
-    // TODO: allow looking at keyspairs that are not your own
-    //localforage.getItem('my_contacts',function(pubkey_email_hash)
     localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('my_keypairs',function(pubkey_email_hash){
+      localforage.getItem('my_contacts',function(pubkey_email_hash){
         if (email in pubkey_email_hash) {
-          pub_keys = pubkey_email_hash[email]; 
+          var pub_keys = pubkey_email_hash[email]; 
           callback(pub_keys); //array of pub keys associated with email
-
         } else { // not found locally, query DirP
           findPubKeyRemote(email,function(pub_keys){
             if (pub_keys === null){
@@ -210,11 +206,9 @@ var PersonaPGP = {
       // json will (eventually) allow us to preserve the identity of recipients.
       var plaintext_as_json = JSON.stringify({message: plaintext});
 
-      // Extract all keys from passed array
-      // This will need to be updated once the underlying data structure is fixed
       var pubKeys = new Array();
       for (var i = 0; i < Keys.length; i++){
-        pub_key = openpgp.key.readArmored(Keys[i].publicKeyArmored).keys[0];
+        pub_key = openpgp.key.readArmored(Keys[i]).keys[0];
         pubKeys.push(pub_key);
       }
       var ciphertext = openpgp.encryptMessage(pubKeys,plaintext_as_json);
