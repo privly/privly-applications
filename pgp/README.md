@@ -24,17 +24,18 @@ addRemoteKeyToLocal, and verifyPubKey. These functions are not currently called
 because the remote resources are not yet mature. The basic ideas they implement
 should be sound, but have not been tested.
 
+
 ### Current TODO
-- [ ] Sign and encrypt messages (currently the app just encrypts without 
+- Sign and encrypt messages (currently the app just encrypts without 
       signing)
-- [ ] Verify signatures when decrypting messages
-- [ ] Generate a backed identity assertions in browser
-- [ ] Sign a PersonaPGP key with the public key found in a backed identity 
+- Verify signatures when decrypting messages
+- Generate a backed identity assertions in browser
+- Sign a PersonaPGP key with the public key found in a backed identity 
       assertion
-- [ ] Upload backed identity assertion and PersonaPGP to the directory 
+- Upload backed identity assertion and PersonaPGP to the directory 
       provider. ( Note that this should happen in the Login app )
-- [ ] Verify a returned back identity assertion and signature
-- [ ] Implement tests that are already outlined
+- Verify a returned back identity assertion and signature
+- Implement tests that are already outlined
 
 
 ### Storage
@@ -74,6 +75,17 @@ The remote resources that are involved in this app are:
      private keys never leave the browser.
     
 For more details on the protocol for this app, see the
-[protocol](https://github.com/irdan/privly-applications/blob/irdan/PersonaPGP/protocol.md)
+[protocol](https://github.com/privly/privly-applications/blob/experimental-pgp/pgp/protocol.md)
 document.
 
+### Getting Started with Development
+
+To get started developing the PGP app in chrome:
+
+1.  Clone the repositories with ```git clone --recursive https://github.com/privly/privly-applications.git```.
+1.  Change the branch in privly-chrome to expiremental-apps with
+    ```git checkout expiremental-apps```.
+1.  Change the branch in privly-applications to expiremental-pgp with
+    ```git checkout expiremental-pgp```.
+1.  In chrome on the extensions page, check the 'Developer mode' box.
+1.  Click load unpacked extension and load your privly-chrome folder.
