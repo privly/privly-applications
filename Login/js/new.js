@@ -93,7 +93,9 @@ var callbacks = {
     
     if ( response.json.success === true ) {
       callbacks.pendingPost();
-    } else {
+    } else if ( response.json.error ) {
+		  callbacks.loginConnectionError();
+	  } else {
       callbacks.loginFailure();
     }
   },
@@ -107,6 +109,15 @@ var callbacks = {
     $("#messages").show();
   },
   
+  
+  /**
+   * Tell the user there was an error.
+   */
+  loginConnectionError: function() {
+    $("#messages").text("There Was a JSON Error" + 
+      "Please Try again.");
+    $("#messages").show();
+  }
   /**
    * Tell the user their content server could not be reached.
    */
