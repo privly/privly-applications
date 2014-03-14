@@ -46,6 +46,10 @@ var state = {
   * for inline editing
   **/
   isClicked: false,
+  /**
+  * Variable to check if the editing is done inline or not.
+  * 
+  **/
   isInlineEdit: false
 }
 

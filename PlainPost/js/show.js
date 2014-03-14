@@ -40,7 +40,12 @@ var state = {
   * Variable to check if the iframe has been clicked before
   * for inline editing
   **/
-  isClicked: false
+  isClicked: false,
+  /**
+  * Variable to check if the editing is done inline or not.
+  * 
+  **/
+  isInlineEdit: false
 }
 
 
