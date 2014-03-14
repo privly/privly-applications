@@ -86,15 +86,8 @@ var callbacks = {
 
     // Register the link and button listeners.
     $("#destroy_link").click(callbacks.destroy);
-    $("#cancel_button").click(function(evt) {
-      $("#edit_form").hide();
-      // Register the click event if the user clicks cancel button
-      // Needed for inline editing
-      evt.stopPropagation();
-      $("body").bind("click", callbacks.click);
-      // Resize to its wrapper
-      privlyHostPage.resizeToWrapper();
-    });
+    $("#cancel_button").on("click",callbacks.cancel);
+    
     document.getElementById("update").addEventListener('click', callbacks.update);
     $("#edit_link").click(callbacks.edit);
 
@@ -350,9 +343,22 @@ var callbacks = {
     // Close the editing form
     
     $("#edit_form").hide();
-    // After updating bind the click event again
-    // Needed after inline editing
-    $('body').bind("click",callbacks.click);
+    state.isInlineEdit = false;
+  },
+  /**
+  * This is an event listener for cancel event.
+  *
+  * @param {event} evt The event triggered by the cancel button
+  *  being clicked.
+  *
+  */
+  cancel: function(evt){
+    $("#edit_form").hide();
+    evt.stopPropagation();
+    // Resize to its wrapper
+    privlyHostPage.resizeToWrapper();
+    state.isClicked = false;
+    state.isInlineEdit = false;
   },
   
   /**
@@ -364,15 +370,34 @@ var callbacks = {
   */
   click: function(evt) {
     if (state.isClicked) {
-      clearTimeout(state.timeoutRef);
-      state.isClicked = false;
-      callbacks.doubleClick();
+      var target = $(evt.target)
+      if (state.isInlineEdit && !target.is("textarea") &&
+          !target.is("select")) {
+        // Double click During inline Editing
+        // and not on the textarea or the dropdown.
+        callbacks.doubleClickInline(evt);
+        state.isClicked = false;
+      }
+      else{
+        state.isInlineEdit = true;
+        clearTimeout(state.timeoutRef);
+        state.isClicked = false;
+        callbacks.doubleClick();
+      }
     }
     else{
       state.isClicked = true;
-      state.timeoutRef = setTimeout(function(){
-        callbacks.singleClick(evt);
-      },200);
+      if (state.isInlineEdit) {
+        // Single Click During inline Editing
+        setTimeout(function(){
+          state.isClicked = false;
+        },200);
+      }
+      else{
+        state.timeoutRef = setTimeout(function(){
+          callbacks.singleClick(evt);
+        },200);
+      }
     }
   },
   /**
@@ -399,11 +424,16 @@ var callbacks = {
     $("#edit_form h1").hide();
     $('#edit_text').css('width',"95%");
     callbacks.edit();
-    // unbind click event so it doesn't open a new window every time
-    // user clicks on the editing text area
-    $('body').unbind("click");
     // Resize to show the text ara update cancel buttons and burn after
     privlyHostPage.resizeToWrapper();
+  },
+  /**
+  * This is the function called when user uses double click
+  * on the inline editing form and cancels the editing.
+  *
+  */
+  doubleClickInline: function(evt){
+    callbacks.cancel(evt);
   }
 }
 
