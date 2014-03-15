@@ -15,17 +15,17 @@ function include(path) {
 }
 
 if (typeof(require) == "function") {
-  include("../shared/javascripts/extension_integration.js");
-  include("../shared/javascripts/host_page_integration.js");
-  include("../shared/javascripts/meta_loader.js");
-  include("../shared/javascripts/network_service.js");
-  include("../shared/javascripts/network_service.js");
-  include("../shared/javascripts/parameters.js");
-  include("../shared/javascripts/tooltip.js");
+  include("shared/javascripts/extension_integration.js");
+  include("shared/javascripts/host_page_integration.js");
+  include("shared/javascripts/meta_loader.js");
+  include("shared/javascripts/network_service.js");
+  include("shared/javascripts/network_service.js");
+  include("shared/javascripts/parameters.js");
+  include("shared/javascripts/tooltip.js");
 }
 
 if (typeof (location) !== "undefined") {
-  include("../PlainPost/js/new.js");
-  include("../PlainPost/test/new.js");
+  include("PlainPost/js/new.js");
+  include("PlainPost/test/new.js");
 }
 
