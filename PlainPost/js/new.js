@@ -25,37 +25,37 @@
  *    Callback=postCompleted
  */
 var callbacks = {
-  
+
   /**
    * Initialize the whole application.
    */
   pendingLogin: function() {
-    
+
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
-    
+
     // Initialize message pathway to the extension.
     messaging.initialize();
-    
+
     // Add listeners to show loading animation while making ajax requests
     $(document).ajaxStart(function() {
-      $('#loadingDiv').show(); 
+      $('#loadingDiv').show();
     });
-    $(document).ajaxStop(function() { 
-      $('#loadingDiv').hide(); 
+    $(document).ajaxStop(function() {
+      $('#loadingDiv').hide();
     });
-    
+
     // Generate the previewed content
     var contentElement = document.getElementById("content");
     contentElement.addEventListener('keyup', previewMarkdown);
-    
+
     privlyNetworkService.initPrivlyService(
-      privlyNetworkService.contentServerDomain(), 
-      callbacks.pendingPost, 
-      callbacks.loginFailure, 
+      privlyNetworkService.contentServerDomain(),
+      callbacks.pendingPost,
+      callbacks.loginFailure,
       callbacks.loginFailure);
   },
-  
+
   /**
    * Prompt the user to sign into their server. This assumes the remote
    * server's sign in endpoint is at "/users/sign_in".
@@ -65,29 +65,29 @@ var callbacks = {
     $("#login_message").show();
     $("#refresh_link").click(function(){location.reload(true);});
   },
-  
+
   /**
    * Tell the user they can create their post by updating the UI.
    */
   pendingPost: function() {
-    
+
     privlyNetworkService.showLoggedInNav();
-    
+
     // Monitor the submit button
     document.querySelector('#save').addEventListener('click', callbacks.postSubmit);
     $("#save").prop('disabled', false);
     $("#messages").toggle();
     $("#form").toggle();
   },
-  
+
   /**
    * Submit the posting form and await the return of the post.
    */
   postSubmit: function() {
     $("#save").prop('disabled', true);
     privlyNetworkService.sameOriginPostRequest(
-      privlyNetworkService.contentServerDomain() + "/posts", 
-      callbacks.postCompleted, 
+      privlyNetworkService.contentServerDomain() + "/posts",
+      callbacks.postCompleted,
       {"post":
         {"content": $("#content")[0].value,
          "privly_application":"PlainPost",
@@ -95,7 +95,7 @@ var callbacks = {
          "seconds_until_burn": $( "#seconds_until_burn" ).val()},
          "format":"json"});
   },
-  
+
   /**
    * Tell the user that there was a problem.
    */
@@ -103,7 +103,7 @@ var callbacks = {
     $("#save").prop('disabled', false);
     $("#messages").text("There was an error creating your post.");
   },
-  
+
   /**
    * Send the URL to the extension or mobile device if it exists and display
    * it to the end user.
@@ -116,7 +116,7 @@ var callbacks = {
       $("#messages").text("Copy the address found below to any website you want to share this information through");
       $(".privlyUrl").text(url);
       $(".privlyUrl").attr("href", url);
-      
+
       // Keep the user in local code if possible, but display the remote code link
       // so the user does not accidentally copy the local code url
       if ( privlyNetworkService.platformName() !== "HOSTED" ) {
@@ -134,7 +134,7 @@ var callbacks = {
  * Message handlers for integration with extension framworks.
  */
 var messaging = {
-  
+
   /**
    * Attach the message listeners to the interface between the extension
    * and the injectable application.
@@ -142,12 +142,12 @@ var messaging = {
   initialize: function() {
       privlyExtension.initialContent = messaging.initialContent;
       privlyExtension.messageSecret = messaging.messageSecret;
-      
+
       // Initialize message pathway to the extension.
       privlyExtension.firePrivlyMessageSecretEvent();
   },
-  
-  
+
+
   /**
    * Listener for the initial content that should be dropped into the form.
    * This may be sent by a browser extension.
@@ -163,13 +163,13 @@ var messaging = {
    * Request the initial content from the extension. This callback is executed
    * after the extension successfully messages the secret message back to the
    * application.
-   * 
+   *
    * @param {json} data A json document that is ignored by this function.
    */
   messageSecret: function(data) {
     privlyExtension.messageExtension("initialContent", "");
   }
-  
+
 }
 
 /**

@@ -1,14 +1,14 @@
 /**
  * @fileOverview
  * This JavaScript acts as the driver for the PlainPost injectable application.
- * It defines the behavior specifc to this application. For more information
+ * It defines the behavior specific to this application. For more information
  * about the PlainPost application, view the README.
  **/
 
 /**
  * @namespace
  *
- * State variables used accross all the callbacks.
+ * State variables used across all the callbacks.
  *
  */
 var state = {
@@ -47,7 +47,7 @@ var state = {
  * 5. Destroyed: The server returned a response from the destroy command.
  * 6. Edit: The user clicked the "edit" button.
  * 7. Update: The user submitted the "edit" form.
- * 8. click: The user clicked the application. This is primarily used when
+ * 8. Click: The user clicked the application. This is primarily used when
  *    the application is injected into the context of a host page.
  *    Callback=click
  */
@@ -66,9 +66,9 @@ var callbacks = {
     if (state.parameters["privlyDataURL"] !== undefined) {
      state.jsonURL = state.parameters["privlyDataURL"];
     }
-    
+
     $(".meta_source_domain").text("Source URL: " + state.jsonURL);
-    
+
     // Register the click listener.
     $("body").on("click", callbacks.click);
 
@@ -83,7 +83,7 @@ var callbacks = {
 
     if(privlyHostPage.isInjected()) {
 
-      // Creates a tooptip which indicates the content is not a 
+      // Creates a tooptip which indicates the content is not a
       // natural element of the page
       privlyTooltip.tooltip();
 
@@ -95,7 +95,7 @@ var callbacks = {
           privlyHostPage.resizeToWrapper();
         });
       }
-      
+
       // Display the domain of the content in the glyph
       var dataDomain = privlyNetworkService.getProtocolAndDomain(state.jsonURL);
       privlyTooltip.updateMessage(dataDomain + " PlainPost: Read Only");
@@ -107,8 +107,8 @@ var callbacks = {
 
       // Check whether the user is signed into their content server
       privlyNetworkService.initPrivlyService(
-        privlyNetworkService.contentServerDomain(), 
-        privlyNetworkService.showLoggedInNav, 
+        privlyNetworkService.contentServerDomain(),
+        privlyNetworkService.showLoggedInNav,
         function(){}, // otherwise assume they are logged out
         function(){} // otherwise assume they are logged out
       );
@@ -116,38 +116,38 @@ var callbacks = {
       // Load CSS to show the nav and the rest of the non-injected page
       loadTopCSS();
    }
-   
+
    // Ensure whitelist compliance of the data parameter when the content is
    // injected
-   if( !privlyHostPage.isInjected() || 
+   if( !privlyHostPage.isInjected() ||
     privlyNetworkService.isWhitelistedDomain(state.jsonURL) ) {
      // Make the cross origin request as if it were on the same origin.
      // The "same origin" requirement is only possible on extension frameworks
-     privlyNetworkService.sameOriginGetRequest(state.jsonURL, 
+     privlyNetworkService.sameOriginGetRequest(state.jsonURL,
        callbacks.contentReturned);
    } else {
      $("#post_content").html("<p>Click to view this content.</p>");
    }
-   
+
   },
-  
+
   /**
   * The user may have access to the content if they login to the server
   * hosting the content.
   */
   pendingLogin: function() {
-    
+
     $("#messages").hide();
     $("#login_message").show();
     $("#refresh_link").click(function(){location.reload(true);});
-    
+
     $("#post_content").html("<p>You do not have access to this.</p>");
-    
+
     // Tells the parent document how tall the iframe is so that
     // the iframe height can be changed to its content's height
     privlyHostPage.resizeToWrapper();
   },
-  
+
   /**
   * Process the post's content returned from the remote server.
   *
@@ -156,19 +156,19 @@ var callbacks = {
   */
   contentReturned: function(response) {
     if( response.jqXHR.status === 200 ) {
-      
+
       privlyNetworkService.permissions.canShow = true;
-      
+
       var json = response.json;
       var serverMarkdown = null;
-      
+
       if( json !== null ) {
 
         // Assign the Markdown from the JSON
         if( typeof json.content === "string" ) {
           serverMarkdown = json.content;
         }
-        
+
         // Assign the permissions
         if( json.permissions ) {
           privlyNetworkService.permissions.canShare = (
@@ -179,12 +179,12 @@ var callbacks = {
             json.permissions.candestroy === true);
         }
       }
-      
-      if( privlyNetworkService.permissions.canUpdate || 
+
+      if( privlyNetworkService.permissions.canUpdate ||
         privlyNetworkService.permissions.canDestroy ) {
           // Check whether the user is signed into their content server
           privlyNetworkService.initPrivlyService(
-            state.jsonURL, 
+            state.jsonURL,
             function(){
               // Initialize the form for updating the post
               // if the user has permission.
@@ -193,7 +193,7 @@ var callbacks = {
                 $("#edit_link").show();
                 $("#no_permissions_nav").hide();
                 $("#permissions_nav").show();
-                
+
                 var dataDomain = privlyNetworkService.getProtocolAndDomain(state.jsonURL);
                 privlyTooltip.updateMessage(dataDomain + " PlainPost: Editable");
                 $(".meta_canupdate").text("You can update this content.");
@@ -208,31 +208,31 @@ var callbacks = {
                 $(".meta_candestroy").text("You can destroy this content.");
                 $("#destruction_select_block").show();
               }
-            }, 
+            },
             function(){}, // otherwise assume no permissions
             function(){} // otherwise assume no permissions
           );
       }
-      
+
       if( json.created_at ) {
         var createdDate = new Date(json.created_at);
-        $(".meta_created_at").text("Created Around " + 
+        $(".meta_created_at").text("Created Around " +
           createdDate.toDateString() + ". ");
       }
-      
+
       if( json.burn_after_date ) {
         var destroyedDate = new Date(json.burn_after_date);
-        $(".meta_destroyed_around").text("Destroyed Around " + 
+        $(".meta_destroyed_around").text("Destroyed Around " +
           destroyedDate.toDateString() + ". ");
-        
+
         var currentSecondsUntilDestruction = Math.floor((destroyedDate - Date.now())/1000);
-        
+
         $("#current_destruction_time")
           .attr("value", currentSecondsUntilDestruction)
           .text(Math.floor(currentSecondsUntilDestruction / 86400) + " Days");
         $("#seconds_until_burn").val(currentSecondsUntilDestruction);
       }
-      
+
       if( serverMarkdown === null ) {
         sandboxedContentFrame(response.jqXHR.responseText);
       } else {
@@ -243,14 +243,14 @@ var callbacks = {
         // Make all user-submitted links open a new window
         $('#post_content a').attr("target", "_blank");
       }
-      
+
       // Tells the parent document how tall the iframe is so that
       // the iframe height can be changed to its content's height
       privlyHostPage.resizeToWrapper();
-      
+
     } else if(response.jqXHR.status === 403) {
       $("#post_content").html(
-        "<p class='flash notice'>Your current user account does not have access to this. " + 
+        "<p class='flash notice'>Your current user account does not have access to this. " +
         "It is also possible that the content was destroyed at the source.</p>");
 
       // Tells the parent document how tall the iframe is so that
@@ -264,9 +264,9 @@ var callbacks = {
       privlyHostPage.resizeToWrapper();
     }
   },
-  
+
   /**
-   * The destroy button was just pushed. Ask the remote server to destroy 
+   * The destroy button was just pushed. Ask the remote server to destroy
    * the content associated with the post, then notify the user of the results
    * in callbacks.destroyed.
    */
@@ -274,7 +274,7 @@ var callbacks = {
     $("#edit_form").slideUp();
     privlyNetworkService.sameOriginDeleteRequest(state.jsonURL, callbacks.destroyed, {});
   },
-  
+
   /**
   * Process the content returned from the server on a destroy request.
   *
@@ -282,20 +282,20 @@ var callbacks = {
   */
   destroyed: function(response) {
     if( response.jqXHR.status === 200 ) {
-      
+
       // Tell the user the content was probably destroyed
       $("#post_content").html(
-        "<p class='flash notice'>The remote server says it destroyed the content. " + 
+        "<p class='flash notice'>The remote server says it destroyed the content. " +
         "If the server cannot be trusted, then it may have copies.</p>");
-      
+
       // Hide the drop down menu
       $("#no_permissions_nav").show();
       $("#permissions_nav").hide();
-      
+
       // Tells the parent document how tall the iframe is so that
       // the iframe height can be changed to its content's height
       privlyHostPage.resizeToWrapper();
-      
+
     } else {
       $("#post_content").html("<p>You do not have permission to destroy this.</p>");
 
@@ -304,7 +304,7 @@ var callbacks = {
       privlyHostPage.resizeToWrapper();
     }
   },
-  
+
   /**
    * Display the form for editing the post. This callback is not currently
    * supported in injected mode.
@@ -312,7 +312,7 @@ var callbacks = {
   edit: function() {
     $("#edit_form").slideDown();
   },
-  
+
   /**
    * Update the remote server's content with the new value.
    * This function should only be called if the remote server's
@@ -320,16 +320,16 @@ var callbacks = {
    * flag was set to true. This prevents some CSRF issues.
    */
   update: function() {
-    privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
-      callbacks.contentReturned, 
-      {post: 
-        {content: $("#edit_text").val(), 
+    privlyNetworkService.sameOriginPutRequest(state.jsonURL,
+      callbacks.contentReturned,
+      {post:
+        {content: $("#edit_text").val(),
         seconds_until_burn: $( "#seconds_until_burn" ).val()}});
-      
+
     // Close the editing form
     $("#edit_form").slideUp();
   },
-  
+
   /**
   * This is an event listener for click events. When the applicaiton is injected
   * into the context of a host page, the app will be opened in a new window.
@@ -344,13 +344,13 @@ var callbacks = {
      }
    }
   }
- 
+
 }
 
 /**
  * Load content inside a sanboxed iframe.
- * The iframe will be surrounded by the Privly glyph in order to indicate that 
- * the content is not a normal element of the page. Normally the Glyph would 
+ * The iframe will be surrounded by the Privly glyph in order to indicate that
+ * the content is not a normal element of the page. Normally the Glyph would
  * be loaded as a tooltip, but in this case we are deactivating scripting
  * inside the content area as a security measure, which prohibits the loading
  * of the gyph as a tooltip.
@@ -363,30 +363,30 @@ var callbacks = {
  *
  * Warning: Never set the sandbox flag "allow-scripts". It will totally remove
  * any security guarantees of this method.
- * 
- * This is only used for more suspicious circumstances like when the returned 
- * content is not in markdown. The Markdown parser includes a built in 
- * sanitizer, but this method does not. It relies on the HTML5 iframe sandbox 
- * property to secure the content. Since the content is loaded via the srcdoc 
- * attribute, this content method will not work for older browsers, which is 
- * desired because iframe sandboxing is a newer web standard. 
+ *
+ * This is only used for more suspicious circumstances like when the returned
+ * content is not in markdown. The Markdown parser includes a built in
+ * sanitizer, but this method does not. It relies on the HTML5 iframe sandbox
+ * property to secure the content. Since the content is loaded via the srcdoc
+ * attribute, this content method will not work for older browsers, which is
+ * desired because iframe sandboxing is a newer web standard.
  *
  * @param {string} unstrustedHTML The HTML we are going to put in a sandbox.
  *
  */
 function sandboxedContentFrame(untrustedHTML) {
-    
+
     $("#cleartext").hide();
-    
+
     // Start the trusted region of the page
     var glyph = privlyTooltip.glyphHTML();
     $("#post_content").append("<p>Start of Unkown Content</p>" + glyph);
-    
+
     var iFrame = document.createElement('iframe');
-    
+
     //Styling and display attributes
     iFrame.setAttribute("sandbox", "allow-top-navigation allow-same-origin");
-    
+
     iFrame.setAttribute("frameborder","0");
     iFrame.setAttribute("vspace","0");
     iFrame.setAttribute("hspace","0");
@@ -398,24 +398,24 @@ function sandboxedContentFrame(untrustedHTML) {
       "overflow: hidden;height:2px;");
     iFrame.setAttribute("scrolling","no");
     iFrame.setAttribute("overflow","hidden");
-    
+
     // Make all user-submitted links open a new window
     $(untrustedHTML).attr("target", "_blank");
-    
+
     //Set the source URL
     iFrame.setAttribute("srcdoc", untrustedHTML);
     iFrame.setAttribute("id", "UntrustedIframe");
-    
+
     // Put the content in the page
     $("#post_content").append(iFrame);
-    
+
     // End the trusted region of the page
     $("#post_content").append(glyph + "<p>End of Unknown Content</p>");
-    
+
     // Gives the doc time to render
     setTimeout(function(){
       iFrame = document.getElementById("UntrustedIframe");
-      
+
       // set all links to open in the current window
       $(iFrame.contentDocument).find('a').attr("target", "_top");
       $(iFrame.contentDocument).find("img").remove();
@@ -428,3 +428,4 @@ function sandboxedContentFrame(untrustedHTML) {
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', callbacks.pendingContent);
+
