@@ -29,3 +29,9 @@ if (typeof (location) !== "undefined") {
   include("PlainPost/test/new.js");
 }
 
+describe("Test", function () {
+  it("should run correctly", function(){
+    expect(1).toEqual(1);
+  });
+});
+
