@@ -115,7 +115,7 @@ var callbacks = {
    */
   loginConnectionError: function() {
     $("#messages").text("The content server returned the error:" + json.error + 
-      ",<br/>This could mean the server is under maintenance or this application's address is not formatted properly");
+      ",This could mean the server is under maintenance or this application's address is not formatted properly");
     $("#messages").show();
   },
   /**
