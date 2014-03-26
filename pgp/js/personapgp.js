@@ -42,22 +42,61 @@ var PersonaPGP = {
       localforage.getItem('my_contacts',function(pubkey_email_hash){
         if (email in pubkey_email_hash) {
           var pub_keys = pubkey_email_hash[email]; 
+          // TODO: see if they are expired, look remotely for new key as needed
           callback(pub_keys); //array of pub keys associated with email
         } else { // not found locally, query DirP
-          findPubKeyRemote(email,function(pub_keys){
-            if (pub_keys === null){
-              console.log("No public key associated with email found");
-              console.log("Invite friend to share privately goes here");
-              callback(pub_keys);
-            } else {
-              console.log("Returning2 " + pub_keys);
-              //addRemoteKeyToLocal(email,ballOwax);
-              callback(pub_keys);
+          PersonaPGP.findPubKeyRemote(email,function(bia_pub_keys){
+            if (bia_pub_keys === null){
+              callback(bia_pub_keys);
+            } else { // Found remotely, verify and add to localForage
+              PersonaPGP.findPubKeyRemoteHelper(bia_pub_keys,
+                function(verified_keys){
+                  callback(verified_keys);
+                }
+              );
             }
           });
         }
       });
     });
+  },
+
+  /**
+   * This function makes multiple async calls and waits for them all to finish.
+   * Only the verified keys, which are added to localforage after being
+   * verified, are returned.
+   *
+   */
+  findPubKeyRemoteHelper: function(bia_pub_keys,callback){
+    var verified = new Array();
+    for(var i = 0; i < bia_pub_keys.length; i++){
+      PersonaPGP.addRemoteKeyToLocal(bia_pub_keys[i],function(result){
+        if (result in verified){
+          verified[result].push(bia_pub_keys[i]); 
+        } else {
+          verified[result] = [bia_pub_keys[i]];
+        }
+      });
+    }
+
+    // wait at most 'time' for async calls to finish
+    var time = 500*bia_pub_keys.length; 
+    var go = true;
+    setTimeout(function(){
+      go = false;
+    },time);
+
+    var size = 0;
+    while(size < bia_pub_keys.length && go){
+      size = 0;
+      if (verified[true] !== undefined){
+        size += verified[true].length;
+      }
+      if (verified[false] !== undefined){
+        size += verified[false].length;
+      }
+    }
+    callback(verified[true]);
   },
 
   /**
@@ -67,31 +106,23 @@ var PersonaPGP = {
    * @param {email} email The email that the user wants to send a message to.
    */
   findPubKeyRemote: function(email,callback){
-    var remote_directory = "https://127.0.0.1:10001";
-    var pub_keys = null;
+    var remote_directory = "http://localhost:5000/";
+    remote_directory += email;
     $.get(
       remote_directory,
-      {email: email},
-      function(response){
-        if (response.status === 200) {
-          var data = response.responseText;
-          if (data !== null) {
-            // The format of the response is not currently known.  Once data
-            // structure of UC & IA with extra pub key is known, update with
-            // appropriate values.
-            pub_keys = data; // this line is wrong, update me
-            //PersonaPGP.addRemoteKeyToLocal(email,data);
-            callback(pub_keys);
-          } else {
-            callback(null);
-          }
-        } else {
-          // handle other status responses in the future
-          console.log("Response status was not 200");
-          callback(null);
-        }
+      'json'
+    ).done(function(response){ // Everything went according to plan
+      // Long term should Return an array of (bia,signed_pub_keys)
+      callback(response.value); // Returns an array of pub_keys
+    }).fail(function(response){
+      if (response.status === 404){
+        console.log("Email not found in Remote Directory");
+        console.log("Invite friend to share privately goes here");
+      } else {
+        console.log("Problem connecting to Remote Directory");
       }
-    );
+      callback(null);
+    });
   },
 
   /**
@@ -103,21 +134,26 @@ var PersonaPGP = {
    * @param {assertion} ballOwax The backed identity assertion and accompanying
    * privly public key.
    */
-  addRemoteKeyToLocal: function(email,ballOwax){
-    // TODO: use callback 
-    // authenticate email with verifier -> return false on failure
-    // TODO: authenticate with verifier
-    // verifyPubKey(email,ballOwax).then( the rest of the function );
-
-    // Get existing list of contacts
-    localforage.getItem('my_contacts',function(data){
-      // Append new contact to old list
-      data[email] = ballOwax;
-
-      // Update localforage with new contact added
-      localforage.setItem('my_contacts',data).then(function(outcome){
-        return outcome;
-      });
+  addRemoteKeyToLocal: function(bia_pub_key,callback){
+    var email = PersonaPGP.getEmailFromBia(bia_pub_key);
+    // TODO: verify signature on pubkey before calling bia verifier
+    PersonaPGP.verifyPubKey(bia_pub_key,function(outcome){
+      if (outcome === true){
+        localforage.setDriver('localStorageWrapper',function(){
+          localforage.getItem('my_contacts',function(data){
+            if (email in data){
+              data[email].push(bia_pub_key);
+            } else {
+              data[email] = [bia_pub_key];
+            }
+            localforage.setItem('my_contacts',data,function(){
+              callback(true);
+            });
+          });
+        });
+      } else {
+        callback(false);
+      }
     });
   },
 
@@ -134,9 +170,14 @@ var PersonaPGP = {
    * @param {pub_key} pub_key The public key to be verified.
    * @param {bia} bia The backed identity assertion.
    */
-  verifyPubKey: function(pub_key,bia,callback){
+  verifyPubKey: function(bia_pub_key,callback){
+    // TODO: Actually call verifier
+    // We do not have bia's to verify yet so just return true
+    callback(true);
+
+    /*
     // audience should be the directory provider URL
-    // TODO: get rid of magic string url, pull from a localforage 
+    // TODO: get rid of magic string url, pull from localforage
     var audience = "https://publicknowledge.com:443";
 
     $.post(
@@ -166,6 +207,7 @@ var PersonaPGP = {
         }
       }
     );
+    */
   },
 
   /**
@@ -287,5 +329,17 @@ var PersonaPGP = {
       // sending a message consisting only of "next".  
       return "next";
     }
+  },
+
+  /**
+   * This function returns the email address contained in a backed identity
+   * assertion.
+   * 
+   * @param {bia_pub_key} A tuple of a backed identity assertion and a signed
+   *   pgp public key.
+   */
+  getEmailFromBia: function(bia_pub_key){
+    // TODO: get an actual bia, and then extract the email address
+    return "bob@example.com";
   }
 }
