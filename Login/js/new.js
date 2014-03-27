@@ -109,15 +109,15 @@ var callbacks = {
     $("#messages").show();
   },
   
-  
   /**
    * Tell the user there was a connection error.
    */
   loginConnectionError: function() {
-    $("#messages").text("The content server returned the error:" + json.error + 
+    $("#messages").text("The content server returned the error: " + json.error + 
       ",This could mean the server is under maintenance or this application's address is not formatted properly");
     $("#messages").show();
   },
+  
   /**
    * Tell the user their content server could not be reached.
    */
