@@ -68,7 +68,7 @@ var PersonaPGP = {
    */
   findPubKeyRemoteHelper: function(bia_pub_keys,callback){
     var verified = [];
-    for(var i = 0; i < bia_pub_keys.length; i++){
+    var callAddRemote = function(i){
       PersonaPGP.addRemoteKeyToLocal(bia_pub_keys[i],function(result){
         if (result in verified){
           verified[result].push(bia_pub_keys[i]); 
@@ -76,6 +76,10 @@ var PersonaPGP = {
           verified[result] = [bia_pub_keys[i]];
         }
       });
+    };
+
+    for(var i = 0; i < bia_pub_keys.length; i++){
+      callAddRemote(i);
     }
 
     // wait at most 'time' for async calls to finish
