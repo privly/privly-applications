@@ -63,12 +63,11 @@ var PersonaPGP = {
 
   /**
    * This function makes multiple async calls and waits for them all to finish.
-   * Only the verified keys, which are added to localforage after being
-   * verified, are returned.
+   * Only the verified keys are returned.
    *
    */
   findPubKeyRemoteHelper: function(bia_pub_keys,callback){
-    var verified = new Array();
+    var verified = [];
     for(var i = 0; i < bia_pub_keys.length; i++){
       PersonaPGP.addRemoteKeyToLocal(bia_pub_keys[i],function(result){
         if (result in verified){
@@ -223,7 +222,7 @@ var PersonaPGP = {
     // For now, not signing messages.
     
     // Find all pub keys from emails
-    //var Keys = new Array();
+    //var Keys = [];
     //for (var i = 0; i < emails.length; i++){
       //makes async calls but code does not expect this, fix me!
       //Keys.push( PersonaPGP.findPubKey(emails[i]) );
@@ -242,9 +241,9 @@ var PersonaPGP = {
       // json will (eventually) allow us to preserve the identity of recipients.
       var plaintext_as_json = JSON.stringify({message: plaintext});
 
-      var pubKeys = new Array();
+      var pubKeys = [];
       for (var i = 0; i < Keys.length; i++){
-        pub_key = openpgp.key.readArmored(Keys[i]).keys[0];
+        var pub_key = openpgp.key.readArmored(Keys[i]).keys[0];
         pubKeys.push(pub_key);
       }
       var ciphertext = openpgp.encryptMessage(pubKeys,plaintext_as_json);
@@ -266,7 +265,7 @@ var PersonaPGP = {
         if (my_keys.length === 0 || my_keys === null){
           callback("No private keys found. Failed to decrypt.");
         }
-        emails = Object.keys(my_keys);
+        var emails = Object.keys(my_keys);
         for(var i = 0; i < emails.length; i++){
           for(var j = 0; j < my_keys[emails[i]].length; j++){
             var privKey = openpgp.key.readArmored(
@@ -279,12 +278,12 @@ var PersonaPGP = {
               if (message !== "next"){ // decrypted successfully
                 callback(message);
               } else if ( i === (my_keys.length - 1) &&
-                          j === (my_keys[email[i]].length -1) ) {
+                          j === (my_keys[emails[i]].length -1) ) {
                 callback("The data cannot be viewed with your keys.");
               }
             } else {
               if ( i === (my_keys.length - 1) &&
-                   j === (my_keys[email[i]].length -1) ) {
+                   j === (my_keys[emails[i]].length -1) ) {
                 callback("The data cannot be viewed with your keys.");
               }
             }
@@ -345,4 +344,4 @@ var PersonaPGP = {
     //var email = JSON.parse(atob(bia.split('.')[1]))["principal"]["email"];
     //return email;
   }
-}
+};
