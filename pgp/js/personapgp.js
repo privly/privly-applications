@@ -341,5 +341,8 @@ var PersonaPGP = {
   getEmailFromBia: function(bia_pub_key){
     // TODO: get an actual bia, and then extract the email address
     return "bob@example.com";
+    //var bia = bia_pub_key[0];
+    //var email = JSON.parse(atob(bia.split('.')[1]))["principal"]["email"];
+    //return email;
   }
 }
