@@ -144,7 +144,11 @@ var callbacks = {
                   var pub = {}
                   pub[email] = [data.publicKeyArmored]; 
                   localforage.setItem('my_contacts',pub,function(){
-                    callbacks.uploadKey(email,function(){});
+                    callbacks.uploadKey(email,function(outcome){
+                      if (outcome === false){
+                        console.log("Could not upload key.");
+                      }
+                    });
                   });
                 });
               });
@@ -152,7 +156,6 @@ var callbacks = {
           );
         } else { // it does exist, do nothing for now
           console.log("Already have a key");
-          console.log(keypair["bob@example.com"][0]);
           // TODO: check if key is about to expire and gen a new one if needed
         }
       });
@@ -182,16 +185,15 @@ var callbacks = {
         var directoryURL = "http://localhost:5000/";
         directoryURL += email;
         var value = {"value": [pubkey]};
+        console.log(value);
         $.get(
           directoryURL,
           value
-        ).always(function(err,response){
-          $.get(
-            directoryURL,
-            function(j){console.log(j)},
-            'json'
-          );
+        ).done(function(response){
           callback(true);
+        }
+        ).fail(function(response){
+          callback(false);
         });
       });
     });
