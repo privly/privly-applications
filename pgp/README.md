@@ -18,12 +18,11 @@ of the encryption, key generation, and signing and verification of encrypted
 messages. Basic tests for the personapgp functions are outlined but not
 implemented.
 
-Note that some of the functions in pgp/js/personapgp.js are not currently being
-called from any part of the code. These functions include: findPubKeyRemote,
-addRemoteKeyToLocal, and verifyPubKey. These functions are not currently called
-because the remote resources are not yet mature. The basic ideas they implement
-should be sound, but have not been tested.
-
+Note that the verifyPubKey function in pgp/js/personapgp.js is not currently
+performing the actions that it should.  Currently, it just returns true instead
+of performing any verification. This is because the generation of backed
+identity assertions is not yet mature.  A good reminder as to why this software
+is PRE-ALPHA status.
 
 ### Current TODO
 - Sign and encrypt messages (currently the app just encrypts without 
@@ -32,8 +31,6 @@ should be sound, but have not been tested.
 - Generate a backed identity assertions in browser
 - Sign a PersonaPGP key with the public key found in a backed identity 
       assertion
-- Upload backed identity assertion and PersonaPGP to the directory 
-      provider. ( Note that this should happen in the Login app )
 - Verify a returned back identity assertion and signature
 - Implement tests that are already outlined
 
