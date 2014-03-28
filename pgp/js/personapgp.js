@@ -28,6 +28,7 @@
  * 6. Decrypt a message: Converts ciphertext into cleartext. As an additional
  *    assurance verifies that decrypted message is valid json.
  */
+var foo = 1; // global needed until we can extract emails from bia's 
 var PersonaPGP = {
   /**
    * Attempt to find the public key of a given email address.  Looks at local
@@ -81,7 +82,6 @@ var PersonaPGP = {
     for(var i = 0; i < bia_pub_keys.length; i++){
       callAddRemote(i);
     }
-
     // wait at most 'time' for async calls to finish
     var time = 500*bia_pub_keys.length; 
     var go = true;
@@ -139,7 +139,6 @@ var PersonaPGP = {
    */
   addRemoteKeyToLocal: function(bia_pub_key,callback){
     var email = PersonaPGP.getEmailFromBia(bia_pub_key);
-    // TODO: verify signature on pubkey before calling bia verifier
     PersonaPGP.verifyPubKey(bia_pub_key,function(outcome){
       if (outcome === true){
         localforage.setDriver('localStorageWrapper',function(){
@@ -177,6 +176,8 @@ var PersonaPGP = {
     // TODO: Actually call verifier
     // We do not have bia's to verify yet so just return true
     callback(true);
+
+    // TODO: verify signature on pubkey before calling bia verifier
 
     /*
     // audience should be the directory provider URL
@@ -225,33 +226,58 @@ var PersonaPGP = {
     // sign and encrypt if private key passed or just encrypt if not.
     // For now, not signing messages.
     
-    // Find all pub keys from emails
-    //var Keys = [];
-    //for (var i = 0; i < emails.length; i++){
-      //makes async calls but code does not expect this, fix me!
-      //Keys.push( PersonaPGP.findPubKey(emails[i]) );
-    //}
-    
-    // Only encrypt for the first email for now
-    // TODO: encrypt for entire array of emails
-    PersonaPGP.findPubKey(emails[0],function(Keys){
+    var pubKeys = [];
+    var completed = [];
+    var getPublicKeys = function(i){
+      PersonaPGP.findPubKey(emails[i],function(Keys){
+        console.log(Keys.length);
+        for(var j = 0; j < Keys.length; j++){
+          console.log(Keys[i]);
+          var pub_key = openpgp.key.readArmored(Keys[j]).keys[0]; 
+          console.log(pub_key);
+          pubKeys.push(pub_key);
+        }
+        console.log(foo);
+        completed.push(emails[i]);
+      });
+    };
+    // TODO: Evaluate if this is a sufficiently rubust approach.
+    // The return value of findPubKey is an array of unpredictable size.  This
+    // means that the length of emails and pubkeys should not necessarily be
+    // equal when all requests are completed. Some emails may have zero keys
+    // associated with them while others may have n keys. This is the reason
+    // the 'completed' array is being used.
 
-      // Here we convert the plaintext into a json string. We do this to check if
-      // the decryption occured with the correct string.  If it's formated as json
-      // it is extremely unlikely to have been decrypted with the wrong key.
-      // There are mechanisms built into OpenPGP.js that allow you to know in 
-      // advance if you posses the appropriate key for decryption. However, this
-      // means revealing the identity of your intended recipient. Converting to
-      // json will (eventually) allow us to preserve the identity of recipients.
-      var plaintext_as_json = JSON.stringify({message: plaintext});
-
-      var pubKeys = [];
-      for (var i = 0; i < Keys.length; i++){
-        var pub_key = openpgp.key.readArmored(Keys[i]).keys[0];
-        pubKeys.push(pub_key);
-      }
-      var ciphertext = openpgp.encryptMessage(pubKeys,plaintext_as_json);
-      callback(ciphertext);
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('email',function(my_email){
+        emails.push(my_email);
+        console.log(emails);
+        for (var i = 0; i < emails.length; i++){
+          console.log(emails[i]);
+          getPublicKeys(i);
+        }
+        // wait at most 'time' for async calls to finish
+        var time = 500*emails.length; 
+        var go = true;
+        setTimeout(function(){
+          go = false;
+        },time);
+        //while (go){}
+        while(completed.length < emails.length && go){ }
+        
+        // Here we convert the plaintext into a json string. We do this to
+        // check if the decryption occured with the correct string.  If it's
+        // formated as json it is extremely unlikely to have been decrypted
+        // with the wrong key.  There are mechanisms built into OpenPGP.js that
+        // allow you to know in advance if you posses the appropriate key for
+        // decryption. However, this means revealing the identity of your
+        // intended recipient. Converting to json will (eventually) allow us to
+        // preserve the identity of recipients.
+        console.log("go slow");
+        var plaintext_as_json = JSON.stringify({message: plaintext});
+        var ciphertext = openpgp.encryptMessage(pubKeys,plaintext_as_json);
+        callback(ciphertext);
+      });
     });
   },
 
@@ -343,7 +369,15 @@ var PersonaPGP = {
    */
   getEmailFromBia: function(bia_pub_key){
     // TODO: get an actual bia, and then extract the email address
-    return "bob@example.com";
+    console.log("in getEmailFromBia " + foo);
+    if (foo === 1){
+      foo += 1;
+      console.log("Returning bob");
+      return "bob@example.com";
+    } else {
+      console.log("Returning jim");
+      return "jim@foo.com";
+    }
     //var bia = bia_pub_key[0];
     //var email = JSON.parse(atob(bia.split('.')[1]))["principal"]["email"];
     //return email;
