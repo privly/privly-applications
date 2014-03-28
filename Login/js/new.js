@@ -119,45 +119,70 @@ var callbacks = {
   },
 
   /**
+   * Update the localforage key with the value passed in
+   */
+  genPGPKeysHelper: function(key, appended_value,callback){
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('email',function(email){
+        localforage.getItem(key,function(value){
+          if (value === null){
+            value = {};
+          }
+          if (email in value){
+            value[email].push(appended_value);
+          } else {
+            value[email] = [appended_value];
+          }
+          localforage.setItem(key,value,function(result){
+            callback(result);
+          });
+        });
+      });
+    });
+  },
+
+  /**
+   * Add pub keys to my_contacts
+   * Add private/pub keypair to my_keypairs
+   */
+  genPGPKeysAdder: function(keypair,callback){
+    callbacks.genPGPKeysHelper('my_keypairs',keypair,function(result){
+      keypair = keypair.publicKeyArmored;
+      callbacks.genPGPKeysHelper('my_contacts',keypair,function(result){
+        callback(result);
+      });
+    });
+  },
+
+  /**
    * Genereate a PGP key if it does not exist or is nearly expired
    */
   genPGPKeys: function(){
     // Determine if a key is already in local storage
     localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('my_keypairs',function(keypair){
-
-        if (keypair === null){ // it does not exist, make it
-          console.log("Generating New Key");
-          var workerProxy = new openpgp.AsyncProxy('../vendor/openpgp.worker.js');
-          workerProxy.seedRandom(10); // TODO: evaluate best value to use
-          workerProxy.generateKeyPair(
-            openpgp.enums.publicKey.rsa_encrypt_sign,
-            1028,'username','passphrase',function(err,data){ // TODO: increase key
-              localforage.getItem('email',function(email){
-                var datas = {}
-                datas[email] = [data];
-                localforage.setItem('my_keypairs',datas,function(keypairs){  
-                  // Add self to storage to make sure you can read your own
-                  // encrypted messages. 
-                  // No pub key existed before, so we are not concerned about
-                  // clobbering any existing data.
-                  var pub = {}
-                  pub[email] = [data.publicKeyArmored]; 
-                  localforage.setItem('my_contacts',pub,function(){
-                    callbacks.uploadKey(email,function(outcome){
-                      if (outcome === false){
-                        console.log("Could not upload key.");
-                      }
-                    });
+      localforage.getItem('email',function(email){
+        localforage.getItem('my_keypairs',function(keypairs){
+          if (keypairs === null){ // it does not exist, make it
+            console.log("Generating New Key");
+            var workerProxy = new openpgp.AsyncProxy('../vendor/openpgp.worker.js');
+            workerProxy.seedRandom(10); // TODO: evaluate best value to use
+            workerProxy.generateKeyPair(
+              openpgp.enums.publicKey.rsa_encrypt_sign,
+              1028,'username','passphrase',function(err,data){ // TODO: increase key
+                callbacks.genPGPKeysAdder(data,function(result){
+                  callbacks.uploadKey(email,function(outcome){
+                    if (outcome === false){
+                      console.log("Could not upload key.");
+                    }
                   });
                 });
-              });
-            }
-          );
-        } else { // it does exist, do nothing for now
-          console.log("Already have a key");
-          // TODO: check if key is about to expire and gen a new one if needed
-        }
+              }
+            );
+          } else { // it does exist,check expirey regenerate if needed
+            console.log("Already have a key");
+            // TODO: check if key is about to expire and gen a new one if needed
+          }
+        });
       });
     });
   },
@@ -185,7 +210,6 @@ var callbacks = {
         var directoryURL = "http://localhost:5000/";
         directoryURL += email;
         var value = {"value": [pubkey]};
-        console.log(value);
         $.get(
           directoryURL,
           value
