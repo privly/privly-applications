@@ -353,3 +353,23 @@ pre code {
   background-color: transparent;
   border: 0;
 }
+
+/* Low Resolution Smartphones */
+@media only screen 
+and (min-device-width : 320px) 
+and (max-device-width : 480px) {
+	.navbar-toggle
+	{
+		display:none !important;
+	}
+}
+
+/* High Resolution Smartphones & Tablets */
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) {
+	.navbar-toggle
+	{
+		display:none !important;
+	}
+}
