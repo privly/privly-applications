@@ -15,9 +15,9 @@ jwcrypto.addEntropy("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
  *
  * The secret key is the user's not root certificate signer's
  */
-var generateBackedIdentityAssertion = function(cert, secretkey, cb) {
-    var ISSUED_AT = new Date();
-    var EXPIRES_AT = new Date(new Date().valueOf() + EXPIRATION_LIMIT);
+var generateBackedIdentityAssertion = function(cert, secretkey, cb, issued_at, expires_at) {
+    var ISSUED_AT = new Date() || issued_at;
+    var EXPIRES_AT = new Date(new Date().valueOf() + EXPIRATION_LIMIT) || expires_at;
     jwcrypto.assertion.sign({},
       {expiresAt: EXPIRES_AT, issuedAt: ISSUED_AT,
        audience: AUDIENCE},
