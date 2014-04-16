@@ -1,0 +1,46 @@
+Notes on Building a POC for the PGP App.
+
+> We are using a remote verifier since no client side bia verifier
+> currently exists
+> 
+> we would like to use a local verifier, but that has been deemed to be
+> outside of the scope of the project for now
+
+We can easily verify in the browser, since the cost of verifying is
+going to be a HTTP request, that request can be used to retrieve the
+idp's pubkey.
+
+Locally:
+
+ domain = getDomain(useremail);
+ idp_pubkey = getWellKnownBrowserid(https://domain);
+ jwcrypto.verify(bia, idp_pubkey);
+
+Remotely:
+
+ verified = $.post(https://verifier.persona.org/verify,
+    {audience: directory_provider_url,
+     assertion: bia});
+
+
+1. Sign PGP Pulickey with DSA Persona Key. 
+  var sign_pgp = function(pgp_pubkey, secretkey):
+    pgp_sig = jwcrypto.sign({key: pgp_pubkey}, secretkey)
+    return pgp_sig
+  var make_bundle = function(...) {
+    return {
+        pgp: PGP pubkey
+        sig: pgp_sig
+        bia: generateBackedIdentityAssertion(...);
+    }
+  }
+
+2. Verify the signature of the PGP Publickey with the DSA Persona Key.
+  
+  1. Extract DSA pubkey from bia.
+     var assertion, cert = jwcrypto.cert.unbundle(bia);
+     var pubkey_obj = jwcrypto.extractComponents(cert).pubkey;
+     var pubkey = jwcrypto.loadPublicKeyFromSimpleObject(pubkey_obj);
+
+  2. Verify DSA secretkey signed pgp key.
+    pubkey.verify(pgp_sig);
