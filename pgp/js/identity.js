@@ -10,8 +10,7 @@
  *        public key of the secret key used to generate the 'pgp' field.
  * }
  *
- * pgp - contains the results of 'sign'
- * bia - contains the results of 'bundle'
+ * 'bundle' is used to create this payload.
  **/
 var jwcrypto = require('/lib/jwcrypto');
 require('/lib/algs/ds');
@@ -91,7 +90,6 @@ var PersonaId = {
      *
      * @param {payload} The payload from a directory provider that
      *                  contains a signed pgp key and bia.
-     * return "true" if valid passes, "false" otherwise.
      **/
     verifyPayload: function(payload) {
         var bia_pubkey = extractPubkey(payload.bia);
