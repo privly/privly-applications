@@ -10,6 +10,6 @@ describe("Backed Identity Tests", function() {
       expect(payload.aud).toEqual('https://privlyalpha.org:443');
     };
 
-    generateBackedIdentityAssertion(cert, privkey, cb);
+    PersonaId.generateBackedIdentityAssertion(cert, privkey, cb);
   });
 });
