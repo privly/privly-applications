@@ -18,29 +18,6 @@ require('/lib/algs/ds');
 jwcrypto.addEntropy("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
 var PersonaId = {
-
-    AUDIENCE: "https://privlyalpha.org:443",
-    EXPIRATION_LIMIT: (60 * 60 * 24 * 30), // 1 Month
-
-    /*
-     * Takes a User Certificate (identity cert), a secretkey, and a
-     * callback.
-     *
-     * The secret key is the user's not root certificate signer's
-     */
-    generateBackedIdentityAssertion: function(cert, secretkey, cb) {
-        var ISSUED_AT = new Date();
-        var EXPIRES_AT = new Date(new Date().valueOf() + this.EXPIRATION_LIMIT);
-        jwcrypto.assertion.sign({},
-          {expiresAt: EXPIRES_AT, issuedAt: ISSUED_AT,
-           audience: this.AUDIENCE},
-           secretkey,
-          function(err, assertion) {
-            cb(err, jwcrypto.cert.bundle(cert, assertion));
-          }
-        );
-    },
-
     /**
      * Create a payload to send to the directory provider.
      *
