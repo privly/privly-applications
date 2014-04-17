@@ -4,12 +4,39 @@ describe("Backed Identity Tests", function() {
   var cert = "eyJhbGciOiJSUzI1NiJ9.eyJwdWJrZXkiOnsia3R5IjoiRFNBIiwieSI6ImN5QjYxN2RaZV9JN00yTnlCWFFTMHBaTkw5OGhHNmwwNmZoMnNON0ZIakNrbjlxSzY5a2UtSDA2eHhTNm9Oa3o3TXBNcTFsQ1k3VnIwczBNQ09GUFBGSTVsemxlREpQRUhGZXF0WG9Ca3phMjJpNnprRmFWbC1RaXdYMGhha3d4YXl1NnhiQ2tiOW1JQ0VBU1hLQ0Q3SjgzT0JUVHJQS3hDR3BTeWJGS01rYyIsInAiOiJfMkFFZzl0cXY4VzBYcXQ0V1VzMU05VlEyZkdfS3BrcWVvMnFiY05QZ0VXdFRtNE1RcDB6VHU2cTc5ZmlQVWdRdmdEa3pCU1N5Nk1sdW9IX0xWcGJNRnFORi1zNzlLQnFOSjA1TGdEVEtYUktVWGs0QTBUb0toakVlVE5EajRrZUlxN3ZnUzFweVBkZU1teTNEcUFBd19kMjM5dldCR09NTHZjWF9DYlFMaGMiLCJxIjoiNGg0RS1SSFI3WG1SQUk3S3F6djNkWmhEQ2NNIiwiZyI6InhTcEtEX08zNWhfZkdHZk9oQk9EYWFZVlQwcjZrcFp1UElKLUpjLW16MUNMa09YZVFaNFROLUI2THA0cVBOWGVwd1RSZGZqcjlxODVmV25oRUxscS14ZkhvREpaTXA1SUtiRFFPN3g0bHJGYlN0NVQ0VENGak1OTmxpYWFxSkJCOUFrVGJISkNvNGlWeWRXOHl0VHppYThkZWt2Uk9ZdlFjdF82aVdJek9YbyJ9LCJwdWJsaWNLZXkiOnsibmV3Rm9ybWF0Ijp0cnVlLCJ5Ijp7Il9iaWdpbnQiOnt9fSwia2V5c2l6ZSI6MTI4LCJxIjp7Il9iaWdpbnQiOnt9fSwiZyI6eyJfYmlnaW50Ijp7fX0sInAiOnsiX2JpZ2ludCI6e319LCJhbGdvcml0aG0iOiJEU0EifSwicHJpbmNpcGFsIjp7ImVtYWlsIjoidXNlckBtb2NrbXlpZC5jb20ifSwiaWF0IjoxMzk3MzEwNjcxLCJleHAiOjEzOTczMTA2NzcsImlzcyI6Im1vY2tteWlkLmNvbSJ9.LWvUJAp4Gyyem7Crn57dTiZnbjb4aO1wraJU9-D9K0cJSpN4U2vnGIAQ7mu5t0qyl6_JfVv6Y5lOphCaY1WScImc-G0HyAYuzN4487ZobnmcSVHHbjbjnBn9WMntf9U2RHJaf5cgqZLP1i8jwAOD50OTiMd2SLAihWau2Yt6UdjDTR8qosD1_u80I16t_jOQNyNViCc0cMntnD5RbnNuHUHvxEjX56sYJK1B-At9y4BJDEb2zYmROBHTQJsw7O5R-TpkcwavOokDOUeJIFPzGD0k1GUrz8ayt4D349rtTVZhGmusJBM4u4Gp5OoTBivsUNHu6aIxYGpFPeGll7kURw";
 
   it('should generate a cert that has the audience privlyalpha', function() {
-    var cb = function(err, cert) {
+    PersonaId.generateBackedIdentityAssertion(cert, privkey, function(err, cert) {
       obj = jwcrypto.cert.unbundle(cert);
       payload = jwcrypto.extractComponents(obj.signedAssertion).payload;
       expect(payload.aud).toEqual('https://privlyalpha.org:443');
-    };
+    });
+  });
 
-    PersonaId.generateBackedIdentityAssertion(cert, privkey, cb);
+  it('should bundle a pubkey and bia together', function() {
+    PersonaId.bundle(pubkey, secretkey, assertion, function(payload) {
+        expect(payload.bia).toEqual(assertion);
+        expect(payload.signature).toEqual(signature);
+    });
+  });
+
+  it('should sign a pgp public key', function() {
+    PersonaId.sign(pubkey, secretkey, function(sig) {
+        expect(sig).toEqual(signature);
+    });
+  });
+
+  it('should verify a signed pgp public key', function() {
+    PersonaId.verify(signedPayload, pubkey, function(payload) {
+        expect(payload).toEqual({key: pgp_pubkey});
+    });
+  });
+
+  it('should verify a full payload', function() {
+      var valid = PersonaId.verifyPayload(payload);
+      expect(valid).toEqual(true);
+  });
+
+  it('should extract a Persona public key from a bia', function () {
+      var persona_pubkey = PersonaId.extractPubkey(bia);
+      expect(persona_pubkey).toEqual(pubkey);
   });
 });
