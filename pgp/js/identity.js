@@ -69,7 +69,7 @@ var PersonaId = {
      *                  contains a signed pgp key and bia.
      **/
     verifyPayload: function(payload) {
-        var bia_pubkey = extractPubkey(payload.bia);
+        var bia_pubkey = self.extractPubkey(payload.bia);
         self.verify(payload.pgp, bia_pubkey, function(err, pgp_pubkey) {
             if (err !== null)
                 return true;
@@ -89,6 +89,7 @@ var PersonaId = {
         var assertion = bundle.signedAssertion;
         // Assuming there is only ever one cert is a bad assumption, but
         // it will hold for now.
+        // TODO: Verify Persona never uses multiple certs.
         var cert = bundle.certs[0];
         
         var pubkey_obj = jwcrypto.extractComponents(cert).pubkey;
