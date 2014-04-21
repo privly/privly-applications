@@ -66,13 +66,15 @@ var PersonaId = {
    * @param {payload} The payload from a directory provider that
    *                  contains a signed pgp key and bia.
    **/
-  verifyPayload: function(payload) {
+  verifyPayload: function(payload, callback) {
     var bia_pubkey = this.extractPubkey(payload.bia);
-    this.verify(payload.pgp, bia_pubkey, function(err, pgp_pubkey) {
-      if (err !== null)
-          return true;
+    this.verify(payload.pgp, bia_pubkey, function(err, _) {
+      if (err == null) {
+        callback(true);
+      } else {
+        callback(false);
+      }
     });
-    return false;
   },
 
   /**
@@ -90,7 +92,7 @@ var PersonaId = {
     // TODO: Verify Persona never uses multiple certs.
     var cert = bundle.certs[0];
 
-    var pubkey_obj = jwcrypto.extractComponents(cert).pubkey;
+    var pubkey_obj = jwcrypto.extractComponents(cert).payload['public-key'];
     var pubkey = jwcrypto.loadPublicKeyFromObject(pubkey_obj);
 
     return pubkey;
