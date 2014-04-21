@@ -17,6 +17,7 @@ require('/lib/algs/ds');
 
 jwcrypto.addEntropy("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
+// TODO: Fix all indenting
 var PersonaId = {
     /**
      * Create a payload to send to the directory provider.
@@ -40,9 +41,7 @@ var PersonaId = {
      **/
     sign: function(pubkey, secretkey, callback) {
         // jwcrypto.sign never returns an error so we can ignore it.
-        jwcrypto.sign({key: payload}, secretkey, function(err, signature) {
-            callback(signature);
-        });
+        jwcrypto.sign({"key": pubkey}, secretkey, callback);
     },
 
     /**
@@ -85,7 +84,7 @@ var PersonaId = {
      *              key. This is assumed to be verified.
      **/
     extractPubkey: function(bia) {
-        var bundle = jwcypto.cert.unbundle(bia);
+        var bundle = jwcrypto.cert.unbundle(bia);
         var assertion = bundle.signedAssertion;
         // Assuming there is only ever one cert is a bad assumption, but
         // it will hold for now.
@@ -93,7 +92,7 @@ var PersonaId = {
         var cert = bundle.certs[0];
         
         var pubkey_obj = jwcrypto.extractComponents(cert).pubkey;
-        var pubkey = jwcrypto.loadPublicKeyFromSimpleObject(pubkey_obj);
+        var pubkey = jwcrypto.loadPublicKeyFromObject(pubkey_obj);
 
         return pubkey;
     },
