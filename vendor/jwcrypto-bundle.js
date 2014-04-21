@@ -376,7 +376,8 @@ require.define("/lib/jwcrypto.js",function(require,module,exports,__dirname,__fi
 var algs = require("./algs/index"),
     utils = require("./utils"),
     delay = utils.delay,
-    rng = require("./rng");
+    rng = require("./rng"),
+    version = require("./version");
 
 var RNG = new rng.RNG();
 
@@ -416,7 +417,7 @@ function MalformedException(message) {
 
 exports.generateKeypair = function(opts, cb) {
   cb = delay(cb);
-  var algObject = algs.findAlgorithm(opts.algorithm);
+  var algObject = algs.ALGS[opts.algorithm];
   if (!algObject)
     throw new algs.NotImplementedException("algorithm " + opts.algorithm + " not implemented");
 
@@ -525,6 +526,10 @@ exports.addEntropy = function(entropy) {
 
 exports.assertion = require("./assertion");
 exports.cert = require("./cert");
+
+// versioning
+exports.getDataFormatVersion = version.getDataFormatVersion;
+exports.setDataFormatVersion = version.setDataFormatVersion;
 });
 
 require.define("/lib/algs/index.js",function(require,module,exports,__dirname,__filename,process){/* This Source Code Form is subject to the terms of the Mozilla Public
@@ -535,8 +540,8 @@ require.define("/lib/algs/index.js",function(require,module,exports,__dirname,__
  * baseline objects for all algorithms
  */
 
-var ALGS = { };
-var ALIASES = { };
+var ALGS = {
+};
 
 function KeySizeNotSupportedException(message) {
   this.message = message;
@@ -556,7 +561,7 @@ function KeyPair() {
 }
 
 var _getAlgorithm = function _getAlgorithm() {
-  return this.algorithm.substr(0,2) + this.keysize.toString();
+  return this.algorithm + this.keysize.toString();
 };
 
 KeyPair.prototype = {
@@ -567,31 +572,6 @@ exports.register = function(alg, cls) {
   ALGS[alg] = cls;
 };
 
-exports.registerAlias = function(alias, canonical) {
-  ALIASES[alias] = canonical;
-};
-
-exports.findAlgorithm = function(objOrStr) {
-  if (typeof objOrStr === 'string') {
-    objOrStr = { kty: objOrStr };
-  }
-  objOrStr = extractAlg(objOrStr);
-
-  return objOrStr ? ALGS[objOrStr] : undefined;
-};
-
-function extractAlg(obj) {
-  var alg = obj.kty;
-  var oldAlg = obj.algorithm;
-  if (oldAlg) {
-    alg = ALIASES[oldAlg];
-  }
-
-  if (!ALGS[alg]) {
-    throw new NotImplementedException("no such algorithm: " + alg);
-  }
-  return alg;
-}
 
 function PublicKey() {
 }
@@ -599,7 +579,7 @@ function PublicKey() {
 PublicKey.prototype = {
   // produce a ready-to-be-JSON'ed object
   toSimpleObject: function() {
-    var obj = {kty: this.algorithm};
+    var obj = {algorithm: this.algorithm};
     this.serializeToObject(obj);
     return obj;
   },
@@ -613,14 +593,12 @@ PublicKey.prototype = {
 };
 
 PublicKey.fromSimpleObject = function(obj) {
-  var alg = extractAlg(obj);
-  var pk = new ALGS[alg].PublicKey();
-  pk.algorithm = alg;
+  if (!ALGS[obj.algorithm])
+    throw new NotImplementedException("no such algorithm: " + obj.algorithm);
+
+  var pk = new ALGS[obj.algorithm].PublicKey();
+  pk.algorithm = obj.algorithm;
   pk.deserializeFromObject(obj);
-  // .kty implies that this key is "newFormat".  we can use this
-  // knowledge in other places to handle both new and old data
-  // formats.  we'll record it on the object.
-  pk.newFormat = !!obj.kty;
   return pk;
 };
 
@@ -635,7 +613,7 @@ function SecretKey() {
 
 SecretKey.prototype = {
   toSimpleObject: function() {
-    var obj = {kty: this.algorithm};
+    var obj = {algorithm: this.algorithm};
     this.serializeToObject(obj);
     return obj;
   },
@@ -649,14 +627,12 @@ SecretKey.prototype = {
 };
 
 SecretKey.fromSimpleObject = function(obj) {
-  var alg = extractAlg(obj);
-  var sk = new ALGS[alg].SecretKey();
-  sk.algorithm = alg;
+  if (!ALGS[obj.algorithm])
+    throw new NotImplementedException("no such algorithm: " + obj.algorithm);
+
+  var sk = new ALGS[obj.algorithm].SecretKey();
+  sk.algorithm = obj.algorithm;
   sk.deserializeFromObject(obj);
-  // .kty implies that this key is "newFormat".  we can use this
-  // knowledge in other places to handle both new and old data
-  // formats.  we'll record it on the object.
-  sk.newFormat = !!obj.kty;
   return sk;
 };
 
@@ -664,6 +640,7 @@ SecretKey.deserialize = function(str) {
   var obj = JSON.parse(str);
   return SecretKey.fromSimpleObject(obj);
 };
+
 
 exports.ALGS = ALGS;
 exports.PublicKey = PublicKey;
@@ -782,18 +759,12 @@ function copyInto(oldObj, newObj) {
 }
 
 function getDate(d) {
-  if (!d) {
+  if (!d)
     return null;
-  }
 
   var r = new Date();
   r.setTime(d);
   return r;
-}
-
-function getDateFromSeconds(d) {
-  if (d) d *= 1000;
-  return getDate(d);
 }
 
 // delay a function
@@ -814,7 +785,6 @@ exports.base64urldecode = base64urldecode;
 exports.base64urlencode = base64urlencode;
 exports.copyInto = copyInto;
 exports.getDate = getDate;
-exports.getDateFromSeconds = getDateFromSeconds;
 exports.delay = delay;
 });
 
@@ -2685,13 +2655,6 @@ try {
   // oh well, we use normal JS
 }
 
-BigInteger.prototype.toBase64URL = function() {
-  var s = this.toBase64();
-  s = s.split('=')[0]; // Remove any trailing '='s
-  s = s.replace(/\+/g, '-'); // 62nd char of encoding
-  s = s.replace(/\//g, '_'); // 63rd char of encoding
-  return s
-};
 //
 // adding export statements to the all.js file
 //
@@ -2815,30 +2778,101 @@ BrowserRNG.prototype = {
 exports.RNG = IS_NATIVE ? NativeRNG : BrowserRNG;
 });
 
+require.define("/lib/version.js",function(require,module,exports,__dirname,__filename,process){/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+// tracking the version number in a separate location so we
+// don't have circular dependencies.
+
+var SUPPORTED_DATA_FORMATS = ['2012.08.15', ''];
+
+// XXX - upgrade this to 2012.08.15 when we're ready
+var DEFAULT_DATA_FORMAT_VERSION = '';
+var DATA_FORMAT_VERSION = DEFAULT_DATA_FORMAT_VERSION;
+
+exports.setDataFormatVersion = function(version) {
+  if (version === undefined) {
+    version = DEFAULT_DATA_FORMAT_VERSION;
+  }
+
+  if (SUPPORTED_DATA_FORMATS.indexOf(version) === -1) {
+    throw new Error("no such version " + version + ", only supported versions are " + SUPPORTED_DATA_FORMATS.join(","));
+  }
+
+  DATA_FORMAT_VERSION = version;
+};
+
+exports.getDataFormatVersion = function() {
+  return DATA_FORMAT_VERSION;
+};
+
+// this immediately dispatches to the versioned function based on
+// the indicated version
+function dispatchOnDataFormatVersion(obj, coreFunctionName, version) {
+  var currentVersionString = version || 'LEGACY';
+  currentVersionString = currentVersionString.replace(/\./g, '');
+  var methodName = "_" + currentVersionString + "_" + coreFunctionName;
+
+  if (!obj[methodName]) {
+    console.log(obj);
+    throw new Error("object has no method called " + methodName);
+  }
+
+  // invoke
+  return obj[methodName].apply(obj, Array.prototype.slice.call(arguments).slice(3));
+}
+
+// this creates a function that dispatches to the versioned function,
+// based on the version number that the library is set to
+function versionDispatcher(coreFunctionName) {
+  return function() {
+    dispatchOnDataFormatVersion.apply(null, Array.prototype.concat([this, coreFunctionName, exports.getDataFormatVersion()], Array.prototype.slice.call(arguments)));
+  };
+}
+
+exports.dispatchOnDataFormatVersion = dispatchOnDataFormatVersion;
+exports.versionDispatcher = versionDispatcher;
+});
+
 require.define("/lib/assertion.js",function(require,module,exports,__dirname,__filename,process){/* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 var jwcrypto = require("./jwcrypto"),
-      utils = require("./utils");
+      utils = require("./utils"),
+    version = require("./version");
 
-var serializeAssertionParamsInto = function(assertionParams, params) {
+var SERIALIZER = {};
+
+SERIALIZER._LEGACY_serializeAssertionParamsInto = function(assertionParams, params) {
   // copy over only the parameters we care about into params
-  params.iat = assertionParams.issuedAt ? Math.floor(assertionParams.issuedAt.valueOf() / 1000) : undefined;
-  params.exp = assertionParams.expiresAt ? Math.floor(assertionParams.expiresAt.valueOf() / 1000) : undefined;
+  params.iat = assertionParams.issuedAt ? assertionParams.issuedAt.valueOf() : undefined;
+  params.exp = assertionParams.expiresAt ? assertionParams.expiresAt.valueOf() : undefined;
   params.iss = assertionParams.issuer;
   params.aud = assertionParams.audience;
 };
 
-function extractAssertionParamsFrom(params, newFormat) {
-  var assertionParams = {};
-  if (newFormat) {
-    assertionParams.issuedAt = utils.getDateFromSeconds(params.iat);
-    assertionParams.expiresAt = utils.getDateFromSeconds(params.exp);
+SERIALIZER._20120815_serializeAssertionParamsInto = function(assertionParams, params) {
+  this._LEGACY_serializeAssertionParamsInto(assertionParams, params);
+
+  if (params.version) {
+    if (params.version !== "2012.08.15") {
+      throw new Error("cannot serialize an assertion in a different format than is prescribed by overlaying data structure, e.g. cert");
+    }
   } else {
-    assertionParams.issuedAt = utils.getDate(params.iat);
-    assertionParams.expiresAt = utils.getDate(params.exp);
+    params.version = "2012.08.15";
   }
+};
+
+var serializeAssertionParamsInto = function(assertionParams, params) {
+  version.dispatchOnDataFormatVersion(SERIALIZER, 'serializeAssertionParamsInto', version.getDataFormatVersion(), assertionParams, params);
+};
+
+SERIALIZER._LEGACY_extractAssertionParamsFrom = function(params) {
+  var assertionParams = {};
+  assertionParams.issuedAt = utils.getDate(params.iat);
+  assertionParams.expiresAt = utils.getDate(params.exp);
   assertionParams.issuer = params.iss;
   assertionParams.audience = params.aud;
 
@@ -2848,7 +2882,20 @@ function extractAssertionParamsFrom(params, newFormat) {
   delete params.aud;
 
   return assertionParams;
+};
+
+SERIALIZER._20120815_extractAssertionParamsFrom = function(params) {
+  delete params.version;
+
+  var returnValue = this._LEGACY_extractAssertionParamsFrom(params);
+  return returnValue;
+};
+
+
+function extractAssertionParamsFrom(params) {
+  return version.dispatchOnDataFormatVersion(SERIALIZER, 'extractAssertionParamsFrom', version.getDataFormatVersion(), params);
 }
+
 
 exports.sign = function(payload, assertionParams, secretKey, cb) {
   var allParams = {};
@@ -2862,12 +2909,7 @@ exports.verify = function(signedObject, publicKey, now, cb) {
   jwcrypto.verify(signedObject, publicKey, function(err, payload) {
     if (err) return cb(err);
 
-    // pass if the public key passed in is "newFormat", that means the assertion
-    // is as well.  This means we should interpret some values differently (namely
-    // times are in seconds).
-    // This trick leverages the fact that consumers of jwcrypto never consider
-    // "assertions" in isolation from the certificate that they are combined with.
-    var assertionParams = extractAssertionParamsFrom(payload, publicKey.newFormat);
+    var assertionParams = extractAssertionParamsFrom(payload);
 
     // check iat
     if (assertionParams.issuedAt) {
@@ -2894,39 +2936,55 @@ require.define("/lib/cert.js",function(require,module,exports,__dirname,__filena
 var jwcrypto = require("./jwcrypto"),
     assertion = require("./assertion"),
     utils = require("./utils"),
-    delay = utils.delay;
+    delay = utils.delay,
+    version = require("./version");
 
-var serializeCertParamsInto = function(certParams, params) {
-  params.pubkey = certParams.publicKey.toSimpleObject();
-  // now let's serialize all the client provided parameters into
-  // the certificate.  If there is a duplicate parameter,
-  // we'll throw an exception
-  Object.keys(certParams).forEach(function(key) {
-    if (params[key]) {
-      throw new Error("certificate param '" + key + "' defined multiple times");
-    }
-    params[key] = certParams[key];
-  });
+var SERIALIZER = {};
+
+SERIALIZER._LEGACY_serializeCertParamsInto = function(certParams, params) {
+  params['public-key'] = certParams.publicKey.toSimpleObject();
+  params.principal = certParams.principal;
 };
 
-function extractCertParamsFrom(params) {
+SERIALIZER._20120815_serializeCertParamsInto = function(certParams, params) {
+  params.publicKey = certParams.publicKey.toSimpleObject();
+  params.principal = certParams.principal;
+
+  params.version = "2012.08.15";
+};
+
+var serializeCertParamsInto = function(certParams, params) {
+  version.dispatchOnDataFormatVersion(SERIALIZER, 'serializeCertParamsInto', version.getDataFormatVersion(), certParams, params);
+};
+
+SERIALIZER._LEGACY_extractCertParamsFrom = function(params) {
   var certParams = {};
 
-  var pubkeykey = 'public-key';
-  if (params.pubkey) {
-    pubkeykey = 'pubkey';
-  }
-  certParams.publicKey = jwcrypto.loadPublicKey(JSON.stringify(params[pubkeykey]));
-  delete params[pubkeykey];
 
-  [ 'principal', 'sub' ].forEach(function(k) {
-    if (params[k]) {
-      certParams[k] = params[k];
-      delete params[k];
-    }
-  });
+  certParams.publicKey = jwcrypto.loadPublicKey(JSON.stringify(params['public-key']));
+  delete params['public-key'];
+  certParams.principal = params.principal;
+  delete params.principal;
 
   return certParams;
+};
+
+SERIALIZER._20120815_extractCertParamsFrom = function(params) {
+  delete params.version;
+
+  var certParams = {};
+
+  certParams.publicKey = jwcrypto.loadPublicKey(JSON.stringify(params.publicKey));
+  delete params.publicKey;
+  certParams.principal = params.principal;
+  delete params.principal;
+
+  return certParams;
+};
+
+
+function extractCertParamsFrom(params, originalComponents) {
+  return version.dispatchOnDataFormatVersion(SERIALIZER, 'extractCertParamsFrom', originalComponents.payload.version, params);
 }
 
 exports.sign = function(certParams, assertionParams, additionalPayload,
@@ -2948,6 +3006,7 @@ var verify = function(signedObject, publicKey, now, cb) {
     var originalComponents = jwcrypto.extractComponents(signedObject);
     var certParams = extractCertParamsFrom(payload, originalComponents);
 
+    // make the key appear under both public-key and publicKey
     cb(err, payload, assertionParams, certParams);
   });
 };
@@ -3070,6 +3129,7 @@ require.define("/lib/algs/ds.js",function(require,module,exports,__dirname,__fil
 
 var algs = require("./index");
 var libs = require("../../libs/minimal");
+var version = require("../version");
 var BigInteger = libs.BigInteger;
 
 var HASH_ALGS = {
@@ -3175,14 +3235,13 @@ function generate(keysize, rng, doneCB) {
   keypair.secretKey = new SecretKey(x, keypair.keysize, params);
   keypair.publicKey = new PublicKey(keypair.secretKey.y, keypair.keysize, params);
 
-  keypair.publicKey.algorithm = keypair.secretKey.algorithm = keypair.algorithm = 'DSA';
+  keypair.publicKey.algorithm = keypair.secretKey.algorithm = keypair.algorithm = 'DS';
 
   // XXX - timeout or nexttick?
   doneCB(null, keypair);
 }
 
 var PublicKey = function(y, keysize, params) {
-  this.newFormat = true;
   this.y = y;
 
   if (keysize && params) {
@@ -3197,12 +3256,22 @@ var PublicKey = function(y, keysize, params) {
 
 PublicKey.prototype = new algs.PublicKey();
 
-PublicKey.prototype.serializeToObject = function(obj) {
-  obj.y = this.y.toBase64URL();
-  obj.p = this.p.toBase64URL();
-  obj.q = this.q.toBase64URL();
-  obj.g = this.g.toBase64URL();
+PublicKey.prototype._20120815_serializeToObject = function(obj) {
+  obj.version = '2012.08.15';
+  obj.y = this.y.toBase64();
+  obj.p = this.p.toBase64();
+  obj.q = this.q.toBase64();
+  obj.g = this.g.toBase64();
 };
+
+PublicKey.prototype._LEGACY_serializeToObject = function(obj) {
+  obj.y = this.y.toString(16);
+  obj.p = this.p.toString(16);
+  obj.q = this.q.toString(16);
+  obj.g = this.g.toString(16);
+};
+
+PublicKey.prototype.serializeToObject = version.versionDispatcher('serializeToObject');
 
 PublicKey.prototype.equals = function(other) {
   // if other is falsey, then there is no match.
@@ -3217,20 +3286,24 @@ PublicKey.prototype.equals = function(other) {
           this.q.equals(other.q));
 };
 
-PublicKey.prototype.deserializeFromObject = function(obj) {
-  if (obj.kty) {
-    this.p = BigInteger.fromBase64(obj.p);
-    this.q = BigInteger.fromBase64(obj.q);
-    this.g = BigInteger.fromBase64(obj.g);
-    this.y = BigInteger.fromBase64(obj.y);
-  } else {
-    this.p = new BigInteger(obj.p, 16);
-    this.q = new BigInteger(obj.q, 16);
-    this.g = new BigInteger(obj.g, 16);
-    this.y = new BigInteger(obj.y, 16);
-  }
-  this.keysize = _getKeySizeFromBitlength(this.y.bitLength());
+PublicKey.prototype._LEGACY_deserializeFromObject = function(obj) {
+  this.p = new BigInteger(obj.p, 16);
+  this.q = new BigInteger(obj.q, 16);
+  this.g = new BigInteger(obj.g, 16);
+  this.y = new BigInteger(obj.y, 16);
+};
 
+PublicKey.prototype._20120815_deserializeFromObject = function(obj) {
+  this.p = BigInteger.fromBase64(obj.p);
+  this.q = BigInteger.fromBase64(obj.q);
+  this.g = BigInteger.fromBase64(obj.g);
+  this.y = BigInteger.fromBase64(obj.y);
+};
+
+PublicKey.prototype.deserializeFromObject = function(obj) {
+  version.dispatchOnDataFormatVersion(this, 'deserializeFromObject', obj.version, obj);
+
+  this.keysize = _getKeySizeFromBitlength(this.y.bitLength());
   return this;
 };
 
@@ -3248,7 +3321,6 @@ PublicKey.prototype.deserializeFromObject = function(obj) {
 // safely.
 
 function SecretKey(x, keysize, params) {
-  this.newFormat = true;
   this.x = x;
 
   // compute y if need be
@@ -3265,25 +3337,42 @@ function SecretKey(x, keysize, params) {
 
 SecretKey.prototype = new algs.SecretKey();
 
-SecretKey.prototype.serializeToObject = function(obj) {
-  obj.x = this.x.toBase64URL();
-  obj.p = this.p.toBase64URL();
-  obj.q = this.q.toBase64URL();
-  obj.g = this.g.toBase64URL();
+SecretKey.prototype._LEGACY_serializeToObject = function(obj) {
+  obj.x = this.x.toString(16);
+  obj.p = this.p.toString(16);
+  obj.q = this.q.toString(16);
+  obj.g = this.g.toString(16);
+};
+
+SecretKey.prototype._20120815_serializeToObject = function(obj) {
+  obj.version = '2012.08.15';
+  obj.x = this.x.toBase64();
+  obj.p = this.p.toBase64();
+  obj.q = this.q.toBase64();
+  obj.g = this.g.toBase64();
+};
+
+SecretKey.prototype.serializeToObject = version.versionDispatcher('serializeToObject');
+
+SecretKey.prototype._LEGACY_deserializeFromObject = function(obj) {
+  this.x = new BigInteger(obj.x, 16);
+
+  this.p = new BigInteger(obj.p, 16);
+  this.q = new BigInteger(obj.q, 16);
+  this.g = new BigInteger(obj.g, 16);
+};
+
+SecretKey.prototype._20120815_deserializeFromObject = function(obj) {
+  this.x = BigInteger.fromBase64(obj.x);
+
+  this.p = BigInteger.fromBase64(obj.p);
+  this.q = BigInteger.fromBase64(obj.q);
+  this.g = BigInteger.fromBase64(obj.g);
 };
 
 SecretKey.prototype.deserializeFromObject = function(obj) {
-  if (obj.kty) {
-    this.x = BigInteger.fromBase64(obj.x);
-    this.p = BigInteger.fromBase64(obj.p);
-    this.q = BigInteger.fromBase64(obj.q);
-    this.g = BigInteger.fromBase64(obj.g);
-  } else {
-    this.x = new BigInteger(obj.x, 16);
-    this.p = new BigInteger(obj.p, 16);
-    this.q = new BigInteger(obj.q, 16);
-    this.g = new BigInteger(obj.g, 16);
-  }
+  version.dispatchOnDataFormatVersion(this, 'deserializeFromObject', obj.version,
+                                   obj);
 
   this.keysize = _getKeySizeFromBitlength(this.p.bitLength());
 
@@ -3377,13 +3466,12 @@ PublicKey.prototype.verify = function(message, signature, cb) {
 };
 
 // register this stuff
-algs.register("DSA", {
+algs.register("DS", {
   generate: generate,
   PublicKey: PublicKey,
   SecretKey: SecretKey
 });
 
-algs.registerAlias("DS", "DSA");
 });
 
 require.define("/bundle.js",function(require,module,exports,__dirname,__filename,process){/* ***** BEGIN LICENSE BLOCK *****
