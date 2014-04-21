@@ -38,13 +38,14 @@ var bundled = {
 };
 
 describe("Signing and Verifying", function() {
-  var signed_object;
-
-  PersonaId.sign("a super secret message from outer space!", secretkey, function(err, sig) {
-    signed_object = sig;
-  });
 
   it('should be able to sign a thing', function() {
+    var signed_object;
+  
+    PersonaId.sign("a super secret message from outer space!", secretkey, function(err, sig) {
+      signed_object = sig;
+    });
+
     waitsFor(function() {
       return (signed_object !== undefined);
     });
@@ -53,16 +54,15 @@ describe("Signing and Verifying", function() {
       expect(signed_object).toBeDefined();
       expect(signed_object.split('.').length).toEqual(3);
     });
-
-  });
-
-  var designed_object;
-
-  PersonaId.verify(signature, pubkey, function(err, payload) {
-    designed_object = payload;
   });
 
   it('should be able to verify a thing', function() {
+    var designed_object;
+  
+    PersonaId.verify(signature, pubkey, function(err, payload) {
+      designed_object = payload;
+    });
+
     waitsFor(function () {
       return (designed_object !== undefined);
     });
@@ -71,18 +71,17 @@ describe("Signing and Verifying", function() {
       expect(designed_object).toBeDefined();
       expect(designed_object).toEqual(pgp_pubkey);
     });
-
-  });
-
-  var payload;
-
-  PersonaId.sign(pgp_pubkey, secretkey, function(err, sig) {
-    PersonaId.verify(sig, pubkey, function(err, pload) {
-        payload = pload;
-    });
   });
 
   it('should verify the output of verifying is equal to the input of signing', function() {
+    var payload;
+ 
+    PersonaId.sign(pgp_pubkey, secretkey, function(err, sig) {
+      PersonaId.verify(sig, pubkey, function(err, pload) {
+          payload = pload;
+      });
+    });
+
     waitsFor(function() {
       return (payload !== undefined);
     });
@@ -97,13 +96,13 @@ describe("Signing and Verifying", function() {
 
 describe("Backed Identity Bundling and Unbundling", function() {
 
-  var bundle;
-
-  PersonaId.bundle(pgp_pubkey, secretkey, assertion, function(payload) {
-    bundle = payload;
-  });
-
   it('should bundle a pubkey and bia together', function() {
+    var bundle;
+  
+    PersonaId.bundle(pgp_pubkey, secretkey, assertion, function(payload) {
+      bundle = payload;
+    });
+
     waitsFor(function() {
       return (bundle !== undefined);
     });
@@ -116,13 +115,13 @@ describe("Backed Identity Bundling and Unbundling", function() {
     });
   });
 
-  var valid;
-
-  PersonaId.verifyPayload(bundled, function(validity) {
-    valid = validity;
-  });
-
   it('should verify a full payload', function() {
+    var valid;
+    
+    PersonaId.verifyPayload(bundled, function(validity) {
+      valid = validity;
+    });
+
     waitsFor(function() {
       return (valid !== undefined);
     });
