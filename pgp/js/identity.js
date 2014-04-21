@@ -28,7 +28,7 @@ var PersonaId = {
      *                    public key associated with secret key.
      **/
     bundle: function(pubkey, secretkey, assertion, callback) {
-        self.sign(pubkey, secretkey, function(signature) {
+        this.sign(pubkey, secretkey, function(err, signature) {
             callback({pgp: signature, bia: assertion});
         });
     },
@@ -68,8 +68,8 @@ var PersonaId = {
      *                  contains a signed pgp key and bia.
      **/
     verifyPayload: function(payload) {
-        var bia_pubkey = self.extractPubkey(payload.bia);
-        self.verify(payload.pgp, bia_pubkey, function(err, pgp_pubkey) {
+        var bia_pubkey = this.extractPubkey(payload.bia);
+        this.verify(payload.pgp, bia_pubkey, function(err, pgp_pubkey) {
             if (err !== null)
                 return true;
         });
@@ -90,7 +90,7 @@ var PersonaId = {
         // it will hold for now.
         // TODO: Verify Persona never uses multiple certs.
         var cert = bundle.certs[0];
-        
+
         var pubkey_obj = jwcrypto.extractComponents(cert).pubkey;
         var pubkey = jwcrypto.loadPublicKeyFromObject(pubkey_obj);
 
