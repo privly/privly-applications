@@ -1,33 +1,91 @@
-describe("Backed Identity Tests", function() {
-  var pubkey = jwcrypto.loadPublicKeyFromObject({"algorithm":"DS","y":"6782618651cac913aa9e8426d1207852d1ff3ec2d69006a638b117f369f0f67de9080eb41c229494c28615cdb4eb344825f70f9ec1870674b36101f40662c26d46244b9c34901d28c4838a25a76ca9453d04f4cde12ceb44f429b3fa6468f04a99d4e1b0d6a9c6f7382ef84fa2d8c4450bc935ed3af6e367ba71ceca118e2ca6","p":"ff600483db6abfc5b45eab78594b3533d550d9f1bf2a992a7a8daa6dc34f8045ad4e6e0c429d334eeeaaefd7e23d4810be00e4cc1492cba325ba81ff2d5a5b305a8d17eb3bf4a06a349d392e00d329744a5179380344e82a18c47933438f891e22aeef812d69c8f75e326cb70ea000c3f776dfdbd604638c2ef717fc26d02e17","q":"e21e04f911d1ed7991008ecaab3bf775984309c3","g":"c52a4a0ff3b7e61fdf1867ce84138369a6154f4afa92966e3c827e25cfa6cf508b90e5de419e1337e07a2e9e2a3cd5dea704d175f8ebf6af397d69e110b96afb17c7a03259329e4829b0d03bbc7896b15b4ade53e130858cc34d96269aa89041f409136c7242a38895c9d5bccad4f389af1d7a4bd1398bd072dffa896233397a"});
-  var privkey = jwcrypto.loadSecretKeyFromObject({"algorithm":"DS","x":"287684814783ed02bb002a1345f75d53e08d828f","p":"ff600483db6abfc5b45eab78594b3533d550d9f1bf2a992a7a8daa6dc34f8045ad4e6e0c429d334eeeaaefd7e23d4810be00e4cc1492cba325ba81ff2d5a5b305a8d17eb3bf4a06a349d392e00d329744a5179380344e82a18c47933438f891e22aeef812d69c8f75e326cb70ea000c3f776dfdbd604638c2ef717fc26d02e17","q":"e21e04f911d1ed7991008ecaab3bf775984309c3","g":"c52a4a0ff3b7e61fdf1867ce84138369a6154f4afa92966e3c827e25cfa6cf508b90e5de419e1337e07a2e9e2a3cd5dea704d175f8ebf6af397d69e110b96afb17c7a03259329e4829b0d03bbc7896b15b4ade53e130858cc34d96269aa89041f409136c7242a38895c9d5bccad4f389af1d7a4bd1398bd072dffa896233397a"});
+var pgp_pubkey =
+    ['-----BEGIN PGP PUBLIC KEY BLOCK-----',
+    'Version: GnuPG v2.0.19 (GNU/Linux)',
+    'Type: RSA/RSA',
+    '',
+    'mI0EUmEvTgEEANyWtQQMOybQ9JltDqmaX0WnNPJeLILIM36sw6zL0nfTQ5zXSS3+',
+    'fIF6P29lJFxpblWk02PSID5zX/DYU9/zjM2xPO8Oa4xo0cVTOTLj++Ri5mtr//f5',
+    'GLsIXxFrBJhD/ghFsL3Op0GXOeLJ9A5bsOn8th7x6JucNKuaRB6bQbSPABEBAAG0',
+    'JFRlc3QgTWNUZXN0aW5ndG9uIDx0ZXN0QGV4YW1wbGUuY29tPoi5BBMBAgAjBQJS',
+    'YS9OAhsvBwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQSmNhOk1uQJQwDAP6',
+    'AgrTyqkRlJVqz2pb46TfbDM2TDF7o9CBnBzIGoxBhlRwpqALz7z2kxBDmwpQa+ki',
+    'Bq3jZN/UosY9y8bhwMAlnrDY9jP1gdCo+H0sD48CdXybblNwaYpwqC8VSpDdTndf',
+    '9j2wE/weihGp/DAdy/2kyBCaiOY1sjhUfJ1GogF49rC4jQRSYS9OAQQA6R/PtBFa',
+    'JaT4jq10yqASk4sqwVMsc6HcifM5lSdxzExFP74naUMMyEsKHP53QxTF0Grqusag',
+    'Qg/ZtgT0CN1HUM152y7ACOdp1giKjpMzOTQClqCoclyvWOFB+L/SwGEIJf7LSCEr',
+    'woBuJifJc8xAVr0XX0JthoW+uP91eTQ3XpsAEQEAAYkBPQQYAQIACQUCUmEvTgIb',
+    'LgCoCRBKY2E6TW5AlJ0gBBkBAgAGBQJSYS9OAAoJEOCE90RsICyXuqIEANmmiRCA',
+    'SF7YK7PvFkieJNwzeK0V3F2lGX+uu6Y3Q/Zxdtwc4xR+me/CSBmsURyXTO29OWhP',
+    'GLszPH9zSJU9BdDi6v0yNprmFPX/1Ng0Abn/sCkwetvjxC1YIvTLFwtUL/7v6NS2',
+    'bZpsUxRTg9+cSrMWWSNjiY9qUKajm1tuzPDZXAUEAMNmAN3xXN/Kjyvj2OK2ck0X',
+    'W748sl/tc3qiKPMJ+0AkMF7Pjhmh9nxqE9+QCEl7qinFqqBLjuzgUhBU4QlwX1GD',
+    'AtNTq6ihLMD5v1d82ZC7tNatdlDMGWnIdvEMCv2GZcuIqDQ9rXWs49e7tq1NncLY',
+    'hz3tYjKhoFTKEIq3y3Pp',
+    '=h/aX',
+    '-----END PGP PUBLIC KEY BLOCK-----'].join('\n');
 
-  it('should bundle a pubkey and bia together', function() {
-    PersonaId.bundle(pubkey, secretkey, assertion, function(payload) {
-        expect(payload.bia).toEqual(assertion);
-        expect(payload.signature).toEqual(signature);
+var pubkey = jwcrypto.loadPublicKeyFromObject({"algorithm":"DS","y":"ab7d7709b6431d9ab9576c5e1dbd1101e7426d1aa4f6d3de639905109e8a534d37f5aeee7b4befc36bbb872f188ffe9a378f7f6f3834c57adc0279dada4209f684c108fa467210c9c131d76a0539cdf1f8a1e27083338a7878355f0d5db576e558b8af4ef073ab86c42ef0a5381d655c586e3e104173c682b0823ae544a84abd","p":"ff600483db6abfc5b45eab78594b3533d550d9f1bf2a992a7a8daa6dc34f8045ad4e6e0c429d334eeeaaefd7e23d4810be00e4cc1492cba325ba81ff2d5a5b305a8d17eb3bf4a06a349d392e00d329744a5179380344e82a18c47933438f891e22aeef812d69c8f75e326cb70ea000c3f776dfdbd604638c2ef717fc26d02e17","q":"e21e04f911d1ed7991008ecaab3bf775984309c3","g":"c52a4a0ff3b7e61fdf1867ce84138369a6154f4afa92966e3c827e25cfa6cf508b90e5de419e1337e07a2e9e2a3cd5dea704d175f8ebf6af397d69e110b96afb17c7a03259329e4829b0d03bbc7896b15b4ade53e130858cc34d96269aa89041f409136c7242a38895c9d5bccad4f389af1d7a4bd1398bd072dffa896233397a"})
+
+var secretkey = jwcrypto.loadSecretKeyFromObject({"algorithm":"DS","x":"abf0aab1097351b140bdfd45454eea002f612de6","p":"ff600483db6abfc5b45eab78594b3533d550d9f1bf2a992a7a8daa6dc34f8045ad4e6e0c429d334eeeaaefd7e23d4810be00e4cc1492cba325ba81ff2d5a5b305a8d17eb3bf4a06a349d392e00d329744a5179380344e82a18c47933438f891e22aeef812d69c8f75e326cb70ea000c3f776dfdbd604638c2ef717fc26d02e17","q":"e21e04f911d1ed7991008ecaab3bf775984309c3","g":"c52a4a0ff3b7e61fdf1867ce84138369a6154f4afa92966e3c827e25cfa6cf508b90e5de419e1337e07a2e9e2a3cd5dea704d175f8ebf6af397d69e110b96afb17c7a03259329e4829b0d03bbc7896b15b4ade53e130858cc34d96269aa89041f409136c7242a38895c9d5bccad4f389af1d7a4bd1398bd072dffa896233397a"});
+
+var assertion = "eyJhbGciOiJEUzEyOCJ9.eyJrZXkiOiItLS0tLUJFR0lOIFBHUCBQVUJMSUMgS0VZIEJMT0NLLS0tLS1cblZlcnNpb246IEdudVBHIHYyLjAuMTkgKEdOVS9MaW51eClcblR5cGU6IFJTQS9SU0FcblxubUkwRVVtRXZUZ0VFQU55V3RRUU1PeWJROUpsdERxbWFYMFduTlBKZUxJTElNMzZzdzZ6TDBuZlRRNXpYU1MzK1xuZklGNlAyOWxKRnhwYmxXazAyUFNJRDV6WC9EWVU5L3pqTTJ4UE84T2E0eG8wY1ZUT1RMaisrUmk1bXRyLy9mNVxuR0xzSVh4RnJCSmhEL2doRnNMM09wMEdYT2VMSjlBNWJzT244dGg3eDZKdWNOS3VhUkI2YlFiU1BBQkVCQUFHMFxuSkZSbGMzUWdUV05VWlhOMGFXNW5kRzl1SUR4MFpYTjBRR1Y0WVcxd2JHVXVZMjl0UG9pNUJCTUJBZ0FqQlFKU1xuWVM5T0Foc3ZCd3NKQ0FjREFnRUdGUWdDQ1FvTEJCWUNBd0VDSGdFQ0Y0QUFDZ2tRU21OaE9rMXVRSlF3REFQNlxuQWdyVHlxa1JsSlZxejJwYjQ2VGZiRE0yVERGN285Q0JuQnpJR294QmhsUndwcUFMejd6Mmt4QkRtd3BRYStraVxuQnEzalpOL1Vvc1k5eThiaHdNQWxuckRZOWpQMWdkQ28rSDBzRDQ4Q2RYeWJibE53YVlwd3FDOFZTcERkVG5kZlxuOWoyd0Uvd2VpaEdwL0RBZHkvMmt5QkNhaU9ZMXNqaFVmSjFHb2dGNDlyQzRqUVJTWVM5T0FRUUE2Ui9QdEJGYVxuSmFUNGpxMTB5cUFTazRzcXdWTXNjNkhjaWZNNWxTZHh6RXhGUDc0bmFVTU15RXNLSFA1M1F4VEYwR3JxdXNhZ1xuUWcvWnRnVDBDTjFIVU0xNTJ5N0FDT2RwMWdpS2pwTXpPVFFDbHFDb2NseXZXT0ZCK0wvU3dHRUlKZjdMU0NFclxud29CdUppZkpjOHhBVnIwWFgwSnRob1crdVA5MWVUUTNYcHNBRVFFQUFZa0JQUVFZQVFJQUNRVUNVbUV2VGdJYlxuTGdDb0NSQktZMkU2VFc1QWxKMGdCQmtCQWdBR0JRSlNZUzlPQUFvSkVPQ0U5MFJzSUN5WHVxSUVBTm1taVJDQVxuU0Y3WUs3UHZGa2llSk53emVLMFYzRjJsR1grdXU2WTNRL1p4ZHR3YzR4UittZS9DU0Jtc1VSeVhUTzI5T1doUFxuR0xzelBIOXpTSlU5QmREaTZ2MHlOcHJtRlBYLzFOZzBBYm4vc0Nrd2V0dmp4QzFZSXZUTEZ3dFVMLzd2Nk5TMlxuYlpwc1V4UlRnOStjU3JNV1dTTmppWTlxVUtham0xdHV6UERaWEFVRUFNTm1BTjN4WE4vS2p5dmoyT0syY2swWFxuVzc0OHNsL3RjM3FpS1BNSiswQWtNRjdQamhtaDlueHFFOStRQ0VsN3FpbkZxcUJManV6Z1VoQlU0UWx3WDFHRFxuQXROVHE2aWhMTUQ1djFkODJaQzd0TmF0ZGxETUdXbklkdkVNQ3YyR1pjdUlxRFE5clhXczQ5ZTd0cTFObmNMWVxuaHozdFlqS2hvRlRLRUlxM3kzUHBcbj1oL2FYXG4tLS0tLUVORCBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tIn0.LCQEg7w5WbHpbrxPpMi_Kw8-AmHIoFNclOcPz-c1XI1vP7AajP48cQ";
+
+var signature = "eyJhbGciOiJEUzEyOCJ9.eyJrZXkiOiItLS0tLUJFR0lOIFBHUCBQVUJMSUMgS0VZIEJMT0NLLS0tLS1cblZlcnNpb246IEdudVBHIHYyLjAuMTkgKEdOVS9MaW51eClcblR5cGU6IFJTQS9SU0FcblxubUkwRVVtRXZUZ0VFQU55V3RRUU1PeWJROUpsdERxbWFYMFduTlBKZUxJTElNMzZzdzZ6TDBuZlRRNXpYU1MzK1xuZklGNlAyOWxKRnhwYmxXazAyUFNJRDV6WC9EWVU5L3pqTTJ4UE84T2E0eG8wY1ZUT1RMaisrUmk1bXRyLy9mNVxuR0xzSVh4RnJCSmhEL2doRnNMM09wMEdYT2VMSjlBNWJzT244dGg3eDZKdWNOS3VhUkI2YlFiU1BBQkVCQUFHMFxuSkZSbGMzUWdUV05VWlhOMGFXNW5kRzl1SUR4MFpYTjBRR1Y0WVcxd2JHVXVZMjl0UG9pNUJCTUJBZ0FqQlFKU1xuWVM5T0Foc3ZCd3NKQ0FjREFnRUdGUWdDQ1FvTEJCWUNBd0VDSGdFQ0Y0QUFDZ2tRU21OaE9rMXVRSlF3REFQNlxuQWdyVHlxa1JsSlZxejJwYjQ2VGZiRE0yVERGN285Q0JuQnpJR294QmhsUndwcUFMejd6Mmt4QkRtd3BRYStraVxuQnEzalpOL1Vvc1k5eThiaHdNQWxuckRZOWpQMWdkQ28rSDBzRDQ4Q2RYeWJibE53YVlwd3FDOFZTcERkVG5kZlxuOWoyd0Uvd2VpaEdwL0RBZHkvMmt5QkNhaU9ZMXNqaFVmSjFHb2dGNDlyQzRqUVJTWVM5T0FRUUE2Ui9QdEJGYVxuSmFUNGpxMTB5cUFTazRzcXdWTXNjNkhjaWZNNWxTZHh6RXhGUDc0bmFVTU15RXNLSFA1M1F4VEYwR3JxdXNhZ1xuUWcvWnRnVDBDTjFIVU0xNTJ5N0FDT2RwMWdpS2pwTXpPVFFDbHFDb2NseXZXT0ZCK0wvU3dHRUlKZjdMU0NFclxud29CdUppZkpjOHhBVnIwWFgwSnRob1crdVA5MWVUUTNYcHNBRVFFQUFZa0JQUVFZQVFJQUNRVUNVbUV2VGdJYlxuTGdDb0NSQktZMkU2VFc1QWxKMGdCQmtCQWdBR0JRSlNZUzlPQUFvSkVPQ0U5MFJzSUN5WHVxSUVBTm1taVJDQVxuU0Y3WUs3UHZGa2llSk53emVLMFYzRjJsR1grdXU2WTNRL1p4ZHR3YzR4UittZS9DU0Jtc1VSeVhUTzI5T1doUFxuR0xzelBIOXpTSlU5QmREaTZ2MHlOcHJtRlBYLzFOZzBBYm4vc0Nrd2V0dmp4QzFZSXZUTEZ3dFVMLzd2Nk5TMlxuYlpwc1V4UlRnOStjU3JNV1dTTmppWTlxVUtham0xdHV6UERaWEFVRUFNTm1BTjN4WE4vS2p5dmoyT0syY2swWFxuVzc0OHNsL3RjM3FpS1BNSiswQWtNRjdQamhtaDlueHFFOStRQ0VsN3FpbkZxcUJManV6Z1VoQlU0UWx3WDFHRFxuQXROVHE2aWhMTUQ1djFkODJaQzd0TmF0ZGxETUdXbklkdkVNQ3YyR1pjdUlxRFE5clhXczQ5ZTd0cTFObmNMWVxuaHozdFlqS2hvRlRLRUlxM3kzUHBcbj1oL2FYXG4tLS0tLUVORCBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tIn0.4Qfd_QxDorWYjdykIFYfRDsaM0HchTeIWiST4DaXrJ8C3b3rlgbZGw";
+
+describe("Signing and Verifying", function() {
+  var signed_object;
+
+  PersonaId.sign("a super secret message from outer space!", secretkey, function(err, sig) {
+      signed_object = sig;
+  });
+
+  it('should be able to sign a thing', function() {
+     waitsFor(function() {
+      return (signed_object !== undefined);
+    });
+
+    runs(function() {
+      expect(signed_object).toBeDefined();
+      expect(signed_object.split('.').length).toEqual(3);
+    });
+  
+  });
+
+  var designed_object;
+
+  PersonaId.verify(signature, pubkey, function(err, payload) {
+    designed_object = payload;
+  });
+
+  it('should be able to verify a thing', function() {
+    waitsFor(function () {
+      return (designed_object !== undefined);
+    });
+
+    runs(function() {
+      expect(designed_object).toBeDefined();
+      expect(designed_object).toEqual(pgp_pubkey);
+    });
+ 
+  });
+
+  var payload;
+
+  PersonaId.sign(pgp_pubkey, secretkey, function(err, sig) {
+    PersonaId.verify(sig, pubkey, function(err, pload) {
+        payload = pload;
     });
   });
 
-  it('should sign a pgp public key', function() {
-    PersonaId.sign(pubkey, secretkey, function(sig) {
-        expect(sig).toEqual(signature);
+  it('should verify the output of verifying is equal to the input of signing', function() {
+  
+    waitsFor(function() {
+      return (payload !== undefined);
     });
-  });
 
-  it('should verify a signed pgp public key', function() {
-    PersonaId.verify(signedPayload, pubkey, function(payload) {
-        expect(payload).toEqual({key: pgp_pubkey});
+    runs(function() {
+      expect(payload).toBeDefined();
+      expect(payload).toEqual(pgp_pubkey);
     });
-  });
-
-  it('should verify a full payload', function() {
-      var valid = PersonaId.verifyPayload(payload);
-      expect(valid).toEqual(true);
-  });
-
-  it('should extract a Persona public key from a bia', function () {
-      var persona_pubkey = PersonaId.extractPubkey(bia);
-      expect(persona_pubkey).toEqual(pubkey);
   });
 });
