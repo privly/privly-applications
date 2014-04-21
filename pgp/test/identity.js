@@ -36,11 +36,11 @@ describe("Signing and Verifying", function() {
   var signed_object;
 
   PersonaId.sign("a super secret message from outer space!", secretkey, function(err, sig) {
-      signed_object = sig;
+   signed_object = sig;
   });
 
   it('should be able to sign a thing', function() {
-     waitsFor(function() {
+    waitsFor(function() {
       return (signed_object !== undefined);
     });
 
@@ -48,7 +48,7 @@ describe("Signing and Verifying", function() {
       expect(signed_object).toBeDefined();
       expect(signed_object.split('.').length).toEqual(3);
     });
-  
+
   });
 
   var designed_object;
@@ -66,7 +66,7 @@ describe("Signing and Verifying", function() {
       expect(designed_object).toBeDefined();
       expect(designed_object).toEqual(pgp_pubkey);
     });
- 
+
   });
 
   var payload;
@@ -78,7 +78,6 @@ describe("Signing and Verifying", function() {
   });
 
   it('should verify the output of verifying is equal to the input of signing', function() {
-  
     waitsFor(function() {
       return (payload !== undefined);
     });
@@ -97,7 +96,7 @@ describe("Backed Identity Bundling and Unbundling", function() {
   PersonaId.bundle(pgp_pubkey, secretkey, assertion, function(payload) {
     bundle = payload;
   });
-    
+
   it('should bundle a pubkey and bia together', function() {
     waitsFor(function() {
       return (bundle !== undefined);
