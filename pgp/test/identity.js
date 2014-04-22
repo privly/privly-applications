@@ -39,6 +39,10 @@ var bundled = {
 
 describe("Signing and Verifying", function() {
 
+  beforeEach(function() {
+    jwcrypto.addEntropy("123456789012345678901234567890");
+  });
+
   it('should be able to sign a thing', function() {
     var signed_object;
 
@@ -95,6 +99,10 @@ describe("Signing and Verifying", function() {
 
 
 describe("Backed Identity Bundling and Unbundling", function() {
+
+  beforeEach(function() {
+    jwcrypto.addEntropy("123456789012345678901234567890");
+  });
 
   it('should bundle a pubkey and bia together', function() {
     var bundle;
