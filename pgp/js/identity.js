@@ -15,8 +15,6 @@
 var jwcrypto = require('/lib/jwcrypto');
 require('/lib/algs/ds');
 
-jwcrypto.addEntropy("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-
 var PersonaId = {
   /**
    * Create a payload to send to the directory provider.
