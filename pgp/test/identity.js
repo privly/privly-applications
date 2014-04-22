@@ -24,7 +24,7 @@ var pgp_pubkey =
     '=h/aX',
     '-----END PGP PUBLIC KEY BLOCK-----'].join('\n');
 
-var pubkey = jwcrypto.loadPublicKeyFromObject({"algorithm":"DS","y":"ab7d7709b6431d9ab9576c5e1dbd1101e7426d1aa4f6d3de639905109e8a534d37f5aeee7b4befc36bbb872f188ffe9a378f7f6f3834c57adc0279dada4209f684c108fa467210c9c131d76a0539cdf1f8a1e27083338a7878355f0d5db576e558b8af4ef073ab86c42ef0a5381d655c586e3e104173c682b0823ae544a84abd","p":"ff600483db6abfc5b45eab78594b3533d550d9f1bf2a992a7a8daa6dc34f8045ad4e6e0c429d334eeeaaefd7e23d4810be00e4cc1492cba325ba81ff2d5a5b305a8d17eb3bf4a06a349d392e00d329744a5179380344e82a18c47933438f891e22aeef812d69c8f75e326cb70ea000c3f776dfdbd604638c2ef717fc26d02e17","q":"e21e04f911d1ed7991008ecaab3bf775984309c3","g":"c52a4a0ff3b7e61fdf1867ce84138369a6154f4afa92966e3c827e25cfa6cf508b90e5de419e1337e07a2e9e2a3cd5dea704d175f8ebf6af397d69e110b96afb17c7a03259329e4829b0d03bbc7896b15b4ade53e130858cc34d96269aa89041f409136c7242a38895c9d5bccad4f389af1d7a4bd1398bd072dffa896233397a"})
+var pubkey = jwcrypto.loadPublicKeyFromObject({"algorithm":"DS","y":"ab7d7709b6431d9ab9576c5e1dbd1101e7426d1aa4f6d3de639905109e8a534d37f5aeee7b4befc36bbb872f188ffe9a378f7f6f3834c57adc0279dada4209f684c108fa467210c9c131d76a0539cdf1f8a1e27083338a7878355f0d5db576e558b8af4ef073ab86c42ef0a5381d655c586e3e104173c682b0823ae544a84abd","p":"ff600483db6abfc5b45eab78594b3533d550d9f1bf2a992a7a8daa6dc34f8045ad4e6e0c429d334eeeaaefd7e23d4810be00e4cc1492cba325ba81ff2d5a5b305a8d17eb3bf4a06a349d392e00d329744a5179380344e82a18c47933438f891e22aeef812d69c8f75e326cb70ea000c3f776dfdbd604638c2ef717fc26d02e17","q":"e21e04f911d1ed7991008ecaab3bf775984309c3","g":"c52a4a0ff3b7e61fdf1867ce84138369a6154f4afa92966e3c827e25cfa6cf508b90e5de419e1337e07a2e9e2a3cd5dea704d175f8ebf6af397d69e110b96afb17c7a03259329e4829b0d03bbc7896b15b4ade53e130858cc34d96269aa89041f409136c7242a38895c9d5bccad4f389af1d7a4bd1398bd072dffa896233397a"});
 
 var secretkey = jwcrypto.loadSecretKeyFromObject({"algorithm":"DS","x":"abf0aab1097351b140bdfd45454eea002f612de6","p":"ff600483db6abfc5b45eab78594b3533d550d9f1bf2a992a7a8daa6dc34f8045ad4e6e0c429d334eeeaaefd7e23d4810be00e4cc1492cba325ba81ff2d5a5b305a8d17eb3bf4a06a349d392e00d329744a5179380344e82a18c47933438f891e22aeef812d69c8f75e326cb70ea000c3f776dfdbd604638c2ef717fc26d02e17","q":"e21e04f911d1ed7991008ecaab3bf775984309c3","g":"c52a4a0ff3b7e61fdf1867ce84138369a6154f4afa92966e3c827e25cfa6cf508b90e5de419e1337e07a2e9e2a3cd5dea704d175f8ebf6af397d69e110b96afb17c7a03259329e4829b0d03bbc7896b15b4ade53e130858cc34d96269aa89041f409136c7242a38895c9d5bccad4f389af1d7a4bd1398bd072dffa896233397a"});
 
@@ -41,7 +41,7 @@ describe("Signing and Verifying", function() {
 
   it('should be able to sign a thing', function() {
     var signed_object;
-  
+
     PersonaId.sign("a super secret message from outer space!", secretkey, function(err, sig) {
       signed_object = sig;
     });
@@ -58,7 +58,7 @@ describe("Signing and Verifying", function() {
 
   it('should be able to verify a thing', function() {
     var designed_object;
-  
+
     PersonaId.verify(signature, pubkey, function(err, payload) {
       designed_object = payload;
     });
@@ -75,10 +75,10 @@ describe("Signing and Verifying", function() {
 
   it('should verify the output of verifying is equal to the input of signing', function() {
     var payload;
- 
+
     PersonaId.sign(pgp_pubkey, secretkey, function(err, sig) {
       PersonaId.verify(sig, pubkey, function(err, pload) {
-          payload = pload;
+        payload = pload;
       });
     });
 
@@ -98,7 +98,7 @@ describe("Backed Identity Bundling and Unbundling", function() {
 
   it('should bundle a pubkey and bia together', function() {
     var bundle;
-  
+
     PersonaId.bundle(pgp_pubkey, secretkey, assertion, function(payload) {
       bundle = payload;
     });
@@ -117,7 +117,7 @@ describe("Backed Identity Bundling and Unbundling", function() {
 
   it('should verify a full payload', function() {
     var valid;
-    
+
     PersonaId.verifyPayload(bundled, function(validity) {
       valid = validity;
     });
