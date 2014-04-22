@@ -82,6 +82,7 @@ var PersonaPGP = {
     for(var i = 0; i < bia_pub_keys.length; i++){
       callAddRemote(i);
     }
+
     // wait at most 'time' for async calls to finish
     var time = 500*bia_pub_keys.length; 
     var go = true;
@@ -230,30 +231,20 @@ var PersonaPGP = {
     var completed = [];
     var getPublicKeys = function(i){
       PersonaPGP.findPubKey(emails[i],function(Keys){
-        console.log(Keys.length);
         for(var j = 0; j < Keys.length; j++){
           console.log(Keys[i]);
           var pub_key = openpgp.key.readArmored(Keys[j]).keys[0]; 
           console.log(pub_key);
           pubKeys.push(pub_key);
         }
-        console.log(foo);
         completed.push(emails[i]);
       });
     };
-    // TODO: Evaluate if this is a sufficiently rubust approach.
-    // The return value of findPubKey is an array of unpredictable size.  This
-    // means that the length of emails and pubkeys should not necessarily be
-    // equal when all requests are completed. Some emails may have zero keys
-    // associated with them while others may have n keys. This is the reason
-    // the 'completed' array is being used.
 
     localforage.setDriver('localStorageWrapper',function(){
       localforage.getItem('email',function(my_email){
-        emails.push(my_email);
-        console.log(emails);
+        emails.push(my_email); // so you can view your own messages
         for (var i = 0; i < emails.length; i++){
-          console.log(emails[i]);
           getPublicKeys(i);
         }
         // wait at most 'time' for async calls to finish
@@ -262,7 +253,6 @@ var PersonaPGP = {
         setTimeout(function(){
           go = false;
         },time);
-        //while (go){}
         while(completed.length < emails.length && go){ }
         
         // Here we convert the plaintext into a json string. We do this to
@@ -273,7 +263,6 @@ var PersonaPGP = {
         // decryption. However, this means revealing the identity of your
         // intended recipient. Converting to json will (eventually) allow us to
         // preserve the identity of recipients.
-        console.log("go slow");
         var plaintext_as_json = JSON.stringify({message: plaintext});
         var ciphertext = openpgp.encryptMessage(pubKeys,plaintext_as_json);
         callback(ciphertext);
@@ -369,13 +358,13 @@ var PersonaPGP = {
    */
   getEmailFromBia: function(bia_pub_key){
     // TODO: get an actual bia, and then extract the email address
-    console.log("in getEmailFromBia " + foo);
+
+    // This if/else is only for testing.  We can only send messages to
+    // bob@example.com and jim@foo.com right now.
     if (foo === 1){
       foo += 1;
-      console.log("Returning bob");
       return "bob@example.com";
     } else {
-      console.log("Returning jim");
       return "jim@foo.com";
     }
     //var bia = bia_pub_key[0];

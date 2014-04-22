@@ -207,16 +207,20 @@ var callbacks = {
         }
         var keypair = my_keys[email][my_keys[email].length-1];// most recent key
         var pubkey = keypair.publicKeyArmored;
-        var directoryURL = "http://localhost:5000/";
-        directoryURL += email;
-        var value = {"value": [pubkey]};
+        var directoryURL = "http://dirp.grr.io/store";
+        value = {
+          Persona: "foo",
+          Privly: pubkey
+        };
         $.get(
           directoryURL,
           value
         ).done(function(response){
+          console.log("Upload Success");
           callback(true);
         }
         ).fail(function(response){
+          console.log("Upload Fail");
           callback(false);
         });
       });
