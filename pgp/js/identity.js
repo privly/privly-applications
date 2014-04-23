@@ -15,6 +15,14 @@
 var jwcrypto = require('/lib/jwcrypto');
 require('/lib/algs/ds');
 
+// TODO: jwcrypto requires some form of entropy when signing. Make sure
+// the RNG is seeded, or you call `jwcrypto.addEntropy` before using
+// functions `sign` or `bundle`.
+
+// TODO: We need to determine how to autoseed jwcrypto
+// before putting this into production without a hardcoded
+// initialization vector.
+
 var PersonaId = {
   /**
    * Create a payload to send to the directory provider.
