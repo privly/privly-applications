@@ -28,7 +28,25 @@ var state = {
   /**
   * The URL of the data endpoint for this application.
   */
-  jsonURL: ""
+  jsonURL: "",
+
+  /**
+  * Reference to the setTimeout so that we can clear it
+  * in case user double clicks for inline editing
+  **/
+  timeoutRef: "",
+
+  /**
+  * Variable to check if the iframe has been clicked before
+  * for inline editing
+  **/
+  isClicked: false,
+  
+  /**
+  * Variable to check if the editing is done inline or not.
+  * 
+  **/
+  isInlineEdit: false
 }
 
 
@@ -74,7 +92,8 @@ var callbacks = {
 
     // Register the link and button listeners.
     $("#destroy_link").click(callbacks.destroy);
-    $("#cancel_button").click(function(){$("#edit_form").slideUp()});
+    $("#cancel_button").on("click",callbacks.cancel);
+    
     document.getElementById("update").addEventListener('click', callbacks.update);
     $("#edit_link").click(callbacks.edit);
 
@@ -318,16 +337,45 @@ var callbacks = {
    * This function should only be called if the remote server's
    * initial response had the permission object, and the update
    * flag was set to true. This prevents some CSRF issues.
+   *
+   * @param {event} evt The event triggered by the update button being clicked.
    */
-  update: function() {
+  update: function(evt) {
     privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
       callbacks.contentReturned, 
       {post: 
         {content: $("#edit_text").val(), 
         seconds_until_burn: $( "#seconds_until_burn" ).val()}});
-      
+    
+    // needed to stop click event from propagating to body
+    // and prevent a new window from opening because of click listener
+    // on body.
+    evt.stopPropagation();
+    
     // Close the editing form
-    $("#edit_form").slideUp();
+    $("#edit_form").hide();
+    state.isInlineEdit = false;
+  },
+  
+  /**
+  * This is an event listener for cancel event.
+  *
+  * @param {event} evt The event triggered by the cancel button
+  *  being clicked.
+  *
+  */
+  cancel: function(evt){
+    $("#edit_form").hide();
+    
+    // needed to stop click event from propagating to body
+    // and prevent a new window from opening because of click listener
+    // on body.
+    evt.stopPropagation();
+    
+    // Resize to its wrapper
+    privlyHostPage.resizeToWrapper();
+    state.isClicked = false;
+    state.isInlineEdit = false;
   },
   
   /**
@@ -338,13 +386,79 @@ var callbacks = {
   *
   */
   click: function(evt) {
-   if(privlyHostPage.isInjected()) {
-     if(evt.target.nodeName !== "A" || evt.target.href === ""){
+    if (state.isClicked) {
+      var target = $(evt.target)
+      if (state.isInlineEdit && !target.is("textarea") &&
+          !target.is("select")) {
+        
+        // Double click During inline Editing
+        // and not on the textarea or the dropdown.
+        callbacks.doubleClickInline(evt);
+        state.isClicked = false;
+      }
+      else{
+        state.isInlineEdit = true;
+        clearTimeout(state.timeoutRef);
+        state.isClicked = false;
+        callbacks.doubleClick();
+      }
+    }
+    else{
+      state.isClicked = true;
+      if (state.isInlineEdit) {
+        
+        // Single Click During inline Editing
+        setTimeout(function(){
+          state.isClicked = false;
+        },200);
+      }
+      else{
+        state.timeoutRef = setTimeout(function(){
+          callbacks.singleClick(evt);
+        },200);
+      }
+    }
+  },
+  
+  /**
+  * This is the handler for single click event on the iframe
+  * It opens a new tab with the post content
+  *
+  **/
+  singleClick: function(evt) {
+    state.isClicked = false;
+    if (privlyHostPage.isInjected()) {
+      if (evt.target.nodeName !== "A" || evt.target.href === "") {
        window.open(location.href, '_blank');
      }
    }
+  },
+  
+  /**
+  * This is the function called when user presses double clicks
+  * on the iframe and is used for inline editing
+  *
+  */
+  doubleClick: function() {
+    $("#edit_form").show();
+    
+    // Hide the Heading when editing inplace
+    $("#edit_form h1").hide();
+    $('#edit_text').css('width',"95%");
+    callbacks.edit();
+
+    // Resize to show the text area update, cancel buttons and burn after
+    privlyHostPage.resizeToWrapper();
+  },
+  
+  /**
+  * This is the function called when user uses double click
+  * on the inline editing form and cancels the editing.
+  *
+  */
+  doubleClickInline: function(evt){
+    callbacks.cancel(evt);
   }
- 
 }
 
 /**
