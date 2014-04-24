@@ -5,7 +5,7 @@
  * This spec is managed by the Jasmine testing library.
  **/
 
-describe ("Privly-web API Test Suite", function() {
+describe ("Privly-web new.js API Test Suite", function() {
   
   it("does not result in an error (pending login)", function() {
     // used to check if asynchronous calls completed

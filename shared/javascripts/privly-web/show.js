@@ -1,8 +1,56 @@
 /**
- * @fileOverview
- * This JavaScript acts as the driver for the PlainPost injectable application.
- * It defines the behavior specifc to this application. For more information
- * about the PlainPost application, view the README.
+ * @fileOverview This is a general adapter for interfacing with the Privly-web
+ * server: github.com/privly/privly-web
+ *
+ * Its purpose is to allow all privly-web derived applications to interface
+ * with privly-web through a consistent adapter, thereby speeding updates
+ * and easing the generation of a large number of applications.
+ *
+ * It manages the general flow of an application that interfaces with the 
+ * privly-web server but it is intended to be extended as necessary by
+ * individual privly-applications. For example, see show.js in the PlainPost
+ * Privly Application.
+ *
+ * ## Expected URL Elements ##
+ * This adapter expects the URL associated with the application to have
+ * parameters specifying where the application's data resides.
+ * 'privlyDataURL': Where the source data is stored.
+ *
+ *
+ * ## Expected DOM Elements ##
+ * This adapter expects the DOM to have the set of elements defined below.
+ * '#destroy_link': This is the link to destroy the content.
+ * '#cancel_button': This is the link to cancel the updating process.
+ * '#edit_link': This is the link to start the updating process.
+ * '#post_content': This is the content displayed to the end user.
+ * '#messages': These are UI messages presented to the user.
+ * '#login_message': This is the message telling the user they need to login.
+ * '#no_permissions_nav': The navigation that is shown if the user has no 
+                          permissions on the content.
+ * '#permissions_nav': The navigation that is shown if the user has permissions
+                       on the content.
+ * '#destruction_select_block': The editing form's desruction timeframe 
+                                select block.
+ * '#current_destruction_time': When the content will be destroyed on the server.
+ * '#seconds_until_burn': The number of seconds until the content is destroyed.
+ * '#edit_form': The form for editing the content.
+ * '#edit_text': The text in the text area for editing.
+ * '.meta_created_at': When the content was created.
+ * '.meta_destroyed_around': When the content will be destroyed.
+ *
+ * ## Extending this script ##
+ * Each of these functions have callbacks that will be called at the
+ * end of the function, if the callback is defined.
+ * If you need to modify the inputs to these callbacks or to perform an 
+ * action before the callback is executed, we recommend you overwrite the
+ * callback with a new callback that calls the original callback with the
+ * modified parameters. For example:
+ *
+ * var oldCallback = callbacks.postCompleted;
+ * callbacks.postCompleted = function(response) {
+ *   oldCallback(response, "modified");
+ * }
+ *
  **/
 
 /**
@@ -49,7 +97,6 @@ var state = {
   isInlineEdit: false
 }
 
-
 /**
  * The callbacks assign the state of the application.
  *
@@ -72,9 +119,12 @@ var state = {
 var callbacks = {
 
   /**
-  * Initialize the whole application.
-  */
-  pendingContent: function() {
+   * Initialize the whole application.
+   * @param {function} callback The function that will be executed after
+   * content is returned from the remote server. This function will be
+   * called with the response object as a parameter.
+   */
+  pendingContent: function(callback) {
 
     // Set the application and data URLs
     var href = window.location.href;
@@ -85,6 +135,7 @@ var callbacks = {
      state.jsonURL = state.parameters["privlyDataURL"];
     }
     
+    // Display the data source to the user
     $(".meta_source_domain").text("Source URL: " + state.jsonURL);
     
     // Register the click listener.
@@ -117,8 +168,8 @@ var callbacks = {
       
       // Display the domain of the content in the glyph
       var dataDomain = privlyNetworkService.getProtocolAndDomain(state.jsonURL);
-      privlyTooltip.updateMessage(dataDomain + " PlainPost: Read Only");
-
+      privlyTooltip.updateMessage(dataDomain, "Read Only");
+      
       // Load CSS to show the tooltip and other injected styling
       loadInjectedCSS();
 
@@ -143,28 +194,33 @@ var callbacks = {
      // Make the cross origin request as if it were on the same origin.
      // The "same origin" requirement is only possible on extension frameworks
      privlyNetworkService.sameOriginGetRequest(state.jsonURL, 
-       callbacks.contentReturned);
+       function(response){callbacks.contentReturned(response, callback)});
    } else {
      $("#post_content").html("<p>Click to view this content.</p>");
    }
-   
   },
   
   /**
   * The user may have access to the content if they login to the server
   * hosting the content.
+  *
+  * @param {function} callback The function to execute after this function
+  * completes.
   */
-  pendingLogin: function() {
+  pendingLogin: function(callback) {
     
     $("#messages").hide();
     $("#login_message").show();
-    $("#refresh_link").click(function(){location.reload(true);});
     
     $("#post_content").html("<p>You do not have access to this.</p>");
     
     // Tells the parent document how tall the iframe is so that
     // the iframe height can be changed to its content's height
     privlyHostPage.resizeToWrapper();
+    
+    if(callbacks.functionExists(callback)) {
+      callback();
+    }
   },
   
   /**
@@ -172,49 +228,44 @@ var callbacks = {
   *
   * @param {object} response The response from the remote server. In cases
   * without error, the response body will be in response.response.
+  * @param {function} callback The function that gets called after all the
+  * permissions and other elemets are set. This function should accept
+  * "response" as a paramter.
   */
-  contentReturned: function(response) {
+  contentReturned: function(response, callback) {
     if( response.jqXHR.status === 200 ) {
+      
+      var json = response.json;
       
       privlyNetworkService.permissions.canShow = true;
       
-      var json = response.json;
-      var serverMarkdown = null;
-      
-      if( json !== null ) {
-
-        // Assign the Markdown from the JSON
-        if( typeof json.content === "string" ) {
-          serverMarkdown = json.content;
-        }
-        
-        // Assign the permissions
-        if( json.permissions ) {
-          privlyNetworkService.permissions.canShare = (
-            json.permissions.canshare === true);
-          privlyNetworkService.permissions.canUpdate = (
-            json.permissions.canupdate === true);
-          privlyNetworkService.permissions.canDestroy = (
-            json.permissions.candestroy === true);
-        }
+      // Assign the permissions
+      if( json.permissions ) {
+        privlyNetworkService.permissions.canShare = (
+          json.permissions.canshare === true);
+        privlyNetworkService.permissions.canUpdate = (
+          json.permissions.canupdate === true);
+        privlyNetworkService.permissions.canDestroy = (
+          json.permissions.candestroy === true);
       }
       
+      // If the user is able to update the content,
+      // we should notify the user and pre-fetch
+      // the necessary credentials to post to the server
       if( privlyNetworkService.permissions.canUpdate || 
         privlyNetworkService.permissions.canDestroy ) {
-          // Check whether the user is signed into their content server
           privlyNetworkService.initPrivlyService(
             state.jsonURL, 
             function(){
               // Initialize the form for updating the post
               // if the user has permission.
               if( privlyNetworkService.permissions.canUpdate) {
-                $("#edit_text").val(json.content);
                 $("#edit_link").show();
                 $("#no_permissions_nav").hide();
                 $("#permissions_nav").show();
                 
                 var dataDomain = privlyNetworkService.getProtocolAndDomain(state.jsonURL);
-                privlyTooltip.updateMessage(dataDomain + " PlainPost: Editable");
+                privlyTooltip.updateMessage(dataDomain, "Editable");
                 $(".meta_canupdate").text("You can update this content.");
               }
 
@@ -233,12 +284,14 @@ var callbacks = {
           );
       }
       
+      // Set creation date meta
       if( json.created_at ) {
         var createdDate = new Date(json.created_at);
         $(".meta_created_at").text("Created Around " + 
           createdDate.toDateString() + ". ");
       }
       
+      // Set burnt date meta
       if( json.burn_after_date ) {
         var destroyedDate = new Date(json.burn_after_date);
         $(".meta_destroyed_around").text("Destroyed Around " + 
@@ -252,35 +305,21 @@ var callbacks = {
         $("#seconds_until_burn").val(currentSecondsUntilDestruction);
       }
       
-      if( serverMarkdown === null ) {
-        $("#post_content").html("<p>Error: Unrecognized server type</p>");
-      } else {
-        var markdownHTML = markdown.toHTML(serverMarkdown);
-
-        $("#post_content").html(markdownHTML);
-
-        // Make all user-submitted links open a new window
-        $('#post_content a').attr("target", "_blank");
-      }
-      
-      // Tells the parent document how tall the iframe is so that
-      // the iframe height can be changed to its content's height
-      privlyHostPage.resizeToWrapper();
-      
     } else if(response.jqXHR.status === 403) {
       $("#post_content").html(
         "<p class='flash notice'>Your current user account does not have access to this. " + 
         "It is also possible that the content was destroyed at the source.</p>");
-
-      // Tells the parent document how tall the iframe is so that
-      // the iframe height can be changed to its content's height
-      privlyHostPage.resizeToWrapper();
     } else {
       $("#post_content").html("<p class='flash notice'>You do not have access to this.</p>");
-
-      // Tells the parent document how tall the iframe is so that
-      // the iframe height can be changed to its content's height
-      privlyHostPage.resizeToWrapper();
+    }
+    
+    // Tells the parent document how tall the iframe is so that
+    // the iframe height can be changed to its content's height
+    privlyHostPage.resizeToWrapper();
+    
+    // Send the content to the callback for processing
+    if(callbacks.functionExists(callback)) {
+      callback(response);
     }
   },
   
@@ -288,18 +327,26 @@ var callbacks = {
    * The destroy button was just pushed. Ask the remote server to destroy 
    * the content associated with the post, then notify the user of the results
    * in callbacks.destroyed.
+   *
+   * @param {function} callback A function to be executed when the content is
+   * returned from the remote server after destruction. This function is called
+   * with the response object after "destroyed" is executed.
    */
-  destroy: function() {
+  destroy: function(callback) {
     $("#edit_form").slideUp();
-    privlyNetworkService.sameOriginDeleteRequest(state.jsonURL, callbacks.destroyed, {});
+    privlyNetworkService.sameOriginDeleteRequest(state.jsonURL, 
+      function(){callbacks.destroyed(callback)}, {});
   },
   
   /**
   * Process the content returned from the server on a destroy request.
   *
   * @param {object} response The response from the remote server.
+  * @param {function} callback A function to be executed when the content is
+  * returned from the remote server after destruction. The callback is passed
+  * the response object.
   */
-  destroyed: function(response) {
+  destroyed: function(response, callback) {
     if( response.jqXHR.status === 200 ) {
       
       // Tell the user the content was probably destroyed
@@ -322,14 +369,24 @@ var callbacks = {
       // the iframe height can be changed to its content's height
       privlyHostPage.resizeToWrapper();
     }
+    
+    if(callbacks.functionExists(callback)) {
+      callback(response);
+    }
   },
   
   /**
    * Display the form for editing the post. This callback is not currently
    * supported in injected mode.
+   * @param {function} callback The function to call after showing the edit
+   * form.
    */
-  edit: function() {
+  edit: function(callback) {
     $("#edit_form").slideDown();
+    
+    if(callbacks.functionExists(callback)) {
+      callback();
+    }
   },
   
   /**
@@ -339,10 +396,13 @@ var callbacks = {
    * flag was set to true. This prevents some CSRF issues.
    *
    * @param {event} evt The event triggered by the update button being clicked.
+   * @param {function} callback A function to be executed when the content is
+   * returned from the remote server after update. This function is called
+   * with the response object.
    */
-  update: function(evt) {
+  update: function(evt, callback) {
     privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
-      callbacks.contentReturned, 
+      function(response){callbacks.contentReturned(response, callback)}, 
       {post: 
         {content: $("#edit_text").val(), 
         seconds_until_burn: $( "#seconds_until_burn" ).val()}});
@@ -364,7 +424,7 @@ var callbacks = {
   *  being clicked.
   *
   */
-  cancel: function(evt){
+  cancel: function(evt, callback){
     $("#edit_form").hide();
     
     // needed to stop click event from propagating to body
@@ -376,16 +436,29 @@ var callbacks = {
     privlyHostPage.resizeToWrapper();
     state.isClicked = false;
     state.isInlineEdit = false;
+    
+    if(callbacks.functionExists(callback)) {
+      callback();
+    }
   },
   
   /**
-  * This is an event listener for click events. When the applicaiton is injected
-  * into the context of a host page, the app will be opened in a new window.
+  * This is an event listener for click events. When the applicaiton is
+  * injected into the context of a host page, the app will be opened in 
+  * a new window.
   *
   * @param {event} evt The event triggered by the window being clicked.
+  * @param {function} callback The function to call after the click
+  * function is evaluated.
   *
   */
-  click: function(evt) {
+  click: function(evt, callback) {
+    
+    if( ! privlyNetworkService.permissions.canUpdate ) {
+      callbacks.singleClick(evt, callback);
+      return;
+    }
+    
     if (state.isClicked) {
       var target = $(evt.target)
       if (state.isInlineEdit && !target.is("textarea") &&
@@ -393,7 +466,7 @@ var callbacks = {
         
         // Double click During inline Editing
         // and not on the textarea or the dropdown.
-        callbacks.doubleClickInline(evt);
+        callbacks.cancel(evt);
         state.isClicked = false;
       }
       else{
@@ -418,28 +491,46 @@ var callbacks = {
         },200);
       }
     }
+    
+    if(callbacks.functionExists(callback)) {
+      callback();
+    }
   },
   
   /**
-  * This is the handler for single click event on the iframe
-  * It opens a new tab with the post content
-  *
-  **/
-  singleClick: function(evt) {
+   * This is the handler for single click event on the iframe
+   * It opens a new tab with the post content
+   *
+   * @param {event} evt The click event triggered by the user's interaction.
+   * @param {function} callback The function to call after the single click is
+   * processed.
+   */
+  singleClick: function(evt, callback) {
     state.isClicked = false;
     if (privlyHostPage.isInjected()) {
       if (evt.target.nodeName !== "A" || evt.target.href === "") {
        window.open(location.href, '_blank');
      }
    }
+   
+   if(callbacks.functionExists(callback)) {
+     callback();
+   }
   },
   
   /**
   * This is the function called when user presses double clicks
-  * on the iframe and is used for inline editing
+  * on the iframe and is used for inline editing.
+  *
+  * You should also bound doubleclick to canceling the editing
+  * mode whenever it is inline editing. This is currently the
+  * default.
+  *
+  * @param {function} callback The function to call after the doubleclick
+  * handler is complete.
   *
   */
-  doubleClick: function() {
+  doubleClick: function(callback) {
     $("#edit_form").show();
     
     // Hide the Heading when editing inplace
@@ -449,17 +540,22 @@ var callbacks = {
 
     // Resize to show the text area update, cancel buttons and burn after
     privlyHostPage.resizeToWrapper();
+    
+    if(callbacks.functionExists(callback)) {
+      callback();
+    }
   },
   
   /**
-  * This is the function called when user uses double click
-  * on the inline editing form and cancels the editing.
-  *
-  */
-  doubleClickInline: function(evt){
-    callbacks.cancel(evt);
+   * Determines whether a callback is defined before calling it.
+   *
+   * @param {function} callback Potentially a function.
+   * @return {boolean} True if the parameter is a function, else false
+   */
+  functionExists: function(callback) {
+    if (typeof callback == 'function') { 
+      return true;
+    }
+    return false;
   }
 }
-
-// Initialize the application
-document.addEventListener('DOMContentLoaded', callbacks.pendingContent);

@@ -1,462 +1,71 @@
 /**
- * @fileOverview
- * This JavaScript acts as the driver for the ZeroBin injectable application.
- * It defines the behavior specifc to this application. For more information
- * about the ZeroBin application, view the README.
+ * @fileOverview Privly Application specific code.
+ * This file modifies the privly-web adapter found
+ * in the shared directory.
  **/
 
-/**
- * @namespace
- *
- * State variables used accross all the callbacks.
- *
- */
-var state = {
-
-  /**
-  * The parameters found on the app's URL as parsed by the parameter script.
-  */
-  parameters: {},
-
-  /**
-  * The URL of the application when accessed via the remote server. This
-  * parameter is usually assigned by the extension since the original URL
-  * is replaced by one served from the extension.
-  */
-  webApplicationURL: "",
-
-  /**
-  * The URL of the data endpoint for this application.
-  */
-  jsonURL: "",
-  
-  /**
-   * The symmetric key that is added to the anchortext
-   */
-  key: "",
-  
-  /**
-  * Reference to the setTimeout so that we can clear it
-  * in case user double clicks for inline editing
-  **/
-  timeoutRef: "",
-
-  /**
-  * Variable to check if the iframe has been clicked before
-  * for inline editing
-  **/
-  isClicked: false,
-  
-  /**
-  * Variable to check if the editing is done inline or not.
-  * 
-  **/
-  isInlineEdit: false
-}
-
-
-/**
- * The callbacks assign the state of the application.
- *
- * This application can be placed into the following states:
- * 1. Pending Content: The app is currently requesting the content.
- *    Callback=pendingContent
- * 2. Pending Login: The user needs to login to the server storing the
- *    content. After login, they may have access.
- *    Callback=pendingLogin
- * 3. Content Returned: The server returned the content for display.
- *    Callback=contentReturned
- * 4. Destroy: The user clicked the "destroy" button.
- * 5. Destroyed: The server returned a response from the destroy command.
- * 6. Edit: The user clicked the "edit" button.
- * 7. Update: The user submitted the "edit" form.
- * 8. click: The user clicked the application. This is primarily used when
- *    the application is injected into the context of a host page.
- *    Callback=click
- */
-var callbacks = {
-
-  /**
-  * Initialize the whole application.
-  */
-  pendingContent: function() {
-
-    // Set the application and data URLs
-    var href = window.location.href;
-    state.webApplicationURL = privlyParameters.getApplicationUrl(href);
-    state.parameters = privlyParameters.getParameterHash(state.webApplicationURL);
-    if (state.parameters["privlyDataURL"] !== undefined) {
-      state.jsonURL = state.parameters["privlyDataURL"];
-    } else if(state.parameters["privlyCiphertextURL"] !== undefined) {
-      state.jsonURL = state.parameters["privlyCiphertextURL"]; // deprecated
-    }
-    $(".meta_source_domain").text("Source URL: " + state.jsonURL);
-    // Register the click listener.
-    $("body").on("click", callbacks.click);
-
-    // Register the link and button listeners.
-    $("#destroy_link").click(callbacks.destroy);
-    $("#cancel_button").on("click",callbacks.cancel);
-
-    document.getElementById("update").addEventListener('click', callbacks.update);
-    $("#edit_link").click(callbacks.edit);
-
-    // Set the nav bar to the proper domain
-    privlyNetworkService.initializeNavigation();
-
-    if(privlyHostPage.isInjected()) {
-
-      // Creates a tooptip which indicates the content is not a 
-      // natural element of the page
-      privlyTooltip.tooltip();
-
-      // Send the height of the iframe everytime the window size changes.
-      // This usually results from the user resizing the window.
-      // This causes performance issues on Firefox.
-      if( privlyNetworkService.platformName() !== "FIREFOX" ) {
-        $(window).resize(function(){
-          privlyHostPage.resizeToWrapper();
-        });
-      }
-
-      // Display the domain of the content in the glyph
-      var dataDomain = state.jsonURL.split("/")[2];
-      privlyTooltip.updateMessage(dataDomain + " ZeroBin: Read Only");
-
-      // Load CSS to show the tooltip and other injected styling
-      loadInjectedCSS();
-
-    } else {
-
-      // Get the CSRF token and other items to support updating the content.
-      privlyNetworkService.initPrivlyService(
-        privlyNetworkService.contentServerDomain(), 
-        privlyNetworkService.showLoggedInNav, 
-        function(){},
-        function(){}
-      );
-
-      // Load CSS to show the nav and the rest of the non-injected page
-      loadTopCSS();
-   }
-   
-   // Ensure whitelist compliance of the data parameter when the content is
-   // injected
-   if( !privlyHostPage.isInjected() || 
-    privlyNetworkService.isWhitelistedDomain(state.jsonURL) ) {
-     // Make the cross origin request as if it were on the same origin.
-     // The "same origin" requirement is only possible on extension frameworks
-     privlyNetworkService.sameOriginGetRequest(state.jsonURL, 
-       callbacks.contentReturned);
-   } else {
-     $("#post_content").html("<p>Click to view this content.</p>");
-   }
-   
-  },
-  
-  /**
-  * The user may have access to the content if they login to the server
-  * hosting the content.
-  */
-  pendingLogin: function() {
-    $("#post_content").html("<p class='flash notice'>You do not have access to this.</p>");
-    
-    // Tells the parent document how tall the iframe is so that
-    // the iframe height can be changed to its content's height
-    privlyHostPage.resizeToWrapper();
-  },
-  
-  /**
-  * Process the post's content returned from the remote server.
+ /**
+  * Application specific content type handler. This function
+  * processes the encrypted markdown that should have been returned by
+  * the server.
   *
-  * @param {object} response The response from the remote server. In cases
-  * without error, the response body will be in response.response.
+  * @param {jqHR} response The response from the server for the associated
+  * data URL.
   */
-  contentReturned: function(response) {
-    
-    if( response.jqXHR.status === 200 ) {
-      
-      var url = state.webApplicationURL;
-      state.key = privlyParameters.getParameterHash(url).privlyLinkKey;
-      
-      privlyNetworkService.permissions.canShow = true;
-      
-      var json = response.json;
-      if( json === null ) return;
-      
-      if (state.key === undefined || state.key === "") {
-        $('div#cleartext').text("You do not have the key required to decrypt this content.");
-        return;
-      } else if(json.structured_content !== undefined) {
-        var cleartext = zeroDecipher(pageKey(state.key), json.structured_content);
-        $("#edit_text").val(cleartext);
-        var markdownHTML = markdown.toHTML(cleartext);
-        $('div#cleartext').html(markdownHTML);
-      } else {
-        $('div#cleartext').text("The data behind this link is corrupted.");
-        return;
-      }
-      
-      // Assign the permissions
-      if( json.permissions ) {
-        privlyNetworkService.permissions.canShare = (
-          json.permissions.canshare === true);
-        privlyNetworkService.permissions.canUpdate = (
-          json.permissions.canupdate === true);
-        privlyNetworkService.permissions.canDestroy = (
-          json.permissions.candestroy === true);
-      }
-      
-      if( privlyNetworkService.permissions.canUpdate || 
-        privlyNetworkService.permissions.canDestroy ) {
-          // Check whether the user is signed into their content server
-          privlyNetworkService.initPrivlyService(
-            state.jsonURL, 
-            function(){
-              // Initialize the form for updating the post
-              // if the user has permission.
-              if( privlyNetworkService.permissions.canUpdate) {
-                $("#edit_link").show();
-                $("#no_permissions_nav").hide();
-                $("#permissions_nav").show();
-                var dataDomain = state.jsonURL.split("/")[2];
-                privlyTooltip.updateMessage(dataDomain + " ZeroBin: Editable");
-                $(".meta_canupdate").text("You can update this content.");
-              }
-
-              // Initialize the form for destroying the post
-              // if the user has permission.
-              if( privlyNetworkService.permissions.canDestroy) {
-                $("#destroy_link").show();
-                $("#no_permissions_nav").hide();
-                $("#permissions_nav").show();
-                $(".meta_candestroy").text("You can destroy this content.");
-                $("#destruction_select_block").show();
-              }
-            }, 
-            function(){}, // otherwise assume no permissions
-            function(){} // otherwise assume no permissions
-          );
-      }
-      
-      if( json.created_at ) {
-        var createdDate = new Date(json.created_at);
-        $(".meta_created_at").text("Created Around " + 
-          createdDate.toDateString() + ". ");
-      }
-      
-      if( json.burn_after_date ) {
-        var destroyedDate = new Date(json.burn_after_date);
-        $(".meta_destroyed_around").text("Destroyed Around " + 
-          destroyedDate.toDateString() + ". ");
-        
-        var currentSecondsUntilDestruction = Math.floor((destroyedDate - Date.now())/1000);        
-        $("#current_destruction_time")
-          .attr("value", currentSecondsUntilDestruction)
-          .text(Math.floor(currentSecondsUntilDestruction / 86400) + " Days");
-        $("#seconds_until_burn").val(currentSecondsUntilDestruction);
-      }
-      
-      // Make all user-submitted links open a new window
-      $('#post_content a').attr("target", "_blank");
-      
-      // Tells the parent document how tall the iframe is so that
-      // the iframe height can be changed to its content's height
-      privlyHostPage.resizeToWrapper();
-      
-    } else if(response.jqXHR.status === 403) {
-      $("#post_content").html(
-        "<p class='flash notice'>Your current user account does not have access to this. " + 
-        "It is also possible that the content was destroyed at the source.</p>");
-
-      // Tells the parent document how tall the iframe is so that
-      // the iframe height can be changed to its content's height
-      privlyHostPage.resizeToWrapper();
-    } else {
-      $("#post_content").html("<p>You do not have access to this.</p>");
-
-      // Tells the parent document how tall the iframe is so that
-      // the iframe height can be changed to its content's height
-      privlyHostPage.resizeToWrapper();
-    }
-  },
+function processResponseContent(response) {
+  var url = state.webApplicationURL;
+  state.key = privlyParameters.getParameterHash(url).privlyLinkKey;
   
-  /**
-   * The destroy button was just pushed. Ask the remote server to destroy 
-   * the content associated with the post, then notify the user of the results
-   * in callbacks.destroyed.
-   */
-  destroy: function() {
-    $("#edit_form").slideUp();
-    privlyNetworkService.sameOriginDeleteRequest(state.jsonURL, callbacks.destroyed, {});
-  },
+  privlyNetworkService.permissions.canShow = true;
   
-  /**
-  * Process the content returned from the server on a destroy request.
-  *
-  * @param {object} response The response from the remote server.
-  */
-  destroyed: function(response) {
-    if( response.jqXHR.status === 200 ) {
-      
-      // Tell the user the content was probably destroyed
-      $("#post_content").html(
-        "<p class='flash notice'>The remote server says it destroyed the content. " + 
-        "If the server cannot be trusted, then it may have copies.</p>");
-      
-      // Hide the drop down menu
-      $("#no_permissions_nav").show();
-      $("#permissions_nav").hide();
-      
-      // Tells the parent document how tall the iframe is so that
-      // the iframe height can be changed to its content's height
-      privlyHostPage.resizeToWrapper();
-      
-    } else {
-      $("#post_content").html("<p>You do not have permission to destroy this.</p>");
-
-      // Tells the parent document how tall the iframe is so that
-      // the iframe height can be changed to its content's height
-      privlyHostPage.resizeToWrapper();
-    }
-  },
+  var json = response.json;
+  if( json === null ) return;
   
-  /**
-   * Display the form for editing the post. This callback is not currently
-   * supported in injected mode.
-   */
-  edit: function() {
-    $("#edit_form").slideDown();
-  },
-  
-  /**
-   * Update the remote server's content with the new value.
-   * This function should only be called if the remote server's
-   * initial response had the permission object, and the update
-   * flag was set to true. This prevents some CSRF issues.
-   *
-   * @param {event} evt The event triggered by the update button being clicked.
-   */
-  update: function(evt) {
-    var cipherdata = zeroCipher(state.key + "=", $("#edit_text")[0].value);
-    privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
-      callbacks.contentReturned, 
-      {post: {structured_content: cipherdata,
-      seconds_until_burn: $( "#seconds_until_burn" ).val()}});
-    
-    // needed to stop click event from propagating to body
-    // and prevent a new window from opening because of click listener
-    // on body.
-    evt.stopPropagation();
-    
-    // Close the editing form
-    $("#edit_form").hide();
-    state.isInlineEdit = false;
-  },
-  
-  /**
-  * This is an event listener for cancel event.
-  *
-  * @param {event} evt The event triggered by the cancel button
-  *  being clicked.
-  *
-  */
-  cancel: function(evt){
-    $("#edit_form").hide();
-    
-    // needed to stop click event from propagating to body
-    // and prevent a new window from opening because of click listener
-    // on body.
-    evt.stopPropagation();
-    
-    // Resize to its wrapper
-    privlyHostPage.resizeToWrapper();
-    state.isClicked = false;
-    state.isInlineEdit = false;
-  },
-  
-  /**
-  * This is an event listener for click events. When the applicaiton is injected
-  * into the context of a host page, the app will be opened in a new window.
-  *
-  * @param {event} evt The event triggered by the window being clicked.
-  *
-  */
-  click: function(evt) {
-    if (state.isClicked) {
-      var target = $(evt.target)
-      if (state.isInlineEdit && !target.is("textarea") &&
-          !target.is("select")) {
-        
-        // Double click During inline Editing
-        // and not on the textarea or the dropdown.
-        callbacks.doubleClickInline(evt);
-        state.isClicked = false;
-      }
-      else{
-        state.isInlineEdit = true;
-        clearTimeout(state.timeoutRef);
-        state.isClicked = false;
-        callbacks.doubleClick();
-      }
-    }
-    else{
-      state.isClicked = true;
-      if (state.isInlineEdit) {
-        
-        // Single Click During inline Editing
-        setTimeout(function(){
-          state.isClicked = false;
-        },200);
-      }
-      else{
-        state.timeoutRef = setTimeout(function(){
-          callbacks.singleClick(evt);
-        },200);
-      }
-    }
-  },
-  
-  /**
-  * This is the handler for single click event on the iframe
-  * It opens a new tab with the post content
-  *
-  **/
-  singleClick: function(evt) {
-    state.isClicked = false;
-    if (privlyHostPage.isInjected()) {
-      if (evt.target.nodeName !== "A" || evt.target.href === "") {
-       window.open(location.href, '_blank');
-     }
-   }
-  },
-  
-  /**
-  * This is the function called when user presses double clicks
-  * on the iframe and is used for inline editing
-  *
-  */
-  doubleClick: function() {
-    $("#edit_form").show();
-    
-    // Hide the Heading when editing inline
-    $("#edit_form h1").hide();
-    $('#edit_text').css('width',"95%");
-    callbacks.edit();
-    
-    // Resize to show the text area update, cancel buttons and burn after
-    privlyHostPage.resizeToWrapper();
-  },
-  
-  /**
-  * This is the function called when user uses double click
-  * on the inline editing form and cancels the editing.
-  *
-  */
-  doubleClickInline: function(evt){
-    callbacks.cancel(evt);
+  if (state.key === undefined || state.key === "") {
+    $('div#cleartext').text("You do not have the key required to decrypt this content.");
+    return;
+  } else if(json.structured_content !== undefined) {
+    var cleartext = zeroDecipher(pageKey(state.key), json.structured_content);
+    $("#edit_text").val(cleartext);
+    var markdownHTML = markdown.toHTML(cleartext);
+    $('div#cleartext').html(markdownHTML);
+  } else {
+    $('div#cleartext').text("The data behind this link is destroyed or corrupted.");
+    return;
   }
 }
 
+/**
+ * Replace the update handler so that we can ensure content will always be
+ * encrypted before pusing updates to the remote server.
+ * @param {event} evt The update button event triggered by the user.
+ * @param {function} callback An ignored parameter since there is no
+ * need to pass in a callback in this case.
+ */
+function encryptBeforeUpdate(evt, callback) {
+  var cipherdata = zeroCipher(state.key + "=", $("#edit_text")[0].value);
+  privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
+    function(response){
+      callbacks.contentReturned(response, processResponseContent)},
+    {post: {structured_content: cipherdata,
+    seconds_until_burn: $( "#seconds_until_burn" ).val()}});
+  
+  // needed to stop click event from propagating to body
+  // and prevent a new window from opening because of click listener
+  // on body.
+  evt.stopPropagation();
+  
+  // Close the editing form
+  $("#edit_form").hide();
+  state.isInlineEdit = false;
+}
+
+// Make the Tooltip display this App's name.
+privlyTooltip.appName = "ZeroBin";
+
 // Initialize the application
-document.addEventListener('DOMContentLoaded', callbacks.pendingContent);
+document.addEventListener('DOMContentLoaded', 
+  function(){callbacks.pendingContent(processResponseContent)});
+
+// Replace the update function so we never send the cleartext server side.
+callbacks.update = encryptBeforeUpdate;
