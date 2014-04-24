@@ -154,6 +154,45 @@ var callbacks = {
     });
   },
 
+  /*
+   * Ask user to login on directory provider, return when persona key set
+   */
+  promptUserToLogin: function(directoryURL,callback){
+    var msg = "Please verify your identity by logging in with "; 
+    msg += "<a class='login_url btn btn-default' href='"+directoryURL+"'>";
+    msg += "Persona</a>";
+    $("#messages").text(msg);
+    $("#messages").show();
+    // listen for addition of persona-bridge to localstorage
+    return true;
+  },
+
+  /**
+   * Get Persona Key from localstorage
+   */
+  getPersonaKey: function(callback){
+    localforage.setDrive('localStorageWrapper',function(){
+      localforage.getItem('persona-bridge',function(persona){
+        if (persona === null) {
+          // point user to dirp login page
+          localforage.getItem('directoryURL',function(directoryURL){
+            var response = false;
+            response = promptUserToLogin(directoryURL);
+            while (response === false){           
+              // waiting for user to login to dirp
+              // causes page to freeze? there must be a better way...
+            }
+            localforage.getItem('persona-bridge',function(persona){
+              callback(persona);
+            });
+          });
+        } else {
+          callback(persona);
+        }
+      });
+    });
+  },
+
   /**
    * Genereate a PGP key if it does not exist or is nearly expired
    */
@@ -207,21 +246,23 @@ var callbacks = {
         }
         var keypair = my_keys[email][my_keys[email].length-1];// most recent key
         var pubkey = keypair.publicKeyArmored;
-        var directoryURL = "http://dirp.grr.io/store";
-        value = {
-          Persona: "foo",
-          Privly: pubkey
-        };
-        $.get(
-          directoryURL,
-          value
-        ).done(function(response){
-          console.log("Upload Success");
-          callback(true);
-        }
-        ).fail(function(response){
-          console.log("Upload Fail");
-          callback(false);
+        localforage.getItem('directoryURL',function(directoryURL){
+          //var directoryURL = "http://dirp.grr.io/store";
+          var value = {
+            Persona: "foo",
+            Privly: pubkey
+          };
+          $.get(
+            directoryURL,
+            value
+          ).done(function(response){
+            console.log("Upload Success");
+            callback(true);
+          }
+          ).fail(function(response){
+            console.log("Upload Fail");
+            callback(false);
+          });
         });
       });
     });
