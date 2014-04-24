@@ -119,6 +119,45 @@ var callbacks = {
   },
 
   /**
+   * Ask user to login on directory provider, return when persona key set
+   */
+  promptUserToLogin: function(directoryURL,callback){
+    var msg = "Please verify your identity by logging in with "; 
+    msg += "<a class='login_url btn btn-default' href='"+directoryURL+"'>";
+    msg += "Persona</a>";
+    $("#messages").text(msg);
+    $("#messages").show();
+    // listen for addition of persona-bridge to localstorage
+    return true;
+  },
+
+  /**
+   * Get Persona Key from localstorage
+   */
+  getPersonaKey: function(callback){
+    localforage.setDrive('localStorageWrapper',function(){
+      localforage.getItem('persona-bridge',function(persona){
+        if (persona === null) {
+          // point user to dirp login page
+          localforage.getItem('directoryURL',function(directoryURL){
+            var response = false;
+            response = promptUserToLogin(directoryURL);
+            while (response === false){           
+              // waiting for user to login to dirp
+              // causes page to freeze? there must be a better way...
+            }
+            localforage.getItem('persona-bridge',function(persona){
+              callback(persona);
+            });
+          });
+        } else {
+          callback(persona);
+        }
+      });
+    });
+  },
+
+  /**
    * Genereate a PGP key if it does not exist or is nearly expired
    */
   genPGPKeys: function(){
@@ -132,30 +171,23 @@ var callbacks = {
           workerProxy.seedRandom(10); // TODO: evaluate best value to use
           workerProxy.generateKeyPair(
             openpgp.enums.publicKey.rsa_encrypt_sign,
-            1028,'username','passphrase',function(err,data){ // TODO: increase key
-              localforage.getItem('email',function(email){
-                var datas = {}
-                datas[email] = [data];
-                localforage.setItem('my_keypairs',datas,function(keypairs){  
-                  // Add self to storage to make sure you can read your own
-                  // encrypted messages. 
-                  // No pub key existed before, so we are not concerned about
-                  // clobbering any existing data.
-                  var pub = {}
-                  pub[email] = [data.publicKeyArmored]; 
-                  localforage.setItem('my_contacts',pub,function(){
-                    callbacks.uploadKey(email,function(outcome){
-                      if (outcome === false){
-                        console.log("Could not upload key.");
-                      }
-                    });
-                  });
-                });
-              });
+            1028,'username','passphrase',function(err,data){ // TODO: increase key size
+              // TODO: need to already know user's email, hard coded for now
+              var email = "bob@example.com";
+              var datas = {}
+              datas[email] = [data];
+              //localforage.setItem('my_keypairs',datas).then(callbacks.uploadKey());
+              localforage.setItem('my_keypairs',datas);  // TODO: actually upload key
+              // Make sure you can send encrypted messages to yourself
+              // Just pub key in contacts
+              var pub = {}
+              pub[email] = [data.publicKeyArmored]; 
+              localforage.setItem('my_contacts',pub);  
             }
           );
         } else { // it does exist, do nothing for now
           console.log("Already have a key");
+          console.log(keypair["bob@example.com"][0]);
           // TODO: check if key is about to expire and gen a new one if needed
         }
       });
@@ -173,28 +205,30 @@ var callbacks = {
    *      generated above in the genPGP function.
    *   3) Upload the BIA and signed public key to the directory provider.
    */
-  uploadKey: function(email,callback){
-    localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('my_keypairs',function(my_keys){
-        if (keypair === null) {
-          console.log("No key to upload found");
-          callback(false);
-        }
-        var keypair = my_keys[email][my_keys[email].length-1];// most recent key
-        var pubkey = keypair.publicKeyArmored;
-        var directoryURL = "http://localhost:5000/";
-        directoryURL += email;
-        var value = {"value": [pubkey]};
-        console.log(value);
-        $.get(
+  uploadKey: function(email){
+    localforage.getItem('my_keypairs',function(keypair){
+      if (keypair === null){
+        console.log("No key to upload found");
+        return false;
+      }
+      keypair = keypair[email]; // array of keypairs associated with email
+      keypair = keypair[keypair.length-1]; // most recently added key
+      localforage.getItem('directoryURL',function(directoryURL){
+        var pubkey = "foo";
+        $.post(
           directoryURL,
-          value
-        ).done(function(response){
-          callback(true);
-        }
-        ).fail(function(response){
-          callback(false);
-        });
+          {email:email, 
+            uc: "uc", 
+            ia: "ia", 
+            pgp_pub: pubkey,
+            sign_pgp_pub: "foo_signed"
+          },
+          function(response){
+            if (response.status === 200){
+              console.log(response);
+            }
+          }
+        );
       });
     });
   }
