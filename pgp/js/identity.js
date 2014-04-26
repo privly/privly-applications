@@ -130,7 +130,7 @@ var PersonaId = {
    *
    * @param {bia} The backed identity assertion to be verified.
    **/
-  verifyBia: function(bia,callback){
+  remotelyVerifyBia: function(bia,callback){
     localforage.setDriver('localStorageWrapper',function(){
       localforage.getItem('directoryURL',function(audience){
         audience += ":443";
@@ -138,17 +138,11 @@ var PersonaId = {
           "https://verifier.login.persona.org/verify",
           {assertion: bia, audience: audience},
         ).done(function(response){
-          console.log("I'm about to break in PersonaId.verifyBia!");
-          console.log("Use the next output to debug");
-          console.log(response);
-          var data = response.responseText; //JSON object
+          var data = response.responseJSON; 
           if (data.status === "okay"){
-            // The data structure is wrong, correct later
             callback(true);
           } else {
-            // data.reason is likely wrong
-            var reason = data.reason;
-            console.log("Verification not okay because" + reason);
+            console.log("Verification not okay because" + data.reason);
             callback(false);
           }
         }
