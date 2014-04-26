@@ -74,11 +74,11 @@ var PersonaId = {
    **/
   verifyPayload: function(payload, callback) {
     var bia_pubkey = this.extractPubkey(payload.bia);
-    this.verify(payload.pgp, bia_pubkey, function(err, _) {
+    this.verify(payload.pgp, bia_pubkey, function(err, key) {
       if (err == null) {
-        callback(true);
+        callback(true,key);
       } else {
-        callback(false);
+        callback(false,null);
       }
     });
   },
@@ -103,4 +103,60 @@ var PersonaId = {
 
     return pubkey;
   },
+
+  /**
+   * Extract the email address from a backed identity assertion (bia).
+   *
+   * @param {bia} The backed identity assertion containing the public
+   *              key. This is assumed to be verified.
+   **/
+  extractEmail: function(bia) {
+    // TODO make this and ExtractPubKey function DRY
+    var bundle = jwcrypto.cert.unbundle(bia);
+    var assertion = bundle.signedAssertion;
+    // Assuming there is only ever one cert is a bad assumption, but
+    // it will hold for now.
+    // TODO: Verify Persona never uses multiple certs.
+    var cert = bundle.certs[0];
+    var email = jwcrypto.extractComponents(cert).payload['principal']['email'];
+
+    return email;
+  },
+
+  /**
+   * Calls out to Persona's remote verifier to assure the public key is signed. 
+   * Long term this functionality should be implemented to run locally.
+   * This will remove the need to trust the remote verifier.
+   *
+   * @param {bia} The backed identity assertion to be verified.
+   **/
+  verifyBia: function(bia,callback){
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('directoryURL',function(audience){
+        audience += ":443";
+        $.post(
+          "https://verifier.login.persona.org/verify",
+          {assertion: bia, audience: audience},
+        ).done(function(response){
+          console.log("I'm about to break in PersonaId.verifyBia!");
+          console.log("Use the next output to debug");
+          console.log(response);
+          var data = response.responseText; //JSON object
+          if (data.status === "okay"){
+            // The data structure is wrong, correct later
+            callback(true);
+          } else {
+            // data.reason is likely wrong
+            var reason = data.reason;
+            console.log("Verification not okay because" + reason);
+            callback(false);
+          }
+        }
+        ).fail(function(response) {
+          console.log("Status 200 was not returned from persona verifier");
+          callback(false);
+        });
+      });
+    });
+  }
 };
