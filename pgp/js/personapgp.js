@@ -206,7 +206,7 @@ var PersonaPGP = {
       if (outcome === true){
         //console.log("Signature on PGP key is valid");
         var bia = bia_pub_key[0];
-        PersonaId.verifyBia(bia,function(bia_outcome){
+        PersonaId.remotelyVerifyBia(bia,function(bia_outcome){
           if (bia_outcome === true){
             //console.log("Bia is valid");
             callback(true,key);
