@@ -171,24 +171,18 @@ var callbacks = {
    * Get Persona Key from localstorage
    */
   getPersonaKey: function(callback){
-    localforage.setDrive('localStorageWrapper',function(){
+    localforage.setDriver('localStorageWrapper',function(){
       localforage.getItem('persona-bridge',function(persona){
-        if (persona === null) {
-          // point user to dirp login page
-          localforage.getItem('directoryURL',function(directoryURL){
-            var response = false;
-            response = promptUserToLogin(directoryURL);
-            while (response === false){           
-              // waiting for user to login to dirp
-              // causes page to freeze? there must be a better way...
-            }
-            localforage.getItem('persona-bridge',function(persona){
-              callback(persona);
-            });
-          });
-        } else {
-          callback(persona);
-        }
+        localforage.getItem('email',function(email){
+          if (persona !== null) {
+            secretkey = PersonaId.getSecretKeyFromBridge(persona, email);
+            console.log("Persona secret key: ",secretkey);
+            callback(secretkey);
+          } else {
+            console.log("Persona bridge not present.");
+            callback(null);
+          }
+        });
       });
     });
   },
@@ -246,23 +240,26 @@ var callbacks = {
         }
         var keypair = my_keys[email][my_keys[email].length-1];// most recent key
         var pubkey = keypair.publicKeyArmored;
-        localforage.getItem('directoryURL',function(directoryURL){
-          //var directoryURL = "http://dirp.grr.io/store";
-          var value = {
-            Persona: "foo",
-            Privly: pubkey
-          };
-          $.get(
-            directoryURL,
-            value
-          ).done(function(response){
-            console.log("Upload Success");
-            callback(true);
+        callbacks.getPersonaKey(function(secretkey) {
+          if (secretkey !== null) {
+            localforage.getItem('directoryURL',function(directoryURL){
+              directoryURL += "/store";
+              PersonaId.bundle(pubkey, secretkey, "a random bia", function(payload) {
+                console.log("payload:", payload);
+                $.get(
+                  directoryURL,
+                  payload
+                ).done(function(response){
+                  console.log("Upload Success");
+                  callback(true);
+                }
+                ).fail(function(response){
+                  console.log("Upload Fail");
+                  callback(false);
+                });
+              });
+            });
           }
-          ).fail(function(response){
-            console.log("Upload Fail");
-            callback(false);
-          });
         });
       });
     });
