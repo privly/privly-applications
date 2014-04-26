@@ -110,22 +110,29 @@ var PersonaPGP = {
    * @param {email} email The email that the user wants to send a message to.
    */
   findPubKeyRemote: function(email,callback){
-    var remote_directory = "http://localhost:5000/";
-    remote_directory += email;
-    $.get(
-      remote_directory,
-      'json'
-    ).done(function(response){ // Everything went according to plan
-      // Long term should Return an array of (bia,signed_pub_keys)
-      callback(response.value); // Returns an array of pub_keys
-    }).fail(function(response){
-      if (response.status === 404){
-        console.log("Email not found in Remote Directory");
-        console.log("Invite friend to share privately goes here");
-      } else {
-        console.log("Problem connecting to Remote Directory");
-      }
-      callback(null);
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('directoryURL',function(remote_directory){
+        remote_directory += "/search";
+        var value = {
+          Email: email
+        };
+        $.get(
+          remote_directory,
+          value
+        ).done(function(response){ // Everything went according to plan
+          // Long term should Return an array of (bia,signed_pub_keys)
+          callback(response.value); // Returns an array of pub_keys
+        }
+        ).fail(function(response){
+          if (response.status === 404){
+            console.log("Email not found in Remote Directory");
+            console.log("Invite friend to share privately goes here");
+          } else {
+            console.log("Problem connecting to Remote Directory");
+          }
+          callback(null);
+        });
+      });
     });
   },
 
@@ -140,14 +147,14 @@ var PersonaPGP = {
    */
   addRemoteKeyToLocal: function(bia_pub_key,callback){
     var email = PersonaPGP.getEmailFromBia(bia_pub_key);
-    PersonaPGP.verifyPubKey(bia_pub_key,function(outcome){
+    PersonaPGP.verifyPubKey(bia_pub_key,function(outcome,pgp_pub_key){
       if (outcome === true){
         localforage.setDriver('localStorageWrapper',function(){
           localforage.getItem('my_contacts',function(data){
             if (email in data){
-              data[email].push(bia_pub_key);
+              data[email].push(pgp_pub_key);
             } else {
-              data[email] = [bia_pub_key];
+              data[email] = [pgp_pub_key];
             }
             localforage.setItem('my_contacts',data,function(){
               callback(true);
@@ -160,59 +167,39 @@ var PersonaPGP = {
     });
   },
 
-  /**
-   * Calls out to the remote verifier to assure the public key is signed. 
-   * Long term this functionality should be implemented to run locally.
-   * This will remove the need to trust the remote verifier.
+  /** 
+   * This function calls a function to verify the signature on the signed pgp
+   * key.  Assuming the signature is valid, it then calls a function that
+   * queries the remote verifier for verification of the bia. 
    *
-   * This function should: 
-   *   1) verify the signature on the public key 
-   *   2) verify the backed identity assertion passed to it using the remote
+   * In other words, this function: 
+   *   1) verifes the signature on the public key 
+   *   2) verifes the backed identity assertion passed to it using the remote
    *      verifier.
+   *   3) returns the now trusted public key.
    *
-   * @param {pub_key} pub_key The public key to be verified.
-   * @param {bia} bia The backed identity assertion.
+   * @param {bia_pub_key} A bia and signed pgp public key to be verified.
    */
   verifyPubKey: function(bia_pub_key,callback){
-    // TODO: Actually call verifier
-    // We do not have bia's to verify yet so just return true
-    callback(true);
-
-    // TODO: verify signature on pubkey before calling bia verifier
-
-    /*
-    // audience should be the directory provider URL
-    // TODO: get rid of magic string url, pull from localforage
-    var audience = "https://publicknowledge.com:443";
-
-    $.post(
-      "https://verifier.login.persona.org/verify",
-      {assertion: bia, audience: audience},
-      function(response){
-
-        if (response.status === 200){
-          var data = response.responseText; //JSON object
-          if (data.status === "okay"){
-            // The data structure is wrong, correct later
-            if (assertion.email === data.email){
-              callback(true);
-            } else {
-              console.log("Email mismatch");
-              callback(false);
-            }
+    var signed_pub_key = bia_pub_key[1];
+    PersonaId.verifyPayload(signed_pub_key,function(outcome,key){
+      if (outcome === true){
+        //console.log("Signature on PGP key is valid");
+        var bia = bia_pub_key[0];
+        PersonaId.verifyBia(bia,function(bia_outcome){
+          if (bia_outcome === true){
+            //console.log("Bia is valid");
+            callback(true,key);
           } else {
-            // data.reason is likely wrong
-            var reason = data.reason;
-            console.log("Verification not okay because" + reason);
-            callback(false);
+            //console.log("Bia is invalid");
+            callback(false,null);
           }
-        } else {
-          console.log("Status 200 was not returned");
-          callback(false);
-        }
+        });
+      } else {
+        //console.log("Signature on PGP key is invalid");
+        callback(false,null);
       }
-    );
-    */
+    });
   },
 
   /**
