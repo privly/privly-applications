@@ -240,23 +240,26 @@ var callbacks = {
         }
         var keypair = my_keys[email][my_keys[email].length-1];// most recent key
         var pubkey = keypair.publicKeyArmored;
-        localforage.getItem('directoryURL',function(directoryURL){
-          //var directoryURL = "http://dirp.grr.io/store";
-          var value = {
-            Persona: "foo",
-            Privly: pubkey
-          };
-          $.get(
-            directoryURL,
-            value
-          ).done(function(response){
-            console.log("Upload Success");
-            callback(true);
+        callbacks.getPersonaKey(function(secretkey) {
+          if (secretkey !== null) {
+            localforage.getItem('directoryURL',function(directoryURL){
+              directoryURL += "/store";
+              PersonaId.bundle(pubkey, secretkey, "a random bia", function(payload) {
+                console.log("payload:", payload);
+                $.get(
+                  directoryURL,
+                  payload
+                ).done(function(response){
+                  console.log("Upload Success");
+                  callback(true);
+                }
+                ).fail(function(response){
+                  console.log("Upload Fail");
+                  callback(false);
+                });
+              });
+            });
           }
-          ).fail(function(response){
-            console.log("Upload Fail");
-            callback(false);
-          });
         });
       });
     });
