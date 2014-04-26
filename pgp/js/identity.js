@@ -103,4 +103,18 @@ var PersonaId = {
 
     return pubkey;
   },
+
+  /**
+   * Extract a secret key from the person-bridge object.
+   *
+   * @param {bridge} The bridge containing persona details such as
+   * secret key, public key, and email for a user.
+   * @param {email} Email associated with key to be extracted.
+   **/
+  getSecretKeyFromBridge: function(bridge, email) {
+    var emails = JSON.parse(bridge.emails);
+    var priv = emails.default[email].priv;
+    var secretkey = jwcrypto.loadSecretKeyFromObject(priv);
+    return secretkey;
+  },
 };
