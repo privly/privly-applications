@@ -136,7 +136,7 @@ var PersonaId = {
         audience += ":443";
         $.post(
           "https://verifier.login.persona.org/verify",
-          {assertion: bia, audience: audience},
+          {assertion: bia, audience: audience}
         ).done(function(response){
           var data = response.responseJSON; 
           if (data.status === "okay"){
