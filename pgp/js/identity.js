@@ -136,7 +136,7 @@ var PersonaId = {
         audience += ":443";
         $.post(
           "https://verifier.login.persona.org/verify",
-          {assertion: bia, audience: audience},
+          {assertion: bia, audience: audience}
         ).done(function(response){
           console.log("I'm about to break in PersonaId.verifyBia!");
           console.log("Use the next output to debug");
