@@ -50,7 +50,7 @@ var PersonaPGP = {
             if (bia_pub_keys === null){
               callback(bia_pub_keys);
             } else { // Found remotely, verify and add to localForage
-              PersonaPGP.findPubKeyRemoteHelper(bia_pub_keys,
+              PersonaPGP.findPubKeyRemoteHelper(email,bia_pub_keys,
                 function(verified_keys){
                   callback(verified_keys);
                 }
@@ -63,20 +63,40 @@ var PersonaPGP = {
   },
 
   /**
+   * This function takes a backed identity assertion and signed pub key and
+   * verifies that the email it is for matches.
+   **/
+  emailMatch: function(bia_pub_key,email){
+    if (PersonaId.extractEmail(bia_pub_key) === email){
+      return true;
+    } 
+    return false;
+  },
+
+  /**
    * This function makes multiple async calls and waits for them all to finish.
    * Only the verified keys are returned.
    *
    */
-  findPubKeyRemoteHelper: function(bia_pub_keys,callback){
+  findPubKeyRemoteHelper: function(email,bia_pub_keys,callback){
     var verified = [];
     var callAddRemote = function(i){
-      PersonaPGP.addRemoteKeyToLocal(bia_pub_keys[i],function(result){
-        if (result in verified){
-          verified[result].push(bia_pub_keys[i]); 
+      if (emailMatch(bia_pub_keys[i],email)){
+        PersonaPGP.addRemoteKeyToLocal(bia_pub_keys[i],function(result){
+          if (result in verified){
+            verified[result].push(bia_pub_keys[i]); 
+          } else {
+            verified[result] = [bia_pub_keys[i]];
+          }
+        });
+      } else { // Email queried did not match email in bia
+        //console.log("The server is confused or malicous");
+        if (false in verified){
+          verified[false].push(bia_pub_keys[i]);
         } else {
-          verified[result] = [bia_pub_keys[i]];
+          verified[false] = [bia_pub_keys[i]];
         }
-      });
+      }
     };
 
     for(var i = 0; i < bia_pub_keys.length; i++){
