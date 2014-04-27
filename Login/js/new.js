@@ -253,7 +253,7 @@ var callbacks = {
               directoryURL += "/store";
               // TODO: Find a better way to seed jwcrypto.
               jwcrypto.addEntropy("ACBpasdavbepOAEfBPBHESAEFGHA");
-              PersonaId.bundle(pubkey, secretkey, "afakebia", function(payload) {
+              PersonaId.bundle(pubkey, secretkey, email, function(payload) {
                 console.log("payload:", payload);
                 $.get(
                   directoryURL,

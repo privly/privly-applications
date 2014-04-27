@@ -6,8 +6,9 @@
  * {
  *   pgp: A PGP public key signed by a Persona secret key. This is also
  *        referred to as just the 'signature'.
- *   bia: A backed identity assertion, which inherently contains the
- *        public key of the secret key used to generate the 'pgp' field.
+ *   email: The email associated with the PGP key. This is a temporary
+ *          solution to the directory provider only accepting values,
+ *          not keys.
  * }
  *
  * 'bundle' is used to create this payload.
@@ -29,12 +30,11 @@ var PersonaId = {
    *
    * @param {pubkey} A PGP public key.
    * @param {secretkey} A Persona secret key.
-   * @param {assertion} Backed Identity Assertion, which contains the
-   *                    public key associated with secret key.
+   * @param {email} Email address associated with the PGP key.
    **/
-  bundle: function(pubkey, secretkey, assertion, callback) {
+  bundle: function(pubkey, secretkey, email, callback) {
     this.sign(pubkey, secretkey, function(err, signature) {
-      callback({pgp: signature, bia: assertion});
+      callback({"pgp": signature, "email": email});
     });
   },
 
