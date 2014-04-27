@@ -6,8 +6,9 @@
  * {
  *   pgp: A PGP public key signed by a Persona secret key. This is also
  *        referred to as just the 'signature'.
- *   bia: A backed identity assertion, which inherently contains the
- *        public key of the secret key used to generate the 'pgp' field.
+ *   email: The email associated with the PGP key. This is a temporary
+ *          solution to the directory provider only accepting values,
+ *          not keys.
  * }
  *
  * 'bundle' is used to create this payload.
@@ -29,12 +30,11 @@ var PersonaId = {
    *
    * @param {pubkey} A PGP public key.
    * @param {secretkey} A Persona secret key.
-   * @param {assertion} Backed Identity Assertion, which contains the
-   *                    public key associated with secret key.
+   * @param {email} Email address associated with the PGP key.
    **/
-  bundle: function(pubkey, secretkey, assertion, callback) {
+  bundle: function(pubkey, secretkey, email, callback) {
     this.sign(pubkey, secretkey, function(err, signature) {
-      callback({pgp: signature, bia: assertion});
+      callback({"pgp": signature, "email": email});
     });
   },
 
@@ -91,6 +91,18 @@ var PersonaId = {
    *              key. This is assumed to be verified.
    **/
   extractPubkey: function(bia) {
+    var pubkey_obj = this.extractField(bia, 'public-key');
+    var pubkey = jwcrypto.loadPublicKeyFromObject(pubkey_obj);
+    return pubkey
+  },
+
+  /**
+   * Extract a field from the Backed Identity Assertion certificate.
+   *
+   * @param {bia} The backed identity certificate.
+   * @param {field} The field to extract from bia.
+   */
+  extractField: function(bia, field) {
     var bundle = jwcrypto.cert.unbundle(bia);
     var assertion = bundle.signedAssertion;
     // Assuming there is only ever one cert is a bad assumption, but
@@ -98,10 +110,9 @@ var PersonaId = {
     // TODO: Verify Persona never uses multiple certs.
     var cert = bundle.certs[0];
 
-    var pubkey_obj = jwcrypto.extractComponents(cert).payload['public-key'];
-    var pubkey = jwcrypto.loadPublicKeyFromObject(pubkey_obj);
+    var extracted_field  = jwcrypto.extractComponents(cert).payload[field];
 
-    return pubkey;
+    return extracted_field;
   },
 
   /**
@@ -111,16 +122,9 @@ var PersonaId = {
    *              key. This is assumed to be verified.
    **/
   extractEmail: function(bia) {
-    // TODO make this and ExtractPubKey function DRY
-    var bundle = jwcrypto.cert.unbundle(bia);
-    var assertion = bundle.signedAssertion;
-    // Assuming there is only ever one cert is a bad assumption, but
-    // it will hold for now.
-    // TODO: Verify Persona never uses multiple certs.
-    var cert = bundle.certs[0];
-    var email = jwcrypto.extractComponents(cert).payload['principal']['email'];
-
-    return email;
+    var principle = this.extractField(bia, "principle");
+    var email = principle['email']
+    return email
   },
 
   /**
