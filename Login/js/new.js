@@ -129,7 +129,7 @@ var callbacks = {
             value = {};
           }
           if (email in value){
-            value[email].push(appended_value);
+            value[email].unshift(appended_value);
           } else {
             value[email] = [appended_value];
           }
@@ -234,11 +234,11 @@ var callbacks = {
   uploadKey: function(email,callback){
     localforage.setDriver('localStorageWrapper',function(){
       localforage.getItem('my_keypairs',function(my_keys){
+        keypair = my_keys[email][0];// most recent key
         if (keypair === null) {
           console.log("No key to upload found");
           callback(false);
         }
-        var keypair = my_keys[email][my_keys[email].length-1];// most recent key
         var pubkey = keypair.publicKeyArmored;
         callbacks.getPersonaKey(function(secretkey) {
           if (secretkey !== null) {
