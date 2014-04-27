@@ -111,7 +111,7 @@ var PersonaPGP = {
     },time);
 
     var size = 0;
-    while(size < bia_pub_keys.length && go){
+    while((size < bia_pub_keys.length) && go){
       size = 0;
       if (verified[true] !== undefined){
         size += verified[true].length;
@@ -166,7 +166,7 @@ var PersonaPGP = {
    * privly public key.
    */
   addRemoteKeyToLocal: function(bia_pub_key,callback){
-    var email = PersonaPGP.getEmailFromBia(bia_pub_key);
+    var email = PersonaId.extractEmail(bia_pub_key);
     PersonaPGP.verifyPubKey(bia_pub_key,function(outcome,pgp_pub_key){
       if (outcome === true){
         localforage.setDriver('localStorageWrapper',function(){
@@ -260,7 +260,7 @@ var PersonaPGP = {
         setTimeout(function(){
           go = false;
         },time);
-        while(completed.length < emails.length && go){ }
+        while((completed.length < emails.length) && go){ }
         
         // Here we convert the plaintext into a json string. We do this to
         // check if the decryption occured with the correct string.  If it's
@@ -354,28 +354,5 @@ var PersonaPGP = {
       // sending a message consisting only of "next".  
       return "next";
     }
-  },
-
-  /**
-   * This function returns the email address contained in a backed identity
-   * assertion.
-   * 
-   * @param {bia_pub_key} A tuple of a backed identity assertion and a signed
-   *   pgp public key.
-   */
-  getEmailFromBia: function(bia_pub_key){
-    // TODO: get an actual bia, and then extract the email address
-
-    // This if/else is only for testing.  We can only send messages to
-    // bob@example.com and jim@foo.com right now.
-    if (foo === 1){
-      foo += 1;
-      return "bob@example.com";
-    } else {
-      return "jim@foo.com";
-    }
-    //var bia = bia_pub_key[0];
-    //var email = JSON.parse(atob(bia.split('.')[1]))["principal"]["email"];
-    //return email;
   }
 };
