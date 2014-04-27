@@ -69,7 +69,7 @@ var callbacks = {
     // TODO: send message to someone besides yourself
     // for now using keys already in localforage, ie encrypting message to self
 
-    var emails = recipients.split(',');
+    var emails = recipients.replace(/\s/g,'').split(',');
 
     PersonaPGP.encrypt(emails,plaintext,function(ciphertext){
       var data_to_send = {
