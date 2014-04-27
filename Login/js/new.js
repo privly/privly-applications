@@ -212,8 +212,15 @@ var callbacks = {
               }
             );
           } else { // it does exist,check expirey regenerate if needed
-            console.log("Already have a key");
+            console.log("Already have a key, but uploading anyways.");
             // TODO: check if key is about to expire and gen a new one if needed
+            callbacks.uploadKey(email,function(outcome){
+              if (outcome === false){
+                console.log("Could not upload key.");
+              } else {
+                console.log("Succesfully uploaded key.");
+              }
+            });
           }
         });
       });
@@ -244,7 +251,9 @@ var callbacks = {
           if (secretkey !== null) {
             localforage.getItem('directoryURL',function(directoryURL){
               directoryURL += "/store";
-              PersonaId.bundle(pubkey, secretkey, "a random bia", function(payload) {
+              // TODO: Find a better way to seed jwcrypto.
+              jwcrypto.addEntropy("ACBpasdavbepOAEfBPBHESAEFGHA");
+              PersonaId.bundle(pubkey, secretkey, "afakebia", function(payload) {
                 console.log("payload:", payload);
                 $.get(
                   directoryURL,
