@@ -1,12 +1,13 @@
 {% extends "templates/show.html.template" %}
 
 {% block specs %}
-  <meta name="PrivlySpec" content="test/show.js,../shared/test/parameters.js,../shared/test/network_service.js,../shared/test/host_page_integration.js,../shared/test/tooltip.js"/>
+  <meta name="PrivlySpec" content="test/show.js,../shared/test/parameters.js,../shared/test/network_service.js,../shared/test/privly-web/show.js,../shared/test/host_page_integration.js,../shared/test/tooltip.js"/>
 {% endblock %}
 
 {% block javascripts %}
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
   <script type="text/javascript" src="../vendor/markdown.js"></script>
+  <script type="text/javascript" src="../shared/javascripts/privly-web/show.js"></script>
   <script type="text/javascript" src="js/show.js"></script>
 {% endblock %}
 
