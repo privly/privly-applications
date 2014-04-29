@@ -97,30 +97,24 @@ var PersonaPGP = {
           verified[false] = [bia_pub_keys[i]];
         }
       }
+      // calculate if we have verified all the keys
+      var size = 0;
+      if (verified[true] != undefined){
+        size += verified[true].length;
+      }
+      if (verified[false] != undefined){
+        size += verified[false].length;
+      }
+
+      // call callback if we have verified all the keys
+      if (size == bia_pub_keys.length) {
+        callback(verified[true]);
+      }
     };
 
     for(var i = 0; i < bia_pub_keys.length; i++){
       callAddRemote(i);
     }
-
-    // wait at most 'time' for async calls to finish
-    var time = 500*bia_pub_keys.length; 
-    var go = true;
-    setTimeout(function(){
-      go = false;
-    },time);
-
-    var size = 0;
-    while((size < bia_pub_keys.length) && go){
-      size = 0;
-      if (verified[true] !== undefined){
-        size += verified[true].length;
-      }
-      if (verified[false] !== undefined){
-        size += verified[false].length;
-      }
-    }
-    callback(verified[true]);
   },
 
   /**
@@ -229,21 +223,19 @@ var PersonaPGP = {
    * actually encrypt a message when all keys have been retrieved from
    * the directory provider.
    **/
-  encryptHelper: function(completed,emails,plaintext,pubKeys,callback){
-    if (completed.length === emails.length){
-      // Here we convert the plaintext into a json string. We do this to
-      // check if the decryption occured with the correct string.  If it's
-      // formated as json it is extremely unlikely to have been decrypted
-      // with the wrong key.  There are mechanisms built into OpenPGP.js that
-      // allow you to know in advance if you posses the appropriate key for
-      // decryption. However, this means revealing the identity of your
-      // intended recipient. Converting to json will (eventually) allow us to
-      // preserve the identity of recipients.
-      var plaintext_as_json = JSON.stringify({message: plaintext});
+  encryptHelper: function(plaintext,pubKeys,callback){
+    // Here we convert the plaintext into a json string. We do this to
+    // check if the decryption occured with the correct string.  If it's
+    // formated as json it is extremely unlikely to have been decrypted
+    // with the wrong key.  There are mechanisms built into OpenPGP.js that
+    // allow you to know in advance if you posses the appropriate key for
+    // decryption. However, this means revealing the identity of your
+    // intended recipient. Converting to json will (eventually) allow us to
+    // preserve the identity of recipients.
+    var plaintext_as_json = JSON.stringify({message: plaintext});
 
-      var ciphertext = openpgp.encryptMessage(pubKeys,plaintext_as_json);
-      callback(ciphertext);
-    }
+    var ciphertext = openpgp.encryptMessage(pubKeys,plaintext_as_json);
+    callback(ciphertext);
   },
 
   /**
@@ -270,7 +262,9 @@ var PersonaPGP = {
           }
         }
         completed.push(emails[i]);
-        PersonaPGP.encryptHelper(completed,emails,plaintext,pubKeys,callback);
+        if (completed.length === emails.length){
+          PersonaPGP.encryptHelper(plaintext,pubKeys,callback);
+        }
       });
     };
 
