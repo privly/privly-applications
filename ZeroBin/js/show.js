@@ -4,15 +4,31 @@
  * in the shared directory.
  **/
 
- /**
-  * Application specific content type handler. This function
-  * processes the encrypted markdown that should have been returned by
-  * the server.
-  *
-  * @param {jqHR} response The response from the server for the associated
-  * data URL.
-  */
+/**
+ * Display rendered markdown as a preview of the post.
+ */
+function previewMarkdown() {
+  $( "#post_content" ).html(markdown.toHTML($( "#edit_text" ).val()));
+  $( "#update" ).attr("class", "btn btn-warning");
+  privlyHostPage.resizeToWrapper();
+}
+
+/**
+ * Application specific content type handler. This function
+ * processes the encrypted markdown that should have been returned by
+ * the server.
+ *
+ * @param {jqHR} response The response from the server for the associated
+ * data URL.
+ */
 function processResponseContent(response) {
+  
+  // Change the edit button back to the default style
+  // if it has been modified. This is usually for
+  // when the user has edited content and submitted
+  // the form.
+  $( "#update" ).attr("class", "btn btn-default");
+  
   var url = state.webApplicationURL;
   state.key = privlyParameters.getParameterHash(url).privlyLinkKey;
   
@@ -59,6 +75,11 @@ function encryptBeforeUpdate(evt, callback) {
   $("#edit_form").hide();
   state.isInlineEdit = false;
 }
+
+document.addEventListener('DOMContentLoaded', 
+  function(){$( "#edit_text" ).bind("keyup", previewMarkdown);}
+);
+
 
 // Make the Tooltip display this App's name.
 privlyTooltip.appName = "ZeroBin";

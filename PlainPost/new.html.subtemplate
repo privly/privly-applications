@@ -7,6 +7,7 @@
 
 {% block javascripts %}
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+  <script type="text/javascript" src="../vendor/jquery.autosize.js"></script>
   <script type="text/javascript" src="../vendor/markdown.js"></script>
   <script type="text/javascript" src="../shared/javascripts/privly-web/new.js"></script>
   <script type="text/javascript" src="js/new.js"></script>
@@ -21,7 +22,9 @@
     <h2>Create New PlainPost Link</h2>
     <p id="loadingDiv"> <img src="../shared/images/ajax-loader.gif" alt="loading"/> </p>
     <label for="edit_text">Content</label>
-    <textarea id="content" class="form-control" rows="4" title="Enter a message to Post to Privly here." placeholder=''></textarea>
+    <textarea id="content" class="form-control" rows="4" 
+      title="Enter a message to Post to Privly here." 
+      placeholder='Enter content here'></textarea>
     <div id="destruction_select_block">
       <label for="seconds_until_burn">Time until content is destroyed</label>
       <select id="seconds_until_burn" name="seconds_until_burn" class="form-control">

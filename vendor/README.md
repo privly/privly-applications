@@ -16,6 +16,7 @@ originals.
 * [markdown](https://raw.github.com/evilstreak/markdown-js/v0.5.0/lib/markdown.js)
 * [jQuery](http://code.jquery.com/jquery-1.10.2.min.js)
 * [jquery.datatables.min.js](http://datatables.net/releases/DataTables-1.9.4.zip)
+* [jquery.autosize.js](https://github.com/jackmoore/autosize/releases/tag/1.18.7)
 
 ## Audited for Privly's Use Case ##
 

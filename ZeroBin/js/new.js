@@ -67,6 +67,9 @@ function initializeApplication() {
 
   // Monitor the submit button
   document.querySelector('#save').addEventListener('click', save);
+  
+  // Make all text areas auto resize to show all their contents
+  $('textarea').autosize();
 }
 
 document.addEventListener('DOMContentLoaded', initializeApplication);
