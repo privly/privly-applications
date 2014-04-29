@@ -182,6 +182,10 @@ var callbacks = {
     localforage.setDriver('localStorageWrapper',function(){
       localforage.getItem('persona-bridge',function(persona){
         localforage.getItem('email',function(email){
+          if (email == null){
+            console.log("Email not found");
+            callback(null);
+          }
           if (persona !== null) {
             secretkey = PersonaId.getSecretKeyFromBridge(persona, email);
             console.log("Persona secret key: ",secretkey);
@@ -209,11 +213,13 @@ var callbacks = {
             workerProxy.seedRandom(10); // TODO: evaluate best value to use
             workerProxy.generateKeyPair(
               openpgp.enums.publicKey.rsa_encrypt_sign,
-              1028,'username','passphrase',function(err,data){ // TODO: increase key
+              1024,'username','passphrase',function(err,data){ // TODO: increase key
                 callbacks.genPGPKeysAdder(data,function(result){
                   callbacks.uploadKey(email,function(outcome){
                     if (outcome === false){
                       console.log("Could not upload key.");
+                    } else {
+                      console.log("Upload success.");
                     }
                   });
                 });
@@ -276,6 +282,9 @@ var callbacks = {
                 });
               });
             });
+          } else {
+            console.log("Secret key is null");
+            callback(false);
           }
         });
       });
