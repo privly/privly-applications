@@ -167,6 +167,10 @@ var PersonaId = {
    **/
   getSecretKeyFromBridge: function(bridge, email) {
     var emails = JSON.parse(bridge.emails);
+    if (emails.default[email] == undefined){
+      //console.log("Email does not match persona bridge");
+      return null;
+    }
     var priv = emails.default[email].priv;
     var secretkey = jwcrypto.loadSecretKeyFromObject(priv);
     return secretkey;
