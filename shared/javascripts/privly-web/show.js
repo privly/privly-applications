@@ -335,7 +335,7 @@ var callbacks = {
   destroy: function(callback) {
     $("#edit_form").slideUp();
     privlyNetworkService.sameOriginDeleteRequest(state.jsonURL, 
-      function(){callbacks.destroyed(callback)}, {});
+      function(response){callbacks.destroyed(response, callback)}, {});
   },
   
   /**
