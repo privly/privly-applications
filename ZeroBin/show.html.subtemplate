@@ -35,6 +35,7 @@
            <option value="604800">7 Days</option>
            <option value="1209600">14 Days</option>
            <option value="2419200">28 Days</option>
+           <option value="">Infinite? - WARNING! Data in Alpha may still be destroyed.</option>
          </select>
        </div>
         <br/>

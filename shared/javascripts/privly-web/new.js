@@ -157,16 +157,20 @@ var callbacks = {
     }
     
     $("#save").prop('disabled', true);
+    
+    var contentToPost = {post:
+      {"content": content,
+       "structured_content": structured_content,
+       "privly_application":privly_application,
+       "seconds_until_burn": seconds_until_burn,
+       "public":true},
+      "format":"json"};
+    
+    // Send the post
     privlyNetworkService.sameOriginPostRequest(
       privlyNetworkService.contentServerDomain() + "/posts", 
       wrapCallback,
-      {"post":
-        {"content": content,
-         "structured_content": structured_content,
-         "privly_application":privly_application,
-         "public":true,
-         "seconds_until_burn": seconds_until_burn},
-         "format":"json"});
+      contentToPost);
   },
   
   /**
