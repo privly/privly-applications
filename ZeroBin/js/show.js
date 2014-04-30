@@ -45,6 +45,11 @@ function processResponseContent(response) {
     $("#edit_text").val(cleartext);
     var markdownHTML = markdown.toHTML(cleartext);
     $('div#cleartext').html(markdownHTML);
+    
+    // Make all text areas auto resize to show all their contents
+    if ( ! privlyHostPage.isInjected() ) {
+      $('textarea').autosize();
+    }
   } else {
     $('div#cleartext').text("The data behind this link is destroyed or corrupted.");
     return;
