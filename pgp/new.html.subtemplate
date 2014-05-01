@@ -14,6 +14,7 @@
   <script type="text/javascript" src="js/new.js"></script>
   <script type="text/javascript" src="js/personapgp.js"></script>
   <script type="text/javascript" src="js/identity.js"></script>
+  <script type="text/javascript" src="js/keymanager.js"></script>
 {% endblock %}
 
 
