@@ -68,7 +68,7 @@ var PersonaPGP = {
   emailMatch: function(bia_pub_key,email){
     if (PersonaId.extractEmail(bia_pub_key) === email){
       return true;
-    } 
+    }
     return false;
   },
 
@@ -84,7 +84,7 @@ var PersonaPGP = {
       if (emailMatch(bia_pub_keys[i],email)){
         PersonaPGP.addRemoteKeyToLocal(bia_pub_keys[i],function(result){
           if (result in verified){
-            verified[result].push(bia_pub_keys[i]); 
+            verified[result].push(bia_pub_keys[i]);
           } else {
             verified[result] = [bia_pub_keys[i]];
           }
@@ -155,7 +155,7 @@ var PersonaPGP = {
   /**
    * Add the key that was found remotely to localforage. Entry is keyed by
    * email address and has a value of every component that is needed in order
-   * to authenticate with the verifier. 
+   * to authenticate with the verifier.
    *
    * @param {email} email The email address the public key belongs to.
    * @param {assertion} ballOwax The backed identity assertion and accompanying
@@ -183,13 +183,13 @@ var PersonaPGP = {
     });
   },
 
-  /** 
+  /**
    * This function calls a function to verify the signature on the signed pgp
    * key.  Assuming the signature is valid, it then calls a function that
-   * queries the remote verifier for verification of the bia. 
+   * queries the remote verifier for verification of the bia.
    *
-   * In other words, this function: 
-   *   1) verifes the signature on the public key 
+   * In other words, this function:
+   *   1) verifes the signature on the public key
    *   2) verifes the backed identity assertion passed to it using the remote
    *      verifier.
    *   3) returns the now trusted public key.
@@ -241,15 +241,14 @@ var PersonaPGP = {
   /**
    * This function uses openpgpjs to encrypt a message as json.
    *
-   * @param {pubKeys} keys An array of key objects that should be able to be 
+   * @param {pubKeys} keys An array of key objects that should be able to be
    * used to decrypt the message.
    * @param {plaintext} plaintext The message being encrypted.
    */
   encrypt: function(emails,plaintext,callback){
-    // TODO:Check if additional arguments have been passed, 
+    // TODO:Check if additional arguments have been passed,
     // sign and encrypt if private key passed or just encrypt if not.
     // For now, not signing messages.
-    
     var pubKeys = [];
     var completed = [];
     var getPublicKeys = function(i){
@@ -257,7 +256,7 @@ var PersonaPGP = {
         //console.log(typeof Keys);
         if (typeof Keys === Array){
           for(var j = 0; j < Keys.length; j++){
-            var pub_key = openpgp.key.readArmored(Keys[j]).keys[0]; 
+            var pub_key = openpgp.key.readArmored(Keys[j]).keys[0];
             pubKeys.push(pub_key);
           }
         }
@@ -334,7 +333,7 @@ var PersonaPGP = {
   decryptHelper: function(privKey,encrypted_message){
     // Should determine if message is signed or not, and use appropriate
     // decryption method accordingly. If it is signed, find public key and
-    // then verify signature. 
+    // then verify signature.
     // For now assuming message is not signed.
     var decryptFailedMsg = "The data behind this link cannot be" +
                                  " decrypted with your key.";
@@ -349,10 +348,10 @@ var PersonaPGP = {
 
     if (message.message !== decryptFailedMsg){
       return message.message;
-    } else { 
+    } else {
       // TODO: make this more robust
       // figure out a better solution long term. currently this prevents
-      // sending a message consisting only of "next".  
+      // sending a message consisting only of "next".
       return "next";
     }
   }
