@@ -46,8 +46,8 @@ var PersonaPGP = {
           callback(pub_keys); //array of pub keys associated with email
         } else { // not found locally, query DirP
           PersonaPGP.findPubKeyRemote(email,function(bia_pub_keys){
-            if (bia_pub_keys === null){
-              callback(bia_pub_keys);
+            if (bia_pub_keys == null){
+              callback(null);
             } else { // Found remotely, verify and add to localForage
               PersonaPGP.findPubKeyRemoteHelper(email,bia_pub_keys,
                 function(verified_keys){
