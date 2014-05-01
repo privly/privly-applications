@@ -136,8 +136,8 @@ var PersonaPGP = {
           value
         ).done(function(response){ // Everything went according to plan
           // Long term should Return an array of (bia,signed_pub_keys)
-          console.log("findPubKeyRemote is returning: " + response.value);
-          callback(response.value); // Returns an array of pub_keys
+          console.log("findPubKeyRemote is returning: ", response);
+          callback(response); // Returns an array of pub_keys
         }
         ).fail(function(response){
           if (response.status === 404){
