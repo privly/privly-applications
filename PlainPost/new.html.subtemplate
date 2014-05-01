@@ -2,12 +2,13 @@
 
 {% block specs %}
   <meta name="PrivlySpec"
-   content="test/new.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js"/>
+   content="../shared/test/privly-web/new.js,test/new.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js"/>
 {% endblock %}
 
 {% block javascripts %}
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
   <script type="text/javascript" src="../vendor/markdown.js"></script>
+  <script type="text/javascript" src="../shared/javascripts/privly-web/new.js"></script>
   <script type="text/javascript" src="js/new.js"></script>
 {% endblock %}
 
