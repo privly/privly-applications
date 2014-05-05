@@ -219,9 +219,7 @@ var PersonaPGP = {
   },
 
   /**
-   * This function is repeatedly called by encrypt, and only proceeds to
-   * actually encrypt a message when all keys have been retrieved from
-   * the directory provider.
+   * This function encrypts the plaintext with the passed in pubKeys
    **/
   encryptHelper: function(plaintext,pubKeys,callback){
     // Here we convert the plaintext into a json string. We do this to

@@ -7,8 +7,8 @@
  *
  * 1. setNewPGPKey: Update localforage key withe value passed in.
  * 2. addNewPGPKey: Adds private/pub keys to localforage by calling set
- * 3. promptUserToLogin: Ask user to login on directory provider, return when
- *    persona key set
+ * 3. promptUserToLogin: Ask user to login on directory provider, return with 
+ *    persona key after user logs in.
  * 4. getPersonaKey: Get Persona Key from localstorage
  * 5. genPGPkeys: The extension is checking PGP keys exist and are not expired.
  * 6. uploadKey: Upload a backed identity assertion and public key to a

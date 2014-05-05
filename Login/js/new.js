@@ -61,8 +61,6 @@ var callbacks = {
       callbacks.notLoggedIn, 
       callbacks.loginError);
 
-    // Generate a PGP Keypair if needed
-    callbacks.genPGPKeys();
   },
   
   /**
