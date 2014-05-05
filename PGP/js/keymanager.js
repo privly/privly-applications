@@ -91,17 +91,22 @@ var keyManager = {
   },
 
   /*
-   * Ask user to login on directory provider, return when persona key set
+   * Ask user to login on directory provider. Create listener for storage
+   * events. Return persona-bridge when updated.
    */
-  promptUserToLogin: function(directoryURL,callback){
-    // TODO make this consistent with how other messages are displayed
-    var msg = "Please verify your identity by logging in with "; 
-    msg += "<a class='login_url btn btn-default' href='"+directoryURL+"'>";
-    msg += "Persona</a>";
-    $("#messages").text(msg);
-    $("#messages").show();
-    // listen for addition of persona-bridge to localstorage
-    return true;
+  promptUserToLogin: function(callback){
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('directoryURL',function(persona){
+        $("#messages").hide();
+        $("#login_persona").attr("href",directoryURL);
+        $("#login_persona").show();
+        document.addEventListener('storage', function(storageEvent){
+          if (storageEvent.key === 'persona-bridge'){
+            callback(storageEvent.newValue);
+          }
+        });
+      });
+    });
   },
 
   /**
@@ -120,8 +125,11 @@ var keyManager = {
             console.log("Persona secret key: ",secretkey);
             callback(secretkey);
           } else {
-            console.log("Persona bridge not present.");
-            callback(null);
+            keyManager.promptUserToLogin(function(bridge){
+              var secretkey = PersonaId.getSecretKeyFromBridge(bridge, email);
+              console.log("Persona secret key: ",secretkey);
+              callback(secretkey);
+            });
           }
         });
       });
@@ -139,22 +147,15 @@ var keyManager = {
     // Determine if a key is already in local storage
     localforage.setDriver('localStorageWrapper',function(){
       localforage.getItem('my_keypairs',function(keypairs){
-      if (keypairs === null){ // no key found, generate a new one
-        keyManager.genPGPKeys(function(outcome){
-          callback(outcome);
-        });
+      if (keypairs === null){ // no key found, return true
+        callback(true);
       } else { // it does exist,check expirey regenerate if needed
         // TODO: check if key is about to expire and gen a new one if needed
         // Note: Currently openPGP.js does not support setting a key
         // expiration. Since nearly all of the keys we deal with are generated
         // with openPGP.js, we do not yet check to see if keys expire.
-        
         console.log("Already have a key.");
-        // This is just here to make dev easier remove me later
-        //console.log("Already have a key, but uploading anyways.");
-        //keyManager.uploadKey(function(outcome){
-          //callback(outcome);
-        //});
+        callback(false);
       }
     });
   },

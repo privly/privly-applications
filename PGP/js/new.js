@@ -47,6 +47,17 @@ var callbacks = {
   },
 
   /**
+   * Check if user needs to generate new keys
+   */
+  checkForKeyManagement: function() {
+    keyManager.needNewKey(function(outcome){ 
+      if (outcome === true){
+        keyManager.genPGPKeys();
+      }
+    });
+  },
+
+  /**
    * Tell the user they can create their post
    */
   pendingPost: function() {
@@ -149,7 +160,7 @@ function initPosting() {
   privlyExtension.firePrivlyMessageSecretEvent();
   
   callbacks.pendingLogin();
-  
+  callbacks.checkForKeyManagement();
 }
 
 /**
