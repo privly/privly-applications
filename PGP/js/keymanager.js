@@ -48,7 +48,7 @@ var keyManager = {
   setDatas: function(key,value,callback){
     localforage.setDriver('localStorageWrapper', function() {
       localforage.setItem(key,value,function(result){
-        callback(result):
+        callback(result);
       });
     });
   },
@@ -147,16 +147,17 @@ var keyManager = {
     // Determine if a key is already in local storage
     localforage.setDriver('localStorageWrapper',function(){
       localforage.getItem('my_keypairs',function(keypairs){
-      if (keypairs === null){ // no key found, return true
-        callback(true);
-      } else { // it does exist,check expirey regenerate if needed
-        // TODO: check if key is about to expire and gen a new one if needed
-        // Note: Currently openPGP.js does not support setting a key
-        // expiration. Since nearly all of the keys we deal with are generated
-        // with openPGP.js, we do not yet check to see if keys expire.
-        console.log("Already have a key.");
-        callback(false);
-      }
+        if (keypairs === null){ // no key found, return true
+          callback(true);
+        } else { // it does exist,check expirey regenerate if needed
+          // TODO: check if key is about to expire and gen a new one if needed
+          // Note: Currently openPGP.js does not support setting a key
+          // expiration. Since nearly all of the keys we deal with are generated
+          // with openPGP.js, we do not yet check to see if keys expire.
+          console.log("Already have a key.");
+          callback(false);
+        }
+      });
     });
   },
 
