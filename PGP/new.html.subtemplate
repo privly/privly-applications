@@ -11,6 +11,7 @@
   <script type="text/javascript" src="../vendor/openpgp.min.js"></script>
   <script type="text/javascript" src="../vendor/localforage.min.js"></script>
   <script type="text/javascript" src="../vendor/jwcrypto-bundle.js"></script>
+  <script type="text/javascript" src="../vendor/select2.js"></script>
   <script type="text/javascript" src="js/new.js"></script>
   <script type="text/javascript" src="js/personapgp.js"></script>
   <script type="text/javascript" src="js/identity.js"></script>
@@ -28,7 +29,7 @@
     <h2>Create New PGP Message Link</h2>
     <p id="loadingDiv"> <img src="../shared/images/ajax-loader.gif" alt="loading"/> </p>
     <label for="recipients">To: </label>
-    <input id="emailAddresses" name="emails" type="email" />
+    <select id="emailAddresses" autofocus="true" name="emails" multiple="true" required="true" />
     <br/>
     <label for="content">Content</label>
     <textarea id="content" class="form-control" rows="4" title="Enter a message to Post to Privly here." placeholder=''></textarea>

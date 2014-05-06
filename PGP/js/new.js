@@ -58,6 +58,30 @@ var callbacks = {
   },
 
   /**
+   * Populate autocomplete from from localstorage
+   */
+  populateToField: function(){
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('my_contacts',function(contacts){
+        for(var email in contacts){
+          $('#emailAddresses').append(new Option(email, email));
+        }
+      });
+    });
+  },
+
+  /**
+   * Setup and manage autocomplete form
+   */
+  autoComplete: function(){
+    callbacks.populateToField();
+    $(document).ready(function() { $("#emailAddresses").select2({
+      placeholder: "Recipients",
+      allowClear: true
+    });});
+  },
+
+  /**
    * Tell the user they can create their post
    */
   pendingPost: function() {
@@ -69,6 +93,8 @@ var callbacks = {
     $("#save").prop('disabled', false);
     $("#messages").toggle();
     $("#form").toggle();
+
+    callbacks.autoComplete();
   },
 
   /**

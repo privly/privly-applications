@@ -13,6 +13,7 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <!-- Top Styles -->
   <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
+  <link class="top" href="../vendor/select2.css" rel="stylesheet"/>
   <link class="top" href="../shared/css/top/top.css" rel="stylesheet"/>
   <!-- Common Styles -->
   <link href="../shared/css/common.css" media="screen" rel="stylesheet" type="text/css"/>
@@ -34,6 +35,8 @@
   <script src="../vendor/localforage.min.js" type="text/javascript">
   </script>
   <script src="../vendor/jwcrypto-bundle.js" type="text/javascript">
+  </script>
+  <script src="../vendor/select2.js" type="text/javascript">
   </script>
   <script src="js/new.js" type="text/javascript">
   </script>
@@ -186,7 +189,8 @@
        <label for="recipients">
         To:
        </label>
-       <input id="emailAddresses" name="emails" type="email"/>
+       <select autofocus="true" id="emailAddresses" multiple="true" name="emails" required="true">
+       </select>
        <br/>
        <label for="content">
         Content
