@@ -120,7 +120,7 @@
             </p>
             <p style="display:none;" class="flash notice" id="login_persona">
               Please verify your identity by logging in with 
-              <a class="login_url btn btn-default">Persona</a>
+              <a id="persona_link" class="login_url btn btn-default">Persona</a>
             </p>
             <p><a class="privlyUrl" href="" data-privly-exclude="true"></a></p>
           </div>
