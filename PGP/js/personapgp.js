@@ -72,7 +72,6 @@ var PersonaPGP = {
     return false;
   },
 
-
   /**
    * This function makes multiple async calls and waits for them all to finish.
    * Only the verified keys are returned.
@@ -81,7 +80,7 @@ var PersonaPGP = {
   findPubKeyRemoteHelper: function(email,bia_pub_keys,callback){
     var verified = [];
     var callAddRemote = function(i){
-      if (emailMatch(bia_pub_keys[i],email)){
+      if (PersonaPGP.emailMatch(bia_pub_keys[i],email)){
         PersonaPGP.addRemoteKeyToLocal(bia_pub_keys[i],function(result){
           if (result in verified){
             verified[result].push(bia_pub_keys[i]);
@@ -251,8 +250,7 @@ var PersonaPGP = {
     var completed = [];
     var getPublicKeys = function(i){
       PersonaPGP.findPubKey(emails[i],function(Keys){
-        //console.log(typeof Keys);
-        if (typeof Keys === Array){
+        if (typeof Keys === "object"){
           for(var j = 0; j < Keys.length; j++){
             var pub_key = openpgp.key.readArmored(Keys[j]).keys[0];
             pubKeys.push(pub_key);
