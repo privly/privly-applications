@@ -96,15 +96,36 @@ var keyManager = {
    */
   promptUserToLogin: function(callback){
     localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('directoryURL',function(persona){
+      localforage.getItem('directoryURL',function(directoryURL){
         $("#messages").hide();
-        $("#login_persona").attr("href",directoryURL);
+        $("#persona_link").attr("href",directoryURL);
         $("#login_persona").show();
         document.addEventListener('storage', function(storageEvent){
           if (storageEvent.key === 'persona-bridge'){
             callback(storageEvent.newValue);
           }
         });
+      });
+    });
+  },
+
+
+  /**
+   * Determine if a new persona key needs to be generated
+   *
+   * This returns true under two conditions:
+   *   1) Localstorage does not contain persona-bridge.
+   *   2) Localstorage contains a key that is expired or is about to expire.
+   *    TODO: evaluate if persona-bridge is about to expire
+   */
+  needPersonaKey: function(callback){
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('persona-bridge',function(persona){
+        if (persona == null){
+          callback(true);
+        } else {
+          callback(false);
+        }
       });
     });
   },
