@@ -301,12 +301,12 @@ var PersonaPGP = {
               var message = PersonaPGP.decryptHelper(privKey,encrypted_message);
               if (message !== "next"){ // decrypted successfully
                 callback(message);
-              } else if ( i === (my_keys.length - 1) &&
+              } else if ( i === (emails.length - 1) &&
                           j === (my_keys[emails[i]].length -1) ) {
                 callback("The data cannot be viewed with your keys.");
               }
             } else {
-              if ( i === (my_keys.length - 1) &&
+              if ( i === (emails.length - 1) &&
                    j === (my_keys[emails[i]].length -1) ) {
                 callback("The data cannot be viewed with your keys.");
               }
@@ -337,7 +337,10 @@ var PersonaPGP = {
                                  " decrypted with your key.";
     var cleartext = openpgp.decryptMessage(privKey,encrypted_message);
     var message = null;
-
+    if (cleartext == null){
+      console.log("Decrypted cleartext is null or undefined");
+      return "next";
+    }
     try { // try to parse cleartext as json object
       message = JSON.parse(cleartext);
     } catch(e) {
