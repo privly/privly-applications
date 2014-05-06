@@ -108,11 +108,7 @@ var callbacks = {
    */
   submit: function() {
     var plaintext = $("#content")[0].value;
-    var recipients = $("#emailAddresses")[0].value;
-    // TODO: send message to someone besides yourself
-    // for now using keys already in localforage, ie encrypting message to self
-
-    var emails = recipients.replace(/\s/g,'').split(',');
+    var emails = $("#emailAddresses").val();
 
     PersonaPGP.encrypt(emails,plaintext,function(ciphertext){
       var data_to_send = {
