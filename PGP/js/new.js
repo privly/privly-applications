@@ -50,10 +50,15 @@ var callbacks = {
    * Check if user needs to generate new keys
    */
   checkForKeyManagement: function() {
-    keyManager.needNewKey(function(outcome){ 
-      if (outcome === true){
-        keyManager.genPGPKeys();
+    keyManager.needPersonaKey(function(persona_need){
+      if (persona_need === true){
+        keyManager.promptUserToLogin();
       }
+      keyManager.needNewKey(function(pgp_need){ 
+          if (pgp_need === true){
+            keyManager.genPGPKeys();
+          }
+      });
     });
   },
 
@@ -77,6 +82,7 @@ var callbacks = {
     callbacks.populateToField();
     $(document).ready(function() { $("#emailAddresses").select2({
       placeholder: "Recipients",
+      isMultiple: true,
       allowClear: true
     });});
   },
