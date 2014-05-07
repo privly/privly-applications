@@ -51,6 +51,7 @@ var PersonaPGP = {
             } else { // Found remotely, verify and add to localForage
               PersonaPGP.findPubKeyRemoteHelper(email,bia_pub_keys,
                 function(verified_keys){
+                  //console.log("Verified keys:",verified_keys);
                   callback(verified_keys);
                 }
               );
@@ -66,7 +67,7 @@ var PersonaPGP = {
    * verifies that the email it is for matches.
    **/
   emailMatch: function(bia_pub_key,email){
-    if (PersonaId.extractEmail(bia_pub_key) === email){
+    if (PersonaId.extractEmail(bia_pub_key["bia"]) === email){
       return true;
     }
     return false;
@@ -78,37 +79,39 @@ var PersonaPGP = {
    *
    */
   findPubKeyRemoteHelper: function(email,bia_pub_keys,callback){
-    var verified = [];
+    var verified = {};
     var callAddRemote = function(i){
-      if (PersonaPGP.emailMatch(bia_pub_keys[i],email)){
-        PersonaPGP.addRemoteKeyToLocal(bia_pub_keys[i],function(result){
+      PersonaPGP.addRemoteKeyToLocal(bia_pub_keys[i],function(result){
+        /*********************************************************************
+         * Call function that takes a signed PGP key and returns PGP key here*
+         *********************************************************************/
+        if (PersonaPGP.emailMatch(bia_pub_keys[i],email)){
           if (result in verified){
             verified[result].push(bia_pub_keys[i]);
           } else {
             verified[result] = [bia_pub_keys[i]];
           }
-        });
-      } else { // Email queried did not match email in bia
-        //console.log("The server is confused or malicous");
-        if (false in verified){
-          verified[false].push(bia_pub_keys[i]);
-        } else {
-          verified[false] = [bia_pub_keys[i]];
+        } else { // Email queried did not match email in bia
+          console.warn("The directory provider is confused or malicous");
+          if (false in verified){
+            verified[false].push("1");
+          } else {
+            verified[false] = ["1"];
+          }
         }
-      }
-      // calculate if we have verified all the keys
-      var size = 0;
-      if (verified[true] != undefined){
-        size += verified[true].length;
-      }
-      if (verified[false] != undefined){
-        size += verified[false].length;
-      }
-
-      // call callback if we have verified all the keys
-      if (size == bia_pub_keys.length) {
-        callback(verified[true]);
-      }
+        // calculate if we have verified all the keys
+        var size = 0;
+        if (verified[true] != undefined){
+          size += verified[true].length;
+        }
+        if (verified[false] != undefined){
+          size += verified[false].length;
+        }
+        // call callback if we have verified all the keys
+        if (size == bia_pub_keys.length) {
+          callback(verified[true]);
+        }
+      });
     };
 
     for(var i = 0; i < bia_pub_keys.length; i++){
@@ -126,7 +129,6 @@ var PersonaPGP = {
     localforage.setDriver('localStorageWrapper',function(){
       localforage.getItem('directoryURL',function(remote_directory){
         remote_directory += "/search";
-        //console.log(remote_directory);
         var value = {
           email: email
         };
@@ -134,9 +136,8 @@ var PersonaPGP = {
           remote_directory,
           value
         ).done(function(response){ // Everything went according to plan
-          // Long term should Return an array of (bia,signed_pub_keys)
           console.log("findPubKeyRemote is returning: ", response);
-          callback(response); // Returns an array of pub_keys
+          callback(response); // Returns [{bia:bia, pgp:signed_pub_key}]
         }
         ).fail(function(response){
           if (response.status === 404){
@@ -161,7 +162,7 @@ var PersonaPGP = {
    * privly public key.
    */
   addRemoteKeyToLocal: function(bia_pub_key,callback){
-    var email = PersonaId.extractEmail(bia_pub_key);
+    var email = PersonaId.extractEmail(bia_pub_key["bia"]);
     PersonaPGP.verifyPubKey(bia_pub_key,function(outcome,pgp_pub_key){
       if (outcome === true){
         localforage.setDriver('localStorageWrapper',function(){
@@ -196,8 +197,7 @@ var PersonaPGP = {
    * @param {bia_pub_key} A bia and signed pgp public key to be verified.
    */
   verifyPubKey: function(bia_pub_key,callback){
-    var signed_pub_key = bia_pub_key[1];
-    PersonaId.verifyPayload(signed_pub_key,function(outcome,key){
+    PersonaId.verifyPayload(bia_pub_key,function(outcome,key){
       if (outcome === true){
         //console.log("Signature on PGP key is valid");
         var bia = bia_pub_key[0];
