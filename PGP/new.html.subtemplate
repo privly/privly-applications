@@ -29,7 +29,7 @@
     <h2>Create New PGP Message Link</h2>
     <p id="loadingDiv"> <img src="../shared/images/ajax-loader.gif" alt="loading"/> </p>
     <label for="recipients">To: </label>
-    <select id="emailAddresses" autofocus="true" name="emails" multiple="true" required="true" />
+    <input type="hidden" id="emailAddresses" autofocus="true" name="emails" multiple="true" required="true" style="width:300px" />
     <br/>
     <label for="content">Content</label>
     <textarea id="content" class="form-control" rows="4" title="Enter a message to Post to Privly here." placeholder=''></textarea>

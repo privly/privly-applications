@@ -65,12 +65,14 @@ var callbacks = {
   /**
    * Populate autocomplete from from localstorage
    */
-  populateToField: function(){
+  populateToField: function(callback){
     localforage.setDriver('localStorageWrapper',function(){
       localforage.getItem('my_contacts',function(contacts){
+        var emails = [];
         for(var email in contacts){
-          $('#emailAddresses').append(new Option(email, email));
+          emails.push(email);
         }
+        callback(emails);
       });
     });
   },
@@ -79,12 +81,13 @@ var callbacks = {
    * Setup and manage autocomplete form
    */
   autoComplete: function(){
-    callbacks.populateToField();
-    $(document).ready(function() { $("#emailAddresses").select2({
-      placeholder: "Recipients",
-      isMultiple: true,
-      allowClear: true
-    });});
+    callbacks.populateToField(function(emails){
+      $("#emailAddresses").select2({
+        placeholder: "Recipients",
+        tags: emails,
+        tokenSeparators: [" ",","]
+      });
+    });
   },
 
   /**
@@ -109,6 +112,7 @@ var callbacks = {
   submit: function() {
     var plaintext = $("#content")[0].value;
     var emails = $("#emailAddresses").val();
+    emails = emails.split(",");
 
     PersonaPGP.encrypt(emails,plaintext,function(ciphertext){
       var data_to_send = {
