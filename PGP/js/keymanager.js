@@ -47,9 +47,7 @@ var keyManager = {
    */
   setDatas: function(key,value,callback){
     localforage.setDriver('localStorageWrapper', function() {
-      localforage.setItem(key,value,function(result){
-        callback(result);
-      });
+      localforage.setItem(key,value,callback);
     });
   },
 
@@ -68,9 +66,7 @@ var keyManager = {
           } else {
             value[email] = [appended_value];
           }
-          localforage.setItem(key,value,function(result){
-            callback(result);
-          });
+          localforage.setItem(key,value,callback);
         });
       });
     });
@@ -83,10 +79,7 @@ var keyManager = {
   addNewPGPKey: function(keypair,callback){
     var pubkey = keypair.publicKeyArmored;
     keyManager.setNewPGPKey('my_keypairs',keypair,function(result){
-      keyManager.setNewPGPKey('my_contacts',pubkey,function(result){
-          callback(result);
-        }
-      );
+      keyManager.setNewPGPKey('my_contacts',pubkey,callback);
     });
   },
 
@@ -121,11 +114,7 @@ var keyManager = {
   needPersonaKey: function(callback){
     localforage.setDriver('localStorageWrapper',function(){
       localforage.getItem('persona-bridge',function(persona){
-        if (persona == null){
-          callback(true);
-        } else {
-          callback(false);
-        }
+        callback(persona == null);
       });
     });
   },
