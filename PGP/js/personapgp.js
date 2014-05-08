@@ -49,12 +49,7 @@ var PersonaPGP = {
             if (bia_pub_keys == null){
               callback(null);
             } else { // Found remotely, verify and add to localForage
-              PersonaPGP.findPubKeyRemoteHelper(email,bia_pub_keys,
-                function(verified_keys){
-                  //console.log("Verified keys:",verified_keys);
-                  callback(verified_keys);
-                }
-              );
+              PersonaPGP.findPubKeyRemoteHelper(email,bia_pub_keys,callback);
             }
           });
         }
@@ -81,15 +76,12 @@ var PersonaPGP = {
   findPubKeyRemoteHelper: function(email,bia_pub_keys,callback){
     var verified = {};
     var callAddRemote = function(i){
-      PersonaPGP.addRemoteKeyToLocal(bia_pub_keys[i],function(result){
-        /*********************************************************************
-         * Call function that takes a signed PGP key and returns PGP key here*
-         *********************************************************************/
+      PersonaPGP.addRemoteKeyToLocal(bia_pub_keys[i],function(result,pub_key){
         if (PersonaPGP.emailMatch(bia_pub_keys[i],email)){
           if (result in verified){
-            verified[result].push(bia_pub_keys[i]);
+            verified[result].push(pub_key);
           } else {
-            verified[result] = [bia_pub_keys[i]];
+            verified[result] = [pub_key];
           }
         } else { // Email queried did not match email in bia
           console.warn("The directory provider is confused or malicous");
@@ -173,12 +165,12 @@ var PersonaPGP = {
               data[email] = [pgp_pub_key];
             }
             localforage.setItem('my_contacts',data,function(){
-              callback(true);
+              callback(true,pgp_pub_key);
             });
           });
         });
       } else {
-        callback(false);
+        callback(false,null);
       }
     });
   },
