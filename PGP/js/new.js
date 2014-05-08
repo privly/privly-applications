@@ -47,6 +47,30 @@ var callbacks = {
   },
 
   /**
+   * Check if user has set an email and a DirectoryURL
+   */
+  checkOptionsSet: function(){
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('email',function(email){
+        localforage.getItem('directoryURL',function(directoryURL){
+          if (email == undefined || email == ""){
+            if (directoryURL == undefined || directoryURL == ""){
+              keyManager.promptUserToSetEmail(function(){
+                keyManager.promptUserToSetDirectory(function(){});
+              });
+            } else {
+              keyManager.promptUserToSetEmail(function(){});
+            }
+          }
+          if (directoryURL == undefined || directoryURL == ""){
+            keyManager.promptUserToSetDirectory(function(){});
+          }
+        });
+      });
+    });
+  },
+
+  /**
    * Check if user needs to generate new keys
    */
   checkForKeyManagement: function() {
@@ -192,6 +216,7 @@ function initPosting() {
   privlyExtension.firePrivlyMessageSecretEvent();
   
   callbacks.pendingLogin();
+  callbacks.checkOptionsSet(); 
   callbacks.checkForKeyManagement();
 }
 
