@@ -122,8 +122,8 @@ var PersonaId = {
    *              key. This is assumed to be verified.
    **/
   extractEmail: function(bia) {
-    var principle = this.extractField(bia, "principal");
-    var email = principle['email'];
+    var principal = this.extractField(bia, "principal");
+    var email = principal['email'];
     return email
   },
 
