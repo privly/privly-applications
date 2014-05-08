@@ -102,7 +102,34 @@ var keyManager = {
     });
   },
 
+  /*
+   * Ask user to set email in options. Create listener for storage events.
+   * Return email when updated.
+   */
+  promptUserToSetEmail: function(callback){
+    $("#messages").hide();
+    $("#need_email").show();
+    document.addEventListener('storage', function(storageEvent){
+      if (storageEvent.key === 'email'){
+        callback(storageEvent.newValue);
+      }
+    });
+  },
 
+  /*
+   * Ask user to set directory in options. Create listener for storage events.
+   * Return directoryURL when updated.
+   */
+  promptUserToSetDirectory: function(callback){
+    $("#messages").hide();
+    $("#need_directory").show();
+    document.addEventListener('storage', function(storageEvent){
+      if (storageEvent.key === 'directoryURL'){
+        callback(storageEvent.newValue);
+      }
+    });
+  },
+  
   /**
    * Determine if a new persona key needs to be generated
    *
