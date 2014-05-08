@@ -122,6 +122,14 @@
               Please verify your identity by logging in with 
               <a id="persona_link" class="login_url btn btn-default">Persona</a>
             </p>
+            <p style="display:none;" class="flash notice" id="need_email">
+              Your email has not been set.  Please set your email in 
+              <a href="../../pages/options.html" class="login_url btn btn-default">options</a>
+            </p>
+            <p style="display:none;" class="flash notice" id="need_directory">
+              Your Directory has not been set.  Please set your directory in 
+              <a href="../../pages/options.html" class="login_url btn btn-default">options</a>
+            </p>
             <p><a class="privlyUrl" href="" data-privly-exclude="true"></a></p>
           </div>
         </div>
