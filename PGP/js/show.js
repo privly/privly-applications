@@ -96,7 +96,7 @@ var callbacks = {
 
       // Display the domain of the content in the glyph
       var dataDomain = state.jsonURL.split("/")[2];
-      privlyTooltip.updateMessage(dataDomain + " PGP: Read Only");
+      privlyTooltip.updateMessage(dataDomain, "Read Only");
 
       // Load CSS to show the tooltip and other injected styling
       loadInjectedCSS();
@@ -285,6 +285,8 @@ var callbacks = {
    }
   }
 }
+
+privlyTooltip.appName = "PGP";
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', callbacks.pendingContent);
