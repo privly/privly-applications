@@ -142,7 +142,7 @@ var callbacks = {
       var data_to_send = {
         post:{
           structured_content: ciphertext,
-          "privly_application":"pgp",
+          "privly_application":"PGP",
           "public":true,
           "seconds_until_burn": $( "#seconds_until_burn" ).val()
         }
