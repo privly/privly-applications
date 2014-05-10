@@ -120,7 +120,7 @@
             </p>
             <p style="display:none;" class="flash notice" id="login_persona">
               Please verify your identity by logging in with 
-              <a id="persona_link" class="login_url btn btn-default">Persona</a>
+              <a id="persona_link" target="_blank" class="login_url btn btn-default">Persona</a>
             </p>
             <p style="display:none;" class="flash notice" id="need_email">
               Your email has not been set.  Please set your email in 
