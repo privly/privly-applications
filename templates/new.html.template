@@ -123,12 +123,14 @@
               <a id="persona_link" target="_blank" class="login_url btn btn-default">Persona</a>
             </p>
             <p style="display:none;" class="flash notice" id="need_email">
-              Your email has not been set.  Please set your email in 
-              <a href="../../pages/options.html" class="login_url btn btn-default">options</a>
+              Your email has not been set.  Please enter your Email:
+              <input id="emailAddress" name="emailAddress" type="email" />
+              <button id="save_email">Save</button>
             </p>
             <p style="display:none;" class="flash notice" id="need_directory">
-              Your Directory has not been set.  Please set your directory in 
-              <a href="../../pages/options.html" class="login_url btn btn-default">options</a>
+              Your Directory has not been set.  Please enter your Directory:
+              <input id="directoryURL" name="directoryURL" type="url" />
+              <button id="save_directory">Save</button>
             </p>
             <p><a class="privlyUrl" href="" data-privly-exclude="true"></a></p>
           </div>
