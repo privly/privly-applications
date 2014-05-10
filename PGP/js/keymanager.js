@@ -74,11 +74,28 @@ var keyManager = {
   promptUserToSetEmail: function(callback){
     $("#messages").hide();
     $("#need_email").show();
-    document.addEventListener('storage', function(storageEvent){
-      if (storageEvent.key === 'email'){
-        callback(storageEvent.newValue);
-      }
+    // Add to local storage on clicking the save button
+    document.querySelector('#save_email').addEventListener('click',function(){
+      var email = document.getElementById("emailAddress").value;
+      localforage.setDriver('localStorageWrapper',function(){
+        localforage.setItem('email',email,function(){
+          $("#need_email").hide();
+          callback(email);
+        });
+      });
     });
+    // Set to local storage to save value on hitting enter 
+    var email_input = document.getElementById("emailAddress");
+    email_input.onkeyup = function(){
+      if (event.keyCode === 13){ // user hit enter
+        localforage.setDriver('localStorageWrapper',function(){
+          localforage.setItem('email',email_input.value,function(){
+            $("#need_email").hide();
+            callback(email);
+          });
+        });
+      }
+    };
   },
 
   /*
@@ -86,13 +103,31 @@ var keyManager = {
    * Return directoryURL when updated.
    */
   promptUserToSetDirectory: function(callback){
+    // TODO: combine this and promptEmail to be more DRY
     $("#messages").hide();
     $("#need_directory").show();
-    document.addEventListener('storage', function(storageEvent){
-      if (storageEvent.key === 'directoryURL'){
-        callback(storageEvent.newValue);
-      }
+    // Add to local storage on clicking the save button
+    document.querySelector('#save_directory').addEventListener('click',function(){
+      var directoryURL = document.getElementById("directoryURL").value;
+      localforage.setDriver('localStorageWrapper',function(){
+        localforage.setItem('directoryURL',directoryURL,function(){
+          $("#need_directory").hide();
+          callback(directoryURL);
+        });
+      });
     });
+    // Set to local storage to save value on hitting enter 
+    var directory_input = document.getElementById("directoryURL");
+    directory_input.onkeyup = function(){
+      if (event.keyCode === 13){
+        localforage.setDriver('localStorageWrapper',function(){
+          localforage.setItem('directoryURL',directory_input.value,function(){
+            $("#need_directory").hide();
+            callback(directoryURL);
+          });
+        });
+      }
+    };
   },
   
   /**
