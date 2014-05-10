@@ -17,41 +17,6 @@
 var keyManager = {
 
   /**
-   * This function takes a list of keys and returns the values retrieved from
-   * localforage.
-   */
-  getDatas: function(keys,callback) {
-    var datas = {
-      len: 0,
-      values: {}
-    };
-    localforage.setDriver('localStorageWrapper', function() {
-      for (var i = 0; i < keys.length; i++) {
-        localforage.getItem(keys[i], function(data) {
-          if (data != undefined) {
-            datas.values[keys[i]] = data;
-          } else {
-            console.log("Could not get", keys[i]);
-          }
-          datas.len += 1;
-          if (datas.len === keys.length){
-            callback(datas.values);
-          }
-        });
-      }
-    });
-  },
-
-  /**
-   * This function sets an item in localforage.
-   */
-  setDatas: function(key,value,callback){
-    localforage.setDriver('localStorageWrapper', function() {
-      localforage.setItem(key,value,callback);
-    });
-  },
-
-  /**
    * Update the localforage key with the value passed in
    */
   setNewPGPKey: function(key, appended_value, callback){
