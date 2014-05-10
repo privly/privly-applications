@@ -142,11 +142,10 @@ var PersonaId = {
           "https://verifier.login.persona.org/verify",
           {assertion: bia, audience: audience}
         ).done(function(response){
-          var data = response.responseJSON; 
-          if (data.status === "okay"){
+          if (response.status === "okay"){
             callback(true);
           } else {
-            console.log("Verification not okay because" + data.reason);
+            console.log("Verification failed because: " + response.reason);
             callback(false);
           }
         }
