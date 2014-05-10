@@ -47,27 +47,46 @@ var callbacks = {
   },
 
   /**
-   * Check if user has set an email and a DirectoryURL
+   * Check if user has set a passed in item
    */
-  checkOptionsSet: function(){
+  assureItemIsSet: function(option,callback){
     localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('email',function(email){
-        localforage.getItem('directoryURL',function(directoryURL){
-          if (email == undefined || email == ""){
-            if (directoryURL == undefined || directoryURL == ""){
-              keyManager.promptUserToSetEmail(function(){
-                keyManager.promptUserToSetDirectory(function(){});
-              });
-            } else {
-              keyManager.promptUserToSetEmail(function(){});
-            }
+      localforage.getItem(option,function(value){
+        if (value == undefined || value == ""){
+          if (option === 'email'){
+            keyManager.promptUserToSetEmail(function(value){
+              callback(value);
+            });
           }
-          if (directoryURL == undefined || directoryURL == ""){
-            keyManager.promptUserToSetDirectory(function(){});
+          else if (option === 'directoryURL'){
+            keyManager.promptUserToSetDirectory(function(value){
+              callback(value);
+            });
           }
-        });
+        } else {
+          callback(value);
+        }
       });
     });
+  },
+
+  /**
+   * Check if user has set options
+   */
+  checkOptionsSet: function(callback){
+    var items = ['email','directoryURL'];
+    var set = 0;
+    var check = function(option){
+      callbacks.assureItemIsSet(option,function(value){
+        set += 1;
+        if (set === items.length){
+          callback(true);
+        }
+      });
+    };
+    for (var i = 0; i < items.length; i++){
+      check(items[i]);
+    }
   },
 
   /**
@@ -216,8 +235,7 @@ function initPosting() {
   privlyExtension.firePrivlyMessageSecretEvent();
   
   callbacks.pendingLogin();
-  callbacks.checkOptionsSet(); 
-  callbacks.checkForKeyManagement();
+  callbacks.checkOptionsSet( callbacks.checkForKeyManagement );
 }
 
 /**
