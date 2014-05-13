@@ -10,21 +10,20 @@ Persona](https://persona.org). The primary focus is to provide user
 friendly PGP encryption.
 
 ### Remote Resources
-The remote resources that are involved in this app are:
+There are 3 remote resources involved in this application:
 
-  *  A directory provider.  This provides a remote key-value store for public
-     keys.
-  *  A remote verifier.  This authenticates an email address with a public key.
-     Long term the intent is to port the verifier to run locally on the
-     browser.
-  *  A content server. This provides a location for message storage and
-     retrieval. Note that the content server only stores the ciphertext of
-     messages. Private keys are created from locally served code, and the
-     private keys never leave the browser.
+  *  **Directory Provider:** Provides a remote key-value store for public
+     keys and their associated backed identity assertion.
+  *  **Remote Verifier:** Authenticates the backed identity assertion
+     associated with an email address and public key. Long term the
+     intent is to run a verifier locally in the browser.
+  *  **Content Server:** Provides a location for message storage and
+     retrieval. Note that the content server only stores the ciphertext
+     of messagesr, private keys are created locally, and private keys
+     never leave the browser.
 
 For more details on the protocol for this app, see the
-[protocol](https://github.com/privly/privly-applications/blob/experimental-pgp/pgp/protocol.md)
-document.
+[protocol](PROTOCOL.md) document.
 
 ### Current Status
 
