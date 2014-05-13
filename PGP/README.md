@@ -10,7 +10,7 @@ Persona](https://persona.org). The primary focus is to provide user
 friendly PGP encryption.
 
 ### Remote Resources
-The remote resources that are involved in this app are: 
+The remote resources that are involved in this app are:
 
   *  A directory provider.  This provides a remote key-value store for public
      keys.
@@ -19,9 +19,9 @@ The remote resources that are involved in this app are:
      browser.
   *  A content server. This provides a location for message storage and
      retrieval. Note that the content server only stores the ciphertext of
-     messages. Private keys are created from locally served code, and the 
+     messages. Private keys are created from locally served code, and the
      private keys never leave the browser.
-    
+
 For more details on the protocol for this app, see the
 [protocol](https://github.com/privly/privly-applications/blob/experimental-pgp/pgp/protocol.md)
 document.
@@ -44,11 +44,11 @@ identity assertions is not yet mature.  A good reminder as to why this software
 is PRE-ALPHA status.
 
 ### Current TODO
-- Sign and encrypt messages (currently the app just encrypts without 
+- Sign and encrypt messages (currently the app just encrypts without
       signing)
 - Verify signatures when decrypting messages
 - Generate a backed identity assertions in browser
-- Sign a PersonaPGP key with the public key found in a backed identity 
+- Sign a PersonaPGP key with the public key found in a backed identity
       assertion
 - Verify a returned back identity assertion and signature
 - Implement tests that are already outlined
@@ -65,7 +65,7 @@ The data that is stored in localforage is of two types. Your own keypairs, and
 the public keys of your contacts.
 
 ```
-{ 
+{
   my_keypairs: { email: [keypairs]    },
   my_contacts: { email: [public keys] }
 }
