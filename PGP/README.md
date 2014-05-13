@@ -13,8 +13,7 @@ friendly PGP encryption.
 
 Currently the app supports basic encryption/decryption of content posted and
 retrieved from a content server. This is currently done with keys read from
-localforage. Key management is currently being implemented. Note that the key
-generation and upload to the directory provider happens in the Login app.
+localforage. Key management is currently being implemented.
 
 Tests are written for OpenPGP.js in the Privly context that confirm correctness
 of the encryption, key generation, and signing and verification of encrypted
