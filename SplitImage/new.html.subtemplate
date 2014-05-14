@@ -1,0 +1,81 @@
+{% extends "templates/new.html.template" %}
+
+{% block specs %}
+  <meta name="PrivlySpec" 
+  content="../shared/test/privly-web/new.js,test/new.js,test/sjcl.js,test/ZeroBin.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js"/>
+{% endblock %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+  <script type="text/javascript" src="../vendor/sjcl.js"></script>
+  <script type="text/javascript" src="js/base64.js"></script>
+  <script type="text/javascript" src="js/rawdeflate.js"></script>
+  <script type="text/javascript" src="js/rawinflate.js"></script>
+  <script type="text/javascript" src="js/zerobin.js"></script>
+  <script type="text/javascript" src="js/file_processing.js"></script>
+  <script type="text/javascript" src="../shared/javascripts/privly-web/new.js"></script>
+  <script type="text/javascript" src="js/new.js"></script>
+{% endblock %}
+
+{% block css %}
+  <link href="css/drop_zone.css" rel="stylesheet"/>
+{% endblock %}
+
+{% block form %}
+  <div id="drop_zone">Drop image here to preview</div>
+  <!-- This is the old input style, but it would work if displayed  -->
+  <input style="display:none;" type="file" id="files" class="drop_button"
+    name="files[]" multiple />
+
+  <noscript>
+    <h1>Your browser has scripting turned off. 
+      This application requires scripting to function properly</h1>
+  </noscript>
+  
+  <div id="preview_area" class="col-md-12" style="display:none;">
+    <h2>Preview
+      <button class="btn btn-default" id="save" >
+        <span class="glyphicon glyphicon-cloud-upload">
+        </span>
+        Upload and Get Link
+      </button>
+    </h2>
+    <div id="destruction_select_block">
+      <label for="seconds_until_burn">Time until content is destroyed</label>
+      <select id="seconds_until_burn" name="seconds_until_burn" class="form-control">
+        <option value="86400">1 Day</option>
+        <option value="604800">7 Days</option>
+        <option value="1209600">14 Days</option>
+        <option value="2419200" selected>28 Days</option>
+        <option value="">Infinite? - WARNING! Data in Alpha may still be destroyed.</option>
+      </select>
+    </div>
+    <output id="clearimage"></output>
+  </div>
+{% endblock %}
+
+
+{% block app_info %}
+  <hr/>
+  <div class="col-md-6">
+    <h2>What is a {{name}}?</h2>
+    <p>{{name}} is a Privly Application that splits your image into two pieces.
+      Your encrypted image is sent to your content server and the key to
+      decrypt the content is attached to the link you share on the web.
+      Only share the link with people and websites you trust to not steal
+      your image because the content server will give the other half of the
+      image to anyone carrying the link.
+      <a href="http://www.privly.org/content/introducing-privly-applications" target="_blank">
+        Read more about Privly applications.
+      </a>
+    </p>
+  </div>
+  <div class="col-md-6">
+    <h2>Warnings</h2>
+    <ul>
+      <li>Privly is still in Alpha, <strong>do not</strong> post private information until the system reaches a Beta release.</li>
+      <li>This post is <strong>temporary.</strong> All new content is destroyed within <strong>30 days</strong>.</li>
+      <li>This image will be encrypted, but it is likely that a sophisticated adversary, e.g. governments, will be able to decrypt the content without the key.</li>
+    </ul>
+  </div>
+{% endblock %}

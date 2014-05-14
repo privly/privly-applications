@@ -7,6 +7,14 @@
 
 describe ("Privly-web new.js API Test Suite", function() {
   
+  /**
+   * A mock server response to test the post-processing functions.
+   */
+  var mockServerResponse = {
+    jqXHR: {status: 200},
+    json: {content: "hello world"}
+  }
+  
   it("does not result in an error (pending login)", function() {
     // used to check if asynchronous calls completed
     var initializationFlag = false;
@@ -84,7 +92,8 @@ describe ("Privly-web new.js API Test Suite", function() {
     // The runs function allows the testing library to complete the asynchronous
     // calls before executing this testing code
     runs(function() {
-      callbacks.createError(function(){initializationFlag = true});
+      callbacks.createError( mockServerResponse,
+        function(){initializationFlag = true});
     });
 
     // Waits for the initialization to complete or fails
@@ -100,7 +109,7 @@ describe ("Privly-web new.js API Test Suite", function() {
     // The runs function allows the testing library to complete the asynchronous
     // calls before executing this testing code
     runs(function() {
-      callbacks.postCompleted( {}, "URL", 
+      callbacks.postCompleted( mockServerResponse, "URL", 
         function(){initializationFlag = true});
     });
 
