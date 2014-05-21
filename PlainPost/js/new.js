@@ -8,7 +8,7 @@
  * Display rendered markdown as a preview of the post.
  */
 function previewMarkdown() {
-  preview.innerHTML = markdown.toHTML(document.getElementById("content").value);
+  $( "#preview" ).html(markdown.toHTML($( "#content" ).val()));
 }
 
 /**
@@ -35,6 +35,9 @@ function initializeApplication() {
 
   // Monitor the submit button
   document.querySelector('#save').addEventListener('click', save);
+  
+  // Make all text areas auto resize to show all their contents
+  $('textarea').autosize();
 }
 
 document.addEventListener('DOMContentLoaded', initializeApplication);

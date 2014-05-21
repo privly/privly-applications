@@ -143,9 +143,11 @@ var callbacks = {
 
     // Register the link and button listeners.
     $("#destroy_link").click(callbacks.destroy);
-    $("#cancel_button").on("click",callbacks.cancel);
     
-    document.getElementById("update").addEventListener('click', callbacks.update);
+    // Watch the update button and pass the content callback
+    // to the update function
+    document.getElementById("update").addEventListener('click', 
+      function(evt){callbacks.update(evt, callback)});
     $("#edit_link").click(callbacks.edit);
 
     // Set the nav bar to the proper domain
@@ -172,7 +174,7 @@ var callbacks = {
       
       // Load CSS to show the tooltip and other injected styling
       loadInjectedCSS();
-
+      loadInjectedJS();
     } else {
 
       // Check whether the user is signed into their content server
@@ -185,6 +187,7 @@ var callbacks = {
 
       // Load CSS to show the nav and the rest of the non-injected page
       loadTopCSS();
+      loadTopJS();
    }
    
    // Ensure whitelist compliance of the data parameter when the content is
@@ -264,6 +267,11 @@ var callbacks = {
                 $("#no_permissions_nav").hide();
                 $("#permissions_nav").show();
                 
+                $("#cancel_button").on("click", function(evt){
+                  callbacks.cancel(evt);
+                  callback(response);
+                });
+                
                 var dataDomain = privlyNetworkService.getProtocolAndDomain(state.jsonURL);
                 privlyTooltip.updateMessage(dataDomain, "Editable");
                 $(".meta_canupdate").text("You can update this content.");
@@ -335,7 +343,7 @@ var callbacks = {
   destroy: function(callback) {
     $("#edit_form").slideUp();
     privlyNetworkService.sameOriginDeleteRequest(state.jsonURL, 
-      function(){callbacks.destroyed(callback)}, {});
+      function(response){callbacks.destroyed(response, callback)}, {});
   },
   
   /**

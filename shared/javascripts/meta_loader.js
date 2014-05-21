@@ -84,35 +84,63 @@ function runTests(){
 }
 
 /**
+ * Loads all the files defined in the named meta tag and load them.
+ * @param {string} meta The name of the meta tag.
+ * @param {string} type The Type of the meta tag, "JS" or "CSS" are supported.
+ * @return {boolean} A boolean value indicating whether
+ * the any files were loaded.
+ */
+function loadFilesFromMeta(meta, type) {
+  var filesToLoad = getMetaValue(meta);
+  if (filesToLoad === "none"){
+    return false;
+  }
+  var files = filesToLoad.split(";");
+
+  for (var i = 0; i < files.length; i++){
+    if( type === "CSS" ) {
+      loadCSS(files[i]);
+    } else if( type === "JS" ) {
+      loadJs(files[i]);
+    }
+  }
+  return true;
+}
+
+/**
  * Loads CSS files targeted for the top application.
+ * @return {boolean} A boolean value indicating whether
+ * any files were specified in meta tags.
  */
 function loadTopCSS(){
-  var cssToLoad = getMetaValue("PrivlyTopCSS");
-  if (cssToLoad === "none"){
-    return "no CSS defined";
-  }
-  var cssFiles = cssToLoad.split(";");
+  return loadFilesFromMeta("PrivlyTopCSS", "CSS");
+}
 
-  for (var i = 0; i < cssFiles.length; i++){
-    loadCSS(cssFiles[i]);
-  }
-  return "Top CSS files loaded.";
+/**
+ * Loads JS files targeted for the top application.
+ * @return {boolean} A boolean value indicating whether
+ * any files were specified in meta tags.
+ */
+function loadTopJS(){
+  return loadFilesFromMeta("PrivlyTopJS", "JS");
 }
 
 /**
  * Loads CSS files targeted for an injected application.
+ * @return {boolean} A boolean value indicating whether
+ * any files were specified in meta tags.
  */
 function loadInjectedCSS(){
-  var cssToLoad = getMetaValue("PrivlyInjectedCSS");
-  if (cssToLoad === "none"){
-    return "no Injected CSS defined";
-  }
-  var cssFiles = cssToLoad.split(";");
+  return loadFilesFromMeta("PrivlyInjectedCSS", "CSS");
+}
 
-  for (var i = 0; i < cssFiles.length; i++){
-    loadCSS(cssFiles[i]);
-  }
-  return "Top CSS files loaded.";
+/**
+ * Loads JS files targeted for the top application.
+ * @return {boolean} A boolean value indicating whether
+ * any files were specified in meta tags.
+ */
+function loadInjectedJS(){
+  return loadFilesFromMeta("PrivlyInjectedJS", "JS");
 }
 
 // Uncomment to always run tests.

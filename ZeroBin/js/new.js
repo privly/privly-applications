@@ -21,6 +21,9 @@ function previewMarkdown() {
  * @param {string} The URL with the link key appended.
  */
 function processURL(response, randomkey) {
+  if( response.jqXHR.status !== 201 ) {
+    return "";
+  }
   var url = response.jqXHR.getResponseHeader("X-Privly-Url");
   if( url.indexOf("#") > 0 ) {
     url = url.replace("#", "#privlyLinkKey="+randomkey);
@@ -67,6 +70,9 @@ function initializeApplication() {
 
   // Monitor the submit button
   document.querySelector('#save').addEventListener('click', save);
+  
+  // Make all text areas auto resize to show all their contents
+  $('textarea').autosize();
 }
 
 document.addEventListener('DOMContentLoaded', initializeApplication);

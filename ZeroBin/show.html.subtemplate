@@ -16,6 +16,7 @@
   <script type="text/javascript" src="js/zerobin.js"></script>
   <script type="text/javascript" src="../shared/javascripts/privly-web/show.js"></script>
   <script type="text/javascript" src="js/show.js"></script>
+  <meta name="PrivlyTopJS" content="../vendor/jquery.autosize.js" />
 {% endblock %}
 
 

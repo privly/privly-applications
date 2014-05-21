@@ -172,12 +172,16 @@ var callbacks = {
   /**
    * Tell the user that there was a problem.
    *
+   * @param {jqhr} response The AJAX response from the server.
    * @param {function} callback The function to call after createError
    * completes.
    */
-  createError: function(callback) {
+  createError: function(response, callback) {
     $("#save").prop('disabled', false);
-    $("#messages").text("There was an error creating your post.");
+    $("#messages").text(
+      "There was an error creating your post. Status: " +
+      response.jqXHR.status);
+    $("#messages").show();
     if(callbacks.functionExists(callback)) {
       callback();
     }
@@ -196,7 +200,7 @@ var callbacks = {
     
     $("#save").prop('disabled', false);
     
-    if(url !== undefined && url !== "") {
+    if(response.jqXHR.status === 201 && url !== undefined && url !== "") {
       privlyExtension.firePrivlyURLEvent(url);
       $("#messages").text(
         "Copy the address found below to any website you want to share this information through");
@@ -214,7 +218,7 @@ var callbacks = {
         callback();
       }
     } else {
-      callbacks.createError(callback);
+      callbacks.createError(response, callback);
     }
   },
   
