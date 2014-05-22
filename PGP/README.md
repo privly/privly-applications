@@ -43,14 +43,15 @@ identity assertions is not yet mature.  A good reminder as to why this software
 is PRE-ALPHA status.
 
 ### Current TODO
-- Sign and encrypt messages (currently the app just encrypts without
-      signing)
-- Verify signatures when decrypting messages
-- Generate a backed identity assertions in browser
-- Sign a PersonaPGP key with the public key found in a backed identity
-      assertion
-- Verify a returned back identity assertion and signature
-- Implement tests that are already outlined
+- PGP Sign messages (currently the app just encrypts without
+      signing).
+- Verify signatures when decrypting messages.
+- Locally verify backed identity assertions by browserifying and
+  including 'mozilla/browserid-local-verify'
+- Implement tests that are already outlined.
+- Update PROTOCOL to reflect current system, and things we do apart from
+  Persona.
+- Create CONTRIBUTE document to get people up to speed.
 
 
 ### Storage
