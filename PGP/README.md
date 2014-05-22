@@ -81,7 +81,7 @@ email.
 
 To get started developing the PGP app in chrome:
 
-1.  Clone the repositories with ```git clone --recursive https://github.com/privly/privly-applications.git```.
+1.  Clone the repositories with ```git clone --recursive https://github.com/privly/privly-chrome.git```.
 1.  run ```cd privly-chrome``` to switch into the privly-chrome folder.
 1.  Change the branch in privly-chrome to expiremental-apps with
     ```git checkout expiremental-apps```.
