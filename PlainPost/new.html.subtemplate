@@ -13,38 +13,10 @@
   <script type="text/javascript" src="js/new.js"></script>
 {% endblock %}
 
-{% block form %}
-  <div class="col-md-8">
-    <noscript>
-      <h1>Your browser has scripting turned off. 
-        This application requires scripting to function properly</h1>
-    </noscript>
-    <h2>Create New PlainPost Link</h2>
-    <p id="loadingDiv"> <img src="../shared/images/ajax-loader.gif" alt="loading"/> </p>
-    <label for="edit_text">Content</label>
-    <textarea id="content" class="form-control" rows="4" 
-      title="Enter a message to Post to Privly here." 
-      placeholder='Enter content here'></textarea>
-    <div id="destruction_select_block">
-      <label for="seconds_until_burn">Time until content is destroyed</label>
-      <select id="seconds_until_burn" name="seconds_until_burn" class="form-control">
-        <option value="86400">1 Day</option>
-        <option value="604800">7 Days</option>
-        <option value="1209600">14 Days</option>
-        <option value="2419200" selected>28 Days</option>
-      </select>
-    </div>
-    <br/>
-    <button id="save" disabled class="btn btn-default">
-      <span class="glyphicon glyphicon-cloud-upload"></span> Save
-    </button>
-  </div>
-  <div class="col-md-4">
-    <h2 id="preview_heading">Preview</h2>
-    <hr/>
-    <div id="preview"></div>
-  </div>
-{% endblock %}
+{# note: Uncomment this block to modify the main form
+    {% block form %}  
+    {% endblock %}
+#}
 
 {% block app_info %}
   <hr/>

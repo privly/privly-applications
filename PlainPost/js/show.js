@@ -43,7 +43,7 @@ function processResponseContent(response) {
   }
 
   if( serverMarkdown === null ) {
-    $("#post_content").html("<p>Error: Unrecognized server type</p>");
+    return; // Let the privly-web driver handle the request
   } else {
     var markdownHTML = markdown.toHTML(serverMarkdown);
     $("#edit_text").val(serverMarkdown);

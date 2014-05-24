@@ -304,13 +304,16 @@ var callbacks = {
         var destroyedDate = new Date(json.burn_after_date);
         $(".meta_destroyed_around").text("Destroyed Around " + 
           destroyedDate.toDateString() + ". ");
-        
         var currentSecondsUntilDestruction = Math.floor((destroyedDate - Date.now())/1000);
-        
         $("#current_destruction_time")
           .attr("value", currentSecondsUntilDestruction)
           .text(Math.floor(currentSecondsUntilDestruction / 86400) + " Days");
         $("#seconds_until_burn").val(currentSecondsUntilDestruction);
+      } else {
+        // Set the displayed value on the form. The value is already infinity
+        $("#current_destruction_time") 
+          .text("Infinite");
+        $(".meta_destroyed_around").text("This content is not scheduled to destruct.");
       }
       
     } else if(response.jqXHR.status === 403) {
@@ -409,11 +412,15 @@ var callbacks = {
    * with the response object.
    */
   update: function(evt, callback) {
+    var contentToPost = {post:
+      {
+        content: $("#edit_text").val(),
+        seconds_until_burn: $( "#seconds_until_burn" ).val()
+      },
+      format:"json"};
     privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
       function(response){callbacks.contentReturned(response, callback)}, 
-      {post: 
-        {content: $("#edit_text").val(), 
-        seconds_until_burn: $( "#seconds_until_burn" ).val()}});
+        contentToPost);
     
     // needed to stop click event from propagating to body
     // and prevent a new window from opening because of click listener
