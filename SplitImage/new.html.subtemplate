@@ -8,10 +8,10 @@
 {% block javascripts %}
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
   <script type="text/javascript" src="../vendor/sjcl.js"></script>
-  <script type="text/javascript" src="js/base64.js"></script>
-  <script type="text/javascript" src="js/rawdeflate.js"></script>
-  <script type="text/javascript" src="js/rawinflate.js"></script>
-  <script type="text/javascript" src="js/zerobin.js"></script>
+  <script type="text/javascript" src="../shared/ZeroBin/base64.js"></script>
+  <script type="text/javascript" src="../shared/ZeroBin/rawdeflate.js"></script>
+  <script type="text/javascript" src="../shared/ZeroBin/rawinflate.js"></script>
+  <script type="text/javascript" src="../shared/ZeroBin/zerobin.js"></script>
   <script type="text/javascript" src="js/file_processing.js"></script>
   <script type="text/javascript" src="../shared/javascripts/privly-web/new.js"></script>
   <script type="text/javascript" src="js/new.js"></script>
