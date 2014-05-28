@@ -236,9 +236,16 @@ var messaging = {
  * @param {message} e The message posted by an iframe. 
  */
 function resizeIframePostedMessage(e) {
-  if(e.origin == window.location.origin && 
-    document.getElementById("ifrm0") !== null) {
-    document.getElementById("ifrm0").style.height = e.data.split(",")[1] + "px";
+  var messageComponents = e.data.split(",");
+  if( e.origin !== window.location.origin ||
+    messageComponents.length < 2 ||
+    messageComponents[0] === ""
+    ) {
+    return;
+  }
+  var iframe = document.getElementById(messageComponents[0]);
+  if(iframe !== null) {
+    iframe.style.height = messageComponents[1] + "px";
   }
 }
 
