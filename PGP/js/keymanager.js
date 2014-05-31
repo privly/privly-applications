@@ -101,6 +101,11 @@ var keyManager = {
   /*
    * Ask user to set directory in options. Create listener for storage events.
    * Return directoryURL when updated.
+   *
+   * @param {function} callback The function that gets called after the user
+   * sets the directory URL. This function should accept the directory URL as
+   * a paremeter.
+   *
    */
   promptUserToSetDirectory: function(callback){
     // TODO: combine this and promptEmail to be more DRY
@@ -148,6 +153,10 @@ var keyManager = {
 
   /**
    * Get Persona Key from localstorage
+   *
+   * @param {function} callback The function that gets called after the user
+   * sets the directory URL. This function should accept the persona secret key
+   * as a paremeter.
    */
   getPersonaKey: function(callback){
     localforage.setDriver('localStorageWrapper',function(){

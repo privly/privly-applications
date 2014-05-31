@@ -48,6 +48,12 @@ var callbacks = {
 
   /**
    * Check if user has set a passed in item
+   *
+   * @param {string} option A string representing a localforage key.
+   * @param {function} callback The function to execute after the value of the
+   * option has been acquired. This function should accept as a paremeter the
+   * value of the option that was acquired.
+   * 
    */
   assureItemIsSet: function(option,callback){
     localforage.setDriver('localStorageWrapper',function(){
@@ -72,6 +78,9 @@ var callbacks = {
 
   /**
    * Check if user has set options
+   *
+   * @param {function} callback The function to execute after all items have
+   * been set.
    */
   checkOptionsSet: function(callback){
     var items = ['email','directoryURL'];
@@ -107,6 +116,10 @@ var callbacks = {
 
   /**
    * Populate autocomplete from from localstorage
+   *
+   * @param {function} callback The function to execute after the list of
+   * contacts has been retrieved. This function should accept an array of
+   * emails as a paremeter.
    */
   populateToField: function(callback){
     localforage.setDriver('localStorageWrapper',function(){
