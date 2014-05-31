@@ -18,6 +18,12 @@ var keyManager = {
 
   /**
    * Update the localforage key with the value passed in
+   *
+   * @param {string} key The localforage key that is going to be set.
+   * @param {object} appended_value The value to append to the localforage
+   * entry.
+   * @param {function} callback The function that will be executed after
+   * the localforage item is set.
    */
   setNewPGPKey: function(key, appended_value, callback){
     localforage.setDriver('localStorageWrapper', function() {
@@ -40,6 +46,11 @@ var keyManager = {
   /**
    * Add pub keys to my_contacts
    * Add private/pub keypair to my_keypairs
+   *
+   * @param {object} keypair The keypair object that is going to be added
+   * to my_contacts and my_keypairs.
+   * @param {function} callback The function that will be executed after
+   * the keypair has been set in both my_contacts and my_keypairs.
    */
   addNewPGPKey: function(keypair,callback){
     var pubkey = keypair.publicKeyArmored;
@@ -51,6 +62,10 @@ var keyManager = {
   /*
    * Ask user to login on directory provider. Create listener for storage
    * events. Return persona-bridge when updated.
+   *
+   * @param {function} callback The function that will be executed after
+   * persona-bridge has been set in localforage. This function should accept
+   * the value of the persona-bridge as a paremeter.
    */
   promptUserToLogin: function(callback){
     localforage.setDriver('localStorageWrapper',function(){
@@ -70,6 +85,10 @@ var keyManager = {
   /*
    * Ask user to set email in options. Create listener for storage events.
    * Return email when updated.
+   *
+   * @param {function} callback The function that will be executed after
+   * the email address has been set by the user. This function should accept
+   * the email string as a paremeter.
    */
   promptUserToSetEmail: function(callback){
     $("#messages").hide();
@@ -105,7 +124,6 @@ var keyManager = {
    * @param {function} callback The function that gets called after the user
    * sets the directory URL. This function should accept the directory URL as
    * a paremeter.
-   *
    */
   promptUserToSetDirectory: function(callback){
     // TODO: combine this and promptEmail to be more DRY
@@ -142,6 +160,10 @@ var keyManager = {
    *   1) Localstorage does not contain persona-bridge.
    *   2) Localstorage contains a key that is expired or is about to expire.
    *    TODO: evaluate if persona-bridge is about to expire
+   *
+   * @param {function} callback The function that gets called after we
+   * determine if persona-bridge is present. This function should accept a
+   * boolean value as a paremeter.
    */
   needPersonaKey: function(callback){
     localforage.setDriver('localStorageWrapper',function(){
@@ -185,6 +207,10 @@ var keyManager = {
    * This returns true under two conditions:
    *   1) Localstorage does not contain a key.
    *   2) Localstorage contains a key that is expired or is about to expire.
+   *
+   * @param {function} callback The function that gets called after we
+   * determine if a new key is needed. This function should accept a boolean
+   * value as a paremeter.
    */
   needNewKey: function(callback){
     // Determine if a key is already in local storage
@@ -229,6 +255,10 @@ var keyManager = {
    *   1) Have access to the Persona private key
    *   2) Sign the key passed in with the Persona Private key
    *   3) Upload the signed public key to the directory provider.
+   *
+   * @param {function} callback The function that gets called after a key is
+   * uploaded to the key server. This function should accept a boolean value as
+   * a paremeter.
    */
   uploadKey: function(callback){
     console.log("Uploading key");

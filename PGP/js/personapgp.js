@@ -33,8 +33,11 @@ var PersonaPGP = {
    * Attempt to find the public key of a given email address.  Looks at local
    * resources before querying remote resources. 
    *
-   * @param {email} email The email that the user wants to find the associated 
-   * pub key of.
+   * @param {string} email The email that the user wants to find the associated 
+   * public keys of.
+   * @param {function} callback The function that gets called after a key search
+   * takes place. The function should accept an array of public keys or null as
+   * a paremter.
    */
   findPubKey: function(email,callback){
     // query localForage 
@@ -60,6 +63,10 @@ var PersonaPGP = {
   /**
    * This function takes a backed identity assertion and signed pub key and
    * verifies that the email it is for matches.
+   *
+   * @param {object} bia_pub_key The backed identity assertion and public key
+   * that was returned from the directory server.
+   * @param {string} email The email the user originally searched for.
    **/
   emailMatch: function(bia_pub_key,email){
     if (PersonaId.extractEmail(bia_pub_key["bia"]) === email){
@@ -72,6 +79,11 @@ var PersonaPGP = {
    * This function makes multiple async calls and waits for them all to finish.
    * Only the verified keys are returned.
    *
+   * @param {object} bia_pub_key The backed identity assertion and public key
+   * that was returned from the directory server.
+   * @param {string} email The email the user originally searched for.
+   * @param {function} callback The function that is run once all keys have
+   * been verified. This function should accept an array of verified keys.
    */
   findPubKeyRemoteHelper: function(email,bia_pub_keys,callback){
     var verified = {};
@@ -115,7 +127,10 @@ var PersonaPGP = {
    * Attempt to find the public key of a given email address from the remote
    * directory.
    *
-   * @param {email} email The email that the user wants to send a message to.
+   * @param {string} email The email that the user wants to send a message to.
+   * @param {function} callback The function that is run once a response from
+   * the directory server is returned.  This function should accept an array of
+   * objects or null as a parameter.
    */
   findPubKeyRemote: function(email,callback){
     localforage.setDriver('localStorageWrapper',function(){
@@ -149,9 +164,11 @@ var PersonaPGP = {
    * email address and has a value of every component that is needed in order
    * to authenticate with the verifier.
    *
-   * @param {email} email The email address the public key belongs to.
-   * @param {assertion} ballOwax The backed identity assertion and accompanying
-   * privly public key.
+   * @param {object} bia_pub_key The backed identity assertion and signed
+   * public key.
+   * @param {function} callback The function that is run once a remote key has
+   * gone through the verification process.  This function should accept a
+   * boolean and a public key or null as paremeters.
    */
   addRemoteKeyToLocal: function(bia_pub_key,callback){
     var email = PersonaId.extractEmail(bia_pub_key["bia"]);
@@ -186,7 +203,11 @@ var PersonaPGP = {
    *      verifier.
    *   3) returns the now trusted public key.
    *
-   * @param {bia_pub_key} A bia and signed pgp public key to be verified.
+   * @param {object} bia_pub_key A bia and signed pgp public key to be
+   * verified.  
+   * @param {function} callback The function that is run once a remote key has
+   * gone through the remote verification process.  This function should accept
+   * a boolean and a public key or null as paremeters.
    */
   verifyPubKey: function(bia_pub_key,callback){
     PersonaId.verifyPayload(bia_pub_key,function(outcome,key){
@@ -211,6 +232,13 @@ var PersonaPGP = {
 
   /**
    * This function encrypts the plaintext with the passed in pubKeys
+   *
+   * @param {string} plaintext The plaintext message.
+   * @param {object} pubKeys An array of public key objects to encrypt the
+   * message with.
+   * @param {function} callback The function that is run after the plaintext
+   * has been encrypted. The function should accept the ciphertext as a
+   * parameter.
    **/
   encryptHelper: function(plaintext,pubKeys,callback){
     // Here we convert the plaintext into a json string. We do this to
@@ -230,9 +258,12 @@ var PersonaPGP = {
   /**
    * This function uses openpgpjs to encrypt a message as json.
    *
-   * @param {pubKeys} keys An array of key objects that should be able to be
-   * used to decrypt the message.
-   * @param {plaintext} plaintext The message being encrypted.
+   * @param {string} emails An array of emails whose associated public key will 
+   * be used to encrypt the message.
+   * @param {string} plaintext The message being encrypted.
+   * @param {function} callback The function that is run after the plaintext
+   * has been encrypted. The function should accept the ciphertext as a
+   * parameter.
    */
   encrypt: function(emails,plaintext,callback){
     // TODO:Check if additional arguments have been passed,
@@ -268,7 +299,10 @@ var PersonaPGP = {
   /**
    * This function uses openpgpjs to decrypt a json encoded message.
    *
-   * @param {ciphertext} ciphertext The message being decrypted.
+   * @param {object} ciphertext The message being decrypted.
+   * @param {function} callback The function that is run after the ciphertext
+   * has been decrypted. The function should accept the plaintext or an error
+   * string as a parameter.
    */
   decrypt: function(ciphertext,callback){
     var encrypted_message = openpgp.message.readArmored(ciphertext);
@@ -313,9 +347,9 @@ var PersonaPGP = {
    * not included in a message, this is the only way to know with certainty
    * if the decryption occurred with the correct key.
    *
-   * @param {Private Key} privKey The key to attempt to decrypt the message
+   * @param {object} privKey The key to attempt to decrypt the message
    * with.
-   * @param {Decoded Message} encrypted_message The dearmored ciphertext.
+   * @param {object} encrypted_message The dearmored ciphertext object.
    */
   decryptHelper: function(privKey,encrypted_message){
     // Should determine if message is signed or not, and use appropriate

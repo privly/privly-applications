@@ -28,9 +28,9 @@ var PersonaId = {
   /**
    * Create a payload to send to the directory provider.
    *
-   * @param {pubkey} A PGP public key.
-   * @param {secretkey} A Persona secret key.
-   * @param {email} Email address associated with the PGP key.
+   * @param {object} pubkey A PGP public key.
+   * @param {object} secretkey A Persona secret key.
+   * @param {string} email Email address associated with the PGP key.
    **/
   bundle: function(pubkey, secretkey, email, callback) {
     this.sign(pubkey, secretkey, function(err, signature) {
@@ -41,8 +41,10 @@ var PersonaId = {
   /**
    * Sign a PGP public key with a Persona secret key.
    *
-   * @param {pubkey} A PGP public key.
-   * @param {secretkey} A Persona secret key.
+   * @param {object} pubkey A PGP public key.
+   * @param {object} secretkey A Persona secret key.
+   * @param {function} callback The function that should be run after jwcrypto
+   * signs the pubkey.
    **/
   sign: function(pubkey, secretkey, callback) {
     // jwcrypto.sign never returns an error so we can ignore it.
@@ -53,10 +55,12 @@ var PersonaId = {
    * Verify that a signature for a PGP key is correct, and extract the
    * PGP key from the payload.
    *
-   * @param {signedObject} The object returned from the 'sign'
-   *                       function.
-   * @param {pubkey} The Persona public key, whose pair was used to
-   *                 sign the signedObject.
+   * @param {object} signedObject The object returned from the 'sign' function.
+   * @param {object} pubkey The Persona public key, whose pair was used to sign
+   * the signedObject.
+   * @param {function} callback The function that should be run after jwcrypto
+   * verifies the signed object. The function should accept an error and the
+   * payload key as parameters.
    **/
   verify: function(signedObject, pubkey, callback) {
     jwcrypto.verify(signedObject, pubkey, function(err, payload) {
@@ -69,8 +73,11 @@ var PersonaId = {
    * key signature that was signed by the public key contained within
    * the backed identity assertion (bia) within the payload.
    *
-   * @param {payload} The payload from a directory provider that
-   *                  contains a signed pgp key and bia.
+   * @param {object} payload The payload from a directory provider that
+   * contains a signed pgp key and bia.
+   * @param {function} callback The function that should be run after jwcrypto
+   * verifies the payload. The function should accept a boolean and the key or
+   * null as parameters.
    **/
   verifyPayload: function(payload, callback) {
     var bia_pubkey = this.extractPubkey(payload.bia);
@@ -87,8 +94,8 @@ var PersonaId = {
    * Extract a Persona public key from a backed identity assertion
    * (bia).
    *
-   * @param {bia} The backed identity assertion containing the public
-   *              key. This is assumed to be verified.
+   * @param {object} bia The backed identity assertion containing the public
+   * key. This is assumed to be verified.
    **/
   extractPubkey: function(bia) {
     var pubkey_obj = this.extractField(bia, 'public-key');
@@ -99,8 +106,8 @@ var PersonaId = {
   /**
    * Extract a field from the Backed Identity Assertion certificate.
    *
-   * @param {bia} The backed identity certificate.
-   * @param {field} The field to extract from bia.
+   * @param {object} bia The backed identity certificate.
+   * @param {string} field The field to extract from bia.
    */
   extractField: function(bia, field) {
     var bundle = jwcrypto.cert.unbundle(bia);
@@ -118,13 +125,13 @@ var PersonaId = {
   /**
    * Extract the email address from a backed identity assertion (bia).
    *
-   * @param {bia} The backed identity assertion containing the public
-   *              key. This is assumed to be verified.
+   * @param {object} bia The backed identity assertion containing the public
+   * key. This is assumed to be verified.
    **/
   extractEmail: function(bia) {
     var principal = this.extractField(bia, "principal");
     var email = principal['email'];
-    return email
+    return email;
   },
 
   /**
@@ -132,7 +139,10 @@ var PersonaId = {
    * Long term this functionality should be implemented to run locally.
    * This will remove the need to trust the remote verifier.
    *
-   * @param {bia} The backed identity assertion to be verified.
+   * @param {object} bia The backed identity assertion to be verified.
+   * @param {function} callback The function that should be run after getting a
+   * response from the remote verifier. The function should accept a boolean as
+   * a parameter.
    **/
   remotelyVerifyBia: function(bia,callback){
     localforage.setDriver('localStorageWrapper',function(){
@@ -160,9 +170,9 @@ var PersonaId = {
   /*
    * Extract a secret key from the person-bridge object.
    *
-   * @param {bridge} The bridge containing persona details such as
+   * @param {object} bridge The bridge containing persona details such as
    * secret key, public key, and email for a user.
-   * @param {email} Email associated with key to be extracted.
+   * @param {string} email The email associated with key to be extracted.
    **/
   getSecretKeyFromBridge: function(bridge, email) {
     var emails = JSON.parse(bridge.emails);
