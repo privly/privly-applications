@@ -317,7 +317,6 @@ var PersonaPGP = {
    * with.
    * @param {Decoded Message} encrypted_message The dearmored ciphertext.
    */
-
   decryptHelper: function(privKey,encrypted_message){
     // Should determine if message is signed or not, and use appropriate
     // decryption method accordingly. If it is signed, find public key and
