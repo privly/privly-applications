@@ -98,7 +98,7 @@ var keyManager = {
     };
   },
 
-  /*
+  /**
    * Ask user to set directory in options. Create listener for storage events.
    * Return directoryURL when updated.
    *
@@ -163,17 +163,14 @@ var keyManager = {
       localforage.getItem('persona-bridge',function(persona){
         localforage.getItem('email',function(email){
           if (email == null){
-            console.log("Email not found");
             callback(null);
           }
           if (persona != null) {
             var secretkey = PersonaId.getSecretKeyFromBridge(persona, email);
-            console.log("Persona secret key: ",secretkey);
             callback(secretkey);
           } else {
             keyManager.promptUserToLogin(function(bridge){
               var secretkey = PersonaId.getSecretKeyFromBridge(bridge, email);
-              console.log("Persona secret key: ",secretkey);
               callback(secretkey);
             });
           }
@@ -251,7 +248,6 @@ var keyManager = {
             jwcrypto.addEntropy("ACBpasdavbepOAEfBPBHESAEFGHA");
             directoryURL += "/store";
             PersonaId.bundle(pubkey, secretkey, email, function(payload) {
-              console.log("payload:", payload);
               $.get(
                 directoryURL,
                 payload
