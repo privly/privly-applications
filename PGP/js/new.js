@@ -126,7 +126,9 @@ var callbacks = {
       localforage.getItem('my_contacts',function(contacts){
         var emails = [];
         for(var email in contacts){
-          emails.push(email);
+          if (contacts.hasOwnProperty(email)){
+            emails.push(email);
+          }
         }
         callback(emails);
       });
@@ -215,7 +217,7 @@ var callbacks = {
     }
     $("#messages").show();
   }
-}
+};
 
 
 /**
@@ -236,20 +238,20 @@ function initPosting() {
   // Listener for the extension sending initial content
   privlyExtension.initialContent = function(data) {
     $("#content")[0].value = data.initialContent;
-  }
+  };
   
   // Once the message pathway is established, it will immediatly ask for any
   // starting content.
   privlyExtension.messageSecret = function(data) {
     privlyExtension.messageExtension("initialContent", "");
-  }
+  };
   
   // Initialize message pathway to the extension.
   privlyExtension.firePrivlyMessageSecretEvent();
   
   callbacks.pendingLogin();
   callbacks.checkOptionsSet( callbacks.checkForKeyManagement );
-}
+};
 
 /**
  * Display rendered markdown as a preview of the post.

@@ -100,7 +100,7 @@ var PersonaId = {
   extractPubkey: function(bia) {
     var pubkey_obj = this.extractField(bia, 'public-key');
     var pubkey = jwcrypto.loadPublicKeyFromObject(pubkey_obj);
-    return pubkey
+    return pubkey;
   },
 
   /**
@@ -111,7 +111,6 @@ var PersonaId = {
    */
   extractField: function(bia, field) {
     var bundle = jwcrypto.cert.unbundle(bia);
-    var assertion = bundle.signedAssertion;
     // Assuming there is only ever one cert is a bad assumption, but
     // it will hold for now.
     // TODO: Verify Persona never uses multiple certs.

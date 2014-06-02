@@ -28,7 +28,7 @@ var state = {
   * The URL of the data endpoint for this application.
   */
   jsonURL: ""
-}
+};
 
 
 /**
@@ -284,7 +284,7 @@ var callbacks = {
      }
    }
   }
-}
+};
 
 privlyTooltip.appName = "PGP";
 

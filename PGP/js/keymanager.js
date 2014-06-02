@@ -55,7 +55,7 @@ var keyManager = {
   addNewPGPKey: function(keypair,callback){
     var pubkey = keypair.publicKeyArmored;
     keyManager.setNewPGPKey('my_keypairs',keypair,function(result){
-      keyManager.setNewPGPKey('my_contacts',pubkey,callback);
+      keyManager.setNewPGPKey('my_contacts',pubkey,callback(result));
     });
   },
 
@@ -110,7 +110,7 @@ var keyManager = {
         localforage.setDriver('localStorageWrapper',function(){
           localforage.setItem('email',email_input.value,function(){
             $("#need_email").hide();
-            callback(email);
+            callback(email_input.value);
           });
         });
       }
@@ -146,7 +146,7 @@ var keyManager = {
         localforage.setDriver('localStorageWrapper',function(){
           localforage.setItem('directoryURL',directory_input.value,function(){
             $("#need_directory").hide();
-            callback(directoryURL);
+            callback(directory_input.value);
           });
         });
       }
