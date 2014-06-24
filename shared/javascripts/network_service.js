@@ -433,8 +433,14 @@ var privlyNetworkService = {
    * Show/hide the appropriate navigation items for when the user is logged out.
    */
   showLoggedOutNav: function() {
+    
+    // Don't show the nav at all if the content is injected.
+    if(typeof privlyHostPage !== "undefined" && privlyHostPage.isInjected()) {
+      return;
+    }
     $(".logged_in_nav").hide();
     $(".logged_out_nav").show();
+    $(".injected_hide").show();
     if( privlyNetworkService.platformName() === "IOS" ||
         privlyNetworkService.platformName() === "ANDROID" ) {
       $(".mobile_hide").hide(); 
@@ -445,6 +451,12 @@ var privlyNetworkService = {
    * Show/hide the appropriate navigation items for when the user is logged in.
    */
   showLoggedInNav: function() {
+    
+    // Don't show the nav at all if the content is injected.
+    if(typeof privlyHostPage !== "undefined" && privlyHostPage.isInjected()) {
+      return;
+    }
+    $(".injected_hide").show();
     $(".logged_in_nav").show();
     $(".logged_out_nav").hide();
     if( privlyNetworkService.platformName() === "IOS" ||

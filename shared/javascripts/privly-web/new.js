@@ -106,6 +106,9 @@ var callbacks = {
    * to tell the user they are not logged in.
    */
   loginFailure: function(callback) {
+    
+    privlyNetworkService.showLoggedOutNav();
+    
     $("#messages").hide();
     $("#login_message").show();
     if(callbacks.functionExists(callback)) {
