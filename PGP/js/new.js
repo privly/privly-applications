@@ -136,6 +136,35 @@ var callbacks = {
   },
 
   /**
+   * Construct the text of the missing email notifier
+   */
+  inviteFriendNotifier: function(email){
+    var emails = $("#missingEmails").text();
+    var whitespace = /^\s+$/mg;  // entire string is whitespace
+    if (whitespace.exec(emails) != null) {
+      emails = email;
+    } else {
+      emails = $("#missingEmails").text() + ", " + email;
+    }
+    $("#missingEmails").text(emails);
+    $("#emailInvite").show();
+  },
+
+  /**
+   * Remove an email address from the autoComplete selection 
+   */
+  autoCompleteRemove: function(remove){
+    var emails = $("#emailAddresses").select2("val");
+    var updated = [];
+    for (var i = 0; i < emails.length; i++){
+      if (emails[i] !== remove){
+        updated.push(emails[i]);
+      }
+    }
+    $("#emailAddresses").select2("val",updated);
+  },
+
+  /**
    * Setup and manage autocomplete form
    */
   autoComplete: function(){
@@ -144,6 +173,24 @@ var callbacks = {
         placeholder: "Recipients",
         tags: emails,
         tokenSeparators: [" ",","]
+      }).on("change",function(change){
+        if (change.added !== undefined){               // tag was added
+          if (emails.indexOf(change.added.id) === -1){ // tag was new
+            var email = change.added.id;
+            // Search Remotely, verify and add to local if found
+            PersonaPGP.findPubKey(email, function(results){
+              if (results === null){ // not found remotely or locally
+                callbacks.inviteFriendNotifier(email);
+                callbacks.autoCompleteRemove(email);
+              } else { // Found, update ui somehow?
+                // This branch is taken if email is in the directory but the
+                // returned keys are expired.
+                // TODO: Rewrite findPubKey chain of functions to propagate
+                // errors or provide some sort of feedback of this situation.
+              }
+            });
+          }
+        }
       });
     });
   },
