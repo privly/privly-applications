@@ -71,39 +71,68 @@ if __name__ == "__main__":
   # Templates are all referenced relative to the current
   # working directory
   env = Environment(loader=FileSystemLoader('.'))
-
-  # List the packages. They are grouped by different types:
-  # nav: These packages are included in the top level
-  #      navigation.
-  # new: These packages generate new privly-type links
-  # show: These packages show existing privly-type content
-  packages = {
   
-    # Nav packages are specialized applications that may be rendered into the top
-    # level navigation of the packages.
-    "nav": ["Index", "Login"],
-    
-    # New packages are apps that can generate new Privly-type links.
-    "new": ["ZeroBin", "PlainPost"],
-    
-    # Show packages are apps that can be injected into a host page.
-    "show": ["ZeroBin", "PlainPost"]
-  }
+  # Quick hack to make apps aware of each other in the templating.
+  packages = {"new": ["ZeroBin", "PlainPost"]}
   
-  for package_type in packages:
-    for package in packages[package_type]:
-      file_string = package_type
-      
-      # The navigational pages render the new.html template
-      if file_string == "nav":
-        file_string = "new"
-        
-      outfile_path = package + "/" + file_string + ".html"
-      subtemplate_path = package + "/" + file_string + ".html.subtemplate"
-      subtemplate_dict = {"packages": packages, "name": package, 
-        "action": package_type}
-      render(outfile_path, subtemplate_path, subtemplate_dict)
+  # The build list for applications is and array of objects:
+  # {
+  #   "subtemplate_path": The path to the subtemplate we are building.
+  #   "outfile_path": The path to where we want to write the output file.
+  #   "subtemplate_dict": The variables to pass into the subtemplate.
+  # }
+  #
+  # Eventually it would be good to move this config into a manifest file
+  # included in the directory.
+  to_build = [
+    {
+      "subtemplate_path": "Index/new.html.subtemplate",
+      "outfile_path": "Index/new.html",
+      "subtemplate_dict": {"packages": packages, "name": "Index", 
+        "action": "nav"}
+    },
+    {
+      "subtemplate_path": "Login/new.html.subtemplate",
+      "outfile_path": "Login/new.html",
+      "subtemplate_dict": {"packages": packages, "name": "Login", 
+        "action": "new"}
+    },
+    {
+      "subtemplate_path": "PlainPost/new.html.subtemplate",
+      "outfile_path": "PlainPost/new.html",
+      "subtemplate_dict": {"packages": packages, "name": "PlainPost", 
+        "action": "new"}
+    },
+    {
+      "subtemplate_path": "PlainPost/show.html.subtemplate",
+      "outfile_path": "PlainPost/show.html",
+      "subtemplate_dict": {"packages": packages, "name": "PlainPost", 
+        "action": "show"}
+    },
+    {
+      "subtemplate_path": "ZeroBin/new.html.subtemplate",
+      "outfile_path": "ZeroBin/new.html",
+      "subtemplate_dict": {"packages": packages, "name": "ZeroBin", 
+        "action": "new"}
+    },
+    {
+      "subtemplate_path": "ZeroBin/show.html.subtemplate",
+      "outfile_path": "ZeroBin/show.html",
+      "subtemplate_dict": {"packages": packages, 
+        "name": "ZeroBin", 
+        "action": "show"}
+    },
+    {
+      "subtemplate_path": "Help/new.html.subtemplate",
+      "outfile_path": "Help/new.html",
+      "subtemplate_dict": 
+        {"packages": packages, 
+         "name": "Help", 
+         "action": "new"}
+    },
+  ]
   
-  render("Help/new.html", "Help/new.html.subtemplate", {"packages": packages, 
-        "name": "Help", 
-        "action": "new"})
+  # Build the templates.
+  for package in to_build:
+    render(package["outfile_path"], package["subtemplate_path"], 
+      package["subtemplate_dict"])
