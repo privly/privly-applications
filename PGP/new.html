@@ -204,6 +204,14 @@
         To:
        </label>
        <input autofocus="true" id="emailAddresses" multiple="true" name="emails" required="true" style="width:300px" type="hidden"/>
+       <div hidden="true" id="emailInvite" style="white-space: nowrap;">
+        <p>
+         Your message cannot be sent to:
+         <span id="missingEmails">
+         </span>
+         because they have not signed up yet. Invite them to share privately.
+        </p>
+       </div>
        <br/>
        <label for="content">
         Content
