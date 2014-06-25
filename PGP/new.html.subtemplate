@@ -30,6 +30,13 @@
     <p id="loadingDiv"> <img src="../shared/images/ajax-loader.gif" alt="loading"/> </p>
     <label for="recipients">To: </label>
     <input type="hidden" id="emailAddresses" autofocus="true" name="emails" multiple="true" required="true" style="width:300px" />
+    
+    <div id="emailInvite" hidden="true" style="white-space: nowrap;">
+    <p>Your message cannot be sent to:
+    <span id="missingEmails"> </span> 
+    because they have not signed up yet. Invite them to share privately.</p>
+    </div>
+
     <br/>
     <label for="content">Content</label>
     <textarea id="content" class="form-control" rows="4" title="Enter a message to Post to Privly here." placeholder=''></textarea>
