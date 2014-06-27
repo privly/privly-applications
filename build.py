@@ -92,6 +92,12 @@ if __name__ == "__main__":
         "action": "nav"}
     },
     {
+      "subtemplate_path": "Pages/ChromeFirstRun.html.subtemplate",
+      "outfile_path": "Pages/ChromeFirstRun.html",
+      "subtemplate_dict": {"packages": packages, "name": "FirstRun", 
+        "action": "nav"}
+    },
+    {
       "subtemplate_path": "Login/new.html.subtemplate",
       "outfile_path": "Login/new.html",
       "subtemplate_dict": {"packages": packages, "name": "Login", 
