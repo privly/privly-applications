@@ -27,16 +27,16 @@
 #
 # This templating system is a starting point, but is 
 # not fully featured. You can currently add new
-# "new" applications and "show" applications by adding them
-# to the packages list below. If you add to the packages
-# list you should define PACKAGE_NAME/new.html.subtemplate
-# or PACKAGE_NAME/show.html.subtemplate to the corresponding
-# PACKAGE_NAME directory. For an example subtemplate,
-# look inside the PlainPost directory
+# applications by adding to the "to_build" object
+# below.
+#
+# Note: if you are building for a platform that has platform
+# specific code
 
 from jinja2 import Environment, FileSystemLoader
 from bs4 import BeautifulSoup as bs
 import re
+import argparse # Parsing arguments
 
 # Make the rendered HTML formatting readable
 def make_readable(html):
@@ -67,7 +67,15 @@ def render(outfile_path, subtemplate_path, subtemplate_dict):
   f.close()
 
 if __name__ == "__main__":
-
+  
+  # Parse Arguments
+  parser = argparse.ArgumentParser(description='Declare platform.')
+  parser.add_argument('-p', '--platform', metavar='p', type=str,
+                     help='The platform you are building for',
+                     required=False,
+                     default='web')
+  args = parser.parse_args()
+  
   # Templates are all referenced relative to the current
   # working directory
   env = Environment(loader=FileSystemLoader('.'))
@@ -89,44 +97,38 @@ if __name__ == "__main__":
       "subtemplate_path": "Index/new.html.subtemplate",
       "outfile_path": "Index/new.html",
       "subtemplate_dict": {"packages": packages, "name": "Index", 
-        "action": "nav"}
-    },
-    {
-      "subtemplate_path": "Pages/ChromeFirstRun.html.subtemplate",
-      "outfile_path": "Pages/ChromeFirstRun.html",
-      "subtemplate_dict": {"packages": packages, "name": "FirstRun", 
-        "action": "nav"}
+        "action": "nav", "args": args}
     },
     {
       "subtemplate_path": "Login/new.html.subtemplate",
       "outfile_path": "Login/new.html",
       "subtemplate_dict": {"packages": packages, "name": "Login", 
-        "action": "new"}
+        "action": "new", "args": args}
     },
     {
       "subtemplate_path": "PlainPost/new.html.subtemplate",
       "outfile_path": "PlainPost/new.html",
       "subtemplate_dict": {"packages": packages, "name": "PlainPost", 
-        "action": "new"}
+        "action": "new", "args": args}
     },
     {
       "subtemplate_path": "PlainPost/show.html.subtemplate",
       "outfile_path": "PlainPost/show.html",
       "subtemplate_dict": {"packages": packages, "name": "PlainPost", 
-        "action": "show"}
+        "action": "show", "args": args}
     },
     {
       "subtemplate_path": "ZeroBin/new.html.subtemplate",
       "outfile_path": "ZeroBin/new.html",
       "subtemplate_dict": {"packages": packages, "name": "ZeroBin", 
-        "action": "new"}
+        "action": "new", "args": args}
     },
     {
       "subtemplate_path": "ZeroBin/show.html.subtemplate",
       "outfile_path": "ZeroBin/show.html",
       "subtemplate_dict": {"packages": packages, 
         "name": "ZeroBin", 
-        "action": "show"}
+        "action": "show", "args": args}
     },
     {
       "subtemplate_path": "Help/new.html.subtemplate",
@@ -134,9 +136,26 @@ if __name__ == "__main__":
       "subtemplate_dict": 
         {"packages": packages, 
          "name": "Help", 
-         "action": "new"}
+         "action": "new", "args": args}
     },
   ]
+  
+  # Add the Chrome-specific applications if the apps were explicitly requested
+  if args.platform == "chrome":
+    to_build.append({
+      "subtemplate_path": "Pages/ChromeFirstRun.html.subtemplate",
+      "outfile_path": "Pages/ChromeFirstRun.html",
+      "subtemplate_dict": {"packages": packages, "name": "FirstRun", 
+        "action": "nav", "args": args}
+    }
+    )
+    to_build.append(
+    {
+      "subtemplate_path": "Pages/ChromeOptions.html.subtemplate",
+      "outfile_path": "Pages/ChromeOptions.html",
+      "subtemplate_dict": {"packages": packages, "name": "Options", 
+        "action": "nav", "args": args}
+    })
   
   # Build the templates.
   for package in to_build:

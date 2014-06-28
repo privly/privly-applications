@@ -102,7 +102,7 @@
           </ul>
         </li>
 
-        <li class="{% if False == True %}active {% endif %}dropdown logged_in_nav mobile_hide">
+        <li class="{% if name == "Options" or name == "FirstRun" %}active {% endif %}dropdown logged_in_nav mobile_hide">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             Options
             <b class="caret"></b>
@@ -110,24 +110,29 @@
           <ul class="dropdown-menu">
             <li>
               <a href="#" target="_blank" class="account_url">
-                 <span class="glyphicon glyphicon-user"></span> 
+                 <span class="glyphicon glyphicon-new-window"></span>
                  Server Account
               </a>
             </li>
             
-            <li>
+            {%
+              if args.platform == "chrome"
+            %}
+            <li {% if name == "Options" %}class="active" {% endif %}>
               <a href="../Pages/ChromeOptions.html">
-                 <span class="glyphicon glyphicon-cog"></span> 
+                 <span class="glyphicon glyphicon-wrench"></span> 
                  Extension Options
               </a>
             </li>
-            
-            <li>
+            <li {% if name == "FirstRun" %}class="active" {% endif %}>
               <a href="../Pages/ChromeFirstRun.html">
                  <span class="glyphicon glyphicon-info-sign"></span> 
                  Extension Information
               </a>
             </li>
+            {% 
+              endif 
+            %}
             
           </ul>
         </li>

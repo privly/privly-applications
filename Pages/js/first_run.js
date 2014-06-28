@@ -1,3 +1,13 @@
+/**
+ * @fileOverview first_run.js shows the necessary navigation and
+ * design elements to be integrated into the privly-applications
+ * bundle.
+ */
+
+/**
+ * Initialize the applications by showing and hiding the proper
+ * elements.
+ */
 function init() {
   // Set the nav bar to the proper domain
   privlyNetworkService.initializeNavigation();
