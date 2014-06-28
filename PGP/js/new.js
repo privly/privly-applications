@@ -59,12 +59,12 @@ var callbacks = {
     localforage.setDriver('localStorageWrapper',function(){
       localforage.getItem(option,function(value){
         if (value == undefined || value == ""){
-          if (option === 'email'){
+          if (option === 'pgp-email'){
             keyManager.promptUserToSetEmail(function(value){
               callback(value);
             });
           }
-          else if (option === 'directoryURL'){
+          else if (option === 'pgp-directoryURL'){
             keyManager.promptUserToSetDirectory(function(value){
               callback(value);
             });
@@ -83,7 +83,7 @@ var callbacks = {
    * been set.
    */
   checkOptionsSet: function(callback){
-    var items = ['email','directoryURL'];
+    var items = ['pgp-email','pgp-directoryURL'];
     var set = 0;
     var check = function(option){
       callbacks.assureItemIsSet(option,function(value){
@@ -123,7 +123,7 @@ var callbacks = {
    */
   populateToField: function(callback){
     localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('my_contacts',function(contacts){
+      localforage.getItem('pgp-my_contacts',function(contacts){
         var emails = [];
         for(var email in contacts){
           if (contacts.hasOwnProperty(email)){

@@ -42,7 +42,7 @@ var PersonaPGP = {
   findPubKey: function(email,callback){
     // query localForage 
     localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('my_contacts',function(pubkey_email_hash){
+      localforage.getItem('pgp-my_contacts',function(pubkey_email_hash){
         if (email in pubkey_email_hash) {
           var pub_keys = pubkey_email_hash[email]; 
           // TODO: see if they are expired, look remotely for new key as needed
@@ -134,7 +134,7 @@ var PersonaPGP = {
    */
   findPubKeyRemote: function(email,callback){
     localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('directoryURL',function(remote_directory){
+      localforage.getItem('pgp-directoryURL',function(remote_directory){
         remote_directory += "/search";
         var value = {
           email: email
@@ -175,13 +175,13 @@ var PersonaPGP = {
     PersonaPGP.verifyPubKey(bia_pub_key,function(outcome,pgp_pub_key){
       if (outcome === true){
         localforage.setDriver('localStorageWrapper',function(){
-          localforage.getItem('my_contacts',function(data){
+          localforage.getItem('pgp-my_contacts',function(data){
             if (email in data){
               data[email].push(pgp_pub_key);
             } else {
               data[email] = [pgp_pub_key];
             }
-            localforage.setItem('my_contacts',data,function(){
+            localforage.setItem('pgp-my_contacts',data,function(){
               callback(true,pgp_pub_key);
             });
           });
@@ -287,7 +287,7 @@ var PersonaPGP = {
     };
 
     localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('email',function(my_email){
+      localforage.getItem('pgp-email',function(my_email){
         emails.push(my_email); // so you can view your own messages
         for (var i = 0; i < emails.length; i++){
           getPublicKeys(i);
@@ -309,7 +309,7 @@ var PersonaPGP = {
     var keyids = encrypted_message.getEncryptionKeyIds();
 
     localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('my_keypairs',function(my_keys){
+      localforage.getItem('pgp-my_keypairs',function(my_keys){
         if (my_keys.length === 0 || my_keys === null){
           callback("No private keys found. Failed to decrypt.");
         }

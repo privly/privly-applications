@@ -145,7 +145,7 @@ var PersonaId = {
    **/
   remotelyVerifyBia: function(bia,callback){
     localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('directoryURL',function(audience){
+      localforage.getItem('pgp-directoryURL',function(audience){
         audience += ":443";
         $.post(
           "https://verifier.login.persona.org/verify",
