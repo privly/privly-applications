@@ -178,6 +178,18 @@ var callbacks = {
   },
 
   /**
+   * Highlight an email address in the autoComplete selection 
+   */
+  autoCompleteHighlight: function(email){
+    $(".select2-search-choice:last")
+      .css("border","2px solid green")
+      .animate({
+        "border-width":"1px",
+        "border-color":"solid #aaaaaa"
+        },1000);
+  },
+
+  /**
    * Setup and manage autocomplete form
    */
   autoComplete: function(){
@@ -196,6 +208,7 @@ var callbacks = {
                 callbacks.inviteFriendNotifier(email);
                 callbacks.autoCompleteRemove(email);
               } else { // Found, update ui somehow?
+                callbacks.autoCompleteHighlight(email);
                 // This branch is taken if email is in the directory but the
                 // returned keys are expired.
                 // TODO: Rewrite findPubKey chain of functions to propagate
