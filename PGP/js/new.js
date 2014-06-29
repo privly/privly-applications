@@ -144,7 +144,10 @@ var callbacks = {
     if (whitespace.exec(emails) != null) {
       emails = email;
     } else {
-      emails = $("#missingEmails").text() + ", " + email;
+      var existing = new RegExp("(\\s|^)"+email+"\\b"); 
+      if (existing.exec(emails) === null ){ //already contains the email?
+        emails = $("#missingEmails").text() + ", " + email;
+      }
     }
     $("#missingEmails").text(emails);
     $("#emailInvite").show();
