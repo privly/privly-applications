@@ -161,14 +161,20 @@ var callbacks = {
    * Remove an email address from the autoComplete selection 
    */
   autoCompleteRemove: function(remove){
-    var emails = $("#emailAddresses").select2("val");
-    var updated = [];
-    for (var i = 0; i < emails.length; i++){
-      if (emails[i] !== remove){
-        updated.push(emails[i]);
+    $(".select2-search-choice div:last").css({
+      "font-size" : "1.1em",
+      "font-weight" : "bold"
+    });
+    $(".select2-search-choice:last").fadeOut(1500,function(){
+      var emails = $("#emailAddresses").select2("val");
+      var updated = [];
+      for (var i = 0; i < emails.length; i++){
+        if (emails[i] !== remove){
+          updated.push(emails[i]);
+        }
       }
-    }
-    $("#emailAddresses").select2("val",updated);
+      $("#emailAddresses").select2("val",updated);
+    });
   },
 
   /**
