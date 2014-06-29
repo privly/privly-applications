@@ -136,7 +136,7 @@ var callbacks = {
   },
 
   /**
-   * Construct the text of the missing email notifier
+   * Modify the text of the missing email notifier and then show it.
    */
   inviteFriendNotifier: function(email){
     var emails = $("#missingEmails").text();
