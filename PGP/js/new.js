@@ -150,6 +150,10 @@ var callbacks = {
       }
     }
     $("#missingEmails").text(emails);
+    $("#missingEmails").css({
+      "font-size" : "1.1em",
+      "font-weight" : "bold"
+    });
     $("#emailInvite").show();
   },
 
