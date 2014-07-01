@@ -154,6 +154,15 @@ var callbacks = {
       "font-size" : "1.1em",
       "font-weight" : "bold"
     });
+    $(".dropdown").css({"list-style-type":"none"});
+    $("#invite").click(function(){  // Add email to URLs in dropdown
+      $("#inviteMenu li a").each(function(){
+        var old = $( this ).attr("href");
+        var urlemail = encodeURIComponent(emails);
+        var updated = old.replace(/\[FRIENDS\]/,urlemail);
+        $( this ).attr("href",updated);
+      });
+    });
     $("#emailInvite").show();
   },
 
