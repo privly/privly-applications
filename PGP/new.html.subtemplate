@@ -18,6 +18,24 @@
   <script type="text/javascript" src="js/keymanager.js"></script>
 {% endblock %}
 
+{% block messages %}
+  <p style="display:none;" class="flash notice" id="login_persona">
+    Please verify your identity by logging in with 
+    <a id="persona_link" target="_blank" class="login_url btn btn-default">
+      Persona
+    </a>
+  </p>
+  <p style="display:none;" class="flash notice" id="need_email">
+    Your email has not been set.  Please enter your Email:
+    <input id="emailAddress" name="emailAddress" type="email" />
+    <button id="save_email">Save</button>
+  </p>
+  <p style="display:none;" class="flash notice" id="need_directory">
+    Your Directory has not been set.  Please enter your Directory:
+    <input id="directoryURL" name="directoryURL" type="url" />
+    <button id="save_directory">Save</button>
+  </p>
+{% endblock %}
 
 {% block form %}
   <div class="col-md-8">

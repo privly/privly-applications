@@ -118,20 +118,7 @@
               You are not currently signed into your content server. Please
               <a href="../Login/new.html" class="login_url btn btn-default">login</a>
             </p>
-            <p style="display:none;" class="flash notice" id="login_persona">
-              Please verify your identity by logging in with 
-              <a id="persona_link" target="_blank" class="login_url btn btn-default">Persona</a>
-            </p>
-            <p style="display:none;" class="flash notice" id="need_email">
-              Your email has not been set.  Please enter your Email:
-              <input id="emailAddress" name="emailAddress" type="email" />
-              <button id="save_email">Save</button>
-            </p>
-            <p style="display:none;" class="flash notice" id="need_directory">
-              Your Directory has not been set.  Please enter your Directory:
-              <input id="directoryURL" name="directoryURL" type="url" />
-              <button id="save_directory">Save</button>
-            </p>
+            {% block messages %}{% endblock %}
             <p><a class="privlyUrl" href="" data-privly-exclude="true"></a></p>
           </div>
         </div>
