@@ -43,15 +43,35 @@ identity assertions is not yet mature.  A good reminder as to why this software
 is PRE-ALPHA status.
 
 ### Current TODO
-- PGP Sign messages (currently the app just encrypts without
-      signing).
-- Verify signatures when decrypting messages.
-- Locally verify backed identity assertions by browserifying and
-  including 'mozilla/browserid-local-verify'
-- Implement tests that are already outlined.
-- Update PROTOCOL to reflect current system, and things we do apart from
-  Persona.
-- Create CONTRIBUTE document to get people up to speed.
+- Security:
+  - PGP Sign and verify messages (https://github.com/privly/privly-applications/issues/42)
+  - Locally verify backed identity assertions by browserifying and
+    including 'mozilla/browserid-local-verify'
+  - Add support to OpenPGP.js for setting key expiration on creation (https://github.com/privly/privly-applications/issues/62)
+  - Assess the OpenPGP.js source of entropy (https://github.com/privly/privly-applications/issues/65)
+  - Extend persona bia expiration time
+
+- Basic funcitonality:
+  - Enable editing of content after creation
+  - Assess if persona key is captured after signing in (https://github.com/privly/privly-applications/issues/64)
+
+- UX:
+  - Provide better user feedback when signing in with Persona
+  - UI corrections (https://github.com/privly/privly-applications/issues/66)
+  - Autocomplete form (https://github.com/privly/privly-applications/issues/68)
+  - Rich Address book/contacts
+
+- Best Practices:
+  - Change HTTP request method (https://github.com/privly/privly-applications/issues/69)
+  - namespace storage (https://github.com/privly/privly-applications/issues/67)
+  - Complete test coverage
+  
+- Documentation:
+  - Update PROTOCOL to reflect current system, and things we do apart from
+    Persona.
+  - Create CONTRIBUTE document to get people up to speed.
+  - Create diagram to visually represent the architecture of the app.
+
 
 
 ### Storage
