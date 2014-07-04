@@ -7,10 +7,8 @@ describe ("Login Suite", function() {
   
   it("logs into remote content server", function() {
     
-    // The bork user is not necessarily in the localhost domain
-    if ( privlyNetworkService.contentServerDomain().indexOf("localhost") 
-      !== 0 )
-      return;
+    console.warn("This test will only succeed if danger.dont.use.bork.bork.bork@privly.org" + 
+      " is a user defined on the server");
     
     // set the user and password to the testing user
     $("#user_email").val("danger.dont.use.bork.bork.bork@privly.org");

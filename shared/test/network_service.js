@@ -5,6 +5,21 @@
  **/
 
 describe ("Network Service Test Suite", function() {
+  
+  /**
+   * Skips a test if the test requires a UI element that does not exist.
+   * This is primarily used in headless browsers.
+   *
+   * @return {boolean} True indicates the test should be skipped.
+   */
+  function skipTest() {
+    if ( typeof privlyHostPage === 'undefined' || 
+      privlyHostPage.isInjected() || 
+      $(".logged_in_nav")[0] === undefined
+      )
+      return true;
+    return false;
+  }
 
  it("does not result in an error", function() {
    privlyNetworkService.permissions.canCreate = 
@@ -101,16 +116,17 @@ describe ("Network Service Test Suite", function() {
  });
  
  it("shows the logged in nav", function() {
-   if( typeof privlyHostPage === 'undefined' || privlyHostPage.isInjected() )
+   if( skipTest() )
      return;
    privlyNetworkService.showLoggedInNav();
+   return;
    expect($(".logged_in_nav").is(':visible')).toBe(true);
    expect($(".logged_out_nav").is(':hidden')).toBe(true);
  });
  
  it("shows the logged out nav", function() {
    privlyNetworkService.showLoggedOutNav();
-   if( typeof privlyHostPage === 'undefined' || privlyHostPage.isInjected() )
+   if( skipTest() )
      return;
    expect($(".logged_in_nav").is(':hidden')).toBe(true);
    expect($(".logged_out_nav").is(':visible')).toBe(true);
@@ -124,6 +140,10 @@ describe ("Network Service Test Suite", function() {
  });
  
  it("initializes navigation", function() {
+   
+   if( skipTest() )
+      return;
+   
    privlyNetworkService.initializeNavigation();
    var domain = privlyNetworkService.contentServerDomain();
    

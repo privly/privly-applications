@@ -8,7 +8,7 @@
 describe ("Tooltip Test Suite", function() {
   
   it("does not result in an error", function() {
-    privlyTooltip.updateMessage("tested");
+    privlyTooltip.updateMessage("tested", "tested");
     privlyTooltip.tooltip();
     expect(true).toBe(true);
   });

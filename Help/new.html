@@ -13,6 +13,7 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <!-- Top Styles -->
   <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
+  <link class="top" href="../vendor/select2.css" rel="stylesheet"/>
   <link class="top" href="../shared/css/top/top.css" rel="stylesheet"/>
   <!-- Common Styles -->
   <link href="../shared/css/common.css" media="screen" rel="stylesheet" type="text/css"/>
@@ -88,10 +89,10 @@
           </a>
          </li>
          <li>
-          <a href="../pgp/new.html">
+          <a href="../PGP/new.html">
            <span class="glyphicon glyphicon-pencil">
            </span>
-           New pgp
+           New PGP
           </a>
          </li>
          <li class="active">
@@ -199,13 +200,31 @@
       <div class="col-md-6">
        <p>
         <strong>
-         <span class="glyphicon glyphicon-lock">
+         <span class="glyphicon glyphicon-tower">
          </span>
-         Trust No One:
+         Our Eyes Only:
         </strong>
-        We are developing solutions 
-      that remove the need to trust any remote parties. More Apps are Coming!
+        Only you and those explicitly allowed can view PGP posts.
        </p>
+       <div class="col-md-3">
+        <form action="../PGP/new.html" style="display:inline;">
+         <button class="btn btn-default" type="submit">
+          New PGP
+         </button>
+        </form>
+       </div>
+       <div class="col-md-9">
+        <ul>
+         <li>
+          Content server does not have any access to your content, nor
+          the ability to decrypt it.
+         </li>
+         <li>
+          Online service providers don't have access to decrypted
+          text, nor any way of identifying who it is shared with.
+         </li>
+        </ul>
+       </div>
       </div>
      </div>
      <div class="row">
@@ -235,6 +254,17 @@
          </li>
         </ul>
        </div>
+      </div>
+      <div class="col-md-6">
+       <p>
+        <strong>
+         <span class="glyphicon glyphicon-lock">
+         </span>
+         Trust No One:
+        </strong>
+        We are developing solutions 
+      that remove the need to trust any remote parties. More Apps are Coming!
+       </p>
       </div>
      </div>
     </div>

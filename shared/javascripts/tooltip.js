@@ -37,17 +37,24 @@ var privlyTooltip = {
     tooltipMessage: "Read Only",
     
     /**
+     * The name of the application to show in the tooltip.
+     */
+    appName: "",
+    
+    /**
      * Updates the tooltip's message.
      *
+     * @param {string} dataDomain The domain controlling the content.
      * @param {string} newMessage The message to change the tooltip to. A
      * limited set of characters are accepted: 
      * digits, word characters, underscores (\w) and whitespace (\s), periods,
      * and colons.
      *
      */
-    updateMessage: function(newMessage){
+    updateMessage: function(dataDomain, newMessage){
       var message = newMessage.replace(/[^\w\s.:]/gi, '');
-      privlyTooltip.tooltipMessage = message;
+      var domain = dataDomain.replace(/[^\w\s.:]/gi, '');
+      privlyTooltip.tooltipMessage = privlyTooltip.appName + ": " + message + "<br />" + domain;
     },
     
     /**
