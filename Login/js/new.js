@@ -31,10 +31,12 @@ var callbacks = {
     // Display the content server the user is asssociated with
     $(".content_server").text(domain);
     
+    // Set the domain to the proper content server
     $(".login_issue").each( function( key, value ) {
       $(value).attr("href", domain + $(value).attr("data-path-sub"))
     });
     
+    privlyNetworkService.showLoggedOutNav();
     
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();

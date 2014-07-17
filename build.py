@@ -27,16 +27,16 @@
 #
 # This templating system is a starting point, but is 
 # not fully featured. You can currently add new
-# "new" applications and "show" applications by adding them
-# to the packages list below. If you add to the packages
-# list you should define PACKAGE_NAME/new.html.subtemplate
-# or PACKAGE_NAME/show.html.subtemplate to the corresponding
-# PACKAGE_NAME directory. For an example subtemplate,
-# look inside the PlainPost directory
+# applications by adding to the "to_build" object
+# below.
+#
+# Note: if you are building for a platform that has platform
+# specific code
 
 from jinja2 import Environment, FileSystemLoader
 from bs4 import BeautifulSoup as bs
 import re
+import argparse # Parsing arguments
 
 # Make the rendered HTML formatting readable
 def make_readable(html):
@@ -67,43 +67,97 @@ def render(outfile_path, subtemplate_path, subtemplate_dict):
   f.close()
 
 if __name__ == "__main__":
-
+  
+  # Parse Arguments
+  parser = argparse.ArgumentParser(description='Declare platform.')
+  parser.add_argument('-p', '--platform', metavar='p', type=str,
+                     help='The platform you are building for',
+                     required=False,
+                     default='web')
+  args = parser.parse_args()
+  
   # Templates are all referenced relative to the current
   # working directory
   env = Environment(loader=FileSystemLoader('.'))
-
-  # List the packages. They are grouped by different types:
-  # nav: These packages are included in the top level
-  #      navigation.
-  # new: These packages generate new privly-type links
-  # show: These packages show existing privly-type content
-  packages = {
   
-    # Nav packages are specialized applications that may be rendered into the top
-    # level navigation of the packages.
-    "nav": ["Index", "Login"],
-    
-    # New packages are apps that can generate new Privly-type links.
-    "new": ["ZeroBin", "PlainPost"],
-    
-    # Show packages are apps that can be injected into a host page.
-    "show": ["ZeroBin", "PlainPost"]
-  }
+  # Quick hack to make apps aware of each other in the templating.
+  packages = {"new": ["ZeroBin", "PlainPost"]}
   
-  for package_type in packages:
-    for package in packages[package_type]:
-      file_string = package_type
-      
-      # The navigational pages render the new.html template
-      if file_string == "nav":
-        file_string = "new"
-        
-      outfile_path = package + "/" + file_string + ".html"
-      subtemplate_path = package + "/" + file_string + ".html.subtemplate"
-      subtemplate_dict = {"packages": packages, "name": package, 
-        "action": package_type}
-      render(outfile_path, subtemplate_path, subtemplate_dict)
+  # The build list for applications is and array of objects:
+  # {
+  #   "subtemplate_path": The path to the subtemplate we are building.
+  #   "outfile_path": The path to where we want to write the output file.
+  #   "subtemplate_dict": The variables to pass into the subtemplate.
+  # }
+  #
+  # Eventually it would be good to move this config into a manifest file
+  # included in the directory.
+  to_build = [
+    {
+      "subtemplate_path": "Index/new.html.subtemplate",
+      "outfile_path": "Index/new.html",
+      "subtemplate_dict": {"packages": packages, "name": "Index", 
+        "action": "nav", "args": args}
+    },
+    {
+      "subtemplate_path": "Login/new.html.subtemplate",
+      "outfile_path": "Login/new.html",
+      "subtemplate_dict": {"packages": packages, "name": "Login", 
+        "action": "new", "args": args}
+    },
+    {
+      "subtemplate_path": "PlainPost/new.html.subtemplate",
+      "outfile_path": "PlainPost/new.html",
+      "subtemplate_dict": {"packages": packages, "name": "PlainPost", 
+        "action": "new", "args": args}
+    },
+    {
+      "subtemplate_path": "PlainPost/show.html.subtemplate",
+      "outfile_path": "PlainPost/show.html",
+      "subtemplate_dict": {"packages": packages, "name": "PlainPost", 
+        "action": "show", "args": args}
+    },
+    {
+      "subtemplate_path": "ZeroBin/new.html.subtemplate",
+      "outfile_path": "ZeroBin/new.html",
+      "subtemplate_dict": {"packages": packages, "name": "ZeroBin", 
+        "action": "new", "args": args}
+    },
+    {
+      "subtemplate_path": "ZeroBin/show.html.subtemplate",
+      "outfile_path": "ZeroBin/show.html",
+      "subtemplate_dict": {"packages": packages, 
+        "name": "ZeroBin", 
+        "action": "show", "args": args}
+    },
+    {
+      "subtemplate_path": "Help/new.html.subtemplate",
+      "outfile_path": "Help/new.html",
+      "subtemplate_dict": 
+        {"packages": packages, 
+         "name": "Help", 
+         "action": "new", "args": args}
+    },
+  ]
   
-  render("Help/new.html", "Help/new.html.subtemplate", {"packages": packages, 
-        "name": "Help", 
-        "action": "new"})
+  # Add the Chrome-specific applications if the apps were explicitly requested
+  if args.platform == "chrome":
+    to_build.append({
+      "subtemplate_path": "Pages/ChromeFirstRun.html.subtemplate",
+      "outfile_path": "Pages/ChromeFirstRun.html",
+      "subtemplate_dict": {"packages": packages, "name": "FirstRun", 
+        "action": "nav", "args": args}
+    }
+    )
+    to_build.append(
+    {
+      "subtemplate_path": "Pages/ChromeOptions.html.subtemplate",
+      "outfile_path": "Pages/ChromeOptions.html",
+      "subtemplate_dict": {"packages": packages, "name": "Options", 
+        "action": "nav", "args": args}
+    })
+  
+  # Build the templates.
+  for package in to_build:
+    render(package["outfile_path"], package["subtemplate_path"], 
+      package["subtemplate_dict"])

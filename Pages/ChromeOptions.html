@@ -7,9 +7,9 @@
       See: https://github.com/privly/privly-applications/pull/19
      -->
   <title>
-   New Login
+   New Options
   </title>
-  <meta content="test/new.js" name="PrivlySpec"/>
+  <meta content="../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js" name="PrivlySpec"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <!-- Top Styles -->
   <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
@@ -17,6 +17,7 @@
   <!-- Common Styles -->
   <link href="../shared/css/common.css" media="screen" rel="stylesheet" type="text/css"/>
   <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet" type="text/css"/>
+  <link href="css/options.css" media="screen" rel="stylesheet" type="text/css"/>
   <script src="../shared/javascripts/meta_loader.js" type="text/javascript">
   </script>
   <script src="../shared/javascripts/parameters.js" type="text/javascript">
@@ -27,7 +28,7 @@
   </script>
   <script src="../vendor/jquery.min.js" type="text/javascript">
   </script>
-  <script src="js/new.js" type="text/javascript">
+  <script src="js/options.js" type="text/javascript">
   </script>
  </head>
  <body data-privly-exclude="true">
@@ -63,7 +64,7 @@
          </span>
         </a>
        </li>
-       <li class="active dropdown logged_in_nav mobile_hide" style="display:none;">
+       <li class="dropdown logged_in_nav mobile_hide" style="display:none;">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
          New Link
          <b class="caret">
@@ -96,12 +97,35 @@
          </li>
         </ul>
        </li>
-       <li class="logged_in_nav mobile_hide" style="display:none;">
-        <a class="account_url" href="#" target="_blank">
-         Server Account
-         <span class="glyphicon glyphicon-user">
-         </span>
+       <li class="active dropdown logged_in_nav mobile_hide">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+         Options
+         <b class="caret">
+         </b>
         </a>
+        <ul class="dropdown-menu">
+         <li>
+          <a class="account_url" href="#" target="_blank">
+           <span class="glyphicon glyphicon-new-window">
+           </span>
+           Server Account
+          </a>
+         </li>
+         <li class="active">
+          <a href="../Pages/ChromeOptions.html">
+           <span class="glyphicon glyphicon-wrench">
+           </span>
+           Extension Options
+          </a>
+         </li>
+         <li>
+          <a href="../Pages/ChromeFirstRun.html">
+           <span class="glyphicon glyphicon-info-sign">
+           </span>
+           Extension Information
+          </a>
+         </li>
+        </ul>
        </li>
        <li class="logged_in_nav mobile_hide" style="display:none;">
         <a class="logout_url" href="#" id="logout_link">
@@ -110,7 +134,7 @@
          </span>
         </a>
        </li>
-       <li class="active logged_out_nav mobile_hide">
+       <li class="logged_out_nav mobile_hide">
         <a class="login_url" href="../Login/new.html">
          Login
          <span class="glyphicon glyphicon-log-in">
@@ -143,87 +167,117 @@
     </div>
     <div id="form" style="display:none;">
      <div class="row">
-      <div class="col-md-12 form-group">
-       <p id="loadingDiv">
-        <img alt="loading" src="../shared/images/ajax-loader.gif"/>
-       </p>
-       <h1>
-        Sign In to Content Server
+      <div class="container">
+       <h1 class="page-header">
+        Extension Options
        </h1>
-       <noscript>
-        <h1>
-         Your browser has scripting turned off. 
-        This application requires scripting to function properly
-        </h1>
-       </noscript>
-       <br/>
-       <div class="form-group">
-        <label for="user_email">
-         Email
-        </label>
+       <section id="glyph">
+        <h2>
+         Security Glyph
+        </h2>
+        <p>
+         Content metadata is displayed when you hover your mouse over the content. To authenticate the metadata, a unique random glyph is associated with your extension. The glyph is displayed next to items that the extension verifies.
+        </p>
+        <p>
+         Your glyph:
+        </p>
+        <div id="glyph_table">
+        </div>
         <br/>
-        <input id="user_email" name="user[email]" placeholder="Enter email" size="30" type="email" value=""/>
-       </div>
-       <div class="form-group">
-        <label for="user_password">
-         Password
-        </label>
-        <br/>
-        <input id="user_password" name="user[password]" placeholder="Enter Password" size="30" type="password"/>
-       </div>
-       <br/>
-       <div class="form-group">
-        <button class="btn btn-default" id="login">
-         Login to
-         <span class="content_server">
-         </span>
+        <button class="btn btn-primary btn-sm" id="regenerate_glyph">
+         Regenerate Glyph
         </button>
-       </div>
+       </section>
+       <hr/>
+       <section id="whitelist">
+        <h2>
+         User Whitelist
+        </h2>
+        <p>
+         The user
+         <a href="https://github.com/privly/privly-organization/wiki/whitelist" target="_blank" title="find out more about white listing">
+          whitelist
+         </a>
+         specifies which domains you trust not to track your browsing.
+      Properly formatted links to these domains will automatically
+      inject their associated Privly Applications.
+        </p>
+        <div id="urls">
+         <div>
+          <input class="whitelist_url form-control" placeholder="ex: domain.com" type="text"/>
+          <span class="glyphicon glyphicon-remove remove_whitelist">
+          </span>
+         </div>
+         <div>
+          <input class="whitelist_url form-control" type="text"/>
+          <span class="glyphicon glyphicon-remove remove_whitelist">
+          </span>
+         </div>
+        </div>
+        <div id="status">
+        </div>
+        <span id="add_more_urls">
+         <span class="glyphicon glyphicon-plus-sign">
+         </span>
+         Add more
+        </span>
+        <button class="btn btn-primary btn-sm" id="save">
+         Save
+        </button>
+        <br/>
+        <br/>
+       </section>
+       <hr/>
+       <section id="content_server">
+        <h2>
+         Content Servers
+        </h2>
+        <p>
+         Set domain to upload your content when generating new links directly from the extension.
+        </p>
+        <p>
+         These are the recommended servers during development, select "other" to assign it to any trustworthy domain you like.
+         <br/>
+         <a href="https://priv.ly/pages/servers.html" target="_blank">
+          Learn More.
+         </a>
+        </p>
+        <form>
+         <fieldset id="server_form">
+          <select class="btn btn-default" id="content_server_url" style="" type="dropdown">
+           <option value="alpha">
+            https://privlyalpha.org (recommended)
+           </option>
+           <option value="dev">
+            https://dev.privly.org
+           </option>
+           <option value="local">
+            http://localhost:3000
+           </option>
+           <option value="other">
+            Other
+           </option>
+          </select>
+          <fieldset id="user">
+           <input class="form-control" id="other_content_server" placeholder="ex: https://myContentServer.com" size="200" style="width:250px;" title="Enter content server here" type="text"/>
+          </fieldset>
+          <button class="btn btn-primary" id="save_server" type="button" value="save_server">
+           Save
+          </button>
+         </fieldset>
+        </form>
+        <div id="server_status">
+        </div>
+       </section>
+       <br/>
       </div>
+      <!-- /container -->
      </div>
     </div>
    </div>
    <!-- /.container -->
    <div class="container">
     <div class="row">
-     <hr/>
-     <div class="col-md-3">
-      <h2>
-       Sign in Issues
-      </h2>
-      <a class="login_issue" data-path-sub="/users/password/new" href="#" target="_blank">
-       Forgot your password?
-      </a>
-      <br/>
-      <a class="login_issue" data-path-sub="/users/confirmation/new" href="#" target="_blank">
-       Didn't receive confirmation instructions?
-      </a>
-      <br/>
-      <a class="login_issue" data-path-sub="/users/unlock/new" href="#" target="_blank">
-       Didn't receive unlock instructions?
-      </a>
-     </div>
-     <div class="col-md-7">
-      <h2>
-       What is this Page?
-      </h2>
-      <p>
-       This page logs you into the content server you host your content with.
-      Your password will be sent to the remote server so make sure the button
-      has the proper address. You don't want to send your password to the 
-      wrong server.
-      </p>
-     </div>
-     <div class="col-md-2">
-      <h2>
-       Warning
-      </h2>
-      <p>
-       Your password will be sent to the current content server:
-       <span class="content_server">
-       </span>
-      </p>
-     </div>
     </div>
     <!-- /.row -->
    </div>
