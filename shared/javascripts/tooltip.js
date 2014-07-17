@@ -54,7 +54,7 @@ var privlyTooltip = {
     updateMessage: function(dataDomain, newMessage){
       var message = newMessage.replace(/[^\w\s.:]/gi, '');
       var domain = dataDomain.replace(/[^\w\s.:]/gi, '');
-      privlyTooltip.tooltipMessage = privlyTooltip.appName + ": " + message + "<br />" + domain;
+      privlyTooltip.tooltipMessage = privlyTooltip.appName + ":<br />" + message + "<br />" + domain;
     },
     
     /**
@@ -84,16 +84,24 @@ var privlyTooltip = {
     tooltip: function(){
       
       var glyph = privlyTooltip.glyphHTML();
-      var tooltipMessageElement = "<div id='tooltip'><p>" + privlyTooltip.tooltipMessage + "</p>" + glyph + "</div>";
+      var tooltipMessageElement = document.createElement("div");
+
+      tooltipMessageElement.setAttribute("id", "tooltip");
+      tooltipMessageElement.appendChild(glyph);
+      tooltipMessageElement.appendChild(document.createTextNode(privlyTooltip.tooltipMessage));
       
       var xOffset = 7;
       var yOffset = 10;
+
+      // Retrive the html string from the JS object 'glyph'
+      var html = $("<div>").append($(glyph).clone()).remove().html();
+
       jQuery("body").hover(function(e){
         jQuery("body").append(tooltipMessageElement);
         jQuery("#tooltip").css("top", (e.pageY - xOffset) + "px")
                           .css("left", (e.pageX + yOffset) + "px")
                           .fadeIn("fast")
-                          .html("<p>" + privlyTooltip.tooltipMessage + "</p>" + glyph);    
+                          .html(html + " " + privlyTooltip.tooltipMessage);    
         },
         function(){
             jQuery("#tooltip").remove();
@@ -101,7 +109,7 @@ var privlyTooltip = {
       jQuery("body").mousemove(function(e){
         jQuery("#tooltip").css("top", (e.pageY - xOffset) + "px")
                           .css("left", (e.pageX + yOffset) + "px")
-                          .html("<p style='margin-bottom:0px'>" + privlyTooltip.tooltipMessage + "</p>" + glyph);
+                          .html(html + " " + privlyTooltip.tooltipMessage);
       });
     },
     
@@ -138,29 +146,65 @@ var privlyTooltip = {
           firefoxPrefs.setCharPref("glyph", glyphString);
         }
       }else{
-        glyphString = localStorage["privly_glyph"];
-        if (localStorage.getItem("privly_glyph") === null) {
-          glyphString = "000000,000000,000000,000000,000000";
+
+        if (localStorage.getItem("glyph_cells") === null) {
+          glyphString = "";
         }
       }
       
+      var glyphString = localStorage["glyph_cells"]; 
       var glyphArray = glyphString.split(",");
-      for(var i = 0; i < glyphArray.length; i++) {
-        var rule = '.glyph' + i + '{background-color:#' + glyphArray[i] +'}';
-        document.styleSheets[0].insertRule(rule,0);
+            
+      // Construct the 5x5 table that will represent the glyph.
+      // Its 3rd column will be axis of symmetry
+      var table = document.createElement("table");
+      table.setAttribute("class", "glyph_table");
+      table.setAttribute("dir", "ltr");
+      table.setAttribute("width", "30");
+      table.setAttribute("border", "0");
+      table.setAttribute("summary", "Privly Visual Security Glyph");
+
+      var tbody = document.createElement("tbody");
+
+      for(i = 0; i < 5; i++) {
+        var tr = document.createElement("tr");
+
+        for(j = 0; j < 5; j++) {
+          var td = document.createElement("td");          
+          td.innerHTML = "&nbsp";
+
+          // Fill only the first three columns with the coresponding values from glyphArray[]
+          // The rest of two columns are simetrical to the first two
+          if(j <= 2) {
+            if(glyphArray[i * 3 + j] == "true") {
+              td.setAttribute("class", "glyph_fill");
+            } else {
+              td.setAttribute("class", "glyph_empty");
+            }        
+          } else {
+            if(glyphArray[i * 3 + (5 % (j + 1))] == "true") {
+              td.setAttribute("class", "glyph_fill");
+            } else {
+              td.setAttribute("class", "glyph_empty");
+            }
+          }
+
+          tr.appendChild(td);
+        }
+
+        tbody.appendChild(tr);
       }
+
+      table.appendChild(tbody);
+
+      var rule = '.glyph_fill' + '{background-color:#' + localStorage["glyph_color"] + ';' +'}';
+      var rule2 = '.glyph_empty' + '{background-color:#ffffff;}';
+      var rule3 = '.glyph_table' + '{border-collapse: collapse; line-height: 4px; float: left; margin-right: 5px;}';
+
+      document.styleSheets[0].insertRule(rule,0);
+      document.styleSheets[0].insertRule(rule2,0);
+      document.styleSheets[0].insertRule(rule3,0);
       
-      //Construct the HTML glyph table
-      var table = '<table dir="ltr" width="100" border="0" ' +
-                    'summary="Privly Visual Security Glyph">' +
-                      '<tbody>' +
-                        '<tr>';
-      for(i = 0; i < glyphArray.length; i++) {
-        table +=          '<td class="glyph' + i + '">&nbsp;&nbsp;</td>';
-      }
-      table +=          '</tr>' +
-                      '</tbody>' +
-                  '</table>';
       return table;
     }
 };
