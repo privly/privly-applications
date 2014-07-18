@@ -52,8 +52,8 @@ function processResponseContent(response) {
     }
   } else {
     $('div#cleartext').text("The data behind this link is destroyed or corrupted.");
-    return;
   }
+  privlyHostPage.resizeToWrapper();
 }
 
 /**
