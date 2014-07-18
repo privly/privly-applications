@@ -62,17 +62,27 @@ var privlyTooltip = {
      *
      * The generated string is not cryptographically secure and should not be used
      * for anything other than the glyph.
-     *
-     * @return {string} Gives a string of comma separated hex 
-     * color values that are used to display the security glyph.
      */
     generateNewGlyph: function(){
-      var i = 0;
-      var glyphString = Math.floor(Math.random()*16777215).toString(16);
-      for(;i<9;i++) {
-         glyphString += "," + Math.floor(Math.random()*16777215).toString(16);
+      
+      var glyphString, glyphColor;
+      glyphColor = Math.floor(Math.random()*16777215).toString(16);
+      glyphString = ((Math.random() < 0.5) ? "false" : "true");
+      for(i = 0; i < 14; i++) {
+        glyphString += "," + ((Math.random() < 0.5) ? "false" : "true");
       }
-      return glyphString;
+
+      if ( privlyNetworkService.platformName() === "FIREFOX" ) {
+        var firefoxPrefs = Components.classes["@mozilla.org/preferences-service;1"]
+                              .getService(Components.interfaces.nsIPrefService)
+                              .getBranch("extensions.privly.");
+        firefoxPrefs.setCharPref("glyph_cells", glyphString);
+        firefoxPrefs.setCharPref("glyph_color", glyphColor);
+      } else {
+        localStorage["glyph_cells"] = glyphString;
+        localStorage["glyph_color"] = glyphColor;
+      }
+      
     },
     
     /**
@@ -134,25 +144,30 @@ var privlyTooltip = {
     glyphHTML: function() {
       
       //Add the CSS for the glyph
-      var glyphString;
+      var glyphCells, glyphColor;
       if ( privlyNetworkService.platformName() === "FIREFOX" ) {
         var firefoxPrefs = Components.classes["@mozilla.org/preferences-service;1"]
                               .getService(Components.interfaces.nsIPrefService)
                               .getBranch("extensions.privly.");
         try {
-          glyphString = firefoxPrefs.getCharPref("glyph");
+          glyphString = firefoxPrefs.getCharPref("glyph_cells");
+          glyphColor = firefoxPrefs.getCharPref("glyph_color");
         } catch(err) {
-          glyphString = privlyTooltip.generateNewGlyph();
-          firefoxPrefs.setCharPref("glyph", glyphString);
+          privlyTooltip.generateNewGlyph();
+          glyphString = firefoxPrefs.getCharPref("glyph_cells");
+          glyphColor = firefoxPrefs.getCharPref("glyph_color");
         }
       }else{
 
         if (localStorage.getItem("glyph_cells") === null) {
-          glyphString = "";
+          glyphString = privlyTooltip.generateNewGlyph();
+          glyphColor = Math.floor(Math.random()*16777215).toString(16);
+        } else {
+          glyphString = localStorage["glyph_cells"];
+          glyphColor = localStorage["glyph_color"]; 
         }
       }
       
-      var glyphString = localStorage["glyph_cells"]; 
       var glyphArray = glyphString.split(",");
             
       // Construct the 5x5 table that will represent the glyph.
@@ -197,7 +212,7 @@ var privlyTooltip = {
 
       table.appendChild(tbody);
 
-      var rule = '.glyph_fill' + '{background-color:#' + localStorage["glyph_color"] + ';' +'}';
+      var rule = '.glyph_fill' + '{background-color:#' + glyphColor + ';' +'}';
       var rule2 = '.glyph_empty' + '{background-color:#ffffff;}';
       var rule3 = '.glyph_table' + '{border-collapse: collapse; line-height: 4px; float: left; margin-right: 5px;}';
 
