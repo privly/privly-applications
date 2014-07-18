@@ -59,6 +59,7 @@ function processResponseContent(response) {
     if ( ! privlyHostPage.isInjected() ) {
       $('textarea').autosize();
     }
+    privlyHostPage.resizeToWrapper();
   }
 }
 
