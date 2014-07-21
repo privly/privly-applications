@@ -25,6 +25,31 @@ require('/lib/algs/ds');
 // initialization vector.
 
 var PersonaId = {
+  /**
+   * Create a payload to send to the directory provider.
+   *
+   * @param {object} pubkey A PGP public key.
+   * @param {object} secretkey A Persona secret key.
+   * @param {string} email Email address associated with the PGP key.
+   **/
+  bundle: function(pubkey, secretkey, email, callback) {
+    this.sign(pubkey, secretkey, function(err, signature) {
+      callback({"pgp": signature, "email": email});
+    });
+  },
+
+  /**
+   * Sign a PGP public key with a Persona secret key.
+   *
+   * @param {object} pubkey A PGP public key.
+   * @param {object} secretkey A Persona secret key.
+   * @param {function} callback The function that should be run after jwcrypto
+   * signs the pubkey.
+   **/
+  sign: function(pubkey, secretkey, callback) {
+    // jwcrypto.sign never returns an error so we can ignore it.
+    jwcrypto.sign({"key": pubkey}, secretkey, callback);
+  },
 
   /**
    * Verify that a signature for a PGP key is correct, and extract the
