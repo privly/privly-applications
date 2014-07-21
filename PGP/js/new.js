@@ -47,6 +47,57 @@ var callbacks = {
   },
 
   /**
+   * Check if user has set a passed in item
+   *
+   * @param {string} option A string representing a localforage key.
+   * @param {function} callback The function to execute after the value of the
+   * option has been acquired. This function should accept as a paremeter the
+   * value of the option that was acquired.
+   * 
+   */
+  assureItemIsSet: function(option,callback){
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem(option,function(value){
+        if (value == undefined || value == ""){
+          if (option === 'pgp-email'){
+            keyManager.promptUserToSetEmail(function(value){
+              callback(value);
+            });
+          }
+          else if (option === 'pgp-directoryURL'){
+            keyManager.promptUserToSetDirectory(function(value){
+              callback(value);
+            });
+          }
+        } else {
+          callback(value);
+        }
+      });
+    });
+  },
+
+  /**
+   * Check if user has set options
+   *
+   * @param {function} callback The function to execute after all items have
+   * been set.
+   */
+  checkOptionsSet: function(callback){
+    var items = ['pgp-email','pgp-directoryURL'];
+    var set = 0;
+    var check = function(option){
+      callbacks.assureItemIsSet(option,function(value){
+        set += 1;
+        if (set === items.length){
+          callback(true);
+        }
+      });
+    };
+    for (var i = 0; i < items.length; i++){
+      check(items[i]);
+    }
+  },
+
    * Tell the user they can create their post
    */
   pendingPost: function() {
