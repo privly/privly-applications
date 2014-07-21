@@ -177,6 +177,36 @@ var keyManager = {
       });
     });
   },
+
+  /**
+   * Evaluate if a new key needs to be generated.  
+   *
+   * This returns true under two conditions:
+   *   1) Localstorage does not contain a key.
+   *   2) Localstorage contains a key that is expired or is about to expire.
+   *
+   * @param {function} callback The function that gets called after we
+   * determine if a new key is needed. This function should accept a boolean
+   * value as a paremeter.
+   */
+  needNewKey: function(callback){
+    // Determine if a key is already in local storage
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('pgp-my_keypairs',function(keypairs){
+        if (keypairs === null){ // no key found, return true
+          callback(true);
+        } else { // it does exist,check expirey regenerate if needed
+          // TODO: check if key is about to expire and gen a new one if needed
+          // Note: Currently openPGP.js does not support setting a key
+          // expiration. Since nearly all of the keys we deal with are generated
+          // with openPGP.js, we do not yet check to see if keys expire.
+          console.log("Already have a key.");
+          callback(false);
+        }
+      });
+    });
+  },
+
   /**
    * Generate a PGP key, add it to local storage, and upload it to directory.
    */
