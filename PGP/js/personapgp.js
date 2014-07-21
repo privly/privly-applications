@@ -230,3 +230,153 @@ var PersonaPGP = {
     });
   },
 
+  /**
+   * This function encrypts the plaintext with the passed in pubKeys
+   *
+   * @param {string} plaintext The plaintext message.
+   * @param {object} pubKeys An array of public key objects to encrypt the
+   * message with.
+   * @param {function} callback The function that is run after the plaintext
+   * has been encrypted. The function should accept the ciphertext as a
+   * parameter.
+   **/
+  encryptHelper: function(plaintext,pubKeys,callback){
+    // Here we convert the plaintext into a json string. We do this to
+    // check if the decryption occured with the correct string.  If it's
+    // formated as json it is extremely unlikely to have been decrypted
+    // with the wrong key.  There are mechanisms built into OpenPGP.js that
+    // allow you to know in advance if you posses the appropriate key for
+    // decryption. However, this means revealing the identity of your
+    // intended recipient. Converting to json will (eventually) allow us to
+    // preserve the identity of recipients.
+    var plaintext_as_json = JSON.stringify({message: plaintext});
+
+    var ciphertext = openpgp.encryptMessage(pubKeys,plaintext_as_json);
+    callback(ciphertext);
+  },
+
+  /**
+   * This function uses openpgpjs to encrypt a message as json.
+   *
+   * @param {string} emails An array of emails whose associated public key will 
+   * be used to encrypt the message.
+   * @param {string} plaintext The message being encrypted.
+   * @param {function} callback The function that is run after the plaintext
+   * has been encrypted. The function should accept the ciphertext as a
+   * parameter.
+   */
+  encrypt: function(emails,plaintext,callback){
+    // TODO:Check if additional arguments have been passed,
+    // sign and encrypt if private key passed or just encrypt if not.
+    // For now, not signing messages.
+    var pubKeys = [];
+    var completed = [];
+    var getPublicKeys = function(i){
+      PersonaPGP.findPubKey(emails[i],function(Keys){
+        if (typeof Keys === "object"){
+          for(var j = 0; j < Keys.length; j++){
+            var pub_key = openpgp.key.readArmored(Keys[j]).keys[0];
+            pubKeys.push(pub_key);
+          }
+        }
+        completed.push(emails[i]);
+        if (completed.length === emails.length){
+          PersonaPGP.encryptHelper(plaintext,pubKeys,callback);
+        }
+      });
+    };
+
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('pgp-email',function(my_email){
+        emails.push(my_email); // so you can view your own messages
+        for (var i = 0; i < emails.length; i++){
+          getPublicKeys(i);
+        }
+      });
+    });
+  },
+
+  /**
+   * This function uses openpgpjs to decrypt a json encoded message.
+   *
+   * @param {object} ciphertext The message being decrypted.
+   * @param {function} callback The function that is run after the ciphertext
+   * has been decrypted. The function should accept the plaintext or an error
+   * string as a parameter.
+   */
+  decrypt: function(ciphertext,callback){
+    var encrypted_message = openpgp.message.readArmored(ciphertext);
+    var keyids = encrypted_message.getEncryptionKeyIds();
+
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('pgp-my_keypairs',function(my_keys){
+        if (my_keys.length === 0 || my_keys === null){
+          callback("No private keys found. Failed to decrypt.");
+        }
+        var emails = Object.keys(my_keys);
+        for(var i = 0; i < emails.length; i++){
+          for(var j = 0; j < my_keys[emails[i]].length; j++){
+            var privKey = openpgp.key.readArmored(
+                            my_keys[emails[i]][j].privateKeyArmored).keys[0];
+            // hard coded passphrase for now
+            // TODO: get passphrase from user 
+            var success = privKey.decryptKeyPacket(keyids,"passphrase");
+            if (success === true){
+              var message = PersonaPGP.decryptHelper(privKey,encrypted_message);
+              if (message !== "next"){ // decrypted successfully
+                callback(message);
+              } else if ( i === (emails.length - 1) &&
+                          j === (my_keys[emails[i]].length -1) ) {
+                callback("The data cannot be viewed with your keys.");
+              }
+            } else {
+              if ( i === (emails.length - 1) &&
+                   j === (my_keys[emails[i]].length -1) ) {
+                callback("The data cannot be viewed with your keys.");
+              }
+            }
+          }
+        }
+      });
+    });
+  },
+
+  /**
+   * This function helps to decrypt a json encoded message. It verifies that
+   * the decrypted contents of the message is in json format. If a keyid is
+   * not included in a message, this is the only way to know with certainty
+   * if the decryption occurred with the correct key.
+   *
+   * @param {object} privKey The key to attempt to decrypt the message
+   * with.
+   * @param {object} encrypted_message The dearmored ciphertext object.
+   */
+  decryptHelper: function(privKey,encrypted_message){
+    // Should determine if message is signed or not, and use appropriate
+    // decryption method accordingly. If it is signed, find public key and
+    // then verify signature.
+    // For now assuming message is not signed.
+    var decryptFailedMsg = "The data behind this link cannot be" +
+                                 " decrypted with your key.";
+    var cleartext = openpgp.decryptMessage(privKey,encrypted_message);
+    var message = null;
+    if (cleartext == null){
+      console.log("Decrypted cleartext is null or undefined");
+      return "next";
+    }
+    try { // try to parse cleartext as json object
+      message = JSON.parse(cleartext);
+    } catch(e) {
+      message = JSON.parse('{"message":' + "'" + decryptFailedMsg + "}'");
+    }
+
+    if (message.message !== decryptFailedMsg){
+      return message.message;
+    } else {
+      // TODO: make this more robust
+      // figure out a better solution long term. currently this prevents
+      // sending a message consisting only of "next".
+      return "next";
+    }
+  }
+};
