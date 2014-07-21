@@ -59,6 +59,54 @@ var keyManager = {
     });
   },
 
+  
+  /**
+   * Determine if a new persona key needs to be generated
+   *
+   * This returns true under two conditions:
+   *   1) Localstorage does not contain pgp-persona-bridge.
+   *   2) Localstorage contains a key that is expired or is about to expire.
+   *    TODO: evaluate if pgp-persona-bridge is about to expire
+   *
+   * @param {function} callback The function that gets called after we
+   * determine if pgp-persona-bridge is present. This function should accept a
+   * boolean value as a paremeter.
+   */
+  needPersonaKey: function(callback){
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('pgp-persona-bridge',function(persona){
+        callback(persona == null);
+      });
+    });
+  },
+
+  /**
+   * Get Persona Key from localstorage
+   *
+   * @param {function} callback The function that gets called after the user
+   * sets the directory URL. This function should accept the persona secret key
+   * as a paremeter.
+   */
+  getPersonaKey: function(callback){
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('pgp-persona-bridge',function(persona){
+        localforage.getItem('pgp-email',function(email){
+          if (email == null){
+            callback(null);
+          }
+          if (persona != null) {
+            var secretkey = PersonaId.getSecretKeyFromBridge(persona, email);
+            callback(secretkey);
+          } else {
+            keyManager.promptUserToLogin(function(bridge){
+              var secretkey = PersonaId.getSecretKeyFromBridge(bridge, email);
+              callback(secretkey);
+            });
+          }
+        });
+      });
+    });
+  },
   /**
    * Generate a PGP key, add it to local storage, and upload it to directory.
    */
