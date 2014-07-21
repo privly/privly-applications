@@ -60,6 +60,29 @@ var keyManager = {
   },
 
   /*
+   * Ask user to login on directory provider. Create listener for storage
+   * events. Return pgp-persona-bridge when updated.
+   *
+   * @param {function} callback The function that will be executed after
+   * pgp-persona-bridge has been set in localforage. This function should
+   * accept the value of the pgp-persona-bridge as a paremeter.
+   */
+  promptUserToLogin: function(callback){
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('pgp-directoryURL',function(directoryURL){
+        $("#messages").hide();
+        $("#persona_link").attr("href",directoryURL);
+        $("#login_persona").show();
+        document.addEventListener('storage', function(storageEvent){
+          if (storageEvent.key === 'pgp-persona-bridge'){
+            callback(storageEvent.newValue);
+          }
+        });
+      });
+    });
+  },
+
+  /*
    * Ask user to set email in options. Create listener for storage events.
    * Return email when updated.
    *
