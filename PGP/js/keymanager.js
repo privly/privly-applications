@@ -59,6 +59,76 @@ var keyManager = {
     });
   },
 
+  /*
+   * Ask user to set email in options. Create listener for storage events.
+   * Return email when updated.
+   *
+   * @param {function} callback The function that will be executed after
+   * the email address has been set by the user. This function should accept
+   * the email string as a paremeter.
+   */
+  promptUserToSetEmail: function(callback){
+    $("#messages").hide();
+    $("#need_email").show();
+    // Add to local storage on clicking the save button
+    document.querySelector('#save_email').addEventListener('click',function(){
+      var email = document.getElementById("emailAddress").value;
+      localforage.setDriver('localStorageWrapper',function(){
+        localforage.setItem('pgp-email',email,function(){
+          $("#need_email").hide();
+          callback(email);
+        });
+      });
+    });
+    // Set to local storage to save value on hitting enter 
+    var email_input = document.getElementById("emailAddress");
+    email_input.onkeyup = function(){
+      if (event.keyCode === 13){ // user hit enter
+        localforage.setDriver('localStorageWrapper',function(){
+          localforage.setItem('pgp-email',email_input.value,function(){
+            $("#need_email").hide();
+            callback(email_input.value);
+          });
+        });
+      }
+    };
+  },
+
+  /**
+   * Ask user to set directory in options. Create listener for storage events.
+   * Return directoryURL when updated.
+   *
+   * @param {function} callback The function that gets called after the user
+   * sets the directory URL. This function should accept the directory URL as
+   * a paremeter.
+   */
+  promptUserToSetDirectory: function(callback){
+    // TODO: combine this and promptEmail to be more DRY
+    $("#messages").hide();
+    $("#need_directory").show();
+    // Add to local storage on clicking the save button
+    document.querySelector('#save_directory').addEventListener('click',function(){
+      var directoryURL = document.getElementById("directoryURL").value;
+      localforage.setDriver('localStorageWrapper',function(){
+        localforage.setItem('pgp-directoryURL',directoryURL,function(){
+          $("#need_directory").hide();
+          callback(directoryURL);
+        });
+      });
+    });
+    // Set to local storage to save value on hitting enter 
+    var directory_input = document.getElementById("directoryURL");
+    directory_input.onkeyup = function(){
+      if (event.keyCode === 13){
+        localforage.setDriver('localStorageWrapper',function(){
+          localforage.setItem('pgp-directoryURL',directory_input.value,function(){
+            $("#need_directory").hide();
+            callback(directory_input.value);
+          });
+        });
+      }
+    };
+  },
   
   /**
    * Determine if a new persona key needs to be generated
