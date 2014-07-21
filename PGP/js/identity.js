@@ -166,4 +166,21 @@ var PersonaId = {
     });
   },
 
+  /*
+   * Extract a secret key from the person-bridge object.
+   *
+   * @param {object} bridge The bridge containing persona details such as
+   * secret key, public key, and email for a user.
+   * @param {string} email The email associated with key to be extracted.
+   **/
+  getSecretKeyFromBridge: function(bridge, email) {
+    var emails = JSON.parse(bridge.emails);
+    if (emails.default[email] == undefined){
+      //console.log("Email does not match persona bridge");
+      return null;
+    }
+    var priv = emails.default[email].priv;
+    var secretkey = jwcrypto.loadSecretKeyFromObject(priv);
+    return secretkey;
+  }
 };
