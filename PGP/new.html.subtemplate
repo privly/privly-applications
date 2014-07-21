@@ -1,0 +1,107 @@
+{% extends "templates/new.html.template" %}
+
+{% block specs %}
+  <meta name="PrivlySpec" 
+  content="test/new.js,test/openpgp.js,test/identity.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js"/>
+{% endblock %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+  <script type="text/javascript" src="../vendor/markdown.js"></script>
+  <script type="text/javascript" src="../vendor/openpgp.min.js"></script>
+  <script type="text/javascript" src="../vendor/localforage.min.js"></script>
+  <script type="text/javascript" src="../vendor/jwcrypto-bundle.js"></script>
+  <script type="text/javascript" src="../vendor/select2.js"></script>
+  <script type="text/javascript" src="js/new.js"></script>
+  <script type="text/javascript" src="js/personapgp.js"></script>
+  <script type="text/javascript" src="js/identity.js"></script>
+  <script type="text/javascript" src="js/keymanager.js"></script>
+{% endblock %}
+
+{% block messages %}
+  <p style="display:none;" class="flash notice" id="login_persona">
+    Please verify your identity by logging in with 
+    <a id="persona_link" target="_blank" class="login_url btn btn-default">
+      Persona
+    </a>
+  </p>
+  <p style="display:none;" class="flash notice" id="need_email">
+    Your email has not been set.  Please enter your Email:
+    <input id="emailAddress" name="emailAddress" type="email" />
+    <button id="save_email">Save</button>
+  </p>
+  <p style="display:none;" class="flash notice" id="need_directory">
+    Your Directory has not been set.  Please enter your Directory:
+    <input id="directoryURL" name="directoryURL" type="url" />
+    <button id="save_directory">Save</button>
+  </p>
+{% endblock %}
+
+{% block form %}
+  <div class="col-md-8">
+    <noscript>
+      <h1>Your browser has scripting turned off. 
+        This application requires scripting to function properly</h1>
+    </noscript>
+    
+    <h2>Create New PGP Message Link</h2>
+    <p id="loadingDiv"> <img src="../shared/images/ajax-loader.gif" alt="loading"/> </p>
+    <label for="recipients">To: </label>
+    <input type="hidden" id="emailAddresses" autofocus="true" name="emails" multiple="true" required="true" style="width:300px" />
+    
+    <br/>
+    <label for="content">Content</label>
+    <textarea id="content" class="form-control" rows="4" title="Enter a message to Post to Privly here." placeholder=''></textarea>
+    <div id="destruction_select_block">
+      <label for="seconds_until_burn">Time until content is destroyed</label>
+      <select id="seconds_until_burn" name="seconds_until_burn" class="form-control">
+        <option value="86400">1 Day</option>
+        <option value="604800">7 Days</option>
+        <option value="1209600">14 Days</option>
+        <option value="2419200" selected>28 Days</option>
+      </select>
+    </div>
+    <br/>
+    <button id="save" disabled class="btn btn-default">
+      <span class="glyphicon glyphicon-cloud-upload"></span> Save
+    </button>
+  </div>
+  <div class="col-md-4">
+    <h2 id="preview_heading">Preview</h2>
+    <hr/>
+    <div id="preview"></div>
+  </div>
+{% endblock %}
+
+{% block app_info %}
+  <hr/>
+  <div class="col-md-6">
+    <h2>What is a PGP?</h2>
+    <p>PGP is a standard time tested encryption standard designed to provide 
+      cryptographic privacy and authentication.  This implementation is built
+      as a
+      <a href="http://www.privly.org/content/introducing-privly-applications" target="_blank">
+        privacy application</a> on Privly. PGP messages encrypt your content 
+      so that only the intended reciepients can decrypt the message.
+      You can use 
+      <a href="http://daringfireball.net/projects/markdown/basics">
+        Markdown</a>
+      to format your posts. You can 
+      <a href="http://www.privly.org/content/introducing-privly-applications"
+       target="_blank">
+        read more</a> about Privly Applications or about 
+      <a href="https://github.com/privly/privly-organization/wiki/PGP" 
+        target="_blank">
+        PGP
+      </a> specifically.
+    </p>
+  </div>
+  <div class="col-md-6">
+    <h2>Warnings</h2>
+    <ul>
+      <li>Privly is still in Alpha, <strong>do not</strong> post private information until the system reaches a Beta release.</li>
+      <li>This post is <strong>temporary.</strong> All new content is destroyed within <strong>30 days</strong>.</li>
+      <li>This post will be encrypted, but it is likely that a sophisticated adversary, e.g. governments, will be able to decrypt the content without the key.</li>
+    </ul>
+  </div>
+{% endblock %}
