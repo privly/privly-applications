@@ -49,6 +49,40 @@
     <label for="recipients">To: </label>
     <input type="hidden" id="emailAddresses" autofocus="true" name="emails" multiple="true" required="true" style="width:300px" />
     
+    <div id="emailInvite" hidden="true" style="white-space: nowrap;">
+    <p>Your message cannot be sent to:
+    <span id="missingEmails"> </span> 
+    because they have not signed up yet. 
+    <li class="dropdown">
+    <a class="dropdown-toggle" id="invite" role="button" href="#" data-toggle="dropdown">
+      Invite
+    </a>
+    <ul id="inviteMenu" class="dropdown-menu" role="menu"> 
+      <li role="presentation">
+        <a role="menuitem" tabindex="-1" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=[FRIENDS]&amp;su=Share%20privately&amp;body=Body%20goes%20here" target="_blank">
+          Gmail
+        </a>
+      </li>
+      <li role="presentation">
+        <a role="menuitem" tabindex="-1" href="http://compose.mail.yahoo.com/?to=[FRIENDS]&amp;subj=Share%20Privately&amp;body=Body%20Goes%20here" target="_blank">
+          Yahoo
+        </a>
+      </li>
+      <li role="presentation">
+        <a role="menuitem" tabindex="-1" href="http://mail.aol.com/mail/compose-message.aspx?to=[FRIENDS]&amp;subject=Share%20Privately&amp;body=Body%20Goes%20Here" target="_blank">
+          AOL
+        </a>
+      </li>
+      <li role="presentation">
+        <a role="menuitem" tabindex="-1" href="https://mail.live.com/default.aspx?rru=compose&amp;to=[FRIENDS]&amp;subject=Share%20Privately&amp;body=Body%20Goes%20Here" target="_blank">
+          Live
+        </a>
+      </li>
+    </ul>
+    them to share privately.
+    </p>
+    </div>
+
     <br/>
     <label for="content">Content</label>
     <textarea id="content" class="form-control" rows="4" title="Enter a message to Post to Privly here." placeholder=''></textarea>
