@@ -158,6 +158,18 @@ var callbacks = {
       
       if( json === null ) return;
       
+      if(json.structured_content !== undefined) {
+        PersonaPGP.decrypt(json.structured_content,function(cleartext){
+          $("#edit_text").val(cleartext);
+
+          var markdownHTML = markdown.toHTML(cleartext);
+          $('div#cleartext').html(markdownHTML);
+        });
+      } else {
+        $('div#cleartext').text("The data behind this link is corrupted.");
+        return;
+      }
+      
       // Assign the permissions
       if( json.permissions ) {
         privlyNetworkService.permissions.canShare = (
@@ -273,6 +285,8 @@ var callbacks = {
    }
   }
 };
+
+privlyTooltip.appName = "PGP";
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', callbacks.pendingContent);

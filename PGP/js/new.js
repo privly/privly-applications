@@ -63,6 +63,36 @@ var callbacks = {
   },
 
   /**
+   * The user hit the submit button.
+   */
+  submit: function() {
+    var plaintext = $("#content")[0].value;
+    var emails = $("#emailAddresses").val();
+    emails = emails.split(",");
+
+    PersonaPGP.encrypt(emails,plaintext,function(ciphertext){
+      var data_to_send = {
+        post:{
+          structured_content: ciphertext,
+          "privly_application":"PGP",
+          "public":true,
+          "seconds_until_burn": $( "#seconds_until_burn" ).val()
+        }
+      };
+
+      function successCallback(response) {
+        callbacks.postCompleted(response); 
+      }
+      
+      privlyNetworkService.sameOriginPostRequest(
+        privlyNetworkService.contentServerDomain() + "/posts", 
+        successCallback, 
+        data_to_send,
+        {"format":"json"});
+    });
+  },
+
+  /**
    * Send the URL to the extension or mobile device if it exists and display
    * it to the end user.
    *
