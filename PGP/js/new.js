@@ -136,6 +136,69 @@ var callbacks = {
   },
 
   /**
+   * Modify the text of the missing email notifier and then show it.
+   */
+  inviteFriendNotifier: function(email){
+    var emails = $("#missingEmails").text();
+    var whitespace = /^\s+$/mg;  // entire string is whitespace
+    if (whitespace.exec(emails) != null) {
+      emails = email;
+    } else {
+      var existing = new RegExp("(\\s|^)"+email+"\\b"); 
+      if (existing.exec(emails) === null ){ //already contains the email?
+        emails = $("#missingEmails").text() + ", " + email;
+      }
+    }
+    $("#missingEmails").text(emails);
+    $("#missingEmails").css({
+      "font-size" : "1.1em",
+      "font-weight" : "bold"
+    });
+    $(".dropdown").css({"list-style-type":"none"});
+    $("#invite").click(function(){  // Add email to URLs in dropdown
+      $("#inviteMenu li a").each(function(){
+        var old = $( this ).attr("href");
+        var urlemail = encodeURIComponent(emails);
+        var updated = old.replace(/\[FRIENDS\]/,urlemail);
+        $( this ).attr("href",updated);
+      });
+    });
+    $("#emailInvite").show();
+  },
+
+  /**
+   * Remove an email address from the autoComplete selection 
+   */
+  autoCompleteRemove: function(remove){
+    $(".select2-search-choice div:last").css({
+      "font-size" : "1.1em",
+      "font-weight" : "bold"
+    });
+    $(".select2-search-choice:last").fadeOut(1500,function(){
+      var emails = $("#emailAddresses").select2("val");
+      var updated = [];
+      for (var i = 0; i < emails.length; i++){
+        if (emails[i] !== remove){
+          updated.push(emails[i]);
+        }
+      }
+      $("#emailAddresses").select2("val",updated);
+    });
+  },
+
+  /**
+   * Highlight an email address in the autoComplete selection 
+   */
+  autoCompleteHighlight: function(email){
+    $(".select2-search-choice:last")
+      .css("border","2px solid green")
+      .animate({
+        "border-width":"1px",
+        "border-color":"solid #aaaaaa"
+        },1000);
+  },
+
+  /**
    * Setup and manage autocomplete form
    */
   autoComplete: function(){
