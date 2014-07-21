@@ -114,6 +114,60 @@ var callbacks = {
     });
   },
 
+  /**
+   * Populate autocomplete from from localstorage
+   *
+   * @param {function} callback The function to execute after the list of
+   * contacts has been retrieved. This function should accept an array of
+   * emails as a paremeter.
+   */
+  populateToField: function(callback){
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('pgp-my_contacts',function(contacts){
+        var emails = [];
+        for(var email in contacts){
+          if (contacts.hasOwnProperty(email)){
+            emails.push(email);
+          }
+        }
+        callback(emails);
+      });
+    });
+  },
+
+  /**
+   * Setup and manage autocomplete form
+   */
+  autoComplete: function(){
+    callbacks.populateToField(function(emails){
+      $("#emailAddresses").select2({
+        placeholder: "Recipients",
+        tags: emails,
+        tokenSeparators: [" ",","]
+      }).on("change",function(change){
+        if (change.added !== undefined){               // tag was added
+          if (emails.indexOf(change.added.id) === -1){ // tag was new
+            var email = change.added.id;
+            // Search Remotely, verify and add to local if found
+            PersonaPGP.findPubKey(email, function(results){
+              if (results === null){ // not found remotely or locally
+                callbacks.inviteFriendNotifier(email);
+                callbacks.autoCompleteRemove(email);
+              } else { // Found, update ui somehow?
+                callbacks.autoCompleteHighlight(email);
+                // This branch is taken if email is in the directory but the
+                // returned keys are expired.
+                // TODO: Rewrite findPubKey chain of functions to propagate
+                // errors or provide some sort of feedback of this situation.
+              }
+            });
+          }
+        }
+      });
+    });
+  },
+
+  /**
    * Tell the user they can create their post
    */
   pendingPost: function() {
