@@ -42,7 +42,7 @@ var callbacks = {
     privlyNetworkService.initializeNavigation();
     
     // Monitor the login button
-    document.querySelector("#login").addEventListener('click', callbacks.submitCredentials);
+    document.querySelector('#login').addEventListener('click', callbacks.submitCredentials);
     $("#user_password").keyup(function (e) {
         if (e.keyCode == 13) {
             callbacks.submitCredentials();
