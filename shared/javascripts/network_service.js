@@ -44,6 +44,8 @@ var privlyNetworkService = {
     } else if(privlyNetworkService.platformName() === "ANDROID") {
       privlyNetworkService.authToken = "auth_token=" + 
                                               androidJsBridge.fetchAuthToken();
+    } else if(privlyNetworkService.platformName() === "CHROME") {
+      privlyNetworkService.authToken = "auth_token=" + localStorage["authToken"];
     }
   },
   
@@ -408,7 +410,14 @@ var privlyNetworkService = {
     $(".home_domain").text(domain.split("/")[2]);  
     $(".account_url").attr("href", domain + "/pages/account");
     $(".legal_nav").attr("href", domain + "/pages/privacy");
-    document.getElementById("logout_link").addEventListener('click', function(){
+    document.getElementById("logout_link").addEventListener('click', function() {
+      
+      // Send a DELETE request to the server to remove the authentication token
+      privlyNetworkService.sameOriginDeleteRequest(
+        privlyNetworkService.contentServerDomain() + "/token_authentications.json",
+        function(){},
+        {});  
+
       $.post(domain + "/users/sign_out", "_method=delete", function(data) {
         window.location = "../Login/new.html";
       });

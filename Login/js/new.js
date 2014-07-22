@@ -42,11 +42,21 @@ var callbacks = {
     privlyNetworkService.initializeNavigation();
     
     // Monitor the login button
-    document.querySelector('#login').addEventListener('click', callbacks.submitCredentials);
+    document.querySelector("#login").addEventListener('click', callbacks.submitCredentials);
     $("#user_password").keyup(function (e) {
         if (e.keyCode == 13) {
             callbacks.submitCredentials();
         }
+    });
+
+    // Toggle the checkbox when the text next to it is clicked
+    document.querySelector("#checkbox_text").addEventListener('click', function() {
+      $("#stayLoggedIn").prop("checked", !$("#stayLoggedIn").prop("checked"));
+    });
+
+    // Change the cursor when hovering the text next to the checkbox
+    document.querySelector("#checkbox_text").addEventListener('mouseover', function() {
+      $(this).css("cursor", "pointer");
     });
     
     // Add listeners to show loading animation while making ajax requests
@@ -79,21 +89,35 @@ var callbacks = {
    */
   submitCredentials: function() {
     $("#save").prop('disabled', true);
+
+    // If #stayLoggedIn checkbox is checked, request an authenticaion token to the server
+    if(document.querySelector("#stayLoggedIn").checked) {
+      privlyNetworkService.sameOriginPostRequest(
+        privlyNetworkService.contentServerDomain() + "/token_authentications.json",
+        callbacks.checkCredentials,
+        {"email":  $("#user_email").val(),
+         "password":  $("#user_password").val()
+         });      
+    } else {
     privlyNetworkService.sameOriginPostRequest(
       privlyNetworkService.contentServerDomain() + "/users/sign_in", 
       callbacks.checkCredentials,
       {"user[email]":  $("#user_email").val(),
        "user[password]":  $("#user_password").val()
        });
+    }
   },
-  
-  
+    
   /**
    * Check to see if the user's credentials were accepted by the server.
    */
   checkCredentials: function(response) {
-    
-    if ( response.json.success === true ) {
+    if ( response.json.success === true || response.textStatus === "success") {
+      
+      // Save the authentication token to localStorage
+      if ( response.json.auth_key !== undefined) {
+        localStorage["authToken"] = response.json.auth_key;
+      }
       callbacks.pendingPost();
     } else {
       callbacks.loginFailure();
