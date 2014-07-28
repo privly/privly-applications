@@ -35,6 +35,7 @@
 
 from jinja2 import Environment, FileSystemLoader
 from bs4 import BeautifulSoup as bs
+import os
 import re
 import argparse # Parsing arguments
 
@@ -68,6 +69,11 @@ def render(outfile_path, subtemplate_path, subtemplate_dict):
 
 if __name__ == "__main__":
   
+  # Change the current working directory to the directory of the build script
+  abspath = os.path.abspath(__file__)
+  dname = os.path.dirname(abspath)
+  os.chdir(dname)
+
   # Parse Arguments
   parser = argparse.ArgumentParser(description='Declare platform.')
   parser.add_argument('-p', '--platform', metavar='p', type=str,
