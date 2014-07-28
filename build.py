@@ -74,12 +74,16 @@ if __name__ == "__main__":
   dname = os.path.dirname(abspath)
   os.chdir(dname)
 
+  # Specify the potential build targets
+  platforms = ['web', 'chrome']
+
   # Parse Arguments
-  parser = argparse.ArgumentParser(description='Declare platform.')
+  parser = argparse.ArgumentParser(description='Declare platform build target.')
   parser.add_argument('-p', '--platform', metavar='p', type=str,
                      help='The platform you are building for',
                      required=False,
-                     default='web')
+                     default='web',
+                     choices=platforms)
   args = parser.parse_args()
   
   # Templates are all referenced relative to the current
@@ -163,7 +167,19 @@ if __name__ == "__main__":
         "action": "nav", "args": args}
     })
   
+  print("################################################")
+  print("Targeting the *{0}* platform".format(args.platform))
+  print("################################################")
+
   # Build the templates.
+  print("Building...")
   for package in to_build:
+    print("{0}'s {1} action to {2}".format(
+      package["subtemplate_dict"]["name"],
+      package["subtemplate_dict"]["action"],
+      package["outfile_path"]))
     render(package["outfile_path"], package["subtemplate_path"], 
       package["subtemplate_dict"])
+
+print("################################################")
+print("Build complete.  You can now view the generated applications in their folders.")
