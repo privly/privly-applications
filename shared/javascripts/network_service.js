@@ -417,7 +417,13 @@ var privlyNetworkService = {
         // Send a DELETE request to the server to remove the authentication token
         privlyNetworkService.sameOriginDeleteRequest(
           privlyNetworkService.contentServerDomain() + "/token_authentications.json",
-          function(){window.location = "../Login/new.html";},
+          function() {
+            if( privlyNetworkService.platformName() === "CHROME" &&
+                      localStorage["authToken"] !== undefined ) {
+              delete localStorage["authToken"];
+            }
+            window.location = "../Login/new.html";
+          },
           {});         
       });
     });

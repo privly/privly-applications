@@ -49,15 +49,18 @@ var callbacks = {
         }
     });
 
-    // Toggle the checkbox when the text next to it is clicked
-    document.querySelector("#checkbox_text").addEventListener('click', function() {
-      $("#stayLoggedIn").prop("checked", !$("#stayLoggedIn").prop("checked"));
-    });
+    // If the "stay logged in" button exists
+    if ( $("#checkbox_text").length ) {
+      // Toggle the checkbox when the text next to it is clicked
+      document.querySelector("#checkbox_text").addEventListener('click', function() {
+        $("#stayLoggedIn").prop("checked", !$("#stayLoggedIn").prop("checked"));
+      });
 
-    // Change the cursor when hovering the text next to the checkbox
-    document.querySelector("#checkbox_text").addEventListener('mouseover', function() {
-      $(this).css("cursor", "pointer");
-    });
+      // Change the cursor when hovering the text next to the checkbox
+      document.querySelector("#checkbox_text").addEventListener('mouseover', function() {
+        $(this).css("cursor", "pointer");
+      });
+    }
     
     // Add listeners to show loading animation while making ajax requests
     $(document).ajaxStart(function() {
@@ -91,7 +94,7 @@ var callbacks = {
     $("#save").prop('disabled', true);
 
     // If #stayLoggedIn checkbox is checked, request an authenticaion token to the server
-    if(document.querySelector("#stayLoggedIn").checked) {
+    if( $("#checkbox_text").length && document.querySelector("#stayLoggedIn").checked ) {
       privlyNetworkService.sameOriginPostRequest(
         privlyNetworkService.contentServerDomain() + "/token_authentications.json",
         callbacks.checkCredentials,
@@ -112,12 +115,14 @@ var callbacks = {
    * Check to see if the user's credentials were accepted by the server.
    */
   checkCredentials: function(response) {
-    if ( response.json.success === true || response.textStatus === "success") {
+
+    if ( response.json.error === undefined && response.json.success === true ) {
+      callbacks.pendingPost();
+    } else if( response.json.auth_key !== undefined ) {
       
       // Save the authentication token to localStorage
-      if ( response.json.auth_key !== undefined) {
-        localStorage["authToken"] = response.json.auth_key;
-      }
+      localStorage["authToken"] = response.json.auth_key;
+
       callbacks.pendingPost();
     } else {
       callbacks.loginFailure();
