@@ -13,11 +13,13 @@ function init() {
   privlyNetworkService.initializeNavigation();
   $("#messages").hide();
   $("#form").show();
-  privlyTooltip.tooltip();
   privlyNetworkService.showLoggedInNav();
   
   // Show a preview of the tooltip to the user
-  privlyTooltip.tooltip();
+  var glyphHTML = privlyTooltip.glyphHTML();
+  $("#tooltip").html(glyphHTML)
+               .show()
+               .append("<p>This is your Privly Glyph</p>");
 }
 
 // Initialize the application
