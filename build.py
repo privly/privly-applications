@@ -15,7 +15,8 @@
 # This assumes you have python-setuptools:
 # `sudo apt-get install python-setuptools`
 #
-# This script uses the jinja2 templating system:
+# This script uses the jinja2 templating system. For
+# information on Jinja2, see:
 # http://jinja.pocoo.org/docs/
 #
 # We prefer readability over minified apps. BeautifulSoup
@@ -24,14 +25,6 @@
 #
 # You can run the script from the privly-applications directory:
 # `python build.py`
-#
-# This templating system is a starting point, but is 
-# not fully featured. You can currently add new
-# applications by adding to the "to_build" object
-# below.
-#
-# Note: if you are building for a platform that has platform
-# specific code
 
 from jinja2 import Environment, FileSystemLoader
 from bs4 import BeautifulSoup as bs
@@ -84,7 +77,6 @@ def get_link_creation_apps():
   for generating new links
   """
   creation_apps = []
-
   for dirname, dirnames, filenames in os.walk('.'):
     if "manifest.json" in filenames:
       f = open(dirname + "/manifest.json", 'r')
@@ -106,10 +98,9 @@ if __name__ == "__main__":
   dname = os.path.dirname(abspath)
   os.chdir(dname)
 
+  # Parse Arguments
   # Specify the potential build targets
   platforms = ['web', 'chrome']
-
-  # Parse Arguments
   parser = argparse.ArgumentParser(description='Declare platform build target.')
   parser.add_argument('-p', '--platform', metavar='p', type=str,
                      help='The platform you are building for',
@@ -122,21 +113,13 @@ if __name__ == "__main__":
   # working directory
   env = Environment(loader=FileSystemLoader('.'))
   
-  # Quick hack to make apps aware of each other in the templating.
+  # Listing of other apps so they can be added to the common nav
   packages = {"new": get_link_creation_apps()}
-  
-  # The build list for applications is and array of objects:
-  # {
-  #   "subtemplate_path": The path to the subtemplate we are building.
-  #   "outfile_path": The path to where we want to write the output file.
-  #   "subtemplate_dict": The variables to pass into the subtemplate.
-  # }
-  #
-  # Eventually it would be good to move this config into a manifest file
-  # included in the directory.
   
   print("################################################")
   print("Targeting the *{0}* platform".format(args.platform))
+  print("To build for another platform, add the option --platform=NAME_HERE")
+  print("Current platform options include {0}".format(platforms))
   print("################################################")
 
   # Build the templates.
