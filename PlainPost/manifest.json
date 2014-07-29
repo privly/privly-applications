@@ -1,0 +1,15 @@
+[
+  {
+    "release_status": "alpha",
+    "nav": "new",
+    "subtemplate_path": "PlainPost/new.html.subtemplate",
+    "outfile_path": "PlainPost/new.html",
+    "subtemplate_dict": {"name": "PlainPost", "action": "new"}
+  },
+  {
+    "release_status": "alpha",
+    "subtemplate_path": "PlainPost/show.html.subtemplate",
+    "outfile_path": "PlainPost/show.html",
+    "subtemplate_dict": {"name": "PlainPost", "action": "show"}
+  }
+]

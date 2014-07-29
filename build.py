@@ -36,12 +36,15 @@
 from jinja2 import Environment, FileSystemLoader
 from bs4 import BeautifulSoup as bs
 import os
+import json
 import re
 import argparse # Parsing arguments
 
-# Make the rendered HTML formatting readable
 def make_readable(html):
-  
+  """
+  Make the rendered HTML formatting readable
+  @param {string} html The HTML that we need to make readable.
+  """
   soup = bs(html)
   prettyHTML = soup.prettify().encode("utf8")
   
@@ -54,11 +57,12 @@ def make_readable(html):
 
 def render(outfile_path, subtemplate_path, subtemplate_dict):
   """
-  @param outfile String. The relative path to the file which we are rendering
+  Render the templates to html.
+  @param {string} outfile The relative path to the file which we are rendering
     to.
-  @param subtemplate_path String. The relative path to the file of the subtemplate
+  @param {string} subtemplate_path The relative path to the file of the subtemplate
     to be rendered.
-  @param subtemplate_dict Dictionary. The variables required by the subtemplate.
+  @param {dictionary} subtemplate_dict The variables required by the subtemplate.
   """
   f = open(outfile_path, 'w')
   subtemplate = env.get_template(subtemplate_path)
@@ -66,6 +70,34 @@ def render(outfile_path, subtemplate_path, subtemplate_dict):
   prettyHTML = make_readable(html)
   f.write(prettyHTML)
   f.close()
+
+def is_build_target(template):
+  """
+  Determines whether the build target is currently active.
+  @param {dictionary} template The dictionary of the object to build.
+  """
+  return "platforms" not in template or args.platform in template["platforms"]
+
+def get_link_creation_apps():
+  """
+  Gets a list of the apps that will be included in the top navigation
+  for generating new links
+  """
+  creation_apps = []
+
+  for dirname, dirnames, filenames in os.walk('.'):
+    if "manifest.json" in filenames:
+      f = open(dirname + "/manifest.json", 'r')
+      template_list = json.load(f)
+      f.close()
+      for template in template_list:
+        if is_build_target(template):
+          if "nav" in template.keys() and template["nav"] == "new":
+            creation_apps.append(template["subtemplate_dict"]["name"])
+
+  # Hack to maintain current app order
+  creation_apps.reverse()
+  return creation_apps
 
 if __name__ == "__main__":
   
@@ -91,7 +123,7 @@ if __name__ == "__main__":
   env = Environment(loader=FileSystemLoader('.'))
   
   # Quick hack to make apps aware of each other in the templating.
-  packages = {"new": ["ZeroBin", "PlainPost"]}
+  packages = {"new": get_link_creation_apps()}
   
   # The build list for applications is and array of objects:
   # {
@@ -102,70 +134,6 @@ if __name__ == "__main__":
   #
   # Eventually it would be good to move this config into a manifest file
   # included in the directory.
-  to_build = [
-    {
-      "subtemplate_path": "Index/new.html.subtemplate",
-      "outfile_path": "Index/new.html",
-      "subtemplate_dict": {"packages": packages, "name": "Index", 
-        "action": "nav", "args": args}
-    },
-    {
-      "subtemplate_path": "Login/new.html.subtemplate",
-      "outfile_path": "Login/new.html",
-      "subtemplate_dict": {"packages": packages, "name": "Login", 
-        "action": "new", "args": args}
-    },
-    {
-      "subtemplate_path": "PlainPost/new.html.subtemplate",
-      "outfile_path": "PlainPost/new.html",
-      "subtemplate_dict": {"packages": packages, "name": "PlainPost", 
-        "action": "new", "args": args}
-    },
-    {
-      "subtemplate_path": "PlainPost/show.html.subtemplate",
-      "outfile_path": "PlainPost/show.html",
-      "subtemplate_dict": {"packages": packages, "name": "PlainPost", 
-        "action": "show", "args": args}
-    },
-    {
-      "subtemplate_path": "ZeroBin/new.html.subtemplate",
-      "outfile_path": "ZeroBin/new.html",
-      "subtemplate_dict": {"packages": packages, "name": "ZeroBin", 
-        "action": "new", "args": args}
-    },
-    {
-      "subtemplate_path": "ZeroBin/show.html.subtemplate",
-      "outfile_path": "ZeroBin/show.html",
-      "subtemplate_dict": {"packages": packages, 
-        "name": "ZeroBin", 
-        "action": "show", "args": args}
-    },
-    {
-      "subtemplate_path": "Help/new.html.subtemplate",
-      "outfile_path": "Help/new.html",
-      "subtemplate_dict": 
-        {"packages": packages, 
-         "name": "Help", 
-         "action": "new", "args": args}
-    },
-  ]
-  
-  # Add the Chrome-specific applications if the apps were explicitly requested
-  if args.platform == "chrome":
-    to_build.append({
-      "subtemplate_path": "Pages/ChromeFirstRun.html.subtemplate",
-      "outfile_path": "Pages/ChromeFirstRun.html",
-      "subtemplate_dict": {"packages": packages, "name": "FirstRun", 
-        "action": "nav", "args": args}
-    }
-    )
-    to_build.append(
-    {
-      "subtemplate_path": "Pages/ChromeOptions.html.subtemplate",
-      "outfile_path": "Pages/ChromeOptions.html",
-      "subtemplate_dict": {"packages": packages, "name": "Options", 
-        "action": "nav", "args": args}
-    })
   
   print("################################################")
   print("Targeting the *{0}* platform".format(args.platform))
@@ -173,13 +141,28 @@ if __name__ == "__main__":
 
   # Build the templates.
   print("Building...")
-  for package in to_build:
-    print("{0}'s {1} action to {2}".format(
-      package["subtemplate_dict"]["name"],
-      package["subtemplate_dict"]["action"],
-      package["outfile_path"]))
-    render(package["outfile_path"], package["subtemplate_path"], 
-      package["subtemplate_dict"])
+
+  # Find all the manifest files
+  for dirname, dirnames, filenames in os.walk('.'):
+    if "manifest.json" in filenames:
+      f = open(dirname + "/manifest.json", 'r')
+      template_list = json.load(f)
+      f.close()
+
+      for template in template_list:
+
+        # Don't build the app if a platform is specified and it is not the
+        # currently targeted platform
+        if not is_build_target(template):
+          continue
+
+        template["subtemplate_dict"].update({"args": args, "packages": packages})
+        print("{0}'s {1} action to {2}".format(
+          template["subtemplate_dict"]["name"],
+          template["subtemplate_dict"]["action"],
+          template["outfile_path"]))
+        render(template["outfile_path"], template["subtemplate_path"],
+               template["subtemplate_dict"])
 
 print("################################################")
 print("Build complete.  You can now view the generated applications in their folders.")
