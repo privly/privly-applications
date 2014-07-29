@@ -84,7 +84,13 @@ def is_build_target(template):
   Determines whether the build target is currently active.
   @param {dictionary} template The dictionary of the object to build.
   """
-  return "platforms" not in template or args.platform in template["platforms"]
+
+  is_targeted_platform = "platforms" not in template or\
+    args.platform in template["platforms"]
+  is_targeted_release_type = release_titles.index(args.release) <=\
+    release_titles.index(template["release_status"])
+
+  return is_targeted_platform and is_targeted_release_type
 
 def get_link_creation_apps():
   """
@@ -106,6 +112,8 @@ def get_link_creation_apps():
   creation_apps.reverse()
   return creation_apps
 
+release_titles = ["experimental", "deprecated", "alpha", "beta", "release"]
+
 if __name__ == "__main__":
   
   # Change the current working directory to the directory of the build script
@@ -122,6 +130,15 @@ if __name__ == "__main__":
                      required=False,
                      default='web',
                      choices=platforms)
+  parser.add_argument('-r', '--release', metavar='r', type=str,
+                     help="""Which apps to include in the navigation:
+                             experimental, deprecated, alpha, beta, release
+                             building 'experimental' will build all apps,
+                             whereas 'release' will only build apps marked
+                             for release""",
+                     required=False,
+                     default='alpha',
+                     choices=release_titles)
   args = parser.parse_args()
   
   # Templates are all referenced relative to the current
