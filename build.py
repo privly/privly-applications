@@ -7,6 +7,21 @@
 # wanting to ship the application, we will work to
 # integrate it with this build system.
 #
+# This build script looks for applications to build
+# by looking at all the subfolders for manifest.json
+# files. These files are expected to have the following format
+#
+# [
+#  {
+#    "release_status": "alpha", // Required values: experimental, alpha, beta, release
+#    "platforms": ["chrome"], // Optional values: web, chrome
+#    "subtemplate_path": "Pages/ChromeFirstRun.html.subtemplate", // Required path to the subtemplate
+#    "outfile_path": "Pages/ChromeFirstRun.html", // Required path the othe output file
+#    "subtemplate_dict": {"name": "FirstRun", "action": "nav"} // Template dictionary values
+#  },
+#  {...}
+# ]
+#
 # Prerequisites for running this script include
 # BeautifulSoup and Jinja2. You can install
 # them both with:
