@@ -26,8 +26,16 @@ var callbacks = {
    */
   pendingLogin: function() {
     
+    // Get the domain the user's extension is paired with
+    var domain = privlyNetworkService.contentServerDomain();
+    
     // Display the content server the user is asssociated with
-    $(".content_server").text(privlyNetworkService.contentServerDomain());
+    $(".content_server").text(domain);
+    
+    $(".login_issue").each( function( key, value ) {
+      $(value).attr("href", domain + $(value).attr("data-path-sub"))
+    });
+    
     
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();

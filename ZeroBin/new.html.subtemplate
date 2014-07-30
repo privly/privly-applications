@@ -2,51 +2,20 @@
 
 {% block specs %}
   <meta name="PrivlySpec" 
-  content="test/new.js,test/sjcl.js,test/ZeroBin.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js"/>
+  content="../shared/test/privly-web/new.js,test/new.js,test/sjcl.js,test/ZeroBin.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js"/>
 {% endblock %}
 
 {% block javascripts %}
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+  <script type="text/javascript" src="../vendor/jquery.autosize.js"></script>
   <script type="text/javascript" src="../vendor/markdown.js"></script>
   <script type="text/javascript" src="../vendor/sjcl.js"></script>
   <script type="text/javascript" src="js/base64.js"></script>
   <script type="text/javascript" src="js/rawdeflate.js"></script>
   <script type="text/javascript" src="js/rawinflate.js"></script>
   <script type="text/javascript" src="js/zerobin.js"></script>
+  <script type="text/javascript" src="../shared/javascripts/privly-web/new.js"></script>
   <script type="text/javascript" src="js/new.js"></script>
-{% endblock %}
-
-
-{% block form %}
-  <div class="col-md-8">
-    <noscript>
-      <h1>Your browser has scripting turned off. 
-        This application requires scripting to function properly</h1>
-    </noscript>
-    
-    <h2>Create New ZeroBin Link</h2>
-    <p id="loadingDiv"> <img src="../shared/images/ajax-loader.gif" alt="loading"/> </p>
-    <label for="content">Content</label>
-    <textarea id="content" class="form-control" rows="4" title="Enter a message to Post to Privly here." placeholder=''></textarea>
-    <div id="destruction_select_block">
-      <label for="seconds_until_burn">Time until content is destroyed</label>
-      <select id="seconds_until_burn" name="seconds_until_burn" class="form-control">
-        <option value="86400">1 Day</option>
-        <option value="604800">7 Days</option>
-        <option value="1209600">14 Days</option>
-        <option value="2419200" selected>28 Days</option>
-      </select>
-    </div>
-    <br/>
-    <button id="save" disabled class="btn btn-default">
-      <span class="glyphicon glyphicon-cloud-upload"></span> Save
-    </button>
-  </div>
-  <div class="col-md-4">
-    <h2 id="preview_heading">Preview</h2>
-    <hr/>
-    <div id="preview"></div>
-  </div>
 {% endblock %}
 
 {% block app_info %}

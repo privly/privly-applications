@@ -2,7 +2,7 @@
 
 
 {% block specs %}
-  <meta name="PrivlySpec" content="test/show.js,test/sjcl.js,test/ZeroBin.js,../shared/test/parameters.js,../shared/test/network_service.js"/>
+  <meta name="PrivlySpec" content="test/show.js,test/sjcl.js,test/ZeroBin.js,../shared/test/privly-web/show.js,../shared/test/parameters.js,../shared/test/network_service.js"/>
 {% endblock %}
 
 
@@ -14,63 +14,12 @@
   <script type="text/javascript" src="js/rawdeflate.js"></script>
   <script type="text/javascript" src="js/rawinflate.js"></script>
   <script type="text/javascript" src="js/zerobin.js"></script>
+  <script type="text/javascript" src="../shared/javascripts/privly-web/show.js"></script>
   <script type="text/javascript" src="js/show.js"></script>
+  <meta name="PrivlyTopJS" content="../vendor/jquery.autosize.js" />
 {% endblock %}
 
-
-{% block main %}
-  <div class="row">
-    <div class="col-md-8">
-      <div id="edit_form" style="display:none;">
-        <h1>Edit Existing ZeroBin</h1>
-        <label for="edit_text">Content</label>
-        <textarea id="edit_text" class="form-control" rows="4"></textarea>
-        <div id="destruction_select_block" style="display:none;">
-         <label for="seconds_until_burn">Time until content is destroyed</label>
-         <select id="seconds_until_burn" name="seconds_until_burn" class="form-control">
-           <option value="" id="current_destruction_time" selected></option>
-           <option value="86400">1 Day</option>
-           <option value="604800">7 Days</option>
-           <option value="1209600">14 Days</option>
-           <option value="2419200">28 Days</option>
-         </select>
-       </div>
-        <br/>
-        <button id="update" class="btn btn-default">
-           <span class="glyphicon glyphicon-cloud-upload"></span> Update
-         </button>
-         &nbsp;
-         <button id="cancel_button" class="btn btn-default">
-           <span class="glyphicon glyphicon-remove"></span> Cancel
-         </button>
-        <hr/>
-      </div>
-      <div id="post_content">
-        <div id="cleartext">Privly ZeroBin 
-          <img src="../shared/images/ajax-loader.gif" alt="loading"/>
-          <noscript>
-            <h1>Your browser has scripting turned off. 
-              This application requires scripting to function properly</h1>
-          </noscript>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-md-4 injected_hide">
-      <div id="side_block">
-        <h2>Metadata</h2>
-        <p class="meta_created_at"></p>
-        <p class="meta_destroyed_around"></p>
-        <p class="meta_updated_at"></p>
-        <p class="meta_candestroy"></p>
-        <p class="meta_canupdate"></p>
-        <p class="meta_source_domain"></p>
-        <p>
-          <strong>Warning:</strong> 
-          This metadata has not been verified cryptographically. 
-          The metadata may be altered at the source.
-        </p>
-      </div>
-    </div>
-  </div>
-{% endblock %}
+{# note: Uncomment this block to modify the main content area
+    {% block main %}  
+    {% endblock %}
+#}

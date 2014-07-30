@@ -7,12 +7,13 @@
       See: https://github.com/privly/privly-applications/pull/19
      -->
   <title>
-   New PlainPost
+   New PGP
   </title>
-  <meta content="../shared/test/privly-web/new.js,test/new.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js" name="PrivlySpec"/>
+  <meta content="test/new.js,test/openpgp.js,test/identity.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js" name="PrivlySpec"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <!-- Top Styles -->
   <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
+  <link class="top" href="../vendor/select2.css" rel="stylesheet"/>
   <link class="top" href="../shared/css/top/top.css" rel="stylesheet"/>
   <!-- Common Styles -->
   <link href="../shared/css/common.css" media="screen" rel="stylesheet" type="text/css"/>
@@ -27,13 +28,23 @@
   </script>
   <script src="../vendor/jquery.min.js" type="text/javascript">
   </script>
-  <script src="../vendor/jquery.autosize.js" type="text/javascript">
-  </script>
   <script src="../vendor/markdown.js" type="text/javascript">
   </script>
-  <script src="../shared/javascripts/privly-web/new.js" type="text/javascript">
+  <script src="../vendor/openpgp.min.js" type="text/javascript">
+  </script>
+  <script src="../vendor/localforage.min.js" type="text/javascript">
+  </script>
+  <script src="../vendor/jwcrypto-bundle.js" type="text/javascript">
+  </script>
+  <script src="../vendor/select2.js" type="text/javascript">
   </script>
   <script src="js/new.js" type="text/javascript">
+  </script>
+  <script src="js/personapgp.js" type="text/javascript">
+  </script>
+  <script src="js/identity.js" type="text/javascript">
+  </script>
+  <script src="js/keymanager.js" type="text/javascript">
   </script>
  </head>
  <body data-privly-exclude="true">
@@ -86,18 +97,18 @@
            New ZeroBin
           </a>
          </li>
-         <li class="active">
+         <li>
           <a href="../PlainPost/new.html">
            <span class="glyphicon glyphicon-pencil">
            </span>
            New PlainPost
           </a>
          </li>
-         <li>
-          <a href="../pgp/new.html">
+         <li class="active">
+          <a href="../PGP/new.html">
            <span class="glyphicon glyphicon-pencil">
            </span>
-           New pgp
+           New PGP
           </a>
          </li>
          <li>
@@ -148,6 +159,26 @@
         login
        </a>
       </p>
+      <p class="flash notice" id="login_persona" style="display:none;">
+       Please verify your identity by logging in with
+       <a class="login_url btn btn-default" id="persona_link" target="_blank">
+        Persona
+       </a>
+      </p>
+      <p class="flash notice" id="need_email" style="display:none;">
+       Your email has not been set.  Please enter your Email:
+       <input id="emailAddress" name="emailAddress" type="email"/>
+       <button id="save_email">
+        Save
+       </button>
+      </p>
+      <p class="flash notice" id="need_directory" style="display:none;">
+       Your Directory has not been set.  Please enter your Directory:
+       <input id="directoryURL" name="directoryURL" type="url"/>
+       <button id="save_directory">
+        Save
+       </button>
+      </p>
       <p>
        <a class="privlyUrl" data-privly-exclude="true" href="">
        </a>
@@ -160,19 +191,60 @@
        <noscript>
         <h1>
          Your browser has scripting turned off. 
-                    This application requires scripting to function properly
+        This application requires scripting to function properly
         </h1>
        </noscript>
        <h2>
-        Create New PlainPost Link
+        Create New PGP Message Link
        </h2>
        <p id="loadingDiv">
         <img alt="loading" src="../shared/images/ajax-loader.gif"/>
        </p>
+       <label for="recipients">
+        To:
+       </label>
+       <input autofocus="true" id="emailAddresses" multiple="true" name="emails" required="true" style="width:300px" type="hidden"/>
+       <div hidden="true" id="emailInvite" style="white-space: nowrap;">
+        <p>
+         Your message cannot be sent to:
+         <span id="missingEmails">
+         </span>
+         because they have not signed up yet.
+        </p>
+        <li class="dropdown">
+         <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="invite" role="button">
+          Invite
+         </a>
+         <ul class="dropdown-menu" id="inviteMenu" role="menu">
+          <li role="presentation">
+           <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=[FRIENDS]&amp;su=Share%20privately&amp;body=Body%20goes%20here" role="menuitem" tabindex="-1" target="_blank">
+            Gmail
+           </a>
+          </li>
+          <li role="presentation">
+           <a href="http://compose.mail.yahoo.com/?to=[FRIENDS]&amp;subj=Share%20Privately&amp;body=Body%20Goes%20here" role="menuitem" tabindex="-1" target="_blank">
+            Yahoo
+           </a>
+          </li>
+          <li role="presentation">
+           <a href="http://mail.aol.com/mail/compose-message.aspx?to=[FRIENDS]&amp;subject=Share%20Privately&amp;body=Body%20Goes%20Here" role="menuitem" tabindex="-1" target="_blank">
+            AOL
+           </a>
+          </li>
+          <li role="presentation">
+           <a href="https://mail.live.com/default.aspx?rru=compose&amp;to=[FRIENDS]&amp;subject=Share%20Privately&amp;body=Body%20Goes%20Here" role="menuitem" tabindex="-1" target="_blank">
+            Live
+           </a>
+          </li>
+         </ul>
+         them to share privately.
+        </li>
+       </div>
+       <br/>
        <label for="content">
         Content
        </label>
-       <textarea class="form-control" id="content" placeholder="Enter content here" rows="4" title="Enter a message to Post to Privly here."></textarea>
+       <textarea class="form-control" id="content" placeholder="" rows="4" title="Enter a message to Post to Privly here."></textarea>
        <div id="destruction_select_block">
         <label for="seconds_until_burn">
          Time until content is destroyed
@@ -189,9 +261,6 @@
          </option>
          <option selected="" value="2419200">
           28 Days
-         </option>
-         <option value="">
-          Infinite? - WARNING! Data in Alpha may still be destroyed.
          </option>
         </select>
        </div>
@@ -219,20 +288,18 @@
      <hr/>
      <div class="col-md-6">
       <h2>
-       What is a PlainPost?
+       What is a PGP?
       </h2>
       <p>
-       PlainPosts are the simplest example of a
+       PGP is a standard time tested encryption standard designed to provide 
+      cryptographic privacy and authentication.  This implementation is built
+      as a
        <a href="http://www.privly.org/content/introducing-privly-applications" target="_blank">
         privacy application
        </a>
-       on Privly. They provide
-      no protection from wherever you are hosting your content because
-      it is
-       <strong>
-        not
-       </strong>
-       encrypted. You can use
+       on Privly. PGP messages encrypt your content 
+      so that only the intended reciepients can decrypt the message.
+      You can use
        <a href="http://daringfireball.net/projects/markdown/basics">
         Markdown
        </a>
@@ -241,8 +308,8 @@
         read more
        </a>
        about Privly Applications or about
-       <a href="https://github.com/privly/privly-organization/wiki/Posts" target="_blank">
-        PlainPosts
+       <a href="https://github.com/privly/privly-organization/wiki/PGP" target="_blank">
+        PGP
        </a>
        specifically.
       </p>
@@ -271,7 +338,7 @@
         .
        </li>
        <li>
-        This post will be stored in cleartext, meaning it is not encrypted.
+        This post will be encrypted, but it is likely that a sophisticated adversary, e.g. governments, will be able to decrypt the content without the key.
        </li>
       </ul>
      </div>
