@@ -39,6 +39,13 @@
     <input id="directoryURL" name="directoryURL" type="url" />
     <button id="save_directory">Save</button>
   </p>
+  <p style="display:none;" class="flash notice" id="notify_connectivity">
+    Unable to upload your signed key to the directory, 
+    <span id="connectivity_resource"> </span>
+    .  This could mean the directory is offline, or you may have lost network
+    connectivity. Click to <button id="retry_connectivity">retry</button> the
+    upload.
+  </p>
 {% endblock %}
 
 {% block form %}

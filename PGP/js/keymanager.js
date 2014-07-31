@@ -152,6 +152,33 @@ var keyManager = {
       }
     };
   },
+
+  /**
+   * Notify the user there is a connectivity problem with the passed in
+   * resource.
+   *
+   * @param {string} resource The remote resource that cannot be accessed.
+   */
+  notifyConnectivity: function(resource){
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('pgp-payload',function(payload){
+        $("#connectivity_resource").text(resource);
+        $("#notify_connectivity").show();
+        $("#retry_connectivity").click(function(){
+          if (payload !== null){ // have stored payload
+            keyManager.uploadPayload(payload,function(results){ 
+              console.log("Upload results: "+results);
+              if (results === true){
+                $("#notify_connectivity").hide();
+              }
+            });
+          } else {
+            $("#notify_connectivity").hide();
+          }
+        });
+      });
+    });
+  },
   
   /**
    * Determine if a new persona key needs to be generated
