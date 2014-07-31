@@ -232,8 +232,12 @@ var keyManager = {
 
   /**
    * Generate a PGP key, add it to local storage, and upload it to directory.
+   *
+   * @param {function} callback The function that gets called after a key is
+   * generated and an attempt to upload it has been made. This function should
+   * accept a boolean representing the upload outcome.
    */
-  genPGPKeys: function(){
+  genPGPKeys: function(callback){
     console.log("Generating New Key");
     var workerProxy = new openpgp.AsyncProxy('../vendor/openpgp.worker.js');
     workerProxy.seedRandom(10); // TODO: evaluate best value to use
@@ -241,7 +245,13 @@ var keyManager = {
       openpgp.enums.publicKey.rsa_encrypt_sign,
       512,'username','passphrase',function(err,data){ // TODO: increase key
         keyManager.addNewPGPKey(data,function(result){
-          keyManager.uploadKey(function(outcome){});
+          keyManager.createPayload(function(payload){
+            if (payload !== false){
+              keyManager.uploadPayload(payload, function(outcome){
+                callback(outcome);
+              });
+            } 
+          });
         });
       }
     );
