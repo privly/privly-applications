@@ -175,8 +175,8 @@ var PersonaId = {
    **/
   getSecretKeyFromBridge: function(bridge, email) {
     var emails = JSON.parse(bridge.emails);
-    if (emails.default[email] == undefined){
-      //console.log("Email does not match persona bridge");
+    if (Object.keys(emails).length == undefined || // Empty object
+             emails.default[email] == undefined) { // No email key
       return null;
     }
     var priv = emails.default[email].priv;
