@@ -5,6 +5,10 @@
   content="test/new.js,test/openpgp.js,test/identity.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js"/>
 {% endblock %}
 
+{% block css %}
+  <link class="top" href="../vendor/select2.css" rel="stylesheet"/>
+{% endblock %}
+
 {% block javascripts %}
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
   <script type="text/javascript" src="../vendor/markdown.js"></script>
