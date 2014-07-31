@@ -195,7 +195,13 @@ var keyManager = {
   needPersonaKey: function(callback){
     localforage.setDriver('localStorageWrapper',function(){
       localforage.getItem('pgp-persona-bridge',function(persona){
-        callback(persona == null);
+        if (persona != null){
+          localforage.getItem('pgp-email',function(email){
+            callback(PersonaId.getSecretKeyFromBridge(persona,email) == null);
+          });
+        } else {
+          callback(true);
+        }
       });
     });
   },
