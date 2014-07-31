@@ -117,6 +117,7 @@
               You are not currently signed into your content server. Please
               <a href="../Login/new.html" class="login_url btn btn-default">login</a>
             </p>
+            {% block messages %}{% endblock %}
             <p><a class="privlyUrl" href="" data-privly-exclude="true"></a></p>
           </div>
         </div>
