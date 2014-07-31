@@ -107,9 +107,28 @@ var callbacks = {
         keyManager.promptUserToLogin();
       }
       keyManager.needNewKey(function(pgp_need){ 
-          if (pgp_need === true){
-            keyManager.genPGPKeys();
-          }
+        if (pgp_need === true){
+          keyManager.genPGPKeys(function(outcome){
+            callbacks.needToUpload();
+          });
+        } else {
+          callbacks.needToUpload();
+        }
+      });
+    });
+  },
+
+  /**
+   * Assess if a key needs to be uploaded to dirp.  Call notifier if needed.
+   */
+  needToUpload: function(){
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('pgp-payload',function(payload){
+        if (payload !== null ){ // have a stored playload to upload
+          localStorage.getItem('pgp-directoryURL',function(directoryURL){
+            keyManager.notifyConnectivity(directoryURL);
+          });
+        }
       });
     });
   },
