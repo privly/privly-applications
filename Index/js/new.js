@@ -84,13 +84,58 @@ var callbacks = {
   },
   
   /**
+   * Parse the JSON date format and return the difference in time
+   * @param {json} string Represents the date 
+   * @param {bool} mode Sets if the date is in the past or in the future 
+   */
+  parseDate: function(string, mode) {
+
+    var date = new Date(string);
+    var current = new Date();
+
+    var timeDiff;
+    if (mode) {
+      timeDiff = Math.abs(current.getTime() - date.getTime());
+    } else {
+      timeDiff = Math.abs(date.getTime() - current.getTime());
+    }
+
+    var minutes_raw = Math.floor(timeDiff / (1000 * 60));
+    var hours_raw = Math.floor(timeDiff / (1000 * 3600));
+    var days = Math.floor(timeDiff / (1000 * 3600 * 24));
+
+    var hours = hours_raw - (days * 24);
+    var minutes = minutes_raw - (hours_raw * 60);
+    
+    if(days > 1) {
+      days = days + " days ";
+    } else if(days > 0) {
+      days = days + " day ";
+    } else {
+      days = "";
+    }
+
+    hours = hours > 0 ? hours + "h " : "";
+
+    var end;
+    if(minutes == 0 && hours == 0 && days == 0) {
+      minutes = "";
+      end = "Just now";
+    } else {
+      end = (mode ? "m ago" : "m from now");
+    }
+    
+    return " " + days + hours + minutes + end;
+  },
+
+  /**
    * Display the table of posts stored at the server.
    */
   postCompleted: function(response) {
     
     var tableBody = document.getElementById("table_body");
     for(var i = 0; i < response.json.length; i++) {
-      
+
       var href = response.json[i].privly_URL;
       var params = href.substr(href.indexOf("?") + 1);
       var app = privlyParameters.parameterStringToHash(params).privlyApp;
@@ -116,16 +161,39 @@ var callbacks = {
       td2.appendChild(td2a);
       tr.appendChild(td2);
       
+      // For the next three columns hide the Json date format,
+      // and create a <i> child in which the difference in time will be shown
       var td3 = document.createElement('td');
-      td3.textContent = response.json[i].created_at;
+      td3.textContent = response.json[i].created_at;      
+      td3.style.lineHeight = "0.0";
+      td3.style.textIndent = "-99999px";
+      var i1 = document.createElement('i');
+      i1.textContent = callbacks.parseDate(response.json[i].created_at, true);
+      i1.style.textIndent = "0px";
+      i1.style.display = "block";
+      td3.appendChild(i1);
       tr.appendChild(td3);
       
       var td4 = document.createElement('td');
       td4.textContent = response.json[i].burn_after_date;
+      td4.style.lineHeight = "0.0";      
+      td4.style.textIndent = "-99999px";
+      var i2 = document.createElement('i');
+      i2.textContent = callbacks.parseDate(response.json[i].burn_after_date, false);
+      i2.style.textIndent = "0px";
+      i2.style.display = "block";
+      td4.appendChild(i2);
       tr.appendChild(td4);
       
       var td5 = document.createElement('td');
-      td5.textContent = response.json[i].updated_at;
+      td5.textContent = response.json[i].updated_at;      
+      td5.style.lineHeight = "0.0";      
+      td5.style.textIndent = "-99999px";
+      var i3 = document.createElement('i');
+      i3.textContent = callbacks.parseDate(response.json[i].updated_at, true);
+      i3.style.textIndent = "0px";
+      i3.style.display = "block";
+      td5.appendChild(i3);
       tr.appendChild(td5);
       
       var td6 = document.createElement('td');
