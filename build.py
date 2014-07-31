@@ -84,10 +84,10 @@ if __name__ == "__main__":
     "nav": ["Index", "Login"],
     
     # New packages are apps that can generate new Privly-type links.
-    "new": ["ZeroBin", "PlainPost"],
+    "new": ["ZeroBin", "PlainPost", "PGP"],
     
     # Show packages are apps that can be injected into a host page.
-    "show": ["ZeroBin", "PlainPost"]
+    "show": ["ZeroBin", "PlainPost", "PGP"]
   }
   
   for package_type in packages:
