@@ -249,54 +249,72 @@ var keyManager = {
 
   
   /**
-   * Upload a signed PGP public key to a directory provider.
+   * Sign a PGP public with the persona private key.
    *
    * On a high level, this function needs to:
    *   1) Have access to the Persona private key
    *   2) Sign the key passed in with the Persona Private key
-   *   3) Upload the signed public key to the directory provider.
    *
+   * @param {function} callback The function that gets called after a key is
+   * uploaded to the key server. This function should accept the generated
+   * payload as a paremeter.
+   */
+  createPayload: function(callback){
+    console.log("Uploading key");
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('pgp-my_keypairs',function(my_keys){
+        localforage.getItem('pgp-email',function(email){
+          var keypair = my_keys[email][0];// most recent key
+          if (keypair === null) {
+            console.log("No key to upload found");
+            callback(false);
+          }
+          var pubkey = keypair.publicKeyArmored;
+          keyManager.getPersonaKey(function(secretkey) {
+            if (secretkey !== null) {
+              // TODO: Find a better way to seed jwcrypto.
+              jwcrypto.addEntropy("ACBpasdavbepOAEfBPBHESAEFGHA");
+              PersonaId.bundle(pubkey, secretkey, email, function(payload){
+                callback(payload);
+              });
+            } else {
+              console.log("Secret key is null");
+              callback(false);
+            }
+          });
+        });
+      });
+    });
+  },
+
+  /**
+   * Upload the passed in payload to a directory provider. The payload
+   * consisits of a PGP public key signed with the Persona private key. 
+   *
+   * @param {object} payload The payload to be uploaded.
    * @param {function} callback The function that gets called after a key is
    * uploaded to the key server. This function should accept a boolean value as
    * a paremeter.
    */
-  uploadKey: function(callback){
-    console.log("Uploading key");
+  uploadPayload: function(payload, callback){
     localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('pgp-my_keypairs',function(my_keys){
-      localforage.getItem('pgp-email',function(email){
       localforage.getItem('pgp-directoryURL',function(directoryURL){
-        var keypair = my_keys[email][0];// most recent key
-        if (keypair === null) {
-          console.log("No key to upload found");
-          callback(false);
+        directoryURL += "/store";
+        $.get(
+          directoryURL,
+          payload
+        ).done(function(response){
+          console.log("Upload Success");
+          localforage.removeItem('pgp-payload', function(){
+            callback(true);
+          })
         }
-        var pubkey = keypair.publicKeyArmored;
-        keyManager.getPersonaKey(function(secretkey) {
-          if (secretkey !== null) {
-            // TODO: Find a better way to seed jwcrypto.
-            jwcrypto.addEntropy("ACBpasdavbepOAEfBPBHESAEFGHA");
-            directoryURL += "/store";
-            PersonaId.bundle(pubkey, secretkey, email, function(payload) {
-              $.get(
-                directoryURL,
-                payload
-              ).done(function(response){
-                console.log("Upload Success");
-                callback(true);
-              }
-              ).fail(function(response){
-                console.log("Upload Fail");
-                callback(false);
-              });
-            });
-          } else {
-            console.log("Secret key is null");
+        ).fail(function(response){
+          console.log("Upload Fail");
+          localforage.setItem('pgp-payload', payload, function(){
             callback(false);
-          }
+          });
         });
-      });
-      });
       });
     });
   }
