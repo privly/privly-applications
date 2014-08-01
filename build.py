@@ -13,7 +13,7 @@
 #
 # [
 #  {
-#    "release_status": "alpha", // Required values: experimental, alpha, beta, release
+#    "release_status": "alpha", // Required values: experimental, deprecated, alpha, beta, release
 #    "platforms": ["chrome"], // Optional values: web, chrome
 #    "subtemplate_path": "Pages/ChromeFirstRun.html.subtemplate", // Required path to the subtemplate
 #    "outfile_path": "Pages/ChromeFirstRun.html", // Required path the othe output file
