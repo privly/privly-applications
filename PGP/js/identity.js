@@ -24,7 +24,24 @@ require('/lib/algs/ds');
 // before putting this into production without a hardcoded
 // initialization vector.
 
+/**
+ * The functions of PersonaId
+ *
+ * 1. bundle: Creates the payload to be uploaded to a directory.
+ * 2. sign: Signs an object with a private key.
+ * 3. verify: Checks the signature on the passed in object.
+ * 4. verifyPayload: Extracts the signed pgp key from the payload and verifes
+ *      the signature.
+ * 5. extractPubkey: Extracts the public key from a backed identity assertion.
+ * 6. extractField: Extracts an arbitrary field from a backed identity
+ *      assertion.
+ * 7. extractEmail: Extracts the email from a backed identity assertion.
+ * 8. remotelyVerifyBia: Call out to Persona's remote verifier to check
+ *      validity of the backed identity assertion.
+ * 9. getSecretKeyFromBridge: Extract a secret from the persona-bridge object.
+ **/
 var PersonaId = {
+
   /**
    * Create a payload to send to the directory provider.
    *
