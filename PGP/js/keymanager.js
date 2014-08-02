@@ -256,6 +256,7 @@ var keyManager = {
           // Note: Currently openPGP.js does not support setting a key
           // expiration. Since nearly all of the keys we deal with are generated
           // with openPGP.js, we do not yet check to see if keys expire.
+          // See https://github.com/privly/privly-applications/issues/62
           console.log("Already have a key.");
           callback(false);
         }
@@ -273,7 +274,9 @@ var keyManager = {
   genPGPKeys: function(callback){
     console.log("Generating New Key");
     var workerProxy = new openpgp.AsyncProxy('../vendor/openpgp.worker.js');
-    workerProxy.seedRandom(10); // TODO: evaluate best value to use
+    // TODO: evaluate best value to use for a random seed.
+    // See https://github.com/privly/privly-applications/issues/65
+    workerProxy.seedRandom(10); 
     workerProxy.generateKeyPair(
       openpgp.enums.publicKey.rsa_encrypt_sign,
       512,'username','passphrase', function(err, data){ // TODO: increase key
@@ -316,6 +319,7 @@ var keyManager = {
           keyManager.getPersonaKey(function(secretkey) {
             if (secretkey !== null) {
               // TODO: Find a better way to seed jwcrypto.
+              // See https://github.com/privly/privly-applications/issues/65
               jwcrypto.addEntropy("ACBpasdavbepOAEfBPBHESAEFGHA");
               PersonaId.bundle(pubkey, secretkey, email, function(payload){
                 callback(payload);
