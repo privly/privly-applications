@@ -20,9 +20,9 @@ require('/lib/algs/ds');
 // the RNG is seeded, or you call `jwcrypto.addEntropy` before using
 // functions `sign` or `bundle`.
 
-// TODO: We need to determine how to autoseed jwcrypto
-// before putting this into production without a hardcoded
-// initialization vector.
+// TODO: We need to determine how to autoseed jwcrypto before putting this into
+// production without a hardcoded seed.
+// For more info see: https://github.com/privly/privly-applications/issues/65
 
 /**
  * The functions of PersonaId
