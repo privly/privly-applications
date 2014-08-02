@@ -100,9 +100,9 @@ var PersonaId = {
     var bia_pubkey = this.extractPubkey(payload.bia);
     this.verify(payload.pgp, bia_pubkey, function(err, key) {
       if (err == null) {
-        callback(true,key);
+        callback(true, key);
       } else {
-        callback(false,null);
+        callback(false, null);
       }
     });
   },
@@ -160,9 +160,9 @@ var PersonaId = {
    * response from the remote verifier. The function should accept a boolean as
    * a parameter.
    **/
-  remotelyVerifyBia: function(bia,callback){
-    localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('pgp-directoryURL',function(audience){
+  remotelyVerifyBia: function(bia, callback){
+    localforage.setDriver('localStorageWrapper', function(){
+      localforage.getItem('pgp-directoryURL', function(audience){
         audience += ":443";
         $.post(
           "https://verifier.login.persona.org/verify",

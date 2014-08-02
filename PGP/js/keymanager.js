@@ -37,7 +37,7 @@ var keyManager = {
           } else {
             value[email] = [appended_value];
           }
-          localforage.setItem(key,value,callback);
+          localforage.setItem(key, value, callback);
         });
       });
     });
@@ -52,10 +52,10 @@ var keyManager = {
    * @param {function} callback The function that will be executed after
    * the keypair has been set in both my_contacts and my_keypairs.
    */
-  addNewPGPKey: function(keypair,callback){
+  addNewPGPKey: function(keypair, callback){
     var pubkey = keypair.publicKeyArmored;
-    keyManager.setNewPGPKey('pgp-my_keypairs',keypair,function(result){
-      keyManager.setNewPGPKey('pgp-my_contacts',pubkey,callback(result));
+    keyManager.setNewPGPKey('pgp-my_keypairs', keypair, function(result){
+      keyManager.setNewPGPKey('pgp-my_contacts', pubkey, callback(result));
     });
   },
 
@@ -68,10 +68,10 @@ var keyManager = {
    * accept the value of the pgp-persona-bridge as a paremeter.
    */
   promptUserToLogin: function(callback){
-    localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('pgp-directoryURL',function(directoryURL){
+    localforage.setDriver('localStorageWrapper', function(){
+      localforage.getItem('pgp-directoryURL', function(directoryURL){
         $("#messages").hide();
-        $("#persona_link").attr("href",directoryURL);
+        $("#persona_link").attr("href", directoryURL);
         $("#login_persona").show();
         document.addEventListener('storage', function(storageEvent){
           if (storageEvent.key === 'pgp-persona-bridge'){
@@ -94,10 +94,10 @@ var keyManager = {
     $("#messages").hide();
     $("#need_email").show();
     // Add to local storage on clicking the save button
-    document.querySelector('#save_email').addEventListener('click',function(){
+    document.querySelector('#save_email').addEventListener('click', function(){
       var email = document.getElementById("emailAddress").value;
-      localforage.setDriver('localStorageWrapper',function(){
-        localforage.setItem('pgp-email',email,function(){
+      localforage.setDriver('localStorageWrapper', function(){
+        localforage.setItem('pgp-email', email, function(){
           $("#need_email").hide();
           callback(email);
         });
@@ -107,8 +107,8 @@ var keyManager = {
     var email_input = document.getElementById("emailAddress");
     email_input.onkeyup = function(){
       if (event.keyCode === 13){ // user hit enter
-        localforage.setDriver('localStorageWrapper',function(){
-          localforage.setItem('pgp-email',email_input.value,function(){
+        localforage.setDriver('localStorageWrapper', function(){
+          localforage.setItem('pgp-email', email_input.value, function(){
             $("#need_email").hide();
             callback(email_input.value);
           });
@@ -130,10 +130,10 @@ var keyManager = {
     $("#messages").hide();
     $("#need_directory").show();
     // Add to local storage on clicking the save button
-    document.querySelector('#save_directory').addEventListener('click',function(){
+    document.querySelector('#save_directory').addEventListener('click', function(){
       var directoryURL = document.getElementById("directoryURL").value;
-      localforage.setDriver('localStorageWrapper',function(){
-        localforage.setItem('pgp-directoryURL',directoryURL,function(){
+      localforage.setDriver('localStorageWrapper', function(){
+        localforage.setItem('pgp-directoryURL', directoryURL, function(){
           $("#need_directory").hide();
           callback(directoryURL);
         });
@@ -143,8 +143,8 @@ var keyManager = {
     var directory_input = document.getElementById("directoryURL");
     directory_input.onkeyup = function(){
       if (event.keyCode === 13){
-        localforage.setDriver('localStorageWrapper',function(){
-          localforage.setItem('pgp-directoryURL',directory_input.value,function(){
+        localforage.setDriver('localStorageWrapper', function(){
+          localforage.setItem('pgp-directoryURL', directory_input.value, function(){
             $("#need_directory").hide();
             callback(directory_input.value);
           });
@@ -160,13 +160,13 @@ var keyManager = {
    * @param {string} resource The remote resource that cannot be accessed.
    */
   notifyConnectivity: function(resource){
-    localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('pgp-payload',function(payload){
+    localforage.setDriver('localStorageWrapper', function(){
+      localforage.getItem('pgp-payload', function(payload){
         $("#connectivity_resource").text(resource);
         $("#notify_connectivity").show();
         $("#retry_connectivity").click(function(){
           if (payload !== null){ // have stored payload
-            keyManager.uploadPayload(payload,function(results){ 
+            keyManager.uploadPayload(payload, function(results){ 
               console.log("Upload results: "+results);
               if (results === true){
                 $("#notify_connectivity").hide();
@@ -193,11 +193,11 @@ var keyManager = {
    * boolean value as a paremeter.
    */
   needPersonaKey: function(callback){
-    localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('pgp-persona-bridge',function(persona){
+    localforage.setDriver('localStorageWrapper', function(){
+      localforage.getItem('pgp-persona-bridge', function(persona){
         if (persona != null){
-          localforage.getItem('pgp-email',function(email){
-            callback(PersonaId.getSecretKeyFromBridge(persona,email) == null);
+          localforage.getItem('pgp-email', function(email){
+            callback(PersonaId.getSecretKeyFromBridge(persona, email) == null);
           });
         } else {
           callback(true);
@@ -214,9 +214,9 @@ var keyManager = {
    * as a paremeter.
    */
   getPersonaKey: function(callback){
-    localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('pgp-persona-bridge',function(persona){
-        localforage.getItem('pgp-email',function(email){
+    localforage.setDriver('localStorageWrapper', function(){
+      localforage.getItem('pgp-persona-bridge', function(persona){
+        localforage.getItem('pgp-email', function(email){
           if (email == null){
             callback(null);
           }
@@ -247,11 +247,11 @@ var keyManager = {
    */
   needNewKey: function(callback){
     // Determine if a key is already in local storage
-    localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('pgp-my_keypairs',function(keypairs){
+    localforage.setDriver('localStorageWrapper', function(){
+      localforage.getItem('pgp-my_keypairs', function(keypairs){
         if (keypairs === null){ // no key found, return true
           callback(true);
-        } else { // it does exist,check expirey regenerate if needed
+        } else { // it does exist, check expirey regenerate if needed
           // TODO: check if key is about to expire and gen a new one if needed
           // Note: Currently openPGP.js does not support setting a key
           // expiration. Since nearly all of the keys we deal with are generated
@@ -276,8 +276,8 @@ var keyManager = {
     workerProxy.seedRandom(10); // TODO: evaluate best value to use
     workerProxy.generateKeyPair(
       openpgp.enums.publicKey.rsa_encrypt_sign,
-      512,'username','passphrase',function(err,data){ // TODO: increase key
-        keyManager.addNewPGPKey(data,function(result){
+      512,'username','passphrase', function(err, data){ // TODO: increase key
+        keyManager.addNewPGPKey(data, function(result){
           keyManager.createPayload(function(payload){
             if (payload !== false){
               keyManager.uploadPayload(payload, function(outcome){
@@ -304,9 +304,9 @@ var keyManager = {
    */
   createPayload: function(callback){
     console.log("Uploading key");
-    localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('pgp-my_keypairs',function(my_keys){
-        localforage.getItem('pgp-email',function(email){
+    localforage.setDriver('localStorageWrapper', function(){
+      localforage.getItem('pgp-my_keypairs', function(my_keys){
+        localforage.getItem('pgp-email', function(email){
           var keypair = my_keys[email][0];// most recent key
           if (keypair === null) {
             console.log("No key to upload found");
@@ -340,8 +340,8 @@ var keyManager = {
    * a paremeter.
    */
   uploadPayload: function(payload, callback){
-    localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('pgp-directoryURL',function(directoryURL){
+    localforage.setDriver('localStorageWrapper', function(){
+      localforage.getItem('pgp-directoryURL', function(directoryURL){
         directoryURL += "/store";
         $.get(
           directoryURL,
