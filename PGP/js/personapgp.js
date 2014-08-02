@@ -29,6 +29,7 @@
  *    assurance verifies that decrypted message is valid json.
  */
 var PersonaPGP = {
+
   /**
    * Attempt to find the public key of a given email address.  Looks at local
    * resources before querying remote resources. 
@@ -39,20 +40,20 @@ var PersonaPGP = {
    * takes place. The function should accept an array of public keys or null as
    * a paremter.
    */
-  findPubKey: function(email,callback){
+  findPubKey: function(email, callback){
     // query localForage 
-    localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('pgp-my_contacts',function(pubkey_email_hash){
+    localforage.setDriver('localStorageWrapper', function(){
+      localforage.getItem('pgp-my_contacts', function(pubkey_email_hash){
         if (email in pubkey_email_hash) {
           var pub_keys = pubkey_email_hash[email]; 
           // TODO: see if they are expired, look remotely for new key as needed
           callback(pub_keys); //array of pub keys associated with email
         } else { // not found locally, query DirP
-          PersonaPGP.findPubKeyRemote(email,function(bia_pub_keys){
+          PersonaPGP.findPubKeyRemote(email, function(bia_pub_keys){
             if (bia_pub_keys == null){
               callback(null);
             } else { // Found remotely, verify and add to localForage
-              PersonaPGP.findPubKeyRemoteHelper(email,bia_pub_keys,callback);
+              PersonaPGP.findPubKeyRemoteHelper(email, bia_pub_keys, callback);
             }
           });
         }
@@ -68,7 +69,7 @@ var PersonaPGP = {
    * that was returned from the directory server.
    * @param {string} email The email the user originally searched for.
    **/
-  emailMatch: function(bia_pub_key,email){
+  emailMatch: function(bia_pub_key, email){
     if (PersonaId.extractEmail(bia_pub_key["bia"]) === email){
       return true;
     }
@@ -85,11 +86,11 @@ var PersonaPGP = {
    * @param {function} callback The function that is run once all keys have
    * been verified. This function should accept an array of verified keys.
    */
-  findPubKeyRemoteHelper: function(email,bia_pub_keys,callback){
+  findPubKeyRemoteHelper: function(email, bia_pub_keys, callback){
     var verified = {};
     var callAddRemote = function(i){
-      PersonaPGP.addRemoteKeyToLocal(bia_pub_keys[i],function(result,pub_key){
-        if (PersonaPGP.emailMatch(bia_pub_keys[i],email)){
+      PersonaPGP.addRemoteKeyToLocal(bia_pub_keys[i], function(result, pub_key){
+        if (PersonaPGP.emailMatch(bia_pub_keys[i], email)){
           if (result in verified){
             verified[result].push(pub_key);
           } else {
@@ -132,9 +133,9 @@ var PersonaPGP = {
    * the directory server is returned.  This function should accept an array of
    * objects or null as a parameter.
    */
-  findPubKeyRemote: function(email,callback){
-    localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('pgp-directoryURL',function(remote_directory){
+  findPubKeyRemote: function(email, callback){
+    localforage.setDriver('localStorageWrapper', function(){
+      localforage.getItem('pgp-directoryURL', function(remote_directory){
         remote_directory += "/search";
         var value = {
           email: email
@@ -170,24 +171,24 @@ var PersonaPGP = {
    * gone through the verification process.  This function should accept a
    * boolean and a public key or null as paremeters.
    */
-  addRemoteKeyToLocal: function(bia_pub_key,callback){
+  addRemoteKeyToLocal: function(bia_pub_key, callback){
     var email = PersonaId.extractEmail(bia_pub_key["bia"]);
-    PersonaPGP.verifyPubKey(bia_pub_key,function(outcome,pgp_pub_key){
+    PersonaPGP.verifyPubKey(bia_pub_key, function(outcome, pgp_pub_key){
       if (outcome === true){
-        localforage.setDriver('localStorageWrapper',function(){
-          localforage.getItem('pgp-my_contacts',function(data){
+        localforage.setDriver('localStorageWrapper', function(){
+          localforage.getItem('pgp-my_contacts', function(data){
             if (email in data){
               data[email].push(pgp_pub_key);
             } else {
               data[email] = [pgp_pub_key];
             }
-            localforage.setItem('pgp-my_contacts',data,function(){
-              callback(true,pgp_pub_key);
+            localforage.setItem('pgp-my_contacts', data, function(){
+              callback(true, pgp_pub_key);
             });
           });
         });
       } else {
-        callback(false,null);
+        callback(false, null);
       }
     });
   },
@@ -209,23 +210,23 @@ var PersonaPGP = {
    * gone through the remote verification process.  This function should accept
    * a boolean and a public key or null as paremeters.
    */
-  verifyPubKey: function(bia_pub_key,callback){
-    PersonaId.verifyPayload(bia_pub_key,function(outcome,key){
+  verifyPubKey: function(bia_pub_key, callback){
+    PersonaId.verifyPayload(bia_pub_key, function(outcome, key){
       if (outcome === true){
-        //console.log("Signature on PGP key is valid");
+        // Signature on PGP key is valid
         var bia = bia_pub_key['bia'];
-        PersonaId.remotelyVerifyBia(bia,function(bia_outcome){
+        PersonaId.remotelyVerifyBia(bia, function(bia_outcome){
           if (bia_outcome === true){
-            //console.log("Bia is valid");
-            callback(true,key);
+            // Bia is valid
+            callback(true, key);
           } else {
-            //console.log("Bia is invalid");
-            callback(false,null);
+            // Bia is invalid
+            callback(false, null);
           }
         });
       } else {
-        //console.log("Signature on PGP key is invalid");
-        callback(false,null);
+        // Signature on PGP key is invalid
+        callback(false, null);
       }
     });
   },
@@ -240,7 +241,7 @@ var PersonaPGP = {
    * has been encrypted. The function should accept the ciphertext as a
    * parameter.
    **/
-  encryptHelper: function(plaintext,pubKeys,callback){
+  encryptHelper: function(plaintext, pubKeys, callback){
     // Here we convert the plaintext into a json string. We do this to
     // check if the decryption occured with the correct string.  If it's
     // formated as json it is extremely unlikely to have been decrypted
@@ -251,7 +252,7 @@ var PersonaPGP = {
     // preserve the identity of recipients.
     var plaintext_as_json = JSON.stringify({message: plaintext});
 
-    var ciphertext = openpgp.encryptMessage(pubKeys,plaintext_as_json);
+    var ciphertext = openpgp.encryptMessage(pubKeys, plaintext_as_json);
     callback(ciphertext);
   },
 
@@ -265,14 +266,14 @@ var PersonaPGP = {
    * has been encrypted. The function should accept the ciphertext as a
    * parameter.
    */
-  encrypt: function(emails,plaintext,callback){
+  encrypt: function(emails, plaintext, callback){
     // TODO:Check if additional arguments have been passed,
     // sign and encrypt if private key passed or just encrypt if not.
     // For now, not signing messages.
     var pubKeys = [];
     var completed = [];
     var getPublicKeys = function(i){
-      PersonaPGP.findPubKey(emails[i],function(Keys){
+      PersonaPGP.findPubKey(emails[i], function(Keys){
         if (typeof Keys === "object"){
           for(var j = 0; j < Keys.length; j++){
             var pub_key = openpgp.key.readArmored(Keys[j]).keys[0];
@@ -281,13 +282,13 @@ var PersonaPGP = {
         }
         completed.push(emails[i]);
         if (completed.length === emails.length){
-          PersonaPGP.encryptHelper(plaintext,pubKeys,callback);
+          PersonaPGP.encryptHelper(plaintext, pubKeys, callback);
         }
       });
     };
 
-    localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('pgp-email',function(my_email){
+    localforage.setDriver('localStorageWrapper', function(){
+      localforage.getItem('pgp-email', function(my_email){
         emails.push(my_email); // so you can view your own messages
         for (var i = 0; i < emails.length; i++){
           getPublicKeys(i);
@@ -304,12 +305,12 @@ var PersonaPGP = {
    * has been decrypted. The function should accept the plaintext or an error
    * string as a parameter.
    */
-  decrypt: function(ciphertext,callback){
+  decrypt: function(ciphertext, callback){
     var encrypted_message = openpgp.message.readArmored(ciphertext);
     var keyids = encrypted_message.getEncryptionKeyIds();
 
-    localforage.setDriver('localStorageWrapper',function(){
-      localforage.getItem('pgp-my_keypairs',function(my_keys){
+    localforage.setDriver('localStorageWrapper', function(){
+      localforage.getItem('pgp-my_keypairs', function(my_keys){
         if (my_keys.length === 0 || my_keys === null){
           callback("No private keys found. Failed to decrypt.");
         }
@@ -322,7 +323,7 @@ var PersonaPGP = {
             // TODO: get passphrase from user 
             var success = privKey.decryptKeyPacket(keyids,"passphrase");
             if (success === true){
-              var message = PersonaPGP.decryptHelper(privKey,encrypted_message);
+              var message = PersonaPGP.decryptHelper(privKey, encrypted_message);
               if (message !== "next"){ // decrypted successfully
                 callback(message);
               } else if ( i === (emails.length - 1) &&
@@ -351,14 +352,14 @@ var PersonaPGP = {
    * with.
    * @param {object} encrypted_message The dearmored ciphertext object.
    */
-  decryptHelper: function(privKey,encrypted_message){
+  decryptHelper: function(privKey, encrypted_message){
     // Should determine if message is signed or not, and use appropriate
     // decryption method accordingly. If it is signed, find public key and
     // then verify signature.
     // For now assuming message is not signed.
     var decryptFailedMsg = "The data behind this link cannot be" +
                                  " decrypted with your key.";
-    var cleartext = openpgp.decryptMessage(privKey,encrypted_message);
+    var cleartext = openpgp.decryptMessage(privKey, encrypted_message);
     var message = null;
     if (cleartext == null){
       console.log("Decrypted cleartext is null or undefined");
