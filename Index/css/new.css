@@ -1,3 +1,6 @@
+td {
+  white-space: nowrap
+}
 .display tr {
   line-height: 20px;
 }
@@ -104,6 +107,7 @@ table.dataTable thead .sorting {
   *cursor: hand;
 }
 
+/* Sorting icons in thead */ 
 table.dataTable thead .sorting {
   background: url("../images/sort_both.png") no-repeat center right;
 }
@@ -120,3 +124,30 @@ table.dataTable thead .sorting_desc_disabled {
   background: url("../images/sort_desc_disabled.png") no-repeat center right;
 }
 
+/* Cell border */
+table.dataTable.cell-border tbody th,
+table.dataTable.cell-border tbody td {
+  border-top: 1px solid #AAAAAA;
+  border-right: 1px solid #AAAAAA;
+}
+table.dataTable.cell-border tbody tr th:first-child,
+table.dataTable.cell-border tbody tr td:first-child {
+  border-left: 1px solid #AAAAAA;
+}
+table.dataTable.cell-border tbody tr:first-child th,
+table.dataTable.cell-border tbody tr:first-child td {
+  border-top: none;
+}
+
+/* Highlight a row when hovered over */
+table.dataTable.display tbody tr:hover,
+table.dataTable.display tbody tr.odd:hover,
+table.dataTable.display tbody tr.even:hover {
+  background-color: #C4C4C4;
+}
+
+table.dataTable.display tbody tr:hover > .sorting_1,
+table.dataTable.display tbody tr.odd:hover > .sorting_1,
+table.dataTable.display tbody tr.even:hover > .sorting_1 {
+  background-color: #C4C4C4;
+}
