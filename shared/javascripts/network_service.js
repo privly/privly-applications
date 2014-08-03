@@ -400,6 +400,18 @@ var privlyNetworkService = {
   },
   
   /**
+   * Hide all the elements not required by mobile and adjust the CSS appropriately.
+   * Elements will only be modified for mobile apps.
+   */
+  mobileHide: function() {
+    if( true || privlyNetworkService.platformName() === "IOS" ||
+        privlyNetworkService.platformName() === "ANDROID" ) {
+      $(".mobile_hide").hide();
+      $("body").css("padding-top", "0px");
+    }
+  },
+
+  /**
    * Assign the href attribute of navigation links appropriately.
    */
   initializeNavigation: function() {
@@ -421,14 +433,10 @@ var privlyNetworkService = {
       $(".account_url").attr("target", "_self");
       $(".legal_nav").attr("target", "_self");
     }
-    
-    if( privlyNetworkService.platformName() === "IOS" ||
-        privlyNetworkService.platformName() === "ANDROID" ) {
-      $(".mobile_hide").hide(); 
-    }
-    
+
+    privlyNetworkService.mobileHide();
   },
-  
+
   /**
    * Show/hide the appropriate navigation items for when the user is logged out.
    */
@@ -441,10 +449,7 @@ var privlyNetworkService = {
     $(".logged_in_nav").hide();
     $(".logged_out_nav").show();
     $(".injected_hide").show();
-    if( privlyNetworkService.platformName() === "IOS" ||
-        privlyNetworkService.platformName() === "ANDROID" ) {
-      $(".mobile_hide").hide(); 
-    }
+    privlyNetworkService.mobileHide();
   },
   
   /**
@@ -459,9 +464,6 @@ var privlyNetworkService = {
     $(".injected_hide").show();
     $(".logged_in_nav").show();
     $(".logged_out_nav").hide();
-    if( privlyNetworkService.platformName() === "IOS" ||
-        privlyNetworkService.platformName() === "ANDROID" ) {
-      $(".mobile_hide").hide(); 
-    }
+    privlyNetworkService.mobileHide();
   }
 }
