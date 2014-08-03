@@ -404,7 +404,7 @@ var privlyNetworkService = {
    * Elements will only be modified for mobile apps.
    */
   mobileHide: function() {
-    if( true || privlyNetworkService.platformName() === "IOS" ||
+    if( privlyNetworkService.platformName() === "IOS" ||
         privlyNetworkService.platformName() === "ANDROID" ) {
       $(".mobile_hide").hide();
       $("body").css("padding-top", "0px");
