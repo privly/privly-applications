@@ -15,9 +15,10 @@ button{
   cursor: pointer;
 }
 
-#status, #server_status{
+#status, #server_status, #button_status{
   color: #666666;
   font-family: 'Lobster';
+  padding-top: 5px;
 }
 
 fieldset{

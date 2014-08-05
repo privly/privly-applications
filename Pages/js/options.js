@@ -30,6 +30,28 @@
  */
 
 /**
+ * Saves user's setting to disable Privly button appearance
+ */
+function saveCheckedSetting() {
+
+  // reset status
+  var status = document.getElementById("button_status");
+  status.innerHTML = "";
+
+  var checkedState = document.querySelector("#disableBtn").checked;
+  localStorage["checkedValue"] = checkedState;
+
+  status.innerHTML = "Setting Saved."; 
+}
+
+/**
+ * Restores user's setting to disable Privly button appearance
+ */
+function restoreCheckedSetting() {
+  document.getElementById("disableBtn").checked = (localStorage["checkedValue"] === "true");
+}
+
+/**
  * Saves user's custom whitelist to localStorage.
  */
 function saveWhitelist() {
@@ -253,6 +275,9 @@ function listeners(){
   $("#messages").hide();
   $("#form").show();
   privlyNetworkService.showLoggedInNav();
+
+  // Save the current setting for the Privly button appearance
+  document.querySelector('#save_btnAppearance').addEventListener('click', saveCheckedSetting);
   
   //Glyph generation
   document.querySelector('#regenerate_glyph').addEventListener('click', regenerateGlyph);
@@ -383,6 +408,9 @@ function removeUrlInputs (event) {
     target.parentElement.remove();
   }
 }
+
+// Restore value of the checkbox according to localStorage
+document.addEventListener('DOMContentLoaded', restoreCheckedSetting);
 
 // Save updates to the white list
 document.addEventListener('DOMContentLoaded', restoreWhitelist);
