@@ -68,6 +68,13 @@ var callbacks = {
    * returns from the server.
    */
   pendingLogin: function(callback) {
+
+    // Save to localStorage the app to redirect to after succesful log in
+    if(window.location.href.indexOf("ZeroBin") > -1) {
+      localStorage["Login:redirect_to_app"] = "ZeroBin/new.html";
+    } else if(window.location.href.indexOf("PlainPost") > -1) {
+      localStorage["Login:redirect_to_app"] = "PlainPost/new.html";
+    }
     
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
