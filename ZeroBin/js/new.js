@@ -65,6 +65,9 @@ function initializeApplication() {
   var contentElement = document.getElementById("content");
   contentElement.addEventListener('keyup', previewMarkdown);
 
+   // Save to localStorage the app to redirect to after succesful log in
+  localStorage["Login:redirect_to_app"] = "ZeroBin/new.html";
+
   // Initialize the application
   callbacks.pendingLogin();
 
