@@ -65,10 +65,18 @@ var callbacks = {
             });
           }
           else if (option === 'pgp-directoryURL'){
-            keyManager.promptUserToSetDirectory(function(value){
-              callback(value);
-            });
+            var default_dirp = "http://dirp.grr.io";
+            localforage.setItem(option, default_dirp);
+            callback(default_dirp);
           }
+        } else if (option === 'pgp-directoryURL'){
+          // Prepend http:// to dirp if needed
+          if (value.indexOf("http://") === -1 &&
+              value.indexOf("https://") === -1){
+            var updated = "http://" + value;
+            localforage.setItem(option, updated);
+          }
+          callback(value);
         } else {
           callback(value);
         }
