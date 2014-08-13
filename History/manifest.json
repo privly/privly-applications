@@ -1,0 +1,8 @@
+[
+  {
+    "release_status": "alpha",
+    "subtemplate_path": "History/new.html.subtemplate",
+    "outfile_path": "History/new.html",
+    "subtemplate_dict": {"name": "History", "action": "nav"}
+  }
+]
