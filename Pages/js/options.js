@@ -39,7 +39,7 @@ function saveCheckedSetting() {
   status.innerHTML = "";
 
   var checkedState = document.querySelector("#disableBtn").checked;
-  localStorage["checkedValue"] = checkedState;
+  localStorage["Options:DissableButton"] = checkedState;
 
   status.innerHTML = "Setting Saved."; 
 }
@@ -48,7 +48,7 @@ function saveCheckedSetting() {
  * Restores user's setting to disable Privly button appearance
  */
 function restoreCheckedSetting() {
-  document.getElementById("disableBtn").checked = (localStorage["checkedValue"] === "true");
+  document.getElementById("disableBtn").checked = (localStorage["Options:DissableButton"] === "true");
 }
 
 /**
