@@ -155,45 +155,42 @@ var callbacks = {
       td1a.textContent = response.json[i].privly_application;
       td1.appendChild(td1a);
 
-      var td2a = document.createElement('a');
-      td2a.setAttribute("href", "../" + response.json[i].privly_application + "/show.html?" + params);
-      td2a.setAttribute("target", "_blank");
+      var td1b = document.createElement('a');
+      td1b.setAttribute("href", "../" + response.json[i].privly_application + "/show.html?" + params);
+      td1b.setAttribute("target", "_blank");
 
       var img = new Image();
       img.src = "images/sort_asc_disabled.png";
-      img.style.transform = "rotate(90deg)";
-      td2a.appendChild(img);
+      td1b.appendChild(img);
 
-      td2a.style.display = "inline-block";
-      td1.appendChild(td2a);
-
+      td1.appendChild(td1b);
       tr.appendChild(td1);
       
       // For the next three columns hide the Json date format,
-      // and create a <i> child in which the difference in time will be shown
-      var td3 = document.createElement('td');
-      td3.textContent = response.json[i].created_at;      
-      td3.className += " myHide";
+      // and create an <i> child in which the difference in time will be shown
+      var td2 = document.createElement('td');
+      td2.textContent = response.json[i].created_at;      
+      td2.className += " myHide";
       var i1 = document.createElement('i');
       i1.textContent = callbacks.parseDate(response.json[i].created_at, true);
-      td3.appendChild(i1);
+      td2.appendChild(i1);
+      tr.appendChild(td2);
+      
+      var td3 = document.createElement('td');
+      td3.textContent = response.json[i].burn_after_date;
+      td3.className += " myHide";
+      var i2 = document.createElement('i');
+      i2.textContent = callbacks.parseDate(response.json[i].burn_after_date, false);
+      td3.appendChild(i2);
       tr.appendChild(td3);
       
       var td4 = document.createElement('td');
-      td4.textContent = response.json[i].burn_after_date;
+      td4.textContent = response.json[i].updated_at;      
       td4.className += " myHide";
-      var i2 = document.createElement('i');
-      i2.textContent = callbacks.parseDate(response.json[i].burn_after_date, false);
-      td4.appendChild(i2);
-      tr.appendChild(td4);
-      
-      var td5 = document.createElement('td');
-      td5.textContent = response.json[i].updated_at;      
-      td5.className += " myHide";
       var i3 = document.createElement('i');
       i3.textContent = callbacks.parseDate(response.json[i].updated_at, true);
-      td5.appendChild(i3);
-      tr.appendChild(td5);
+      td4.appendChild(i3);
+      tr.appendChild(td4);
       
       tableBody.appendChild(tr)
       

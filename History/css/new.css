@@ -2,6 +2,11 @@ td {
   white-space: nowrap
 }
 
+/* Rotate the image that opens a new tab in the Preview column */
+td > a > img {
+  transform: rotate(90deg);
+}
+
 /* Hide td elements but show their <i> child */
 td.myHide {
   line-height: 0px;
