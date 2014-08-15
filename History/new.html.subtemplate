@@ -29,6 +29,7 @@
         </div>
         <hr/>
         <button id="message_link_button">Send Link to Host Page</button>
+        <button id="hide_preview">Hide</button>
       </div>
     </div>
   </div>
@@ -40,15 +41,13 @@
     <p id="loadingDiv">
       <img src="../shared/images/ajax-loader.gif" alt="loading..." />
     </p>
-    <table class="display" id="posts" style="width:100%">
+    <table class="display" id="posts" width="100%">
       <thead>
         <tr>
           <th>Preview</th>
-          <th>Open</th>
-          <th>Created At</th>
+          <th>Created</th>
           <th>Burnt After</th>
-          <th>Updated At</th>
-          <th>Markdown</th>
+          <th>Updated</th>
         </tr>
       </thead>
       <tbody id="table_body">
@@ -56,11 +55,9 @@
       <tfoot>
         <tr>
           <th>Preview</th>
-          <th>Open</th>
-          <th>Created At</th>
+          <th>Created</th>
           <th>Burnt After</th>
-          <th>Updated At</th>
-          <th>Markdown</th>
+          <th>Updated</th>
         </tr>
       </tfoot>
     </table>

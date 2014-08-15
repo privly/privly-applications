@@ -87,13 +87,58 @@ var callbacks = {
   },
   
   /**
+   * Parse the JSON date format and return the difference in time
+   * @param {json} string Represents the date 
+   * @param {bool} mode Sets if the date is in the past or in the future 
+   */
+  parseDate: function(string, mode) {
+
+    var date = new Date(string);
+    var current = new Date();
+
+    var timeDiff;
+    if (mode) {
+      timeDiff = Math.abs(current.getTime() - date.getTime());
+    } else {
+      timeDiff = Math.abs(date.getTime() - current.getTime());
+    }
+
+    var minutes_raw = Math.floor(timeDiff / (1000 * 60));
+    var hours_raw = Math.floor(timeDiff / (1000 * 3600));
+    var days = Math.floor(timeDiff / (1000 * 3600 * 24));
+
+    var hours = hours_raw - (days * 24);
+    var minutes = minutes_raw - (hours_raw * 60);
+    
+    if(days > 1) {
+      days = days + " days ";
+    } else if(days > 0) {
+      days = days + " day ";
+    } else {
+      days = "";
+    }
+
+    hours = hours > 0 ? hours + "h " : "";
+
+    var end;
+    if(minutes == 0 && hours == 0 && days == 0) {
+      minutes = "";
+      end = "Just now";
+    } else {
+      end = (mode ? "m ago" : "m from now");
+    }
+    
+    return " " + days + hours + minutes + end;
+  },
+
+  /**
    * Display the table of posts stored at the server.
    */
   postCompleted: function(response) {
     
     var tableBody = document.getElementById("table_body");
     for(var i = 0; i < response.json.length; i++) {
-      
+
       var href = response.json[i].privly_URL;
       var params = href.substr(href.indexOf("?") + 1);
       var app = privlyParameters.parameterStringToHash(params).privlyApp;
@@ -109,44 +154,67 @@ var callbacks = {
       td1a.setAttribute("data-canonical-href", href);
       td1a.textContent = response.json[i].privly_application;
       td1.appendChild(td1a);
-      tr.appendChild(td1);
-      
-      var td2 = document.createElement('td');
+
       var td2a = document.createElement('a');
       td2a.setAttribute("href", "../" + response.json[i].privly_application + "/show.html?" + params);
       td2a.setAttribute("target", "_blank");
-      td2a.textContent = "open";
-      td2.appendChild(td2a);
-      tr.appendChild(td2);
+
+      var img = new Image();
+      img.src = "images/sort_asc_disabled.png";
+      img.style.transform = "rotate(90deg)";
+      td2a.appendChild(img);
+
+      td2a.style.display = "inline-block";
+      td1.appendChild(td2a);
+
+      tr.appendChild(td1);
       
+      // For the next three columns hide the Json date format,
+      // and create a <i> child in which the difference in time will be shown
       var td3 = document.createElement('td');
-      td3.textContent = response.json[i].created_at;
+      td3.textContent = response.json[i].created_at;      
+      td3.className += " myHide";
+      var i1 = document.createElement('i');
+      i1.textContent = callbacks.parseDate(response.json[i].created_at, true);
+      td3.appendChild(i1);
       tr.appendChild(td3);
       
       var td4 = document.createElement('td');
       td4.textContent = response.json[i].burn_after_date;
+      td4.className += " myHide";
+      var i2 = document.createElement('i');
+      i2.textContent = callbacks.parseDate(response.json[i].burn_after_date, false);
+      td4.appendChild(i2);
       tr.appendChild(td4);
       
       var td5 = document.createElement('td');
-      td5.textContent = response.json[i].updated_at;
+      td5.textContent = response.json[i].updated_at;      
+      td5.className += " myHide";
+      var i3 = document.createElement('i');
+      i3.textContent = callbacks.parseDate(response.json[i].updated_at, true);
+      td5.appendChild(i3);
       tr.appendChild(td5);
-      
-      var td6 = document.createElement('td');
-      td6.textContent = response.json[i].content;
-      tr.appendChild(td6);
       
       tableBody.appendChild(tr)
       
     }
     
-    dataTable = $('#posts').dataTable({"bPaginate": false});
-    
-    // Hide the markdown column after initialisation
-    dataTable.fnSetColumnVis( 5, false );
+    dataTable = $('#posts').dataTable({"bPaginate": false, "bFilter": false});
+
+    // Add 'cell-border' class when the window has a width smaller than 768px
+    $(window).resize(function() {
+      if($(window).width() < 768) {
+        $('#posts').addClass("cell-border");
+      } else {
+        $('#posts').removeClass("cell-border");
+      }
+    });
     
     $('body').on('click', 'a.view_link', function() {
       
-      $('#iframe_col').css('display', 'inherit');
+      $('#iframe_col').show('slow', function() {
+        $(this).css('display', 'inherit');
+      });
       
       var app = $(this).attr("data-privly-app-name");
       if(/^[a-zA-Z]+$/.test(app)) {
@@ -191,6 +259,10 @@ var callbacks = {
         $("#privly_iframe_title").text(app);
         $("#privly_iframe_meta").text("The App's contents are below.");
       }
+    });
+
+    $('#hide_preview').on('click', function() {
+      $('#iframe_col').hide('slow');
     });
   }
 }
