@@ -25,7 +25,8 @@ var callbacks = {
   pendingLogin: function() {
 
     // Save to localStorage the app to redirect to after succesful log in
-    localStorage["Login:redirect_to_app"] = "History/new.html";
+    localStorage["Login:redirect_to_app"] = 
+                privlyParameters.getApplicationUrl(window.location.href);
     
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();

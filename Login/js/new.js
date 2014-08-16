@@ -124,7 +124,7 @@ var callbacks = {
     
     // get from localStorage the last known app to redirect to
     if(localStorage["Login:redirect_to_app"] !== undefined) {
-      window.location = "../" + localStorage["Login:redirect_to_app"];
+      window.location = localStorage["Login:redirect_to_app"];
     } else {
       window.location = "../Help/new.html";
     }
