@@ -193,7 +193,8 @@ var PersonaId = {
   getSecretKeyFromBridge: function(bridge, email) {
     var emails = JSON.parse(bridge.emails);
     if (Object.keys(emails).length == undefined || // Empty object
-             emails.default[email] == undefined) { // No email key
+             emails.default[email] == undefined || // No email key
+             emails.default[email].priv == undefined) { // No Priv Key
       return null;
     }
     var priv = emails.default[email].priv;
