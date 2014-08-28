@@ -35,6 +35,10 @@ var bundled = {
   "bia": "eyJhbGciOiJSUzI1NiJ9.eyJwdWJsaWMta2V5Ijp7ImFsZ29yaXRobSI6IkRTIiwieSI6ImFiN2Q3NzA5YjY0MzFkOWFiOTU3NmM1ZTFkYmQxMTAxZTc0MjZkMWFhNGY2ZDNkZTYzOTkwNTEwOWU4YTUzNGQzN2Y1YWVlZTdiNGJlZmMzNmJiYjg3MmYxODhmZmU5YTM3OGY3ZjZmMzgzNGM1N2FkYzAyNzlkYWRhNDIwOWY2ODRjMTA4ZmE0NjcyMTBjOWMxMzFkNzZhMDUzOWNkZjFmOGExZTI3MDgzMzM4YTc4NzgzNTVmMGQ1ZGI1NzZlNTU4YjhhZjRlZjA3M2FiODZjNDJlZjBhNTM4MWQ2NTVjNTg2ZTNlMTA0MTczYzY4MmIwODIzYWU1NDRhODRhYmQiLCJwIjoiZmY2MDA0ODNkYjZhYmZjNWI0NWVhYjc4NTk0YjM1MzNkNTUwZDlmMWJmMmE5OTJhN2E4ZGFhNmRjMzRmODA0NWFkNGU2ZTBjNDI5ZDMzNGVlZWFhZWZkN2UyM2Q0ODEwYmUwMGU0Y2MxNDkyY2JhMzI1YmE4MWZmMmQ1YTViMzA1YThkMTdlYjNiZjRhMDZhMzQ5ZDM5MmUwMGQzMjk3NDRhNTE3OTM4MDM0NGU4MmExOGM0NzkzMzQzOGY4OTFlMjJhZWVmODEyZDY5YzhmNzVlMzI2Y2I3MGVhMDAwYzNmNzc2ZGZkYmQ2MDQ2MzhjMmVmNzE3ZmMyNmQwMmUxNyIsInEiOiJlMjFlMDRmOTExZDFlZDc5OTEwMDhlY2FhYjNiZjc3NTk4NDMwOWMzIiwiZyI6ImM1MmE0YTBmZjNiN2U2MWZkZjE4NjdjZTg0MTM4MzY5YTYxNTRmNGFmYTkyOTY2ZTNjODI3ZTI1Y2ZhNmNmNTA4YjkwZTVkZTQxOWUxMzM3ZTA3YTJlOWUyYTNjZDVkZWE3MDRkMTc1ZjhlYmY2YWYzOTdkNjllMTEwYjk2YWZiMTdjN2EwMzI1OTMyOWU0ODI5YjBkMDNiYmM3ODk2YjE1YjRhZGU1M2UxMzA4NThjYzM0ZDk2MjY5YWE4OTA0MWY0MDkxMzZjNzI0MmEzODg5NWM5ZDViY2NhZDRmMzg5YWYxZDdhNGJkMTM5OGJkMDcyZGZmYTg5NjIzMzM5N2EifSwicHJpbmNpcGFsIjp7ImVtYWlsIjoidXNlckBleGFtcGxlaWRwLmNvbSJ9LCJpYXQiOjEzOTc4NjU3NjUwNTEsImV4cCI6MTM5Nzg2NTc3MTA1MSwiaXNzIjoiZXhhbXBsZWlkcC5jb20ifQ.X5p0XEAIhfC-ShGNX43zyETwqbvdaqZdJmAHm_ZbHnMvNFf4s9VV45IpYIXBfOSKiWmb4L-h9qRtJ0vWbN__XsG23eL4WA9ZdlTDhKKEPg1gNzTa6zo1ryreWMsOIZY9Il5vcKoyCxofspJAQn2NWTvrbJvYfH71cUH2H5l7ONQmLEU9A_hQ1oqlpfDxDLfK380v89UkjGpGWWxBY_2kzXcMDk9n8eZWmmPGcyybklDyaQcZKQmv35XhvxZXAZzKWtBPICQ2NPCPxVzVl224LO254BV4QJuM5zqBUfRxj1EdvgJZksqB1DlA8hC4CHhVv2lTLxuy7J3cFV3HG95gcg~eyJhbGciOiJEUzEyOCJ9.eyJpYXQiOjEzOTc4NjU3NjUwNTEsImV4cCI6MTM5Nzg2NTc3MTA1MSwiYXVkIjoiaHR0cHM6Ly9leGFtcGxlLmNvbSJ9.USbOBEyJs7LFGTYoXDATJGOdz3OvMU4HGtFOian2afOWXw2DMx4Mrg"
 };
 
+var bridge = {"emailToUserID":"{\"foo@example.com\":3407115,\"dirp@mockmyid.com\":3407115,\"foo@mockmyid.com\":3407115}","emails":"{\"default\":{\"foo@example.com\":{\"created\":\"2014-06-11T18:30:24.862Z\",\"updated\":\"2014-07-01T22:44:43.700Z\",\"pub\":{\"algorithm\":\"DS\",\"y\":\"78ebfcadec1be22aeb50aa7607c320f4b53b6f5306dc445f4b91deb1e1e45c22695048225293133b58facd1d4d27b7b274bd21015b02ace751fe87d3d18f2d956d280ef0e8335fb2208f3897ff95c83c3a17178923c701f0c8b4768dfb17dab52e75940012719f26a8c4d0543a3cec65d4143e2427271322197fbf37b7cc4694\",\"p\":\"ff600483db6abfc5b45eab78594b3533d550d9f1bf2a992a7a8daa6dc34f8045ad4e6e0c429d334eeeaaefd7e23d4810be00e4cc1492cba325ba81ff2d5a5b305a8d17eb3bf4a06a349d392e00d329744a5179380344e82a18c47933438f891e22aeef812d69c8f75e326cb70ea000c3f776dfdbd604638c2ef717fc26d02e17\",\"q\":\"e21e04f911d1ed7991008ecaab3bf775984309c3\",\"g\":\"c52a4a0ff3b7e61fdf1867ce84138369a6154f4afa92966e3c827e25cfa6cf508b90e5de419e1337e07a2e9e2a3cd5dea704d175f8ebf6af397d69e110b96afb17c7a03259329e4829b0d03bbc7896b15b4ade53e130858cc34d96269aa89041f409136c7242a38895c9d5bccad4f389af1d7a4bd1398bd072dffa896233397a\"},\"priv\":{\"algorithm\":\"DS\",\"x\":\"4ae75699e811aec50e5d009b59634cc7be35176f\",\"p\":\"ff600483db6abfc5b45eab78594b3533d550d9f1bf2a992a7a8daa6dc34f8045ad4e6e0c429d334eeeaaefd7e23d4810be00e4cc1492cba325ba81ff2d5a5b305a8d17eb3bf4a06a349d392e00d329744a5179380344e82a18c47933438f891e22aeef812d69c8f75e326cb70ea000c3f776dfdbd604638c2ef717fc26d02e17\",\"q\":\"e21e04f911d1ed7991008ecaab3bf775984309c3\",\"g\":\"c52a4a0ff3b7e61fdf1867ce84138369a6154f4afa92966e3c827e25cfa6cf508b90e5de419e1337e07a2e9e2a3cd5dea704d175f8ebf6af397d69e110b96afb17c7a03259329e4829b0d03bbc7896b15b4ade53e130858cc34d96269aa89041f409136c7242a38895c9d5bccad4f389af1d7a4bd1398bd072dffa896233397a\"},\"cert\":\"eyJhbGciOiJSUzI1NiJ9.eyJwdWJsaWMta2V5Ijp7ImFsZ29yaXRobSI6IkRTIiwieSI6Ijc4ZWJmY2FkZWMxYmUyMmFlYjUwYWE3NjA3YzMyMGY0YjUzYjZmNTMwNmRjNDQ1ZjRiOTFkZWIxZTFlNDVjMjI2OTUwNDgyMjUyOTMxMzNiNThmYWNkMWQ0ZDI3YjdiMjc0YmQyMTAxNWIwMmFjZTc1MWZlODdkM2QxOGYyZDk1NmQyODBlZjBlODMzNWZiMjIwOGYzODk3ZmY5NWM4M2MzYTE3MTc4OTIzYzcwMWYwYzhiNDc2OGRmYjE3ZGFiNTJlNzU5NDAwMTI3MTlmMjZhOGM0ZDA1NDNhM2NlYzY1ZDQxNDNlMjQyNzI3MTMyMjE5N2ZiZjM3YjdjYzQ2OTQiLCJwIjoiZmY2MDA0ODNkYjZhYmZjNWI0NWVhYjc4NTk0YjM1MzNkNTUwZDlmMWJmMmE5OTJhN2E4ZGFhNmRjMzRmODA0NWFkNGU2ZTBjNDI5ZDMzNGVlZWFhZWZkN2UyM2Q0ODEwYmUwMGU0Y2MxNDkyY2JhMzI1YmE4MWZmMmQ1YTViMzA1YThkMTdlYjNiZjRhMDZhMzQ5ZDM5MmUwMGQzMjk3NDRhNTE3OTM4MDM0NGU4MmExOGM0NzkzMzQzOGY4OTFlMjJhZWVmODEyZDY5YzhmNzVlMzI2Y2I3MGVhMDAwYzNmNzc2ZGZkYmQ2MDQ2MzhjMmVmNzE3ZmMyNmQwMmUxNyIsInEiOiJlMjFlMDRmOTExZDFlZDc5OTEwMDhlY2FhYjNiZjc3NTk4NDMwOWMzIiwiZyI6ImM1MmE0YTBmZjNiN2U2MWZkZjE4NjdjZTg0MTM4MzY5YTYxNTRmNGFmYTkyOTY2ZTNjODI3ZTI1Y2ZhNmNmNTA4YjkwZTVkZTQxOWUxMzM3ZTA3YTJlOWUyYTNjZDVkZWE3MDRkMTc1ZjhlYmY2YWYzOTdkNjllMTEwYjk2YWZiMTdjN2EwMzI1OTMyOWU0ODI5YjBkMDNiYmM3ODk2YjE1YjRhZGU1M2UxMzA4NThjYzM0ZDk2MjY5YWE4OTA0MWY0MDkxMzZjNzI0MmEzODg5NWM5ZDViY2NhZDRmMzg5YWYxZDdhNGJkMTM5OGJkMDcyZGZmYTg5NjIzMzM5N2EifSwicHJpbmNpcGFsIjp7ImVtYWlsIjoiZGFuaWVsMTU1NUBnbWFpbC5jb20ifSwiaWF0IjoxNDA0MjU0NjczNjM1LCJleHAiOjE0MDQyNzYyODM2MzUsImlzcyI6ImdtYWlsLmxvZ2luLnBlcnNvbmEub3JnIn0.UpUDnnFwWw8eMhaZza7ngZmWjF3JNTQhj0oinJA2X22tdbeEuLY8zF18ZqIVy1_9MiSESRDKwli5VbcwiKW-cIjSuoFmqJ_ILb9tOb96J9ZWVpqyNts5mwF5k4CiLA186cKJPuC4Uz2SU6y8NLhJNC2RaszhK7pLMlkqZRQ2xkez7CLCA_v8_99Fw5WXZlhF7vXGOKDmq6UoAxvU8R8VBS9lmR-LLRKWZD6qKvP1DAIIb6apYLmlLaugV_GTK2-tW0gj1Jgd059yy0P_OCX1FRAm0XsjVdLSVi6OXGwsYZ-NOvTFvVIDZUSYzdTBX3Dzt14nMlUCbaWYr0ZRHhGcgg\"},\"dirp@mockmyid.com\":{\"created\":\"2014-06-11T18:30:25.176Z\"},\"foo@mockmyid.com\":{\"created\":\"2014-06-11T18:30:25.176Z\"}}}","interaction_data":"{}","managePage":"{}","returnTo":"null","siteInfo":"{\"https://login.persona.org\":{\"email\":\"foo@example.com\",\"issuer\":\"default\"},\"http://dirp.grr.io\":{\"email\":\"foo@example.com\",\"issuer\":\"default\",\"logged_in\":\"foo@example.com\"},\"https://snowdrift.coop\":{\"email\":\"foo@example.com\",\"issuer\":\"default\"}}","storageCheck":"true","usersComputer":"{\"3407115\":{\"state\":\"confirmed\",\"updated\":\"Mon May 05 2014 21:30:02 GMT-0700 (PDT)\"}}"}
+
+var bridgeMissing = {"emailToUserID":"{\"foo@example.com\":3407115,\"dirp@mockmyid.com\":3407115,\"foo@mockmyid.com\":3407115}","emails":"{\"default\":{\"foo@example.com\":{\"created\":\"2014-06-11T18:30:24.862Z\",\"updated\":\"2014-06-28T04:25:04.821Z\"},\"dirp@mockmyid.com\":{\"created\":\"2014-06-11T18:30:25.176Z\"},\"foo@mockmyid.com\":{\"created\":\"2014-06-11T18:30:25.176Z\"}}}","idpVerification0.8407772725913674":"{\"add\":false,\"email\":\"foo@example.com\",\"native\":false,\"created\":\"Sat Jun 28 2014 17:19:16 GMT-0700 (PDT)\"}","interaction_data":"{}","managePage":"{}","returnTo":"null","siteInfo":"{\"https://login.persona.org\":{\"email\":\"foo@example.com\",\"issuer\":\"default\"},\"http://dirp.grr.io\":{\"email\":\"foo@example.com\",\"issuer\":\"default\"},\"https://snowdrift.coop\":{\"email\":\"foo@example.com\",\"issuer\":\"default\"}}","storageCheck":"true","usersComputer":"{\"3407115\":{\"state\":\"confirmed\",\"updated\":\"Mon May 05 2014 21:30:02 GMT-0700 (PDT)\"}}"}
+
 describe("Signing and Verifying", function() {
 
   beforeEach(function() {
@@ -142,5 +146,37 @@ describe("Bundling and Unbundling", function() {
     var extracted_pubkey = PersonaId.extractPubkey(bundled.bia);
     expect(extracted_pubkey).toBeDefined();
     expect(extracted_pubkey).toEqual(pubkey);
+  });
+});
+
+describe("Getting secret key from bridge", function() {
+
+  it('should extract a Persona private key from persona bridge', function() {
+    var extracted_privkey = PersonaId.getSecretKeyFromBridge(bridge, "foo@example.com");
+
+    waitsFor(function() {
+      return (extracted_privkey !== undefined);
+    });
+
+    runs(function(){
+      expect(extracted_privkey).toBeDefined();
+      expect(extracted_privkey.p).toBeDefined();
+      expect(extracted_privkey.q).toBeDefined();
+      expect(extracted_privkey.g).toBeDefined();
+      expect(extracted_privkey.x).toBeDefined();
+      expect(extracted_privkey.algorithm).toBeDefined();
+    });
+  });
+
+  it('should detect when the private key is missing from the persona bridge', function() {
+    var extracted_privkey = PersonaId.getSecretKeyFromBridge(bridgeMissing, "foo@example.com");
+
+    waitsFor(function() {
+      return (extracted_privkey !== undefined);
+    });
+
+    runs(function(){
+      expect(extracted_privkey).toEqual(null);
+    });
   });
 });
