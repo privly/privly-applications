@@ -56,6 +56,28 @@
   <div id="wrap">
    <!-- for bootstrap footer -->
    <div id="privlyHeightWrapper">
+    &lt;%
+# Partial used for the common navigation among all the applications.
+#
+# The menus are compiled without knowing if the user will be logged in
+# or the nav will be shown in the injected context. This means
+# that the navigation is hidden by default to avoid a shudder in the
+# injected context, and will be shown only if
+# JavaScript choses to display it. For an example of how this
+# nav should be shown, you should look at network_service.js
+# and view the showLoggedOutNav() and showLoggedInNav() functions.
+#
+# Specifically, if you want to show the logged in nav:
+# $("logged_in_nav").hide();
+# $(".logged_out_nav").show();
+# $(".injected_hide").show();
+#
+# and similarly for the logged out nav:
+# $("logged_in_nav").show();
+# $(".logged_out_nav").hide();
+# $(".injected_hide").show();
+#
+%&gt;
     <div class="navbar navbar-inverse navbar-fixed-top injected_hide mobile_hide" role="navigation">
      <div class="container">
       <div class="navbar-header">
@@ -83,6 +105,7 @@
           </span>
          </a>
         </li>
+        &lt;% # Add the editing menus as needed %&gt;
         <li class="dropdown active" id="permissions_nav" style="display:none;">
          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
           ZeroBin
