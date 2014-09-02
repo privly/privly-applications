@@ -5,8 +5,9 @@
   position:absolute; 
   border:1px solid #333;
   background:#daffff;
-  padding:1px 1px;
+  padding:2px 5px 3px 1px;
   color:#333;
-  display:none;
+  display:inline-block;
   font:14px Helvetica;
+  white-space: nowrap;
 }

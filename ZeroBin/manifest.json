@@ -1,0 +1,15 @@
+[
+  {
+    "release_status": "alpha",
+    "nav": "new",
+    "subtemplate_path": "ZeroBin/new.html.subtemplate",
+    "outfile_path": "ZeroBin/new.html",
+    "subtemplate_dict": {"name": "ZeroBin", "action": "new"}
+  },
+  {
+    "release_status": "alpha",
+    "subtemplate_path": "ZeroBin/show.html.subtemplate",
+    "outfile_path": "ZeroBin/show.html",
+    "subtemplate_dict": {"name": "ZeroBin", "action": "show"}
+  }
+]

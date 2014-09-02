@@ -1,0 +1,8 @@
+[
+  {
+    "release_status": "alpha",
+    "subtemplate_path": "Login/new.html.subtemplate",
+    "outfile_path": "Login/new.html",
+    "subtemplate_dict": {"name": "Login", "action": "new"}
+  }
+]

@@ -30,16 +30,6 @@ body {
   background-color: #222;
 }
 
-/* Lastly, apply responsive CSS fixes as necessary */
-@media (max-width: 767px) {
-  #footer {
-    margin-left: -20px;
-    margin-right: -20px;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-}
-
 .container .credit {
   margin: 10px 10px 0px 10px;
 }
