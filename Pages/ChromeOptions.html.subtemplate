@@ -40,11 +40,11 @@
     <p>Content metadata is displayed when you hover your mouse over the content. To authenticate the metadata, a unique random glyph is associated with your extension. The glyph is displayed next to items that the extension verifies.</p>
     <p>Your glyph:</p>
     <div id="glyph_div"></div>
-    <br>
+    <br />
     <button id="regenerate_glyph" class="btn btn-primary btn-sm">Regenerate Glyph</button>
   </section>
 
-  <hr>
+  <hr />
 
   <section id="whitelist">
 
@@ -78,19 +78,19 @@
 
     <button id="save" class="btn btn-primary btn-sm">Save</button>
 
-    <br>
-    <br>
+    <br />
+    <br />
 
   </section>
 
-  <hr>
+  <hr />
 
   <section id="content_server">
 
     <h2>Content Servers</h2>
 
     <p>Set domain to upload your content when generating new links directly from the extension.</p>
-    <p>These are the recommended servers during development, select "other" to assign it to any trustworthy domain you like.<br><a href="https://priv.ly/pages/servers.html" target="_blank"> Learn More.</a></p>
+    <p>These are the recommended servers during development, select "other" to assign it to any trustworthy domain you like.<br /><a href="https://priv.ly/pages/servers.html" target="_blank"> Learn More.</a></p>
 
     <form>
       <fieldset id="server_form">
@@ -117,7 +117,7 @@
 
   </section>
 
-  <br>
+  <br />
   
 </div> <!-- /container -->
 
