@@ -1,4 +1,4 @@
-<%
+{#
 # Partial used for the common navigation among all the applications.
 #
 # The menus are compiled without knowing if the user will be logged in
@@ -19,7 +19,7 @@
 # $(".logged_out_nav").hide();
 # $(".injected_hide").show();
 #
-%>
+#}
 <div class="navbar navbar-inverse navbar-fixed-top injected_hide mobile_hide"
   role="navigation">
   <div class="container">
@@ -43,7 +43,7 @@
           </a>
         </li>
         
-        <% # Add the editing menus as needed %>
+        {# Add the editing menus as needed #}
         {%
           if action == "show" 
         %}
