@@ -68,6 +68,16 @@ var callbacks = {
    * returns from the server.
    */
   pendingLogin: function(callback) {
+
+    var appURL = window.location.href.split("/").slice(-2).join("/");
+
+    // Save any app that is not Index, Login or Help to localStorage to redirect 
+    // to after succesful log in
+    if(appURL.indexOf("Index") < 0 &&
+       appURL.indexOf("Login") < 0 &&
+       appURL.indexOf("Help") < 0) {
+      localStorage["Login:redirect_to_app"] = appURL;
+    } 
     
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();

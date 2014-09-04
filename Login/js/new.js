@@ -121,7 +121,13 @@ var callbacks = {
    * Tell the user they are now logged in to the server.
    */
   pendingPost: function() {
-    window.location = "../Help/new.html";
+    
+    // get from localStorage the last known app to redirect to
+    if(localStorage["Login:redirect_to_app"] !== undefined) {
+      window.location = "../" + localStorage["Login:redirect_to_app"];
+    } else {
+      window.location = "../Help/new.html";
+    }
   }
 }
 
