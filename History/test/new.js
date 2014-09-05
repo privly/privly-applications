@@ -62,7 +62,7 @@ function initializeApp(loggedOut) {
 
 // WARNING: These tests require the existence of an authentication_token
 // equal to: "pE8dHprCJ79QENLedELx"
-describe ("Index Logged In New Suite", function() {
+describe ("History Logged In New Suite", function() {
   
   beforeEach(function(){initializeApp(false);});
   
@@ -85,7 +85,7 @@ describe ("Index Logged In New Suite", function() {
   
 });
 
-describe ("Index Logged out New Suite", function() {
+describe ("History Logged out New Suite", function() {
   
   beforeEach(function(){initializeApp(true);});
   

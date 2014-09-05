@@ -20,7 +20,10 @@ var callbacks = {
    * Initialize the whole application.
    */
   pendingLogin: function() {
-    
+
+    // Save to localStorage the app to redirect to after succesful log in
+    localStorage["Login:redirect_to_app"] = window.location.href;
+
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
     
