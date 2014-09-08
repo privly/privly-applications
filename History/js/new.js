@@ -33,15 +33,6 @@ var callbacks = {
     // Initialize message pathway to the extension.
     messaging.initialize();
     
-    // Show or hide the posting button depending on whether
-    // there is likely an extension watching for its events.
-    if( privlyNetworkService.platformName() === "HOSTED" ) {
-      $("#message_link_button")[0].setAttribute("style","display:none");
-    } else {
-      document.getElementById("message_link_button").addEventListener(
-        'click', postUrl, false);
-    }
-    
     // Watch for the preview iframe's messages so it can be resized
     window.addEventListener('message', resizeIframePostedMessage, false);
     
@@ -139,31 +130,29 @@ var callbacks = {
     var tableBody = document.getElementById("table_body");
     for(var i = 0; i < response.json.length; i++) {
 
+      var app = response.json[i].privly_application;
       var href = response.json[i].privly_URL;
-      var params = href.substr(href.indexOf("?") + 1);
-      var app = privlyParameters.parameterStringToHash(params).privlyApp;
+      var localHref = "/privly-applications/" + app + "/show.html?privlyOriginalURL=" +
+        encodeURIComponent(href);
       
       var tr = document.createElement('tr');
       
       var td1 = document.createElement('td');
-      var td1a = document.createElement('a');
-      td1a.setAttribute("href", "#");
-      td1a.setAttribute("class", "view_link");
-      td1a.setAttribute("data-privly-app-name", app);
-      td1a.setAttribute("data-privly-app-parameters", params);
-      td1a.setAttribute("data-canonical-href", href);
-      td1a.textContent = response.json[i].privly_application;
-      td1.appendChild(td1a);
 
-      var td1b = document.createElement('a');
-      td1b.setAttribute("href", "../" + response.json[i].privly_application + "/show.html?" + params);
-      td1b.setAttribute("target", "_blank");
-
-      var img = new Image();
-      img.src = "images/sort_asc_disabled.png";
-      td1b.appendChild(img);
-
+      var td1b = document.createElement('button');
+      td1b.setAttribute("type", "submit");
+      td1b.setAttribute("class", "btn btn-default preview_link");
+      td1b.setAttribute("data-canonical-href", localHref);
+      td1b.textContent = "Preview " + app;
       td1.appendChild(td1b);
+
+      var td1b2 = document.createElement('button');
+      td1b2.setAttribute("type", "submit");
+      td1b2.setAttribute("class", "btn btn-info open_link");
+      td1b2.setAttribute("data-canonical-href", localHref);
+      td1b2.textContent = "Open";
+      td1.appendChild(td1b2);
+
       tr.appendChild(td1);
       
       // For the next three columns hide the Json date format,
@@ -207,55 +196,67 @@ var callbacks = {
       }
     });
     
-    $('body').on('click', 'a.view_link', function() {
-      
+    $('button.preview_link').on('click', function(evt) {
+
       $('#iframe_col').show('slow', function() {
         $(this).css('display', 'inherit');
       });
       
-      var app = $(this).attr("data-privly-app-name");
-      if(/^[a-zA-Z]+$/.test(app)) {
-        
-        var iFrame = document.createElement('iframe');
+      var iFrame = document.createElement('iframe');
 
-        // Styling and display attributes that mirror those
-        // of the privly.js content script
-        iFrame.setAttribute("frameborder","0");
-        iFrame.setAttribute("vspace","0");
-        iFrame.setAttribute("hspace","0");
-        iFrame.setAttribute("width","100%");
-        iFrame.setAttribute("marginwidth","0");
-        iFrame.setAttribute("marginheight","0");
-        iFrame.setAttribute("height","1px");
-        iFrame.setAttribute("frameborder","0");
-        iFrame.setAttribute("style","width: 100%; height: 32px; " +
-          "overflow: hidden;");
-        iFrame.setAttribute("scrolling","no");
-        iFrame.setAttribute("overflow","hidden");
-        iFrame.setAttribute("data-privly-accept-resize","true");
-        
-        // The href of the original link as dictated by the remote server
-        var canonicalHref = $(this).attr("data-canonical-href");
-        iFrame.setAttribute("data-canonical-href", canonicalHref);
-        
-        //Set the source URL
-        var localParams = $(this).attr("data-privly-app-parameters");
-        iFrame.setAttribute("src", "../" + 
-                                    app + "/show.html?" + localParams);
-        
-        //The id and the name are the same so that the iframe can be 
-        //uniquely identified and resized by resizeIframePostedMessage()
-        iFrame.setAttribute("id", "ifrm0");
-        iFrame.setAttribute("name", "ifrm0");
-        
-        // Clear the old iframe and insert the new one
-        $(".privly_iframe").html("");                          
-        $(".privly_iframe").append(iFrame);
-        
-        // Label the iframe
-        $("#privly_iframe_title").text(app);
-        $("#privly_iframe_meta").text("The App's contents are below.");
-      }
+      // Styling and display attributes that mirror those
+      // of the privly.js content script
+      iFrame.setAttribute("frameborder","0");
+      iFrame.setAttribute("vspace","0");
+      iFrame.setAttribute("hspace","0");
+      iFrame.setAttribute("width","100%");
+      iFrame.setAttribute("marginwidth","0");
+      iFrame.setAttribute("marginheight","0");
+      iFrame.setAttribute("height","1px");
+      iFrame.setAttribute("frameborder","0");
+      iFrame.setAttribute("style","width: 100%; height: 32px; " +
+        "overflow: hidden;");
+      iFrame.setAttribute("scrolling","no");
+      iFrame.setAttribute("overflow","hidden");
+      iFrame.setAttribute("data-privly-accept-resize","true");
+
+      // The href of the original link as dictated by the remote server
+      var canonicalHref = $(this).attr("data-canonical-href");
+      iFrame.setAttribute("data-canonical-href", canonicalHref);
+
+      //Set the source URL
+      iFrame.setAttribute("src", canonicalHref);
+
+      //The id and the name are the same so that the iframe can be
+      //uniquely identified and resized by resizeIframePostedMessage()
+      iFrame.setAttribute("id", "ifrm0");
+      iFrame.setAttribute("name", "ifrm0");
+
+      // Clear the old iframe and insert the new one
+      $(".privly_iframe").empty();
+      $(".privly_iframe").append(iFrame);
+
+      // Label the iframe
+      $("#privly_iframe_title").text(app);
+      $("#privly_iframe_meta").text("The App's contents are below.");
+    });
+
+    $('button.open_link').on('click', function() {
+      window.open($(this).attr("data-canonical-href"), '_blank');
+    });
+
+    $('#destroy_link').on('click', function() {
+      var url = privlyParameters.getApplicationUrl($("iframe").attr("data-canonical-href"));
+      var dataURL =  privlyParameters.getParameterHash(url).privlyDataURL;
+      privlyNetworkService.sameOriginDeleteRequest(
+        dataURL,
+        function(response) {
+            if( response.jqXHR.status === 200 ) {
+              var tr = $(this).closest('tr');
+              tr.hide();
+              $('#iframe_col').hide('slow');
+            }
+        }, {});
     });
 
     $('#hide_preview').on('click', function() {

@@ -24,12 +24,11 @@
       <div id="iframe_col" style="display:none;">
         <h1 id="privly_iframe_title"></h1>
         <p id="privly_iframe_meta"></p>
+        <button id="hide_preview" class="btn btn-default">Hide</button>
+        <button id="destroy_link" class="btn btn-danger">Destroy</button>
         <hr/>
-        <div class="privly_iframe">
-        </div>
+        <div class="privly_iframe"></div>
         <hr/>
-        <button id="message_link_button">Send Link to Host Page</button>
-        <button id="hide_preview">Hide</button>
       </div>
     </div>
   </div>
@@ -45,9 +44,9 @@
       <thead>
         <tr>
           <th>Preview</th>
-          <th>Created</th>
+          <th>Created At</th>
           <th>Burnt After</th>
-          <th>Updated</th>
+          <th>Updated At</th>
         </tr>
       </thead>
       <tbody id="table_body">
@@ -55,9 +54,9 @@
       <tfoot>
         <tr>
           <th>Preview</th>
-          <th>Created</th>
+          <th>Created At</th>
           <th>Burnt After</th>
-          <th>Updated</th>
+          <th>Updated At</th>
         </tr>
       </tfoot>
     </table>
