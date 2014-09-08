@@ -137,7 +137,7 @@ if __name__ == "__main__":
                              whereas 'release' will only build apps marked
                              for release""",
                      required=False,
-                     default='alpha',
+                     default='deprecated',
                      choices=release_titles)
   args = parser.parse_args()
   

@@ -40,27 +40,25 @@ function processResponseContent(response) {
   // Assign the Markdown from the JSON
   if( typeof json.content === "string" ) {
     serverMarkdown = json.content;
-  }
-
-  if( serverMarkdown === null ) {
-    return; // Let the privly-web driver handle the request
   } else {
-    var markdownHTML = markdown.toHTML(serverMarkdown);
-    $("#edit_text").val(serverMarkdown);
-    $("#post_content").html(markdownHTML);
-
-    // Make all user-submitted links open a new window
-    $('#post_content a').attr("target", "_blank");
-    
-    // Generate the previewed content
-    $("#edit_text").bind("keyup", previewMarkdown);
-    
-    // Make all text areas auto resize to show all their contents
-    if ( ! privlyHostPage.isInjected() ) {
-      $('textarea').autosize();
-    }
-    privlyHostPage.resizeToWrapper();
+    serverMarkdown = "";
   }
+
+  var markdownHTML = markdown.toHTML(serverMarkdown);
+  $("#edit_text").val(serverMarkdown);
+  $("#post_content").html(markdownHTML);
+
+  // Make all user-submitted links open a new window
+  $('#post_content a').attr("target", "_blank");
+
+  // Generate the previewed content
+  $("#edit_text").bind("keyup", previewMarkdown);
+
+  // Make all text areas auto resize to show all their contents
+  if ( ! privlyHostPage.isInjected() ) {
+    $('textarea').autosize();
+  }
+  privlyHostPage.resizeToWrapper();
 }
 
 // Make the Tooltip display this App's name.
