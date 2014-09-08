@@ -44,9 +44,9 @@
       <thead>
         <tr>
           <th>Preview</th>
-          <th>Created At</th>
+          <th>Created</th>
           <th>Burnt After</th>
-          <th>Updated At</th>
+          <th>Updated</th>
         </tr>
       </thead>
       <tbody id="table_body">
@@ -54,9 +54,9 @@
       <tfoot>
         <tr>
           <th>Preview</th>
-          <th>Created At</th>
+          <th>Created</th>
           <th>Burnt After</th>
-          <th>Updated At</th>
+          <th>Updated</th>
         </tr>
       </tfoot>
     </table>
