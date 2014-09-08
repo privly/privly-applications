@@ -1,0 +1,8 @@
+[
+  {
+    "release_status": "deprecated",
+    "subtemplate_path": "Index/new.html.subtemplate",
+    "outfile_path": "Index/new.html",
+    "subtemplate_dict": {"name": "Index", "action": "nav"}
+  }
+]
