@@ -25,7 +25,7 @@ describe ("Local Storage Test Suite", function() {
     ls.setItem("hello", "world");
     expect(ls.getItem("hello")).toBe("world");
     ls.removeItem("hello");
-    expect(ls.getItem("hello")).toBe(undefined);
+    expect(ls.getItem("hello")).not.toBeDefined();
   });
 
 });

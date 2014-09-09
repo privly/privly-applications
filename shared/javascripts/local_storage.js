@@ -33,7 +33,12 @@ var ls = {
     if ( ls.localStorageDefined ) {
       return localStorage[key];
     } else {
-      return ls.preferences.getCharPref(key);
+      try {
+        return ls.preferences.getCharPref(key);
+      } catch(e) {
+        console.warn("Local Storage key was not in storage");
+        return undefined;
+      }
     }
   },
 
@@ -45,7 +50,11 @@ var ls = {
     if ( ls.localStorageDefined ) {
       return localStorage.removeItem(key)
     } else {
-      ls.preferences.clearUserPref(key);
+      try {
+        ls.preferences.clearUserPref(key);
+      } catch(e) {
+        console.warn("Local Storage key was not in storage when it was removed");
+      }
       return undefined;
     }
   }
