@@ -66,7 +66,7 @@ describe ("Privly-web new.js API Test Suite", function() {
     // The runs function allows the testing library to complete the asynchronous
     // calls before executing this testing code
     runs(function() {
-      callbacks.postSubmit( {}, "TestFunction", 10, "", 
+      callbacks.postSubmit( {jqXHR: {status: "500"}}, "TestFunction", 10, "",
         function(){initializationFlag = true});
     });
 
@@ -84,7 +84,7 @@ describe ("Privly-web new.js API Test Suite", function() {
     // The runs function allows the testing library to complete the asynchronous
     // calls before executing this testing code
     runs(function() {
-      callbacks.createError(function(){initializationFlag = true});
+      callbacks.createError({jqXHR: {status: "500"}}, function(){initializationFlag = true});
     });
 
     // Waits for the initialization to complete or fails
@@ -100,7 +100,7 @@ describe ("Privly-web new.js API Test Suite", function() {
     // The runs function allows the testing library to complete the asynchronous
     // calls before executing this testing code
     runs(function() {
-      callbacks.postCompleted( {}, "URL", 
+      callbacks.postCompleted( {jqXHR: {status: 201}, url: "mock"}, "URL",
         function(){initializationFlag = true});
     });
 
