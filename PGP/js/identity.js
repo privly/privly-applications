@@ -161,25 +161,22 @@ var PersonaId = {
    * a parameter.
    **/
   remotelyVerifyBia: function(bia, callback){
-    localforage.setDriver('localStorageWrapper', function(){
-      localforage.getItem('pgp-directoryURL', function(audience){
-        audience += ":443";
-        $.post(
-          "https://verifier.login.persona.org/verify",
-          {assertion: bia, audience: audience}
-        ).done(function(response){
-          if (response.status === "okay"){
-            callback(true);
-          } else {
-            console.log("Verification failed because: " + response.reason);
-            callback(false);
-          }
-        }
-        ).fail(function(response) {
-          console.log("Status 200 was not returned from persona verifier");
-          callback(false);
-        });
-      });
+    var audience = localStorage['pgp-directoryURL'];
+    audience += ":443";
+    $.post(
+      "https://verifier.login.persona.org/verify",
+      {assertion: bia, audience: audience}
+    ).done(function(response){
+      if (response.status === "okay"){
+        callback(true);
+      } else {
+        console.log("Verification failed because: " + response.reason);
+        callback(false);
+      }
+    }
+    ).fail(function(response) {
+      console.log("Status 200 was not returned from persona verifier");
+      callback(false);
     });
   },
 
