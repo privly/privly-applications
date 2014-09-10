@@ -109,7 +109,7 @@ def get_link_creation_apps():
             creation_apps.append(template["subtemplate_dict"]["name"])
 
   # Hack to maintain current app order
-  creation_apps.reverse()
+  creation_apps.sort(reverse=True)
   return creation_apps
 
 release_titles = ["experimental", "deprecated", "alpha", "beta", "release"]
@@ -137,7 +137,7 @@ if __name__ == "__main__":
                              whereas 'release' will only build apps marked
                              for release""",
                      required=False,
-                     default='alpha',
+                     default='deprecated',
                      choices=release_titles)
   args = parser.parse_args()
   

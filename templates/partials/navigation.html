@@ -1,4 +1,4 @@
-<%
+{#
 # Partial used for the common navigation among all the applications.
 #
 # The menus are compiled without knowing if the user will be logged in
@@ -19,7 +19,7 @@
 # $(".logged_out_nav").hide();
 # $(".injected_hide").show();
 #
-%>
+#}
 <div class="navbar navbar-inverse navbar-fixed-top injected_hide mobile_hide"
   role="navigation">
   <div class="container">
@@ -36,14 +36,14 @@
     </div>
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <li style="display:none;" class="{% if name == "Index" %}active {% endif %}logged_in_nav mobile_hide">
-          <a href="../Index/new.html">
-            Index
+        <li style="display:none;" class="{% if name == "History" %}active {% endif %}logged_in_nav mobile_hide">
+          <a href="../History/new.html">
+            History
             <span class="glyphicon glyphicon-list-alt"></span>
           </a>
         </li>
         
-        <% # Add the editing menus as needed %>
+        {# Add the editing menus as needed #}
         {%
           if action == "show" 
         %}
