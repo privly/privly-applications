@@ -47,6 +47,7 @@ var callbacks = {
    * server's sign in endpoint is at "/users/sign_in".
    */
   loginFailure: function() {
+    privlyNetworkService.showLoggedOutNav();
     $("#messages").hide();
     $("#login_message").show();
     $("#refresh_link").click(function(){location.reload(true);});
@@ -57,8 +58,8 @@ var callbacks = {
    */
   pendingPost: function() {
     privlyNetworkService.showLoggedInNav();
-    $("#messages").toggle();
-    $("#form").toggle();
+    $("#messages").hide();
+    $("#form").show();
   }
   
 }
