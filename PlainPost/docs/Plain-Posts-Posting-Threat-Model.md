@@ -121,7 +121,7 @@ This section describes the trust boundaries, entry points, exit points, and data
 * User login. Users login to a content server using any form of authentication supported by the content server. The user then has an authentication cookie tied to the content server's domain and all requests can be authenticated from the injectable applications.
 * Typing content. Users type their content directly into the injectable application. User's trust the identity and security of the application because it is served locally from the extension and is not tied to a remote domain.
 * Posting content to the content server. When the user submits the injectable application, the content is transmitted to the content server over SSL.
-* Returning the content URL. The content server returns the URL for the content to the injectable application over SSL. The content url conforms to the [[URL Specification]], but additional parameters and tokens may be added depending on the authorization requirements for the content. Generally a content server will want to add a content access token to the URL so old links to the same content can easily be expired.
+* Returning the content URL. The content server returns the URL for the content to the injectable application over SSL. The content url conforms to the [URL Specification](http://github.com/privly/privly-organization/wiki/URL-Specification), but additional parameters and tokens may be added depending on the authorization requirements for the content. Generally a content server will want to add a content access token to the URL so old links to the same content can easily be expired.
 
 ## 4. Threats
 In the application overview, points `a`, `b`, `c`, `d`, and `e` delineate possible points of attack.  

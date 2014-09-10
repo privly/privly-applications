@@ -2,7 +2,7 @@
 
 ZeroBin encrypts the content in the browser using Javascript before sending it to the remote server for storage. The decryption key is then added to the anchor of the URL before it is inserted into the host page. The anchor is never shared with the remote server, so it is never able to read the decrypted text. In order to read the content, users must have both the link, and the ciphertext.
 
-We modified the ZeroBin application to work with the Privly [[URL Specification|URL-Specification]]. It now places the ciphertext URL onto the anchor with the decryption key. This change removed ZeroBin's dependence on server rendering.
+We modified the ZeroBin application to work with the Privly [URL Specification](http://github.com/privly/privly-organization/wiki/URL-Specification). It now places the ciphertext URL onto the anchor with the decryption key. This change removed ZeroBin's dependence on server rendering.
 
 For more information, read [the original documentation of ZeroBin](http://sebsauvage.net/wiki/doku.php?id=php:zerobin)
 
@@ -10,7 +10,7 @@ For more information, read [the original documentation of ZeroBin](http://sebsau
 
 ## URL Format
 
-For more details on the URL format, see the [[URL Specification]].
+For more details on the URL format, see the [URL Specification](http://github.com/privly/privly-organization/wiki/URL-Specification).
 
 ### Identifiers
 
@@ -70,7 +70,7 @@ These parameters are added by the extension.
 
 This is the high level process for posting content by the content server.
 
-1. (User Action) The user types the content into the [[Posting Application]], selects which identities they want to share with, and submits the form.
+1. (User Action) The user types the content into the [Posting Application](http://github.com/privly/privly-organization/wiki/Posting-Application), selects which identities they want to share with, and submits the form.
 1. The application generates a new symmetric key in Javascript, and encrypts the content with the key in Javascript.
 1. The application sends the encrypted content to the remote server.
 1. The content server then returns a URL for the content, to which the application adds the key in the anchortext before placing the link into the host page
