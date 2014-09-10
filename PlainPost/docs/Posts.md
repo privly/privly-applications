@@ -1,7 +1,7 @@
 # Status and Overview
 
 Status: **Under development**  
-Plain Posts are the [[injectable application|Injectable-Applications]] endpoint developed for the Proof-of-Concept of Privly. Plain Posts do not implement any content cryptography. The current effort for plain posts is to refactor it into an application we can eventually serve directly from the extension.
+Plain Posts are the [injectable application](http://github.com/privly/privly-organization/wiki/Injectable-Applications) endpoint developed for the Proof-of-Concept of Privly. Plain Posts do not implement any content cryptography. The current effort for plain posts is to refactor it into an application we can eventually serve directly from the extension.
 
 Plain Posts were developed as a Ruby on Rails application. We need to refactor:
 
@@ -12,7 +12,7 @@ Plain Posts were developed as a Ruby on Rails application. We need to refactor:
 
 ## URL Format
 
-For more details on the URL format, see the [[URL Specification]].
+For more details on the URL format, see the [URL Specification](http://github.com/privly/privly-organization/wiki/URL-Specification).
 
 ### Identifiers
 
@@ -67,7 +67,7 @@ These parameters are added by the extension.
 
 This is the high level process for posting content by the content server.
 
-1. (User Action) The user types the content into the [[Posting Application]], selects which identities they want to share with, and submits the form.
+1. (User Action) The user types the content into the [Posting Application](http://github.com/privly/privly-organization/wiki/Posting-Application), selects which identities they want to share with, and submits the form.
 1. The content server then returns a URL for the content, which is placed into the host page
 
 ### Cryptography API Function Calls
