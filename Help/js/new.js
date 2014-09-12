@@ -59,6 +59,10 @@ var callbacks = {
     privlyNetworkService.showLoggedInNav();
     $("#messages").toggle();
     $("#form").toggle();
+
+    var domain = privlyNetworkService.contentServerDomain();
+    $("#current_content_server").text(domain.split("/")[2]);
+    $("#remote_content_server").attr("href", domain);
   }
   
 }
