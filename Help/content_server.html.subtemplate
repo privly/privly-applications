@@ -1,0 +1,78 @@
+{% extends "templates/new.html.template" %}
+
+{% block specs %}
+  <meta name="PrivlySpec"
+   content="../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js"/>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript" src="../vendor/jquery.min.js"></script>
+<script type="text/javascript" src="js/new.js"></script>
+{% endblock %}
+
+{% block form %}
+
+  <div class="col-lg-12">
+    <h2>Your current content server is: 
+      <span id="current_content_server"></span>
+    </h2>
+    <br />
+    <p>
+      You can change it from the extension's options page.
+    </p>
+  </div>
+
+  <br />
+
+  <div>
+    <div class="col-md-6">
+        <p>
+          <span class="glyphicon glyphicon-user"></span>
+          This page is binded to the local application environment.
+        </p>
+      
+    </div>
+    
+    <div class="col-md-6">
+      <p>
+        <span class="glyphicon glyphicon-globe"></span>
+        If you want to acces the online content server's website click:
+        <a id="remote_content_server" href="#" target="_blank" class="btn btn-default" height="20px">
+          here
+        </a>
+        
+      </p>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block app_info %}
+  <hr/>
+  <div class="col-md-6">
+    <h2>Getting Help</h2>
+    <p>The Priv.ly Project is an open source, community-driven
+      collection of software. Developers support users on 
+      <a href="http://www.privly.org/content/irc" target="_blank">chat</a> and 
+      on 
+      <a href="https://groups.google.com/forum/#!forum/privly" target="_blank">
+        email.
+      </a>
+    </p>
+  </div>
+  <div class="col-md-6">
+    <h2>Warnings</h2>
+    <ul>
+      <li>
+        Privly is still in Alpha, <strong>do not</strong> post private 
+        information until the system reaches a Beta release.
+      </li>
+      <li>
+        This page vastly simplifies privacy properties of different 
+        applications. For a more comprehensive treatment of the applications
+        you should read about them on the 
+        <a href="https://github.com/privly/privly-organization/wiki" target="_blank">wiki</a>.
+      </li>
+    </ul>
+  </div>
+{% endblock %}
