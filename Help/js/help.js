@@ -26,7 +26,15 @@ var callbacks = {
 
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
-    
+
+    var domain = privlyNetworkService.contentServerDomain();
+    $("#current_content_server").text(domain.split("/")[2]);
+    $("#remote_content_server").attr("href", domain);
+
+    if ( privlyNetworkService.platformName() === "CHROME" ) {
+      $(".chrome_options_link").show();
+    }
+
     // Add listeners to show loading animation while making ajax requests
     $(document).ajaxStart(function() {
       $('#loadingDiv').show(); 
@@ -34,7 +42,7 @@ var callbacks = {
     $(document).ajaxStop(function() { 
       $('#loadingDiv').hide(); 
     });
-    
+
     privlyNetworkService.initPrivlyService(
       privlyNetworkService.contentServerDomain(), 
       callbacks.pendingPost, 
@@ -59,10 +67,6 @@ var callbacks = {
     privlyNetworkService.showLoggedInNav();
     $("#messages").toggle();
     $("#form").toggle();
-
-    var domain = privlyNetworkService.contentServerDomain();
-    $("#current_content_server").text(domain.split("/")[2]);
-    $("#remote_content_server").attr("href", domain);
   }
   
 }

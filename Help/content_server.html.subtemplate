@@ -14,38 +14,33 @@
 
 {% block form %}
 
-  <div class="col-lg-12">
-    <h2>Your current content server is: 
-      <span id="current_content_server"></span>
-    </h2>
+<div class="col-lg-12">
+  <h2>Your current content server is:
+    <span id="current_content_server"></span>
+  </h2>
+  <p>
+    <strong><span class="glyphicon glyphicon-eye-open"></span> Look at the address bar</strong> of this web page. If the address starts with "chrome," then you are viewing an application that has "local trust." This means it would be <strong>very difficult</strong> for an attacker to <strong>take over your browser.</strong> While you may be viewing an application with local trust, it is Priv.ly's job to help you share privately on the web. Often this involves using applications and data from a content server you choose to associate with.
+  </p>
+  <p>
+    Your content server solves two problems to make sharing easier.
+    <ul>
+      <li><strong>Application Fallback:</strong> If you share private content with someone who does not have Priv.ly installed, they can either install the extension with local trust or use a fallback server <strong>you</strong> trust. When they click on the link you generate, they will automatically-- without needing the extension-- download the application and view the content.</li>
+      <li><strong>Data Storage:</strong> Many Privly Applications need a place to store data. Depending on the application, this could potentially be putting trust in your content server. If you want to truly Trust No One, then you should use a content server <strong>you</strong> control. If you are not inclined to self-host, it is possible to host your content with other service providers. Remember that trusting others to host your data could be perilous to your privacy if you use an application that doesn't encrypt your data.</li>
+    </ul>
+  </p>
+
+  <p>
+    Your content server may have information we can't display here. To view information presented by your content server you can visit your content server.
     <br />
-    <p>
-      You can change it from the extension's options page.
-    </p>
-  </div>
-
-  <br />
-
-  <div>
-    <div class="col-md-6">
-        <p>
-          <span class="glyphicon glyphicon-user"></span>
-          This page is binded to the local application environment.
-        </p>
-      
-    </div>
-    
-    <div class="col-md-6">
-      <p>
-        <span class="glyphicon glyphicon-globe"></span>
-        If you want to acces the online content server's website click:
-        <a id="remote_content_server" href="#" target="_blank" class="btn btn-default" height="20px">
-          here
-        </a>
-        
-      </p>
-    </div>
-  </div>
+    <br />
+    <a id="remote_content_server" href="#" target="_blank" class="btn btn-warning">
+      <span class="glyphicon glyphicon-new-window"></span> Visit my content server
+    </a>
+    <a class="btn btn-danger chrome_options_link" style="display:none;" href="/privly-applications/Pages/ChromeOptions.html">
+      <span class="glyphicon glyphicon-wrench"></span> Change my content server
+    </a>
+  </p>
+</div>
 
 {% endblock %}
 
@@ -66,14 +61,11 @@
     <h2>Warnings</h2>
     <ul>
       <li>
-        Privly is still in Alpha, <strong>do not</strong> post private 
-        information until the system reaches a Beta release.
+        Know before you post: different Privly Applications put different levels of trust in your content server. Don't assume any application keeps your data private from your content server without learning about the application.
       </li>
       <li>
-        This page vastly simplifies privacy properties of different 
-        applications. For a more comprehensive treatment of the applications
-        you should read about them on the 
-        <a href="https://github.com/privly/privly-organization/wiki" target="_blank">wiki</a>.
+        Privly is still in Alpha, <strong>do not</strong> post private
+        information until the system reaches a Beta release.
       </li>
     </ul>
   </div>
