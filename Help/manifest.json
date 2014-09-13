@@ -9,6 +9,6 @@
     "release_status": "alpha",
     "subtemplate_path": "Help/content_server.html.subtemplate",
     "outfile_path": "Help/content_server.html",
-    "subtemplate_dict": {"name": "Help", "action": "new"}
+    "subtemplate_dict": {"name": "Help", "action": "nav"}
   }
 ]
