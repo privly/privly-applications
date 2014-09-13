@@ -32,7 +32,7 @@
         <span class="icon-bar"></span>
       </button>
       <a title="This is your current content server" class="navbar-brand lobster home_domain"
-       href="../Help/content_server.html" target="_blank">
+       href="../Help/content_server.html">
       Privly
       </a>
     </div>
