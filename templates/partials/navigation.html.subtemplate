@@ -31,8 +31,10 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a href="" class="navbar-brand lobster home_domain"
-        target="_blank">Privly</a>
+      <a title="This is your current content server" class="navbar-brand lobster home_domain"
+       href="../Help/content_server.html">
+      Privly
+      </a>
     </div>
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">

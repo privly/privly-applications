@@ -45,7 +45,7 @@
     <div id="wrap"><!-- for bootstrap footer -->
       <div id="privlyHeightWrapper">
         
-        {% include "templates/partials/navigation.html" %}
+        {% include "templates/partials/navigation.html.subtemplate" %}
         
         <div class="container">
           {% block main %}

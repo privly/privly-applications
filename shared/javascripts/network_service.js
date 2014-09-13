@@ -416,8 +416,7 @@ var privlyNetworkService = {
    */
   initializeNavigation: function() {
     var domain = privlyNetworkService.contentServerDomain();
-    $(".home_domain").attr("href", domain);
-    $(".home_domain").text(domain.split("/")[2]);  
+    $(".home_domain").text(domain.split("/")[2]);
     $(".account_url").attr("href", domain + "/pages/account");
     $(".legal_nav").attr("href", domain + "/pages/privacy");
     document.getElementById("logout_link").addEventListener('click', function(){
