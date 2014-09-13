@@ -8,7 +8,7 @@
       See: https://github.com/privly/privly-applications/pull/19
      -->
 
-    <title>New {{ name }}</title>
+    {% block title %}<title> New {{ name }}</title>{% endblock %}
     
     {% block specs %}{% endblock %}
     
