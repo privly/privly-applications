@@ -212,13 +212,9 @@ var callbacks = {
     if(response.jqXHR.status === 201 && url !== undefined && url !== "") {
       privlyExtension.firePrivlyURLEvent(url);
 
-      var text = "Copy the" +
-                 "<a href='" + url + "' target='_blank'>" + " address </a>" +
-                 "found below to any website you want to share this information through" +
-                 "<br />" +
-                 "Simply click the link, press Ctrl + c to copy and Ctrl + v to paste to the desired location";
-                 
-      $("#messages").html(text);
+      $("#remote_address").attr("href", url);
+      $("#copy_message").show();
+      
       $(".privlyUrl").text(url);
       $(".privlyUrl").css("cursor", "pointer");
       $(".privlyUrl").click(function() {
