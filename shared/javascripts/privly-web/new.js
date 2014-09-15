@@ -211,11 +211,28 @@ var callbacks = {
     
     if(response.jqXHR.status === 201 && url !== undefined && url !== "") {
       privlyExtension.firePrivlyURLEvent(url);
-      $("#messages").text(
-        "Copy the address found below to any website you want to share this information through");
-      $(".privlyUrl").text(url);
-      $(".privlyUrl").attr("href", url);
+
+      $("#remote_address").attr("href", url);
+      $("#copy_message").show();
       
+      $(".privlyUrl").text(url);
+      $(".privlyUrl").css("cursor", "pointer");
+      $(".privlyUrl").click(function() {
+        var range, selection;
+
+        if (window.getSelection && document.createRange) {
+            selection = window.getSelection();
+            range = document.createRange();
+            range.selectNodeContents($(this)[0]);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        } else if (document.selection && document.body.createTextRange) {
+            range = document.body.createTextRange();
+            range.moveToElementText($(this)[0]);
+            range.select();
+        }
+      });
+
       // Keep the user in local code if possible, but display the remote code link
       // so the user does not accidentally copy the local code url
       if ( privlyNetworkService.platformName() !== "HOSTED" ) {

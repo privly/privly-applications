@@ -58,7 +58,15 @@
               You are not currently signed into your content server. Please
               <a href="../Login/new.html" class="login_url btn btn-default">login</a>
             </p>
-            <p><a class="privlyUrl" href="" data-privly-exclude="true"></a></p>
+            <p id="copy_message" style="display:none;" class="flash notice">
+              Click the below link, copy it with Ctrl + c, paste it to any website
+              you want to share this information through with Ctrl + v.
+              <br />
+              Click
+              <a id="remote_address" href="" target="_blank"> here </a>
+              to access the newly created message on its content server.
+            </p>
+            <p><span class="privlyUrl" data-privly-exclude="true"></span></p>
           </div>
         </div>
         
