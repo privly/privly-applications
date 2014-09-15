@@ -17,6 +17,9 @@ var ls = {
    */
   setItem: function(key, value) {
     if ( ls.localStorageDefined ) {
+      if ( typeof(value) === "object" ){
+        value = JSON.stringify(value);
+      }
       return localStorage[key] = value;
     } else {
       ls.preferences.setCharPref(key, value);
@@ -31,7 +34,13 @@ var ls = {
    */
   getItem: function(key) {
     if ( ls.localStorageDefined ) {
-      return localStorage[key];
+      try {  // try to parse stored value as JSON
+        var value = JSON.parse(localStorage[key]);
+        return value;
+      }
+      catch(e) { // return original value instead of 
+        return localStorage[key];
+      }
     } else {
       try {
         return ls.preferences.getCharPref(key);
