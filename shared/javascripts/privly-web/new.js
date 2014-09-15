@@ -212,9 +212,8 @@ var callbacks = {
     if(response.jqXHR.status === 201 && url !== undefined && url !== "") {
       privlyExtension.firePrivlyURLEvent(url);
 
-      $("#remote_address").attr("href", url);
       $("#copy_message").show();
-      
+
       $(".privlyUrl").text(url);
       $(".privlyUrl").css("cursor", "pointer");
       $(".privlyUrl").click(function() {
@@ -231,15 +230,16 @@ var callbacks = {
             range.moveToElementText($(this)[0]);
             range.select();
         }
+        $(".open-app-button").show();
       });
 
       // Keep the user in local code if possible, but display the remote code link
       // so the user does not accidentally copy the local code url
       if ( privlyNetworkService.platformName() !== "HOSTED" ) {
         var localCodeURL = "show.html?privlyOriginalURL=" + encodeURIComponent(url);
-        $('.privlyUrl').one('click', function (e) {this.href = localCodeURL;});
+        $('#local_address').one('click', function (e) {this.href = localCodeURL;});
       }
-      $("#messages").show();
+
       if(callbacks.functionExists(callback)) {
         callback();
       }
