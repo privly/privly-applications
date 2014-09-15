@@ -39,13 +39,13 @@ var callbacks = {
     $(document).ajaxStart(function() {
       $('#loadingDiv').show(); 
     });
-    $(document).ajaxStop(function() { 
-      $('#loadingDiv').hide(); 
+    $(document).ajaxStop(function() {
+      $('#loadingDiv').hide();
     });
 
     privlyNetworkService.initPrivlyService(
-      privlyNetworkService.contentServerDomain(), 
-      callbacks.pendingPost, 
+      privlyNetworkService.contentServerDomain(),
+      callbacks.pendingPost,
       callbacks.loginFailure, 
       callbacks.loginFailure);
   },
@@ -58,6 +58,11 @@ var callbacks = {
     $("#messages").hide();
     $("#login_message").show();
     $("#refresh_link").click(function(){location.reload(true);});
+
+    if ( window.location.href.indexOf("content_server") > 0 ) {
+      $("#form").show();
+    }
+
   },
   
   /**
