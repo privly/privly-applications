@@ -42,23 +42,20 @@ var PersonaPGP = {
    */
   findPubKey: function(email, callback){
     // query localForage 
-    localforage.setDriver('localStorageWrapper', function(){
-      localforage.getItem('pgp-my_contacts', function(pubkey_email_hash){
-        if (email in pubkey_email_hash) {
-          var pub_keys = pubkey_email_hash[email]; 
-          // TODO: see if they are expired, look remotely for new key as needed
-          callback(pub_keys); //array of pub keys associated with email
-        } else { // not found locally, query DirP
-          PersonaPGP.findPubKeyRemote(email, function(bia_pub_keys){
-            if (bia_pub_keys == null){
-              callback(null);
-            } else { // Found remotely, verify and add to localForage
-              PersonaPGP.findPubKeyRemoteHelper(email, bia_pub_keys, callback);
-            }
-          });
+    var pubkey_email_hash = ls.getItem('pgp-my_contacts');
+    if (email in pubkey_email_hash) {
+      var pub_keys = pubkey_email_hash[email]; 
+      // TODO: see if they are expired, look remotely for new key as needed
+      callback(pub_keys); //array of pub keys associated with email
+    } else { // not found locally, query DirP
+      PersonaPGP.findPubKeyRemote(email, function(bia_pub_keys){
+        if (bia_pub_keys == null){
+          callback(null);
+        } else { // Found remotely, verify and add to localForage
+          PersonaPGP.findPubKeyRemoteHelper(email, bia_pub_keys, callback);
         }
       });
-    });
+    }
   },
 
   /**
@@ -134,29 +131,26 @@ var PersonaPGP = {
    * objects or null as a parameter.
    */
   findPubKeyRemote: function(email, callback){
-    localforage.setDriver('localStorageWrapper', function(){
-      localforage.getItem('pgp-directoryURL', function(remote_directory){
-        remote_directory += "/search";
-        var value = {
-          email: email
-        };
-        $.get(
-          remote_directory,
-          value
-        ).done(function(response){ // Everything went according to plan
-          console.log("findPubKeyRemote is returning: ", response);
-          callback(response); // Returns [{bia:bia, pgp:signed_pub_key}]
-        }
-        ).fail(function(response){
-          if (response.status === 404){
-            console.log("Email not found in Remote Directory");
-            console.log("Invite friend to share privately goes here");
-          } else {
-            console.log("Problem connecting to Remote Directory");
-          }
-          callback(null);
-        });
-      });
+    var remote_directory = ls.getItem('pgp-directoryURL');
+    remote_directory += "/search";
+    var value = {
+      email: email
+    };
+    $.get(
+      remote_directory,
+      value
+    ).done(function(response){ // Everything went according to plan
+      console.log("findPubKeyRemote is returning: ", response);
+      callback(response); // Returns [{bia:bia, pgp:signed_pub_key}]
+    }
+    ).fail(function(response){
+      if (response.status === 404){
+        console.log("Email not found in Remote Directory");
+        console.log("Invite friend to share privately goes here");
+      } else {
+        console.log("Problem connecting to Remote Directory");
+      }
+      callback(null);
     });
   },
 
@@ -175,18 +169,14 @@ var PersonaPGP = {
     var email = PersonaId.extractEmail(bia_pub_key["bia"]);
     PersonaPGP.verifyPubKey(bia_pub_key, function(outcome, pgp_pub_key){
       if (outcome === true){
-        localforage.setDriver('localStorageWrapper', function(){
-          localforage.getItem('pgp-my_contacts', function(data){
-            if (email in data){
-              data[email].push(pgp_pub_key);
-            } else {
-              data[email] = [pgp_pub_key];
-            }
-            localforage.setItem('pgp-my_contacts', data, function(){
-              callback(true, pgp_pub_key);
-            });
-          });
-        });
+        var data = ls.getItem('pgp-my_contacts');
+        if (email in data){
+          data[email].push(pgp_pub_key);
+        } else {
+          data[email] = [pgp_pub_key];
+        }
+        ls.setItem('pgp-my_contacts', data);
+        callback(true, pgp_pub_key);
       } else {
         callback(false, null);
       }
@@ -287,14 +277,11 @@ var PersonaPGP = {
       });
     };
 
-    localforage.setDriver('localStorageWrapper', function(){
-      localforage.getItem('pgp-email', function(my_email){
-        emails.push(my_email); // so you can view your own messages
-        for (var i = 0; i < emails.length; i++){
-          getPublicKeys(i);
-        }
-      });
-    });
+    var my_email = ls.getItem('pgp-email');
+    emails.push(my_email); // so you can view your own messages
+    for (var i = 0; i < emails.length; i++){
+      getPublicKeys(i);
+    }
   },
 
   /**
@@ -309,37 +296,34 @@ var PersonaPGP = {
     var encrypted_message = openpgp.message.readArmored(ciphertext);
     var keyids = encrypted_message.getEncryptionKeyIds();
 
-    localforage.setDriver('localStorageWrapper', function(){
-      localforage.getItem('pgp-my_keypairs', function(my_keys){
-        if (my_keys.length === 0 || my_keys === null){
-          callback("No private keys found. Failed to decrypt.");
-        }
-        var emails = Object.keys(my_keys);
-        for(var i = 0; i < emails.length; i++){
-          for(var j = 0; j < my_keys[emails[i]].length; j++){
-            var privKey = openpgp.key.readArmored(
-                            my_keys[emails[i]][j].privateKeyArmored).keys[0];
-            // hard coded passphrase for now
-            // TODO: get passphrase from user 
-            var success = privKey.decryptKeyPacket(keyids,"passphrase");
-            if (success === true){
-              var message = PersonaPGP.decryptHelper(privKey, encrypted_message);
-              if (message !== "next"){ // decrypted successfully
-                callback(message);
-              } else if ( i === (emails.length - 1) &&
-                          j === (my_keys[emails[i]].length -1) ) {
-                callback("The data cannot be viewed with your keys.");
-              }
-            } else {
-              if ( i === (emails.length - 1) &&
-                   j === (my_keys[emails[i]].length -1) ) {
-                callback("The data cannot be viewed with your keys.");
-              }
-            }
+    var my_keys = ls.getItem('pgp-my_keypairs');
+    if (my_keys.length === 0 || my_keys === null){
+      callback("No private keys found. Failed to decrypt.");
+    }
+    var emails = Object.keys(my_keys);
+    for(var i = 0; i < emails.length; i++){
+      for(var j = 0; j < my_keys[emails[i]].length; j++){
+        var privKey = openpgp.key.readArmored(
+                        my_keys[emails[i]][j].privateKeyArmored).keys[0];
+        // hard coded passphrase for now
+        // TODO: get passphrase from user 
+        var success = privKey.decryptKeyPacket(keyids,"passphrase");
+        if (success === true){
+          var message = PersonaPGP.decryptHelper(privKey, encrypted_message);
+          if (message !== "next"){ // decrypted successfully
+            callback(message);
+          } else if ( i === (emails.length - 1) &&
+                      j === (my_keys[emails[i]].length -1) ) {
+            callback("The data cannot be viewed with your keys.");
+          }
+        } else {
+          if ( i === (emails.length - 1) &&
+               j === (my_keys[emails[i]].length -1) ) {
+            callback("The data cannot be viewed with your keys.");
           }
         }
-      });
-    });
+      }
+    }
   },
 
   /**

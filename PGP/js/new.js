@@ -56,32 +56,29 @@ var callbacks = {
    * 
    */
   assureItemIsSet: function(option, callback){
-    localforage.setDriver('localStorageWrapper', function(){
-      localforage.getItem(option, function(value){
-        if (value == undefined || value == ""){
-          if (option === 'pgp-email'){
-            keyManager.promptUserToSetEmail(function(value){
-              callback(value);
-            });
-          }
-          else if (option === 'pgp-directoryURL'){
-            var default_dirp = "http://dirp.grr.io";
-            localforage.setItem(option, default_dirp);
-            callback(default_dirp);
-          }
-        } else if (option === 'pgp-directoryURL'){
-          // Prepend http:// to dirp if needed
-          if (value.indexOf("http://") === -1 &&
-              value.indexOf("https://") === -1){
-            var updated = "http://" + value;
-            localforage.setItem(option, updated);
-          }
+    var value = ls.getItem(option);
+    if (value == undefined || value == ""){
+      if (option === 'pgp-email'){
+        keyManager.promptUserToSetEmail(function(value){
           callback(value);
-        } else {
-          callback(value);
-        }
-      });
-    });
+        });
+      }
+      else if (option === 'pgp-directoryURL'){
+        var default_dirp = "http://dirp.grr.io";
+        ls.setItem(option, default_dirp);
+        callback(default_dirp);
+      }
+    } else if (option === 'pgp-directoryURL'){
+      // Prepend http:// to dirp if needed
+      if (value.indexOf("http://") === -1 &&
+          value.indexOf("https://") === -1){
+        var updated = "http://" + value;
+        ls.setItem(option, updated);
+      }
+      callback(value);
+    } else {
+      callback(value);
+    }
   },
 
   /**
@@ -130,15 +127,11 @@ var callbacks = {
    * Assess if a key needs to be uploaded to dirp.  Call notifier if needed.
    */
   needToUpload: function(){
-    localforage.setDriver('localStorageWrapper', function(){
-      localforage.getItem('pgp-payload', function(payload){
-        if (payload !== null ){ // have a stored playload to upload
-          localStorage.getItem('pgp-directoryURL', function(directoryURL){
-            keyManager.notifyConnectivity(directoryURL);
-          });
-        }
-      });
-    });
+    var payload = ls.getItem('pgp-payload');
+    if (payload !== null ){ // have a stored playload to upload
+      var directoryURL = ls.getItem('pgp-directoryURL');
+      keyManager.notifyConnectivity(directoryURL);
+    }
   },
 
   /**
@@ -149,17 +142,14 @@ var callbacks = {
    * emails as a paremeter.
    */
   populateToField: function(callback){
-    localforage.setDriver('localStorageWrapper', function(){
-      localforage.getItem('pgp-my_contacts', function(contacts){
-        var emails = [];
-        for(var email in contacts){
-          if (contacts.hasOwnProperty(email)){
-            emails.push(email);
-          }
-        }
-        callback(emails);
-      });
-    });
+    var contacts = ls.getItem('pgp-my_contacts');
+    var emails = [];
+    for(var email in contacts){
+      if (contacts.hasOwnProperty(email)){
+        emails.push(email);
+      }
+    }
+    callback(emails);
   },
 
   /**

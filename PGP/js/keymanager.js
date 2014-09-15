@@ -26,21 +26,18 @@ var keyManager = {
    * the localforage item is set.
    */
   setNewPGPKey: function(key, appended_value, callback){
-    localforage.setDriver('localStorageWrapper', function() {
-      localforage.getItem('pgp-email', function(email) {
-        localforage.getItem(key, function(value) {
-          if (value === null){
-            value = {};
-          }
-          if (email in value){
-            value[email].unshift(appended_value);
-          } else {
-            value[email] = [appended_value];
-          }
-          localforage.setItem(key, value, callback);
-        });
-      });
-    });
+    var email = ls.getItem('pgp-email');
+    var value = ls.getItem(key);
+    if (value === undefined){
+      value = {};
+    }
+    if (email in value){
+      value[email].unshift(appended_value);
+    } else {
+      value[email] = [appended_value];
+    }
+    ls.setItem(key, value);
+    callback();
   },
 
   /**
@@ -54,8 +51,10 @@ var keyManager = {
    */
   addNewPGPKey: function(keypair, callback){
     var pubkey = keypair.publicKeyArmored;
-    keyManager.setNewPGPKey('pgp-my_keypairs', keypair, function(result){
-      keyManager.setNewPGPKey('pgp-my_contacts', pubkey, callback(result));
+    keyManager.setNewPGPKey('pgp-my_keypairs', keypair, function(){
+      keyManager.setNewPGPKey('pgp-my_contacts', pubkey, function(){
+        callback();
+      });
     });
   },
 
@@ -68,17 +67,14 @@ var keyManager = {
    * accept the value of the pgp-persona-bridge as a paremeter.
    */
   promptUserToLogin: function(callback){
-    localforage.setDriver('localStorageWrapper', function(){
-      localforage.getItem('pgp-directoryURL', function(directoryURL){
-        $("#messages").hide();
-        $("#persona_link").attr("href", directoryURL);
-        $("#login_persona").show();
-        document.addEventListener('storage', function(storageEvent){
-          if (storageEvent.key === 'pgp-persona-bridge'){
-            callback(storageEvent.newValue);
-          }
-        });
-      });
+    var directoryURL = ls.getItem('pgp-directoryURL');
+    $("#messages").hide();
+    $("#persona_link").attr("href", directoryURL);
+    $("#login_persona").show();
+    document.addEventListener('storage', function(storageEvent){
+      if (storageEvent.key === 'pgp-persona-bridge'){
+        callback(storageEvent.newValue);
+      }
     });
   },
 
@@ -96,23 +92,17 @@ var keyManager = {
     // Add to local storage on clicking the save button
     document.querySelector('#save_email').addEventListener('click', function(){
       var email = document.getElementById("emailAddress").value;
-      localforage.setDriver('localStorageWrapper', function(){
-        localforage.setItem('pgp-email', email, function(){
-          $("#need_email").hide();
-          callback(email);
-        });
-      });
+      ls.setItem('pgp-email', email);
+      $("#need_email").hide();
+      callback(email);
     });
     // Set to local storage to save value on hitting enter 
     var email_input = document.getElementById("emailAddress");
     email_input.onkeyup = function(){
       if (event.keyCode === 13){ // user hit enter
-        localforage.setDriver('localStorageWrapper', function(){
-          localforage.setItem('pgp-email', email_input.value, function(){
-            $("#need_email").hide();
-            callback(email_input.value);
-          });
-        });
+        ls.setItem('pgp-email', email_input.value);
+        $("#need_email").hide();
+        callback(email_input.value);
       }
     };
   },
@@ -124,23 +114,20 @@ var keyManager = {
    * @param {string} resource The remote resource that cannot be accessed.
    */
   notifyConnectivity: function(resource){
-    localforage.setDriver('localStorageWrapper', function(){
-      localforage.getItem('pgp-payload', function(payload){
-        $("#connectivity_resource").text(resource);
-        $("#notify_connectivity").show();
-        $("#retry_connectivity").click(function(){
-          if (payload !== null){ // have stored payload
-            keyManager.uploadPayload(payload, function(results){ 
-              console.log("Upload results: "+results);
-              if (results === true){
-                $("#notify_connectivity").hide();
-              }
-            });
-          } else {
+    var payload = ls.getItem('pgp-payload');
+    $("#connectivity_resource").text(resource);
+    $("#notify_connectivity").show();
+    $("#retry_connectivity").click(function(){
+      if (payload !== undefined) { // have stored payload
+        keyManager.uploadPayload(payload, function(results){ 
+          console.log("Upload results: "+results);
+          if (results === true){
             $("#notify_connectivity").hide();
           }
         });
-      });
+      } else {
+        $("#notify_connectivity").hide();
+      }
     });
   },
   
@@ -157,17 +144,13 @@ var keyManager = {
    * boolean value as a paremeter.
    */
   needPersonaKey: function(callback){
-    localforage.setDriver('localStorageWrapper', function(){
-      localforage.getItem('pgp-persona-bridge', function(persona){
-        if (persona != null){
-          localforage.getItem('pgp-email', function(email){
-            callback(PersonaId.getSecretKeyFromBridge(persona, email) == null);
-          });
-        } else {
-          callback(true);
-        }
-      });
-    });
+    var persona = ls.getItem('pgp-persona-bridge');
+    if (persona != null){
+      var email = ls.getItem('pgp-email');
+      callback(PersonaId.getSecretKeyFromBridge(persona, email) == null);
+    } else {
+      callback(true);
+    }
   },
 
   /**
@@ -178,24 +161,20 @@ var keyManager = {
    * as a paremeter.
    */
   getPersonaKey: function(callback){
-    localforage.setDriver('localStorageWrapper', function(){
-      localforage.getItem('pgp-persona-bridge', function(persona){
-        localforage.getItem('pgp-email', function(email){
-          if (email == null){
-            callback(null);
-          }
-          if (persona != null) {
-            var secretkey = PersonaId.getSecretKeyFromBridge(persona, email);
-            callback(secretkey);
-          } else {
-            keyManager.promptUserToLogin(function(bridge){
-              var secretkey = PersonaId.getSecretKeyFromBridge(bridge, email);
-              callback(secretkey);
-            });
-          }
-        });
+    var persona = ls.getItem('pgp-persona-bridge');
+    var email = ls.getItem('pgp-email');
+    if (email == null){
+      callback(null);
+    }
+    if (persona != null) {
+      var secretkey = PersonaId.getSecretKeyFromBridge(persona, email);
+      callback(secretkey);
+    } else {
+      keyManager.promptUserToLogin(function(bridge){
+        var secretkey = PersonaId.getSecretKeyFromBridge(bridge, email);
+        callback(secretkey);
       });
-    });
+    }
   },
 
   /**
@@ -211,21 +190,18 @@ var keyManager = {
    */
   needNewKey: function(callback){
     // Determine if a key is already in local storage
-    localforage.setDriver('localStorageWrapper', function(){
-      localforage.getItem('pgp-my_keypairs', function(keypairs){
-        if (keypairs === null){ // no key found, return true
-          callback(true);
-        } else { // it does exist, check expirey regenerate if needed
-          // TODO: check if key is about to expire and gen a new one if needed
-          // Note: Currently openPGP.js does not support setting a key
-          // expiration. Since nearly all of the keys we deal with are generated
-          // with openPGP.js, we do not yet check to see if keys expire.
-          // See https://github.com/privly/privly-applications/issues/62
-          console.log("Already have a key.");
-          callback(false);
-        }
-      });
-    });
+    var keypairs = ls.getItem('pgp-my_keypairs');
+    if (keypairs === undefined){ // no key found, return true
+      callback(true);
+    } else { // it does exist, check expirey regenerate if needed
+      // TODO: check if key is about to expire and gen a new one if needed
+      // Note: Currently openPGP.js does not support setting a key
+      // expiration. Since nearly all of the keys we deal with are generated
+      // with openPGP.js, we do not yet check to see if keys expire.
+      // See https://github.com/privly/privly-applications/issues/62
+      console.log("Already have a key.");
+      callback(false);
+    }
   },
 
   /**
@@ -271,30 +247,26 @@ var keyManager = {
    */
   createPayload: function(callback){
     console.log("Uploading key");
-    localforage.setDriver('localStorageWrapper', function(){
-      localforage.getItem('pgp-my_keypairs', function(my_keys){
-        localforage.getItem('pgp-email', function(email){
-          var keypair = my_keys[email][0];// most recent key
-          if (keypair === null) {
-            console.log("No key to upload found");
-            callback(false);
-          }
-          var pubkey = keypair.publicKeyArmored;
-          keyManager.getPersonaKey(function(secretkey) {
-            if (secretkey !== null) {
-              // TODO: Find a better way to seed jwcrypto.
-              // See https://github.com/privly/privly-applications/issues/65
-              jwcrypto.addEntropy("ACBpasdavbepOAEfBPBHESAEFGHA");
-              PersonaId.bundle(pubkey, secretkey, email, function(payload){
-                callback(payload);
-              });
-            } else {
-              console.log("Secret key is null");
-              callback(false);
-            }
-          });
+    var my_keys = ls.getItem('pgp-my_keypairs');
+    var email = ls.getItem('pgp-email');
+    var keypair = my_keys[email][0];// most recent key
+    if (keypair === null) {
+      console.log("No key to upload found");
+      callback(false);
+    }
+    var pubkey = keypair.publicKeyArmored;
+    keyManager.getPersonaKey(function(secretkey) {
+      if (secretkey !== null) {
+        // TODO: Find a better way to seed jwcrypto.
+        // See https://github.com/privly/privly-applications/issues/65
+        jwcrypto.addEntropy("ACBpasdavbepOAEfBPBHESAEFGHA");
+        PersonaId.bundle(pubkey, secretkey, email, function(payload){
+          callback(payload);
         });
-      });
+      } else {
+        console.log("Secret key is null");
+        callback(false);
+      }
     });
   },
 
@@ -308,25 +280,20 @@ var keyManager = {
    * a paremeter.
    */
   uploadPayload: function(payload, callback){
-    localforage.setDriver('localStorageWrapper', function(){
-      localforage.getItem('pgp-directoryURL', function(directoryURL){
-        directoryURL += "/store";
-        $.get(
-          directoryURL,
-          payload
-        ).done(function(response){
-          console.log("Upload Success");
-          localforage.removeItem('pgp-payload', function(){
-            callback(true);
-          })
-        }
-        ).fail(function(response){
-          console.log("Upload Fail");
-          localforage.setItem('pgp-payload', payload, function(){
-            callback(false);
-          });
-        });
-      });
+    var directoryURL = ls.getItem('pgp-directoryURL');
+    directoryURL += "/store";
+    $.get(
+      directoryURL,
+      payload
+    ).done(function(response){
+      console.log("Upload Success");
+      ls.removeItem('pgp-payload');
+      callback(true);
+    }
+    ).fail(function(response){
+      console.log("Upload Fail");
+      ls.setItem('pgp-payload', payload);
+      callback(false);
     });
   }
 }
