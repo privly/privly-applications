@@ -16,6 +16,7 @@
   <script type="text/javascript" src="../vendor/localforage.min.js"></script>
   <script type="text/javascript" src="../vendor/jwcrypto-bundle.js"></script>
   <script type="text/javascript" src="../vendor/select2.js"></script>
+  <script type="text/javascript" src="../shared/javascripts/local_storage.js"></script>
   <script type="text/javascript" src="js/new.js"></script>
   <script type="text/javascript" src="js/personapgp.js"></script>
   <script type="text/javascript" src="js/identity.js"></script>

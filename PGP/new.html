@@ -38,6 +38,8 @@
   </script>
   <script src="../vendor/select2.js" type="text/javascript">
   </script>
+  <script src="../shared/javascripts/local_storage.js" type="text/javascript">
+  </script>
   <script src="js/new.js" type="text/javascript">
   </script>
   <script src="js/personapgp.js" type="text/javascript">
@@ -222,35 +224,35 @@
          <span id="missingEmails">
          </span>
          because they have not signed up yet.
+         <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="invite" role="button">
+           Invite
+          </a>
+          <ul class="dropdown-menu" id="inviteMenu" role="menu">
+           <li role="presentation">
+            <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=[FRIENDS]&amp;su=Share%20privately&amp;body=Body%20goes%20here" role="menuitem" tabindex="-1" target="_blank">
+             Gmail
+            </a>
+           </li>
+           <li role="presentation">
+            <a href="http://compose.mail.yahoo.com/?to=[FRIENDS]&amp;subj=Share%20Privately&amp;body=Body%20Goes%20here" role="menuitem" tabindex="-1" target="_blank">
+             Yahoo
+            </a>
+           </li>
+           <li role="presentation">
+            <a href="http://mail.aol.com/mail/compose-message.aspx?to=[FRIENDS]&amp;subject=Share%20Privately&amp;body=Body%20Goes%20Here" role="menuitem" tabindex="-1" target="_blank">
+             AOL
+            </a>
+           </li>
+           <li role="presentation">
+            <a href="https://mail.live.com/default.aspx?rru=compose&amp;to=[FRIENDS]&amp;subject=Share%20Privately&amp;body=Body%20Goes%20Here" role="menuitem" tabindex="-1" target="_blank">
+             Live
+            </a>
+           </li>
+          </ul>
+          them to share privately.
+         </li>
         </p>
-        <li class="dropdown">
-         <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="invite" role="button">
-          Invite
-         </a>
-         <ul class="dropdown-menu" id="inviteMenu" role="menu">
-          <li role="presentation">
-           <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=[FRIENDS]&amp;su=Share%20privately&amp;body=Body%20goes%20here" role="menuitem" tabindex="-1" target="_blank">
-            Gmail
-           </a>
-          </li>
-          <li role="presentation">
-           <a href="http://compose.mail.yahoo.com/?to=[FRIENDS]&amp;subj=Share%20Privately&amp;body=Body%20Goes%20here" role="menuitem" tabindex="-1" target="_blank">
-            Yahoo
-           </a>
-          </li>
-          <li role="presentation">
-           <a href="http://mail.aol.com/mail/compose-message.aspx?to=[FRIENDS]&amp;subject=Share%20Privately&amp;body=Body%20Goes%20Here" role="menuitem" tabindex="-1" target="_blank">
-            AOL
-           </a>
-          </li>
-          <li role="presentation">
-           <a href="https://mail.live.com/default.aspx?rru=compose&amp;to=[FRIENDS]&amp;subject=Share%20Privately&amp;body=Body%20Goes%20Here" role="menuitem" tabindex="-1" target="_blank">
-            Live
-           </a>
-          </li>
-         </ul>
-         them to share privately.
-        </li>
        </div>
        <br/>
        <label for="content">
