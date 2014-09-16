@@ -40,30 +40,30 @@ var PersonaPGP = {
    *
    */
   findPubKey: function(email,callback){
-    var pub_keys = null;
-
     // query localForage 
     console.log("Querying local storage");
     // TODO: allow looking at keyspairs that are not your own
     //localforage.getItem('my_contacts',function(pubkey_email_hash)
-    localforage.getItem('my_keypairs',function(pubkey_email_hash){
-      if (email in pubkey_email_hash) {
-        pub_keys = pubkey_email_hash[email]; 
-        callback(pub_keys); //array of pub keys associated with email
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('my_keypairs',function(pubkey_email_hash){
+        if (email in pubkey_email_hash) {
+          pub_keys = pubkey_email_hash[email]; 
+          callback(pub_keys); //array of pub keys associated with email
 
-      } else { // not found locally, query DirP
-        pub_keys = findPubKeyRemote(email,function(pub_keys){
-          if (pub_keys === null){
-            console.log("No public key associated with email found");
-            console.log("Invite friend to share privately goes here");
-            callback(pub_keys);
-          } else {
-            console.log("Returning2 " + pub_keys);
-            //addRemoteKeyToLocal(email,ballOwax);
-            callback(pub_keys);
-          }
-        });
-      }
+        } else { // not found locally, query DirP
+          findPubKeyRemote(email,function(pub_keys){
+            if (pub_keys === null){
+              console.log("No public key associated with email found");
+              console.log("Invite friend to share privately goes here");
+              callback(pub_keys);
+            } else {
+              console.log("Returning2 " + pub_keys);
+              //addRemoteKeyToLocal(email,ballOwax);
+              callback(pub_keys);
+            }
+          });
+        }
+      });
     });
   },
 
@@ -232,41 +232,43 @@ var PersonaPGP = {
     var encrypted_message = openpgp.message.readArmored(ciphertext);
     var keyids = encrypted_message.getEncryptionKeyIds();
 
-    localforage.getItem('my_keypairs',function(my_keys){
-      console.log(my_keys[0]);
-      if (my_keys.length === 0 || my_keys === null){
-        console.log("No private keys found.  Decryption exiting");
-        callback("No private keys found. Failed to decrypt.");
-      }
-      emails = Object.keys(my_keys);
-      for(var i = 0; i < emails.length; i++){
-        console.log(emails[i]);
-        for(var j = 0; j < my_keys[emails[i]].length; j++){
-          console.log(my_keys[emails[i]][j]);
-          var privKey = openpgp.key.readArmored(
-                          my_keys[emails[i]][j].privateKeyArmored).keys[0];
-          // hard coded passphrase for now
-          // TODO: get passphrase from user 
-          var success = privKey.decryptKeyPacket(keyids,"passphrase");
-          if (success === true){
-            var message = PersonaPGP.decryptHelper(privKey,encrypted_message);
-            if (message !== "next"){ // decrypted successfully
-              callback(message);
-            } else if ( i === (my_keys.length - 1) &&
-                        j === (my_keys[email[i]].length -1) ) {
-              console.log("Tried all available private keys, none worked");
-              callback("The data cannot be viewed with your keys.");
-            }
-          } else {
-            console.log("Wrong key!");
-            if ( i === (my_keys.length - 1) &&
-                 j === (my_keys[email[i]].length -1) ) {
-              console.log("Tried all available private keys, none worked");
-              callback("The data cannot be viewed with your keys.");
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('my_keypairs',function(my_keys){
+        console.log(my_keys[0]);
+        if (my_keys.length === 0 || my_keys === null){
+          console.log("No private keys found.  Decryption exiting");
+          callback("No private keys found. Failed to decrypt.");
+        }
+        emails = Object.keys(my_keys);
+        for(var i = 0; i < emails.length; i++){
+          console.log(emails[i]);
+          for(var j = 0; j < my_keys[emails[i]].length; j++){
+            console.log(my_keys[emails[i]][j]);
+            var privKey = openpgp.key.readArmored(
+                            my_keys[emails[i]][j].privateKeyArmored).keys[0];
+            // hard coded passphrase for now
+            // TODO: get passphrase from user 
+            var success = privKey.decryptKeyPacket(keyids,"passphrase");
+            if (success === true){
+              var message = PersonaPGP.decryptHelper(privKey,encrypted_message);
+              if (message !== "next"){ // decrypted successfully
+                callback(message);
+              } else if ( i === (my_keys.length - 1) &&
+                          j === (my_keys[email[i]].length -1) ) {
+                console.log("Tried all available private keys, none worked");
+                callback("The data cannot be viewed with your keys.");
+              }
+            } else {
+              console.log("Wrong key!");
+              if ( i === (my_keys.length - 1) &&
+                   j === (my_keys[email[i]].length -1) ) {
+                console.log("Tried all available private keys, none worked");
+                callback("The data cannot be viewed with your keys.");
+              }
             }
           }
         }
-      }
+      });
     });
   },
 
