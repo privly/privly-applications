@@ -17,6 +17,7 @@
  * 6. Login Failure: The server did not grant the user a session.
  * 7. Login Error: The server could not be reached or had an internal error.
  * 8. Pending Post: The user is properly logged in and can create content.
+ * 9. genPGPkeys: The extension is checking PGP keys exist and are not expired.
  */
 var callbacks = {
   
@@ -63,6 +64,9 @@ var callbacks = {
       callbacks.pendingPost, 
       callbacks.notLoggedIn, 
       callbacks.loginError);
+
+    // Generate a PGP Keypair if needed
+    callbacks.genPGPKeys();
   },
   
   /**
@@ -206,6 +210,7 @@ var callbacks = {
     });
   }
 }
+
 
 // Start the application
 document.addEventListener('DOMContentLoaded', callbacks.pendingLogin);
