@@ -16,10 +16,11 @@ var ls = {
    * @param {string} value is the value to assign to the key.
    */
   setItem: function(key, value) {
+    if ( typeof(value) === "object" ){
+      value = JSON.stringify(value);
+    }
+
     if ( ls.localStorageDefined ) {
-      if ( typeof(value) === "object" ){
-        value = JSON.stringify(value);
-      }
       return localStorage[key] = value;
     } else {
       ls.preferences.setCharPref(key, value);
@@ -37,13 +38,17 @@ var ls = {
       try {  // try to parse stored value as JSON
         var value = JSON.parse(localStorage[key]);
         return value;
-      }
-      catch(e) { // return original value instead of 
+      } catch(e) { // return original value
         return localStorage[key];
       }
     } else {
       try {
-        return ls.preferences.getCharPref(key);
+        try { // try to parse stored value as JSON
+          var value = JSON.parse(ls.preferences.getCharPref(key));
+          return value;
+        } catch(e){
+          return ls.preferences.getCharPref(key);
+        }
       } catch(e) {
         console.warn("Local Storage key was not in storage");
         return undefined;
