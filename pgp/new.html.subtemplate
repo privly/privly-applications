@@ -50,11 +50,11 @@
   <hr/>
   <div class="col-md-6">
     <h2>What is a PGP?</h2>
-    <p>PGP is a standard time tested encryption standard designed to provide 
+    <p>PGP is a standard time tested encryption standard designed to provide
       cryptographic privacy and authentication.  This implementation is built
       as a
       <a href="http://www.privly.org/content/introducing-privly-applications" target="_blank">
-        privacy application</a> on Privly. PGP messages encrypt your content 
+        privacy application</a> on Privly. PGP messages encrypt your content
       so that only the intended reciepients can decrypt the message.
       You can use 
       <a href="http://daringfireball.net/projects/markdown/basics">
