@@ -188,18 +188,18 @@ var privlyNetworkService = {
    */
   isWhitelistedDomain: function(url) {
     
-    // Chrome maintains an explicit whitelist in localStorage
+    // Chrome maintains an explicit whitelist in local storage
     if( privlyNetworkService.platformName() === "CHROME" || 
       privlyNetworkService.platformName() === "FIREFOX") {
       
       // get the user defined whitelist and add in the default whitelist
       var whitelist = [];
       
-      // There is no localStorage API on Firefox XUL
+      // There is no local storage API on Firefox XUL
       if ( privlyNetworkService.platformName() === "CHROME" &&
-        localStorage["user_whitelist_csv"] !== undefined ) {
+        ls.getItem("user_whitelist_csv") !== undefined ) {
         whitelist = whitelist.concat(
-          localStorage["user_whitelist_csv"].split(" , "));
+          ls.getItem("user_whitelist_csv").split(" , "));
       }
       whitelist.push("priv.ly");
       whitelist.push("dev.privly.org");
@@ -240,7 +240,7 @@ var privlyNetworkService = {
       return protocolDomainPort;
     } else if (privlyNetworkService.platformName() === "CHROME" ||
               (privlyNetworkService.platformName() === "IOS")) {
-      return localStorage["posting_content_server_url"];
+      return ls.getItem("posting_content_server_url");
     } else if (privlyNetworkService.platformName() === "ANDROID") {
       return androidJsBridge.fetchDomainName();
     } else if (privlyNetworkService.platformName() === "FIREFOX") {
