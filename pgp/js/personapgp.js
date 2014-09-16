@@ -37,8 +37,8 @@ var PersonaPGP = {
 
     // query localForage 
     console.log("Querying local storage");
-    // Only look at your own keypairs for now
-    //localforage.getItem('my_contacts',function(pubkey_email_hash){
+    // TODO: allow looking at keyspairs that are not your own
+    //localforage.getItem('my_contacts',function(pubkey_email_hash)
     localforage.getItem('my_keypairs',function(pubkey_email_hash){
       if (email in pubkey_email_hash) {
 
@@ -105,7 +105,7 @@ var PersonaPGP = {
   addRemoteKeyToLocal: function(email,ballOwax){
     console.log("Adding remotely discovered key to local contacts");
     // authenticate email with verifier -> return false on failure
-    // ignoring for now
+    // TODO: authenticate with verifier
     // verifyPubKey(email,ballOwax).then( the rest of the function );
 
     // Get existing list of contacts
@@ -185,6 +185,7 @@ var PersonaPGP = {
     //}
     
     // Only encrypt for the first email for now
+    // TODO: encrypt for entire array of emails
     PersonaPGP.findPubKey(emails[0],function(key){
       var Keys = key;
       // Here we convert the plaintext into a json string. We do this to check if
@@ -232,6 +233,7 @@ var PersonaPGP = {
                           keys_to_try[i][emails[j]].privateKeyArmored).keys[0];
         }
         // hard coded passphrase for now
+        // TODO: get passphrase from user 
         var success = privKey.decryptKeyPacket(keyids,"passphrase");
         var message = PersonaPGP.decryptHelper(privKey,encrypted_message);
         if (message !== "next"){ // decrypted successfully
@@ -263,8 +265,10 @@ var PersonaPGP = {
 
     if (message.message !== decryptFailedMsg){
       return message.message;
-    } else { // figure out a better solution long term, this prevents sending 
-      // a message consisting only of "next".  works for now
+    } else { 
+      // TODO: make this more robust
+      // figure out a better solution long term. currently this prevents
+      // sending a message consisting only of "next".  
       console.log("Wrong key, trying next one");
       return "next";
     }
