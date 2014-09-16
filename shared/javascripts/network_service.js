@@ -235,20 +235,16 @@ var privlyNetworkService = {
     var protocolDomainPort = location.protocol + 
                              '//'+location.hostname + 
                              (location.port ? ':'+location.port: '');
-    
-    if (privlyNetworkService.platformName() === "HOSTED") {
+
+    var platformName = privlyNetworkService.platformName();
+    if (platformName === "HOSTED") {
       return protocolDomainPort;
-    } else if (privlyNetworkService.platformName() === "CHROME" ||
-              (privlyNetworkService.platformName() === "IOS")) {
+    } else if (platformName === "CHROME" ||
+               platformName === "FIREFOX" ||
+               platformName === "IOS") {
       return ls.getItem("posting_content_server_url");
-    } else if (privlyNetworkService.platformName() === "ANDROID") {
+    } else if (platformName === "ANDROID") {
       return androidJsBridge.fetchDomainName();
-    } else if (privlyNetworkService.platformName() === "FIREFOX") {
-      if( privlyNetworkService.firefoxPrefs === undefined )
-        privlyNetworkService.firefoxPrefs = Components.classes["@mozilla.org/preferences-service;1"]
-                            .getService(Components.interfaces.nsIPrefService)
-                            .getBranch("extensions.privly.");
-      return privlyNetworkService.firefoxPrefs.getCharPref("contentServerUrl");
     } else {
       return protocolDomainPort;
     }
