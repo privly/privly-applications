@@ -129,6 +129,76 @@ var callbacks = {
     } else {
       window.location = "../Help/new.html";
     }
+  },
+
+  /**
+   * Genereate a PGP key if it does not exist or is nearly expired
+   */
+  genPGPKeys: function(){
+    // Determine if a key is already in local storage
+    localforage.setDriver('localStorageWrapper',function(){
+      localforage.getItem('my_keypairs',function(keypair){
+
+        if (keypair === null){ // it does not exist, make it
+          console.log("Generating New Key");
+          var workerProxy = new openpgp.AsyncProxy('../vendor/openpgp.worker.js');
+          workerProxy.seedRandom(10); // TODO: evaluate best value to use
+          workerProxy.generateKeyPair(
+            openpgp.enums.publicKey.rsa_encrypt_sign,
+            1028,'username','passphrase',function(err,data){ // TODO: increase key size
+              // TODO: need to already know user's email, hard coded for now
+              var email = "bob@example.com";
+              var datas = {}
+              datas[email] = [data];
+              //localforage.setItem('my_keypairs',datas).then(callbacks.uploadKey());
+              localforage.setItem('my_keypairs',datas);  // TODO: actually upload key
+              // Make sure you can send encrypted messages to yourself
+              // Just pub key in contacts
+              var pub = {}
+              pub[email] = [data.publicKeyArmored]; 
+              localforage.setItem('my_contacts',pub);  
+            }
+          );
+        } else { // it does exist, do nothing for now
+          console.log("Already have a key");
+          console.log(keypair["bob@example.com"][0]);
+          // TODO: check if key is about to expire and gen a new one if needed
+        }
+      });
+    });
+  },
+
+  /**
+   * Upload a signed key along with associated user certificate to directory
+   */
+  uploadKey: function(email,ballOwax){
+    localforage.getItem('my_keypairs',function(keypair){
+      if (keypair === null){
+        console.log("No key to upload found");
+        return false;
+      }
+      console.log(keypair);
+      var email = "bob@example.com";
+      var directoryURL = "http://127.0.0.1:8989/"
+      var pubkey = "foo";
+      console.log("Oh noes");
+      console.log(pubkey);
+      $.post(
+        directoryURL,
+        {email:email, 
+          uc: "uc", 
+          ia: "ia", 
+          pgp_pub: pubkey,
+          sign_pgp_pub: "foo_signed"
+        },
+        function(response){
+          if (response.status === 200){
+            console.log(response);
+          }
+        }
+      );
+      console.log("sent");
+    });
   }
 }
 
