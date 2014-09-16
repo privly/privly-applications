@@ -27,8 +27,6 @@ describe ("Extension Integration Test Suite", function() {
       return initializationFlag;
     }, "The message pathway was not initialized", 1000);
     
-    expect(true).toBe(true);
-    
   });
   
   it("can receive initial content from the extension", function() {
@@ -60,13 +58,10 @@ describe ("Extension Integration Test Suite", function() {
       return initializationFlag;
     }, "The app was not initialized", 1000);
     
-    expect(true).toBe(true);
   });
   
-  it("can send URL event", function() {
-    if (privlyNetworkService.platformName() === "HOSTED") return;
-    //pass since executing a test for this can close the app
-    //privlyExtension.firePrivlyURLEvent("TEST");
+  it("can send URL event without error", function() {
+    privlyExtension.firePrivlyURLEvent("TEST");
   });
   
 });

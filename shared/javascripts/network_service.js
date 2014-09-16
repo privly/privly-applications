@@ -400,12 +400,23 @@ var privlyNetworkService = {
   },
   
   /**
+   * Hide all the elements not required by mobile and adjust the CSS appropriately.
+   * Elements will only be modified for mobile apps.
+   */
+  mobileHide: function() {
+    if( privlyNetworkService.platformName() === "IOS" ||
+        privlyNetworkService.platformName() === "ANDROID" ) {
+      $(".mobile_hide").hide();
+      $("body").css("padding-top", "0px");
+    }
+  },
+
+  /**
    * Assign the href attribute of navigation links appropriately.
    */
   initializeNavigation: function() {
     var domain = privlyNetworkService.contentServerDomain();
-    $(".home_domain").attr("href", domain);
-    $(".home_domain").text(domain.split("/")[2]);  
+    $(".home_domain").text(domain.split("/")[2]);
     $(".account_url").attr("href", domain + "/pages/account");
     $(".legal_nav").attr("href", domain + "/pages/privacy");
     document.getElementById("logout_link").addEventListener('click', function(){
@@ -421,35 +432,37 @@ var privlyNetworkService = {
       $(".account_url").attr("target", "_self");
       $(".legal_nav").attr("target", "_self");
     }
-    
-    if( privlyNetworkService.platformName() === "IOS" ||
-        privlyNetworkService.platformName() === "ANDROID" ) {
-      $(".mobile_hide").hide(); 
-    }
-    
+
+    privlyNetworkService.mobileHide();
   },
-  
+
   /**
    * Show/hide the appropriate navigation items for when the user is logged out.
    */
   showLoggedOutNav: function() {
+    
+    // Don't show the nav at all if the content is injected.
+    if(typeof privlyHostPage !== "undefined" && privlyHostPage.isInjected()) {
+      return;
+    }
     $(".logged_in_nav").hide();
     $(".logged_out_nav").show();
-    if( privlyNetworkService.platformName() === "IOS" ||
-        privlyNetworkService.platformName() === "ANDROID" ) {
-      $(".mobile_hide").hide(); 
-    }
+    $(".injected_hide").show();
+    privlyNetworkService.mobileHide();
   },
   
   /**
    * Show/hide the appropriate navigation items for when the user is logged in.
    */
   showLoggedInNav: function() {
+    
+    // Don't show the nav at all if the content is injected.
+    if(typeof privlyHostPage !== "undefined" && privlyHostPage.isInjected()) {
+      return;
+    }
+    $(".injected_hide").show();
     $(".logged_in_nav").show();
     $(".logged_out_nav").hide();
-    if( privlyNetworkService.platformName() === "IOS" ||
-        privlyNetworkService.platformName() === "ANDROID" ) {
-      $(".mobile_hide").hide(); 
-    }
+    privlyNetworkService.mobileHide();
   }
 }

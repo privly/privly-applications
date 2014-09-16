@@ -15,9 +15,10 @@ button{
   cursor: pointer;
 }
 
-#status, #server_status{
+#status, #server_status, #button_status{
   color: #666666;
   font-family: 'Lobster';
+  padding-top: 5px;
 }
 
 fieldset{
@@ -352,4 +353,8 @@ pre code {
   color: inherit;
   background-color: transparent;
   border: 0;
+}
+textarea {
+  resize: none;
+  min-height: 6em;
 }

@@ -2,7 +2,7 @@
 
 {% block specs %}
   <meta name="PrivlySpec" 
-  content="test/new.js,test/openpgp.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js"/>
+  content="test/new.js,test/openpgp.js,test/identity.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js"/>
 {% endblock %}
 
 {% block javascripts %}
@@ -10,8 +10,10 @@
   <script type="text/javascript" src="../vendor/markdown.js"></script>
   <script type="text/javascript" src="../vendor/openpgp.min.js"></script>
   <script type="text/javascript" src="../vendor/localforage.min.js"></script>
+  <script type="text/javascript" src="../vendor/jwcrypto-bundle.js"></script>
   <script type="text/javascript" src="js/new.js"></script>
   <script type="text/javascript" src="js/personapgp.js"></script>
+  <script type="text/javascript" src="js/identity.js"></script>
 {% endblock %}
 
 
@@ -54,11 +56,11 @@
   <hr/>
   <div class="col-md-6">
     <h2>What is a PGP?</h2>
-    <p>PGP is a standard time tested encryption standard designed to provide 
+    <p>PGP is a standard time tested encryption standard designed to provide
       cryptographic privacy and authentication.  This implementation is built
       as a
       <a href="http://www.privly.org/content/introducing-privly-applications" target="_blank">
-        privacy application</a> on Privly. PGP messages encrypt your content 
+        privacy application</a> on Privly. PGP messages encrypt your content
       so that only the intended reciepients can decrypt the message.
       You can use 
       <a href="http://daringfireball.net/projects/markdown/basics">

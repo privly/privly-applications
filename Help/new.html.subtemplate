@@ -1,5 +1,7 @@
 {% extends "templates/new.html.template" %}
 
+{% block title %}<title>{{name}}</title>{% endblock %}
+
 {% block specs %}
   <meta name="PrivlySpec"
    content="../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js"/>
@@ -7,7 +9,7 @@
 
 {% block javascripts %}
 <script type="text/javascript" src="../vendor/jquery.min.js"></script>
-<script type="text/javascript" src="js/new.js"></script>
+<script type="text/javascript" src="js/help.js"></script>
 {% endblock %}
 
 {% block form %}

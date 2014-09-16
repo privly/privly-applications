@@ -20,21 +20,32 @@ var callbacks = {
    * Initialize the whole application.
    */
   pendingLogin: function() {
-    
+
+    // Save to localStorage the app to redirect to after succesful log in
+    localStorage["Login:redirect_to_app"] = window.location.href;
+
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
-    
+
+    var domain = privlyNetworkService.contentServerDomain();
+    $("#current_content_server").text(domain.split("/")[2]);
+    $("#remote_content_server").attr("href", domain);
+
+    if ( privlyNetworkService.platformName() === "CHROME" ) {
+      $(".chrome_options_link").show();
+    }
+
     // Add listeners to show loading animation while making ajax requests
     $(document).ajaxStart(function() {
       $('#loadingDiv').show(); 
     });
-    $(document).ajaxStop(function() { 
-      $('#loadingDiv').hide(); 
+    $(document).ajaxStop(function() {
+      $('#loadingDiv').hide();
     });
-    
+
     privlyNetworkService.initPrivlyService(
-      privlyNetworkService.contentServerDomain(), 
-      callbacks.pendingPost, 
+      privlyNetworkService.contentServerDomain(),
+      callbacks.pendingPost,
       callbacks.loginFailure, 
       callbacks.loginFailure);
   },
@@ -47,6 +58,11 @@ var callbacks = {
     $("#messages").hide();
     $("#login_message").show();
     $("#refresh_link").click(function(){location.reload(true);});
+
+    if ( window.location.href.indexOf("content_server") > 0 ) {
+      $("#form").show();
+    }
+
   },
   
   /**

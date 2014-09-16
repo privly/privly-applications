@@ -26,8 +26,18 @@ var callbacks = {
    */
   pendingLogin: function() {
     
+    // Get the domain the user's extension is paired with
+    var domain = privlyNetworkService.contentServerDomain();
+    
     // Display the content server the user is asssociated with
-    $(".content_server").text(privlyNetworkService.contentServerDomain());
+    $(".content_server").text(domain);
+    
+    // Set the domain to the proper content server
+    $(".login_issue").each( function( key, value ) {
+      $(value).attr("href", domain + $(value).attr("data-path-sub"))
+    });
+    
+    privlyNetworkService.showLoggedOutNav();
     
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
@@ -115,7 +125,14 @@ var callbacks = {
    * Tell the user they are now logged in to the server.
    */
   pendingPost: function() {
-    window.location = "../Help/new.html";
+    
+    // get from localStorage the last known app to redirect to
+    if(localStorage["Login:redirect_to_app"] !== undefined &&
+       localStorage["Login:redirect_to_app"].indexOf("Login") < 0) {
+      window.location = localStorage["Login:redirect_to_app"];
+    } else {
+      window.location = "../Help/new.html";
+    }
   },
 
   /**

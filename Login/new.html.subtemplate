@@ -48,11 +48,14 @@
   <hr />
   <div class="col-md-3">
     <h2>Sign in Issues</h2>
-    <a href="/users/password/new">Forgot your password?</a>
+    <a class="login_issue" href="#" target="_blank"
+      data-path-sub="/users/password/new">Forgot your password?</a>
     <br />
-    <a href="/users/confirmation/new">Didn't receive confirmation instructions?</a>
+    <a class="login_issue" href="#" target="_blank"
+      data-path-sub="/users/confirmation/new">Didn't receive confirmation instructions?</a>
     <br />
-    <a href="/users/unlock/new">Didn't receive unlock instructions?</a>
+    <a class="login_issue" href="#" target="_blank"
+      data-path-sub="/users/unlock/new">Didn't receive unlock instructions?</a>
   </div>
   
   <div class="col-md-7">
