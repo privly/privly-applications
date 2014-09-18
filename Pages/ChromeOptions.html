@@ -9,7 +9,8 @@
   <title>
    New Options
   </title>
-  <meta content="../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js" name="PrivlySpec"/>
+  <meta ,.="" content="../shared/test/parameters.js,../shared/test/extension_integration.js,
+            ../shared/test/network_service.js" js="" name="PrivlySpec" optionsspec.js="" tests=""/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <!-- Top Styles -->
   <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
@@ -37,7 +38,7 @@
   </script>
   <!-- Wrap all page content here -->
   <div id="wrap">
-   <div class="navbar navbar-inverse navbar-fixed-top injected_hide" role="navigation">
+   <div class="navbar navbar-inverse navbar-fixed-top injected_hide mobile_hide" role="navigation">
     <div class="container">
      <div class="navbar-header">
       <button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse" type="button">
@@ -51,7 +52,7 @@
        <span class="icon-bar">
        </span>
       </button>
-      <a class="navbar-brand lobster home_domain" href="" target="_blank">
+      <a class="navbar-brand lobster home_domain" href="../Help/content_server.html" title="This is your current content server">
        Privly
       </a>
      </div>
@@ -86,6 +87,13 @@
            <span class="glyphicon glyphicon-pencil">
            </span>
            New PlainPost
+          </a>
+         </li>
+         <li>
+          <a href="../PGP/new.html">
+           <span class="glyphicon glyphicon-pencil">
+           </span>
+           New PGP
           </a>
          </li>
          <li>
@@ -159,6 +167,28 @@
         login
        </a>
       </p>
+      <div id="copy_message" style="display:none;">
+       <p class="flash notice">
+        Copy and paste the address found below to any website
+                you want to share this information through.
+       </p>
+       <p class="flash notice">
+        <span class="glyphicon glyphicon-link">
+        </span>
+        <span class="privlyUrl" data-privly-exclude="true">
+        </span>
+       </p>
+       <p class="flash notice open-app-button" style="display:none;">
+        <strong>
+         Now copy/paste
+        </strong>
+        the highlighted address anywhere you want to share it. You can also
+        <a class="btn btn-default" href="" id="local_address" target="_blank">
+         open the link
+        </a>
+        to view the content yourself.
+       </p>
+      </div>
       <p>
        <a class="privlyUrl" data-privly-exclude="true" href="">
        </a>
@@ -171,6 +201,23 @@
        <h1 class="page-header">
         Extension Options
        </h1>
+       <section id="button_option">
+        <h2>
+         Privly Button
+        </h2>
+        <br/>
+        <input id="disableBtn" type="checkbox">
+         Disable the Privly button that appears in the top-right corner of textarea's
+         <br/>
+         <br/>
+         <button class="btn btn-primary" id="save_btnAppearance">
+          Save
+         </button>
+         <div id="button_status">
+         </div>
+        </input>
+       </section>
+       <hr/>
        <section id="glyph">
         <h2>
          Security Glyph
@@ -259,7 +306,8 @@
            </option>
           </select>
           <fieldset id="user">
-           <input class="form-control" id="other_content_server" placeholder="ex: https://myContentServer.com" size="200" style="width:250px;" title="Enter content server here" type="text"/>
+           <input class="form-control" id="other_content_server" placeholder="ex: https://myContentServer.com" size="200" style="width:250px;" title="Enter content server here" type="text">
+           </input>
           </fieldset>
           <button class="btn btn-primary" id="save_server" type="button" value="save_server">
            Save

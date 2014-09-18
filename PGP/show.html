@@ -49,7 +49,7 @@
   <div id="wrap">
    <!-- for bootstrap footer -->
    <div id="privlyHeightWrapper">
-    <div class="navbar navbar-inverse navbar-fixed-top injected_hide" role="navigation">
+    <div class="navbar navbar-inverse navbar-fixed-top injected_hide mobile_hide" role="navigation">
      <div class="container">
       <div class="navbar-header">
        <button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse" type="button">
@@ -63,15 +63,15 @@
         <span class="icon-bar">
         </span>
        </button>
-       <a class="navbar-brand lobster home_domain" href="" target="_blank">
+       <a class="navbar-brand lobster home_domain" href="../Help/content_server.html" title="This is your current content server">
         Privly
        </a>
       </div>
       <div class="collapse navbar-collapse">
        <ul class="nav navbar-nav">
         <li class="logged_in_nav mobile_hide" style="display:none;">
-         <a href="../Index/new.html">
-          Index
+         <a href="../History/new.html">
+          History
           <span class="glyphicon glyphicon-list-alt">
           </span>
          </a>
@@ -147,12 +147,35 @@
           </li>
          </ul>
         </li>
-        <li class="logged_in_nav mobile_hide" style="display:none;">
-         <a class="account_url" href="#" target="_blank">
-          Server Account
-          <span class="glyphicon glyphicon-user">
-          </span>
+        <li class="dropdown logged_in_nav mobile_hide">
+         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+          Options
+          <b class="caret">
+          </b>
          </a>
+         <ul class="dropdown-menu">
+          <li>
+           <a class="account_url" href="#" target="_blank">
+            <span class="glyphicon glyphicon-new-window">
+            </span>
+            Server Account
+           </a>
+          </li>
+          <li>
+           <a href="../Pages/ChromeOptions.html">
+            <span class="glyphicon glyphicon-wrench">
+            </span>
+            Extension Options
+           </a>
+          </li>
+          <li>
+           <a href="../Pages/ChromeFirstRun.html">
+            <span class="glyphicon glyphicon-info-sign">
+            </span>
+            Extension Information
+           </a>
+          </li>
+         </ul>
         </li>
         <li class="logged_in_nav mobile_hide" style="display:none;">
          <a class="logout_url" href="#" id="logout_link">
