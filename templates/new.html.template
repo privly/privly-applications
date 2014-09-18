@@ -77,7 +77,6 @@
               </p>
             </div>
             {% block messages %}{% endblock %}
-            <p><a class="privlyUrl" href="" data-privly-exclude="true"></a></p>
           </div>
         </div>
         
