@@ -1,0 +1,15 @@
+[
+  {
+    "release_status": "alpha",
+    "nav": "new",
+    "subtemplate_path": "PGP/new.html.subtemplate",
+    "outfile_path": "PGP/new.html",
+    "subtemplate_dict": {"name": "PGP", "action": "new"}
+  },
+  {
+    "release_status": "alpha",
+    "subtemplate_path": "PGP/show.html.subtemplate",
+    "outfile_path": "PGP/show.html",
+    "subtemplate_dict": {"name": "PGP", "action": "show"}
+  }
+]
