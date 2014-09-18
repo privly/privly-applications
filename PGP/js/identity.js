@@ -161,7 +161,7 @@ var PersonaId = {
    * a parameter.
    **/
   remotelyVerifyBia: function(bia, callback){
-    var audience = localStorage['pgp-directoryURL'];
+    var audience = ls.getItem('pgp-directoryURL');
     audience += ":443";
     $.post(
       "https://verifier.login.persona.org/verify",
@@ -189,9 +189,13 @@ var PersonaId = {
    **/
   getSecretKeyFromBridge: function(bridge, email) {
     var emails = JSON.parse(bridge.emails);
-    if (Object.keys(emails).length == undefined || // Empty object
-             emails.default[email] == undefined || // No email key
-             emails.default[email].priv == undefined) { // No Priv Key
+    try {
+      if (Object.keys(emails).length == undefined || // Empty object
+               emails.default[email] == undefined || // No email key
+               emails.default[email].priv == undefined) { // No Priv Key
+        return null;
+      }
+    } catch(e) {
       return null;
     }
     var priv = emails.default[email].priv;

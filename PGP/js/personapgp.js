@@ -42,7 +42,7 @@ var PersonaPGP = {
    */
   findPubKey: function(email, callback){
     // query localForage 
-    var pubkey_email_hash = localStorage['pgp-my_contacts'];
+    var pubkey_email_hash = ls.getItem('pgp-my_contacts');
     if (email in pubkey_email_hash) {
       var pub_keys = pubkey_email_hash[email]; 
       // TODO: see if they are expired, look remotely for new key as needed
@@ -131,7 +131,7 @@ var PersonaPGP = {
    * objects or null as a parameter.
    */
   findPubKeyRemote: function(email, callback){
-    var remote_directory = localStorage['pgp-directoryURL'];
+    var remote_directory = ls.getItem('pgp-directoryURL');
     remote_directory += "/search";
     var value = {
       email: email
@@ -169,13 +169,13 @@ var PersonaPGP = {
     var email = PersonaId.extractEmail(bia_pub_key["bia"]);
     PersonaPGP.verifyPubKey(bia_pub_key, function(outcome, pgp_pub_key){
       if (outcome === true){
-        var data = localStorage['pgp-my_contacts'];
+        var data = ls.getItem('pgp-my_contacts');
         if (email in data){
           data[email].push(pgp_pub_key);
         } else {
           data[email] = [pgp_pub_key];
         }
-        localStorage['pgp-my_contacts'] = data;
+        ls.setItem('pgp-my_contacts', data);
         callback(true, pgp_pub_key);
       } else {
         callback(false, null);
@@ -277,7 +277,7 @@ var PersonaPGP = {
       });
     };
 
-    var my_email =  localStorage['pgp-email'];
+    var my_email = ls.getItem('pgp-email');
     emails.push(my_email); // so you can view your own messages
     for (var i = 0; i < emails.length; i++){
       getPublicKeys(i);
@@ -296,7 +296,7 @@ var PersonaPGP = {
     var encrypted_message = openpgp.message.readArmored(ciphertext);
     var keyids = encrypted_message.getEncryptionKeyIds();
 
-    var my_keys = localStorage['pgp-my_keypairs'];
+    var my_keys = ls.getItem('pgp-my_keypairs');
     if (my_keys.length === 0 || my_keys === null){
       callback("No private keys found. Failed to decrypt.");
     }

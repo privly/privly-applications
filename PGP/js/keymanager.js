@@ -26,9 +26,9 @@ var keyManager = {
    * the localforage item is set.
    */
   setNewPGPKey: function(key, appended_value, callback){
-    var email = localStorage['pgp-email'];
-    var value = localStorage[key];
-    if (value === null){
+    var email = ls.getItem('pgp-email');
+    var value = ls.getItem(key);
+    if (value === undefined){
       value = {};
     }
     if (email in value){
@@ -36,7 +36,7 @@ var keyManager = {
     } else {
       value[email] = [appended_value];
     }
-    localStorage[key] = value;
+    ls.setItem(key, value);
     callback();
   },
 
@@ -51,8 +51,10 @@ var keyManager = {
    */
   addNewPGPKey: function(keypair, callback){
     var pubkey = keypair.publicKeyArmored;
-    keyManager.setNewPGPKey('pgp-my_keypairs', keypair, function(result){
-      keyManager.setNewPGPKey('pgp-my_contacts', pubkey, callback(result));
+    keyManager.setNewPGPKey('pgp-my_keypairs', keypair, function(){
+      keyManager.setNewPGPKey('pgp-my_contacts', pubkey, function(){
+        callback();
+      });
     });
   },
 
@@ -65,7 +67,7 @@ var keyManager = {
    * accept the value of the pgp-persona-bridge as a paremeter.
    */
   promptUserToLogin: function(callback){
-    var directoryURL = localStorage['pgp-directoryURL'];
+    var directoryURL = ls.getItem('pgp-directoryURL');
     $("#messages").hide();
     $("#persona_link").attr("href", directoryURL);
     $("#login_persona").show();
@@ -90,7 +92,7 @@ var keyManager = {
     // Add to local storage on clicking the save button
     document.querySelector('#save_email').addEventListener('click', function(){
       var email = document.getElementById("emailAddress").value;
-      localStorage['pgp-email'] =  email;
+      ls.setItem('pgp-email', email);
       $("#need_email").hide();
       callback(email);
     });
@@ -98,7 +100,7 @@ var keyManager = {
     var email_input = document.getElementById("emailAddress");
     email_input.onkeyup = function(){
       if (event.keyCode === 13){ // user hit enter
-        localStorage['pgp-email'] = email_input.value;
+        ls.setItem('pgp-email', email_input.value);
         $("#need_email").hide();
         callback(email_input.value);
       }
@@ -112,11 +114,11 @@ var keyManager = {
    * @param {string} resource The remote resource that cannot be accessed.
    */
   notifyConnectivity: function(resource){
-    var payload = localStorage['pgp-payload'];
+    var payload = ls.getItem('pgp-payload');
     $("#connectivity_resource").text(resource);
     $("#notify_connectivity").show();
     $("#retry_connectivity").click(function(){
-      if (payload !== null){ // have stored payload
+      if (payload !== undefined) { // have stored payload
         keyManager.uploadPayload(payload, function(results){ 
           console.log("Upload results: "+results);
           if (results === true){
@@ -142,9 +144,9 @@ var keyManager = {
    * boolean value as a paremeter.
    */
   needPersonaKey: function(callback){
-    var persona = localStorage['pgp-persona-bridge'];
+    var persona = ls.getItem('pgp-persona-bridge');
     if (persona != null){
-      var email =  localStorage['pgp-email'];
+      var email = ls.getItem('pgp-email');
       callback(PersonaId.getSecretKeyFromBridge(persona, email) == null);
     } else {
       callback(true);
@@ -159,8 +161,8 @@ var keyManager = {
    * as a paremeter.
    */
   getPersonaKey: function(callback){
-    var persona =  localStorage['pgp-persona-bridge'];
-    var email = localStorage['pgp-email'];
+    var persona = ls.getItem('pgp-persona-bridge');
+    var email = ls.getItem('pgp-email');
     if (email == null){
       callback(null);
     }
@@ -188,8 +190,8 @@ var keyManager = {
    */
   needNewKey: function(callback){
     // Determine if a key is already in local storage
-    var keypairs =  localStorage['pgp-my_keypairs'];
-    if (keypairs === null){ // no key found, return true
+    var keypairs = ls.getItem('pgp-my_keypairs');
+    if (keypairs === undefined){ // no key found, return true
       callback(true);
     } else { // it does exist, check expirey regenerate if needed
       // TODO: check if key is about to expire and gen a new one if needed
@@ -245,8 +247,8 @@ var keyManager = {
    */
   createPayload: function(callback){
     console.log("Uploading key");
-    var my_keys =  localStorage['pgp-my_keypairs'];
-    var email = localStorage['pgp-email'];
+    var my_keys = ls.getItem('pgp-my_keypairs');
+    var email = ls.getItem('pgp-email');
     var keypair = my_keys[email][0];// most recent key
     if (keypair === null) {
       console.log("No key to upload found");
@@ -278,19 +280,19 @@ var keyManager = {
    * a paremeter.
    */
   uploadPayload: function(payload, callback){
-    var directoryURL =  localStorage['pgp-directoryURL'];
+    var directoryURL = ls.getItem('pgp-directoryURL');
     directoryURL += "/store";
     $.get(
       directoryURL,
       payload
     ).done(function(response){
       console.log("Upload Success");
-      localStorage.removeKey('pgp-payload');
+      ls.removeItem('pgp-payload');
       callback(true);
     }
     ).fail(function(response){
       console.log("Upload Fail");
-      localStorage['pgp-payload'] = payload;
+      ls.setItem('pgp-payload', payload);
       callback(false);
     });
   }
