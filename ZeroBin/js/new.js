@@ -31,13 +31,16 @@ function processURL(response, randomkey) {
     url = url + "#privlyLinkKey=" + randomkey;
   }
 
-  // Save the URL to localStorage
-  var urls = ls.getItem("ZeroBin:URLs");
-  if ( urls !== undefined ) {
-    ls.setItem("ZeroBin:URLs", urls + "|" + url);
-  } else {
-    ls.setItem("ZeroBin:URLs", url);
+  // Save the URL to localStorage if we are not in the HOSTED platform
+  if ( privlyNetworkService.platformName() !== "HOSTED" ) {
+    var urls = ls.getItem("ZeroBin:URLs");
+    if ( urls !== undefined ) {
+      ls.setItem("ZeroBin:URLs", urls + "|" + url);
+    } else {
+      ls.setItem("ZeroBin:URLs", url);
+    }
   }
+
   return url;
 }
 
