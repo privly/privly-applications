@@ -30,6 +30,14 @@ function processURL(response, randomkey) {
   } else {
     url = url + "#privlyLinkKey=" + randomkey;
   }
+
+  // Save the URL to localStorage
+  var urls = ls.getItem("ZeroBin:URLs");
+  if ( urls !== undefined ) {
+    ls.setItem("ZeroBin:URLs", urls + "|" + url);
+  } else {
+    ls.setItem("ZeroBin:URLs", url);
+  }
   return url;
 }
 
