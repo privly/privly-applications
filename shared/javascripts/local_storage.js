@@ -16,7 +16,7 @@ var ls = {
    * @param {string} value is the value to assign to the key.
    */
   setItem: function(key, value) {
-    if ( typeof(value) === "object" ){
+    if ( typeof(value) !== "string" ){
       value = JSON.stringify(value);
     }
 
