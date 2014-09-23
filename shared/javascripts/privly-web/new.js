@@ -69,7 +69,7 @@ var callbacks = {
    */
   pendingLogin: function(callback) {
 
-    localStorage["Login:redirect_to_app"] = window.location.href;
+    ls.setItem("Login:redirect_to_app", window.location.href);
 
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
