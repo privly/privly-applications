@@ -72,17 +72,8 @@ var privlyTooltip = {
         glyphString += "," + ((Math.random() < 0.5) ? "false" : "true");
       }
 
-      if ( privlyNetworkService.platformName() === "FIREFOX" ) {
-        var firefoxPrefs = Components.classes["@mozilla.org/preferences-service;1"]
-                              .getService(Components.interfaces.nsIPrefService)
-                              .getBranch("extensions.privly.");
-        firefoxPrefs.setCharPref("glyph_cells", glyphString);
-        firefoxPrefs.setCharPref("glyph_color", glyphColor);
-      } else {
-        localStorage["glyph_cells"] = glyphString;
-        localStorage["glyph_color"] = glyphColor;
-      }
-      
+      ls.setItem("glyph_cells", glyphString);
+      ls.setItem("glyph_color", glyphColor);
     },
     
     /**
@@ -129,14 +120,11 @@ var privlyTooltip = {
      * extension before this script is run. It can be reset via the options
      * interface.
      *
-     * The glyph is currently defined by a string in 
-     * localStorage["privly_glyph"], that is a series of hex colors stated
-     * without the leading hash sign, and separated by commas.
+     * The glyph is currently defined by a string in local storage keyed by
+     * "privly_glyph". The glyph is a series of hex colors stated without the
+     * leading hash sign, and separated by commas.
      *
      * eg: ffffff,f0f0f0,3f3f3f
-     *
-     * Note: Since the Mozilla architecture does not support localStorage,
-     * it uses the preferences API.
      *
      * @return {string} An HTML table of the glyph.
      *
@@ -145,27 +133,12 @@ var privlyTooltip = {
       
       //Add the CSS for the glyph
       var glyphCells, glyphColor;
-      if ( privlyNetworkService.platformName() === "FIREFOX" ) {
-        var firefoxPrefs = Components.classes["@mozilla.org/preferences-service;1"]
-                              .getService(Components.interfaces.nsIPrefService)
-                              .getBranch("extensions.privly.");
-        try {
-          glyphString = firefoxPrefs.getCharPref("glyph_cells");
-          glyphColor = firefoxPrefs.getCharPref("glyph_color");
-        } catch(err) {
-          privlyTooltip.generateNewGlyph();
-          glyphString = firefoxPrefs.getCharPref("glyph_cells");
-          glyphColor = firefoxPrefs.getCharPref("glyph_color");
-        }
-      }else{
-
-        if (localStorage.getItem("glyph_cells") === null) {
-          glyphString = privlyTooltip.generateNewGlyph();
-          glyphColor = Math.floor(Math.random()*16777215).toString(16);
-        } else {
-          glyphString = localStorage["glyph_cells"];
-          glyphColor = localStorage["glyph_color"]; 
-        }
+      if (ls.getItem("glyph_cells") === undefined) {
+        glyphString = privlyTooltip.generateNewGlyph();
+        glyphColor = Math.floor(Math.random()*16777215).toString(16);
+      } else {
+        glyphString = ls.getItem("glyph_cells");
+        glyphColor = ls.getItem("glyph_color");
       }
       
       var glyphArray = glyphString.split(",");

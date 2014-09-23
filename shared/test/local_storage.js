@@ -28,4 +28,15 @@ describe ("Local Storage Test Suite", function() {
     expect(ls.getItem("hello")).not.toBeDefined();
   });
 
+  it("can set and get Objects", function() {
+    var obj = {"foo": "bar", "bar": "bazz"};
+    ls.setItem("key", obj);
+    var returned = ls.getItem("key");
+    ls.removeItem("key");
+    expect(ls.getItem("key")).toEqual(obj);
+    expect(returned["foo"]).toBe("bar");
+    expect(returned["bar"]).toBe("bazz");
+    expect(returned).toEqual(obj);
+  });
+
 });
