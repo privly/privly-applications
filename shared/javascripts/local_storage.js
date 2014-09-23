@@ -6,13 +6,16 @@
 var ls = {
   
   /**
-   * Indicates whether
+   * Indicates whether the native localStorage API is available on the
+   * current platform.
    */
   localStorageDefined: true,
 
   /**
-   * Set an item to local storage.
-   * @param {string} key is the string to store in key/value storage.
+   * Set an item to local storage. If the item is not a string, this
+   * function will attempt to serialize it using the JSON.stringify
+   * function.
+   * @param {string|object} key is the string to store in key/value storage.
    * @param {string} value is the value to assign to the key.
    */
   setItem: function(key, value) {
@@ -30,8 +33,11 @@ var ls = {
 
   /**
    * LocalStorage getter returns the stored value if it is defined.
+   * The string value stored attempts to reconstruct an object using
+   * the JSON.parse api. If parsing an object fails, the string will
+   * be returned.
    * @param {string} key the value to retrieve from local storage.
-   * @return {string} Representing the current value of the key.
+   * @return {string|object} Representing the current value of the key.
    */
   getItem: function(key) {
     if ( ls.localStorageDefined ) {
@@ -59,6 +65,8 @@ var ls = {
   /**
    * Remove an item from local storage.
    * @param {string} key the key to remove from storage.
+   * @return {undefined} Returns undefined regardless
+   * of whether the key existed in localStorage.
    */
   removeItem: function(key) {
     if ( ls.localStorageDefined ) {
