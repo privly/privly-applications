@@ -29,7 +29,7 @@ For more details on the protocol for this app, see the
 
 Currently the app supports basic encryption/decryption of content posted and
 retrieved from a content server. This is currently done with keys read from
-localforage. Key management is currently being implemented.
+local storage. Key management is currently being implemented.
 
 Tests are written for OpenPGP.js in the Privly context that confirm correctness
 of the encryption, key generation, and signing and verification of encrypted
@@ -53,7 +53,6 @@ is PRE-ALPHA status.
 
 - Basic funcitonality:
   - Enable editing of content after creation
-  - Assess if persona key is captured after signing in (https://github.com/privly/privly-applications/issues/64)
 
 - UX:
   - Provide better user feedback when signing in with Persona
@@ -63,7 +62,6 @@ is PRE-ALPHA status.
 
 - Best Practices:
   - Change HTTP request method (https://github.com/privly/privly-applications/issues/69)
-  - namespace storage (https://github.com/privly/privly-applications/issues/67)
   - Complete test coverage
   
 - Documentation:
@@ -75,14 +73,15 @@ is PRE-ALPHA status.
 
 
 ### Storage
-Storage of keys is handled using
-[localForage](https://github.com/mozilla/localForage). This is because local
-Storage is not currently supported across all browsers and platforms.
-localForage acts as a shim that provides support on [all
-platforms](https://hacks.mozilla.org/2014/02/localforage-offline-storage-improved/).
+Storage of keys and other data important to the Privly PGP application is
+stored using a privly-wide storage shim. This is because no form of local
+storage is supported across all browsers and platforms.  This means that the
+storage back end that the application uses depends on which browser or platform
+you are using. For more information see the
+[source](../shared/javascripts/local_storage.js).
 
-The data that is stored in localforage is of two types. Your own keypairs, and
-the public keys of your contacts.
+The PGP keys in local storage are of two types. Your own keypairs, and the
+public keys of your contacts.
 
 ```
 {
@@ -91,11 +90,15 @@ the public keys of your contacts.
 }
 ```
 
-In other words, localforage is a hash with two entries, `my_contacts` and
-`my_keypairs`.  Both entires have values that are a hash where emails are keys
-with a corresponding value of an array of public keys or keypairs,
+In other words, local storage contains two key related entries, `my_contacts`
+and `my_keypairs`.  Both entries have values that are a hash where emails are
+keys with a corresponding value of an array of public keys or keypairs,
 respectively. In the case of your keypairs, the key is naturally your own
 email.
+
+Additionally, the Privly PGP application stores the email address provided by
+the user, and the URL of a directory provider.  The persona private key and the
+payload to be uploaded to a directory provider are temporarily stored as well.
 
 
 ### Getting Started with Development
