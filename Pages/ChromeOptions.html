@@ -9,8 +9,8 @@
   <title>
    New Options
   </title>
-  <meta ,.="" content="../shared/test/parameters.js,../shared/test/extension_integration.js,
-            ../shared/test/network_service.js" js="" name="PrivlySpec" optionsspec.js="" tests=""/>
+  <meta content="../shared/test/parameters.js,../shared/test/extension_integration.js,
+            ../shared/test/network_service.js" name="PrivlySpec"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <!-- Top Styles -->
   <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
@@ -189,10 +189,6 @@
         to view the content yourself.
        </p>
       </div>
-      <p>
-       <a class="privlyUrl" data-privly-exclude="true" href="">
-       </a>
-      </p>
      </div>
     </div>
     <div id="form" style="display:none;">
@@ -206,16 +202,15 @@
          Privly Button
         </h2>
         <br/>
-        <input id="disableBtn" type="checkbox">
-         Disable the Privly button that appears in the top-right corner of textarea's
-         <br/>
-         <br/>
-         <button class="btn btn-primary" id="save_btnAppearance">
-          Save
-         </button>
-         <div id="button_status">
-         </div>
-        </input>
+        <input id="disableBtn" type="checkbox"/>
+        Disable the Privly button that appears in the top-right corner of textarea's
+        <br/>
+        <br/>
+        <button class="btn btn-primary" id="save_btnAppearance">
+         Save
+        </button>
+        <div id="button_status">
+        </div>
        </section>
        <hr/>
        <section id="glyph">
@@ -306,8 +301,7 @@
            </option>
           </select>
           <fieldset id="user">
-           <input class="form-control" id="other_content_server" placeholder="ex: https://myContentServer.com" size="200" style="width:250px;" title="Enter content server here" type="text">
-           </input>
+           <input class="form-control" id="other_content_server" placeholder="ex: https://myContentServer.com" size="200" style="width:250px;" title="Enter content server here" type="text"/>
           </fieldset>
           <button class="btn btn-primary" id="save_server" type="button" value="save_server">
            Save
