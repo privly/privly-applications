@@ -161,7 +161,7 @@ var PersonaId = {
    * a parameter.
    **/
   remotelyVerifyBia: function(bia, callback){
-    var audience = ls.getItem('pgp-directoryURL');
+    var audience = ls.getItem('pgp:directoryURL');
     audience += ":443";
     $.post(
       "https://verifier.login.persona.org/verify",

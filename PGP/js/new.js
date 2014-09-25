@@ -58,17 +58,17 @@ var callbacks = {
   assureItemIsSet: function(option, callback){
     var value = ls.getItem(option);
     if (value == undefined || value == ""){
-      if (option === 'pgp-email'){
+      if (option === 'pgp:email'){
         keyManager.promptUserToSetEmail(function(value){
           callback(value);
         });
       }
-      else if (option === 'pgp-directoryURL'){
+      else if (option === 'pgp:directoryURL'){
         var default_dirp = "http://dirp.grr.io";
         ls.setItem(option, default_dirp);
         callback(default_dirp);
       }
-    } else if (option === 'pgp-directoryURL'){
+    } else if (option === 'pgp:directoryURL'){
       // Prepend http:// to dirp if needed
       if (value.indexOf("http://") === -1 &&
           value.indexOf("https://") === -1){
@@ -88,7 +88,7 @@ var callbacks = {
    * been set.
    */
   checkOptionsSet: function(callback){
-    var items = ['pgp-email','pgp-directoryURL'];
+    var items = ['pgp:email','pgp:directoryURL'];
     var set = 0;
     var check = function(option){
       callbacks.assureItemIsSet(option, function(value){
@@ -127,9 +127,9 @@ var callbacks = {
    * Assess if a key needs to be uploaded to dirp.  Call notifier if needed.
    */
   needToUpload: function(){
-    var payload = ls.getItem('pgp-payload');
+    var payload = ls.getItem('pgp:payload');
     if (payload !== null ){ // have a stored playload to upload
-      var directoryURL = ls.getItem('pgp-directoryURL');
+      var directoryURL = ls.getItem('pgp:directoryURL');
       keyManager.notifyConnectivity(directoryURL);
     }
   },
@@ -142,7 +142,7 @@ var callbacks = {
    * emails as a paremeter.
    */
   populateToField: function(callback){
-    var contacts = ls.getItem('pgp-my_contacts');
+    var contacts = ls.getItem('pgp:my_contacts');
     var emails = [];
     for(var email in contacts){
       if (contacts.hasOwnProperty(email)){
