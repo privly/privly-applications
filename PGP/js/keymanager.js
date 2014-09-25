@@ -5,8 +5,8 @@
 /**
  * The functions of the keymanager
  *
- * 1. setNewPGPKey: Update localforage key withe value passed in.
- * 2. addNewPGPKey: Adds private/pub keys to localforage by calling set
+ * 1. setNewPGPKey: Update local storage key withe value passed in.
+ * 2. addNewPGPKey: Adds private/pub keys to local storage by calling set
  * 3. promptUserToLogin: Ask user to login on directory provider, return with 
  *    persona key after user logs in.
  * 4. getPersonaKey: Get Persona Key from localstorage
@@ -17,13 +17,13 @@
 var keyManager = {
 
   /**
-   * Update the localforage key with the value passed in
+   * Update the local storage key with the value passed in
    *
-   * @param {string} key The localforage key that is going to be set.
-   * @param {object} appended_value The value to append to the localforage
+   * @param {string} key The local storage key that is going to be set.
+   * @param {object} appended_value The value to append to the local storage
    * entry.
-   * @param {function} callback The function that will be executed after
-   * the localforage item is set.
+   * @param {function} callback The function that will be executed after the
+   * local storage item is set.
    */
   setNewPGPKey: function(key, appended_value, callback){
     var email = ls.getItem('pgp-email');
@@ -60,11 +60,11 @@ var keyManager = {
 
   /*
    * Ask user to login on directory provider. Create listener for storage
-   * events. Return pgp-persona-bridge when updated.
+   * events. Return pgp:persona-bridge when updated.
    *
    * @param {function} callback The function that will be executed after
-   * pgp-persona-bridge has been set in localforage. This function should
-   * accept the value of the pgp-persona-bridge as a paremeter.
+   * pgp:persona-bridge has been set in local storage. This function should
+   * accept the value of the pgp:persona-bridge as a paremeter.
    */
   promptUserToLogin: function(callback){
     var directoryURL = ls.getItem('pgp-directoryURL');

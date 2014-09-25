@@ -15,7 +15,7 @@
  *    email addresses. If it is found, calls addRemoteKeyToLocal.
  *    Callback=findPubKeyRemote
  * 3. Add Key to Local Storage: This function authenticates a key with the
- *    verifyPubKey function, and adds it to localforage if it is valid.
+ *    verifyPubKey function, and adds it to local storage if it is valid.
  *    Callback=addRemoteKeyToLocal
  * 4. Verify Public Key: Verifies if a public key is in fact associated with
  *    an email address using the remote verifier.
@@ -155,7 +155,7 @@ var PersonaPGP = {
   },
 
   /**
-   * Add the key that was found remotely to localforage. Entry is keyed by
+   * Add the key that was found remotely to local storage. Entry is keyed by
    * email address and has a value of every component that is needed in order
    * to authenticate with the verifier.
    *

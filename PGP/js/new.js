@@ -49,7 +49,7 @@ var callbacks = {
   /**
    * Check if user has set a passed in item
    *
-   * @param {string} option A string representing a localforage key.
+   * @param {string} option A string representing a local storage key.
    * @param {function} callback The function to execute after the value of the
    * option has been acquired. This function should accept as a paremeter the
    * value of the option that was acquired.
