@@ -19,19 +19,17 @@ function previewMarkdown() {
  * @return {boolean} Indicates whether the key was resolved from history.
  */
 function resolveKeyFromHistory() {
-    var urls = ls.getItem("ZeroBin:URLs");
-    if ( urls === undefined ) {
-      return false;
-    } else {
-      var index = urls.indexOf(state.webApplicationURL);
-      if ( index >= 0 ) {
-        var url = urls.substring(index);
-        url = url.substring(0, urls.indexOf("|"));
-        state.key = privlyParameters.getParameterHash(url).privlyLinkKey;
+  var urls = ls.getItem("ZeroBin:URLs");
+  if ( urls !== undefined ) {
+    for( var i = 0; i < urls.length; i++ ) {
+      var index = urls[i].indexOf(state.webApplicationURL);
+      if ( index === 0 ) {
+        state.key = privlyParameters.getParameterHash(urls[i]).privlyLinkKey;
         return true;
       }
     }
-    return false;
+  }
+  return false;
 }
 
 /**

@@ -35,12 +35,12 @@ function processURL(response, randomkey) {
   if ( privlyNetworkService.platformName() !== "HOSTED" ) {
     var urls = ls.getItem("ZeroBin:URLs");
     if ( urls !== undefined ) {
-      ls.setItem("ZeroBin:URLs", urls + "|" + url);
+      urls.push(url);
+      ls.setItem("ZeroBin:URLs", urls);
     } else {
-      ls.setItem("ZeroBin:URLs", url);
+      ls.setItem("ZeroBin:URLs", [url]);
     }
   }
-
   return url;
 }
 
