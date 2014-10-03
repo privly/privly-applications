@@ -8,7 +8,7 @@
       See: https://github.com/privly/privly-applications/pull/19
      -->
 
-    <title>New {{ name }}</title>
+    {% block title %}<title> New {{ name }}</title>{% endblock %}
     
     {% block specs %}{% endblock %}
     
@@ -34,6 +34,8 @@
     </script>
     <script type="text/javascript" src="../shared/javascripts/extension_integration.js">
     </script>
+    <script type="text/javascript" src="../shared/javascripts/local_storage.js">
+    </script>
      
     {% block javascripts %}{% endblock %}
      
@@ -46,7 +48,7 @@
     
     <!-- Wrap all page content here -->
     <div id="wrap">
-      {% include "templates/partials/navigation.html" %}
+      {% include "templates/partials/navigation.html.subtemplate" %}
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
@@ -58,7 +60,24 @@
               You are not currently signed into your content server. Please
               <a href="../Login/new.html" class="login_url btn btn-default">login</a>
             </p>
-            <p><a class="privlyUrl" href="" data-privly-exclude="true"></a></p>
+            <div id="copy_message" style="display:none;">
+              <p class="flash notice">
+                Copy and paste the address found below to any website
+                you want to share this information through.
+              </p>
+              <p class="flash notice">
+                <span class="glyphicon glyphicon-link"></span>
+                <span class="privlyUrl" data-privly-exclude="true"></span>
+              </p>
+              <p class="flash notice open-app-button" style="display:none;">
+                <strong>Now copy/paste</strong>
+                the highlighted address anywhere you want to share it. You can also
+                <a id="local_address" href="" target="_blank" class="btn btn-default">
+                  open the link
+                </a>
+                to view the content yourself.
+              </p>
+            </div>
           </div>
         </div>
         
@@ -71,7 +90,10 @@
                   <h1>Your browser has scripting turned off. 
                     This application requires scripting to function properly</h1>
                 </noscript>
-                <h2>Create New {{ name }} Link</h2>
+                <h2>
+                  <span class="glyphicon glyphicon-pencil"></span>
+                  Create New {{ name }} Link
+                </h2>
                 <p id="loadingDiv"> <img src="../shared/images/ajax-loader.gif" alt="loading"/> </p>
                 <label for="content">Content</label>
                 <textarea id="content" class="form-control" rows="4" 

@@ -2,7 +2,7 @@
 
 {% block specs %}
   <meta name="PrivlySpec"
-   content="../shared/test/privly-web/new.js,test/new.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js"/>
+   content="../shared/test/privly-web/new.js,test/new.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js,../shared/test/local_storage.js"/>
 {% endblock %}
 
 {% block javascripts %}

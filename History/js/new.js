@@ -24,8 +24,8 @@ var callbacks = {
    */
   pendingLogin: function() {
 
-    // Save to localStorage the app to redirect to after succesful log in
-    localStorage["Login:redirect_to_app"] = window.location.href;
+    // Save to local storage the app to redirect to after succesful log in
+    ls.setItem("Login:redirect_to_app", window.location.href);
     
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
@@ -144,6 +144,8 @@ var callbacks = {
       td1b.setAttribute("class", "btn btn-default preview_link");
       td1b.setAttribute("data-canonical-href", localHref);
       td1b.textContent = "Preview " + app;
+      td1b.style.width = "150px";
+      td1b.style.height = "33px";
       td1.appendChild(td1b);
 
       var td1b2 = document.createElement('button');
@@ -151,6 +153,7 @@ var callbacks = {
       td1b2.setAttribute("class", "btn btn-info open_link");
       td1b2.setAttribute("data-canonical-href", localHref);
       td1b2.textContent = "Open";
+      td1b2.style.height = "33px";
       td1.appendChild(td1b2);
 
       tr.appendChild(td1);
@@ -197,6 +200,8 @@ var callbacks = {
     });
     
     $('button.preview_link').on('click', function(evt) {
+
+      $('html, body').animate({ scrollTop: 0 }, 'slow');
 
       $('#iframe_col').show('slow', function() {
         $(this).css('display', 'inherit');

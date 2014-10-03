@@ -1,7 +1,7 @@
 {% extends "templates/show.html.template" %}
 
 {% block specs %}
-  <meta name="PrivlySpec" content="test/show.js,../shared/test/parameters.js,../shared/test/network_service.js,../shared/test/privly-web/show.js,../shared/test/host_page_integration.js,../shared/test/tooltip.js"/>
+  <meta name="PrivlySpec" content="test/show.js,../shared/test/parameters.js,../shared/test/network_service.js,../shared/test/privly-web/show.js,../shared/test/host_page_integration.js,../shared/test/tooltip.j,../shared/test/local_storage.jss"/>
 {% endblock %}
 
 {% block javascripts %}

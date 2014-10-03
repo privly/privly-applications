@@ -26,6 +26,8 @@
     <script type="text/javascript" src="../shared/javascripts/host_page_integration.js"></script>
     <script type="text/javascript" src="../shared/javascripts/network_service.js"></script>
     <script type="text/javascript" src="../shared/javascripts/tooltip.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/local_storage.js">
+    </script>
     
     <!-- Application Specific JavaScripts -->
     {% block javascripts %}{% endblock %}
@@ -45,7 +47,7 @@
     <div id="wrap"><!-- for bootstrap footer -->
       <div id="privlyHeightWrapper">
         
-        {% include "templates/partials/navigation.html" %}
+        {% include "templates/partials/navigation.html.subtemplate" %}
         
         <div class="container">
           {% block main %}
