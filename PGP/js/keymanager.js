@@ -147,7 +147,14 @@ var keyManager = {
     var persona = ls.getItem('pgp:persona-bridge');
     if (persona != null){
       var email = ls.getItem('pgp:email');
-      callback(PersonaId.getSecretKeyFromBridge(persona, email) == null);
+      if (PersonaId.getSecretKeyFromBridge(persona, email) != null) {
+        var key = JSON.parse(persona.emails);
+        var updated = key.default[email].updated;
+        var thirty_days = 60*60*24*30; // 30 days in seconds
+        callback(((Date.now() - Date.parse(updated)) > thirty_days));
+      } else {
+        callback(true);
+      }
     } else {
       callback(true);
     }
@@ -181,26 +188,24 @@ var keyManager = {
    * Evaluate if a new key needs to be generated.  
    *
    * This returns true under two conditions:
-   *   1) Localstorage does not contain a key.
-   *   2) Localstorage contains a key that is expired or is about to expire.
+   *   1) Local storage does not contain a key.
+   *   2) Local storage contains a key that is expired or is about to expire.
    *
    * @param {function} callback The function that gets called after we
    * determine if a new key is needed. This function should accept a boolean
-   * value as a paremeter.
+   * value as a parameter.
    */
   needNewKey: function(callback){
     // Determine if a key is already in local storage
     var keypairs = ls.getItem('pgp:my_keypairs');
     if (keypairs === undefined){ // no key found, return true
       callback(true);
-    } else { // it does exist, check expirey regenerate if needed
-      // TODO: check if key is about to expire and gen a new one if needed
-      // Note: Currently openPGP.js does not support setting a key
-      // expiration. Since nearly all of the keys we deal with are generated
-      // with openPGP.js, we do not yet check to see if keys expire.
-      // See https://github.com/privly/privly-applications/issues/62
-      console.log("Already have a key.");
-      callback(false);
+    } else { // it does exist, check if it is expired
+      var email = ls.getItem('pgp:email');
+      // This assumes key 0 is the most recent key
+      var created = keypairs[email][0].key.primaryKey.created;
+      var thirty_days = 60*60*24*30; // 30 days in seconds
+      callback((Date.now() - Date.parse(created)) > thirty_days);
     }
   },
 
