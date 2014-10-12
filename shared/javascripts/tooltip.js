@@ -17,11 +17,14 @@
  * display:none;
  * font:14px Helvetica;
  * }
+ * .glyph_empty {background-color:#ffffff;}
  *
- * This script assumes that jquery is defined, but this dependency will
- * be stripped in future versions. Content intended for injection should have
- * a minimum footprint, so defining the jquery library is too expensive.
- *
+ * .glyph_table {
+ *  border-collapse: collapse;
+ *  line-height: 4px;
+ *  float: left;
+ *  margin-right: 5px;
+ * }
  **/
  
  
@@ -40,7 +43,7 @@ var privlyTooltip = {
      * The name of the application to show in the tooltip.
      */
     appName: "",
-    
+
     /**
      * Updates the tooltip's message.
      *
@@ -52,9 +55,20 @@ var privlyTooltip = {
      *
      */
     updateMessage: function(dataDomain, newMessage){
-      var message = newMessage.replace(/[^\w\s.:]/gi, '');
-      var domain = dataDomain.replace(/[^\w\s.:]/gi, '');
-      privlyTooltip.tooltipMessage = privlyTooltip.appName + ":<br />" + message + "<br />" + domain;
+
+      privlyTooltip.tooltipMessage = privlyTooltip.appName
+        + ":\u00A0" // non-breaking space
+        + newMessage
+        + ", from "
+        + dataDomain;
+
+      // Update the text node if it currently exists
+      var textNodeDiv = document.getElementById("textNodeDiv");
+      if( textNodeDiv ) {
+        var tooltipTextNode = document.createTextNode(privlyTooltip.tooltipMessage);
+        textNodeDiv.removeChild(textNodeDiv.firstChild);
+        textNodeDiv.appendChild(tooltipTextNode);
+      }
     },
     
     /**
@@ -77,41 +91,75 @@ var privlyTooltip = {
     },
     
     /**
-     * Tooltip script 
-     * powered by jquery (http://www.jquery.com)
-     * written by Alen Grakalic (http://cssglobe.com)
-     * for more info visit http://cssglobe.com/post/1695/easiest-tooltip-and-image-preview-using-jquery
+     * Create and display the tooltip if the mouse is over the application.
      */
     tooltip: function(){
-      
-      var glyph = privlyTooltip.glyphHTML();
-      var tooltipMessageElement = document.createElement("div");
 
+      // Create a new glyph if needed
+      var glyphCells, glyphColor;
+      if (ls.getItem("glyph_cells") === undefined) {
+        privlyTooltip.generateNewGlyph();
+      }
+      glyphString = ls.getItem("glyph_cells");
+      glyphColor = ls.getItem("glyph_color");
+
+      // Generate the glyph HTML and assign the color
+      var glyph = privlyTooltip.glyphHTML();
+      var coloredValues = glyph.querySelectorAll(".glyph_fill");
+      for( var i = 0; i < coloredValues.length; i++ ) {
+        coloredValues[i].style["background-color"] = "#" + glyphColor;
+      }
+
+      // Create the tooltip element
+      var tooltipMessageElement = document.createElement("div");
       tooltipMessageElement.setAttribute("id", "tooltip");
       tooltipMessageElement.appendChild(glyph);
-      tooltipMessageElement.appendChild(document.createTextNode(privlyTooltip.tooltipMessage));
-      
+
+      // Add the message as a text node to the tooltip element
+      var messageDiv = document.createElement("div");
+      messageDiv.setAttribute("id", "textNodeDiv");
+      var tooltipTextNode = document.createTextNode(privlyTooltip.tooltipMessage);
+      messageDiv.appendChild(tooltipTextNode); // So we can refer to this later.
+      tooltipMessageElement.appendChild(messageDiv);
+
+      // Offsets from the cursor so we can see where we are pointed
       var xOffset = 7;
       var yOffset = 10;
 
-      // Retrive the html string from the JS object 'glyph'
-      var html = $("<div>").append($(glyph).clone()).remove().html();
+      var bodyElement = document.getElementsByTagName("body")[0];
 
-      jQuery("body").hover(function(e){
-        jQuery("body").append(tooltipMessageElement);
-        jQuery("#tooltip").css("top", (e.pageY - xOffset) + "px")
-                          .css("left", (e.pageX + yOffset) + "px")
-                          .fadeIn("fast")
-                          .html(html + " " + privlyTooltip.tooltipMessage);    
-        },
-        function(){
-            jQuery("#tooltip").remove();
-        });
-      jQuery("body").mousemove(function(e){
-        jQuery("#tooltip").css("top", (e.pageY - xOffset) + "px")
-                          .css("left", (e.pageX + yOffset) + "px")
-                          .html(html + " " + privlyTooltip.tooltipMessage);
-      });
+      // Display the tooltip when hovering
+      bodyElement.addEventListener('mouseenter',
+        function(e){
+            bodyElement.appendChild(tooltipMessageElement);
+
+            // Update the message since it may have changed.
+            var textNodeDiv = document.getElementById("textNodeDiv");
+            var tooltipTextNode = document.createTextNode(privlyTooltip.tooltipMessage);
+            textNodeDiv.removeChild(textNodeDiv.firstChild);
+            textNodeDiv.appendChild(tooltipTextNode);
+
+            var t = document.getElementById("tooltip");
+            t.style.top = (e.y - xOffset) + "px";
+            t.style.left = (e.x + yOffset) + "px";
+          });
+
+      // Remove the tooltip when the mouse leaves the app
+      bodyElement.addEventListener('mouseout',
+        function(e){
+            if ( ! bodyElement.contains(e.toElement) ) {
+              var t = document.getElementById("tooltip");
+              t.parentNode.removeChild(t);
+            }
+          });
+
+      // Move the tooltip when the mouse moves
+      bodyElement.addEventListener('mousemove',
+        function(e){
+            var t = document.getElementById("tooltip");
+            t.style.top = (e.y - xOffset) + "px";
+            t.style.left = (e.x + yOffset) + "px";
+          });
     },
     
     /**
@@ -132,19 +180,11 @@ var privlyTooltip = {
     glyphHTML: function() {
       
       //Add the CSS for the glyph
-      var glyphCells, glyphColor;
-      if (ls.getItem("glyph_cells") === undefined) {
-        glyphString = privlyTooltip.generateNewGlyph();
-        glyphColor = Math.floor(Math.random()*16777215).toString(16);
-      } else {
-        glyphString = ls.getItem("glyph_cells");
-        glyphColor = ls.getItem("glyph_color");
-      }
-      
+      var glyphString = ls.getItem("glyph_cells");
       var glyphArray = glyphString.split(",");
-            
+
       // Construct the 5x5 table that will represent the glyph.
-      // Its 3rd column will be axis of symmetry
+      // Its 3rd column is the axis of symmetry
       var table = document.createElement("table");
       table.setAttribute("class", "glyph_table");
       table.setAttribute("dir", "ltr");
@@ -158,8 +198,11 @@ var privlyTooltip = {
         var tr = document.createElement("tr");
 
         for(j = 0; j < 5; j++) {
-          var td = document.createElement("td");          
-          td.innerHTML = "&nbsp";
+          var td = document.createElement("td");
+
+          // Add a non-breaking space
+          var nbs = document.createTextNode("\u00A0");
+          td.appendChild(nbs);
 
           // Fill only the first three columns with the coresponding values from glyphArray[]
           // The rest of two columns are simetrical to the first two
@@ -176,7 +219,6 @@ var privlyTooltip = {
               td.setAttribute("class", "glyph_empty");
             }
           }
-
           tr.appendChild(td);
         }
 
@@ -184,14 +226,6 @@ var privlyTooltip = {
       }
 
       table.appendChild(tbody);
-
-      var rule = '.glyph_fill' + '{background-color:#' + glyphColor + ';' +'}';
-      var rule2 = '.glyph_empty' + '{background-color:#ffffff;}';
-      var rule3 = '.glyph_table' + '{border-collapse: collapse; line-height: 4px; float: left; margin-right: 5px;}';
-
-      document.styleSheets[0].insertRule(rule,0);
-      document.styleSheets[0].insertRule(rule2,0);
-      document.styleSheets[0].insertRule(rule3,0);
       
       return table;
     }
