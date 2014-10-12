@@ -26,11 +26,13 @@
   </script>
   <script src="../shared/javascripts/extension_integration.js" type="text/javascript">
   </script>
+  <script src="../shared/javascripts/local_storage.js" type="text/javascript">
+  </script>
   <script src="../vendor/jquery.min.js" type="text/javascript">
   </script>
-  <script src="js/tooltip.js">
+  <script src="../shared/javascripts/tooltip.js" type="text/javascript">
   </script>
-  <script src="js/first_run.js">
+  <script src="js/first_run.js" type="text/javascript">
   </script>
  </head>
  <body data-privly-exclude="true">
@@ -39,7 +41,7 @@
   </script>
   <!-- Wrap all page content here -->
   <div id="wrap">
-   <div class="navbar navbar-inverse navbar-fixed-top injected_hide" role="navigation">
+   <div class="navbar navbar-inverse navbar-fixed-top injected_hide mobile_hide" role="navigation">
     <div class="container">
      <div class="navbar-header">
       <button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse" type="button">
@@ -53,7 +55,7 @@
        <span class="icon-bar">
        </span>
       </button>
-      <a class="navbar-brand lobster home_domain" href="" target="_blank">
+      <a class="navbar-brand lobster home_domain" href="../Help/content_server.html" title="This is your current content server">
        Privly
       </a>
      </div>
@@ -161,10 +163,28 @@
         login
        </a>
       </p>
-      <p>
-       <a class="privlyUrl" data-privly-exclude="true" href="">
-       </a>
-      </p>
+      <div id="copy_message" style="display:none;">
+       <p class="flash notice">
+        Copy and paste the address found below to any website
+                you want to share this information through.
+       </p>
+       <p class="flash notice">
+        <span class="glyphicon glyphicon-link">
+        </span>
+        <span class="privlyUrl" data-privly-exclude="true">
+        </span>
+       </p>
+       <p class="flash notice open-app-button" style="display:none;">
+        <strong>
+         Now copy/paste
+        </strong>
+        the highlighted address anywhere you want to share it. You can also
+        <a class="btn btn-default" href="" id="local_address" target="_blank">
+         open the link
+        </a>
+        to view the content yourself.
+       </p>
+      </div>
      </div>
     </div>
     <div id="form" style="display:none;">
