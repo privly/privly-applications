@@ -14,7 +14,7 @@ script:
 - "export FILES_TO_TEST='shared/javascripts/privly-web/new.js,ZeroBin/js/base64.js,ZeroBin/js/rawdeflate.js,ZeroBin/js/rawinflate.js,ZeroBin/js/zerobin.js,ZeroBin/js/new.js,ZeroBin/test/new.js,ZeroBin/test/zerobin.js' && karma start karma.conf-ci.js" # The shared libraries plus ZeroBin new
 - "export FILES_TO_TEST='shared/javascripts/privly-web/show.js,ZeroBin/js/base64.js,ZeroBin/js/rawdeflate.js,ZeroBin/js/rawinflate.js,ZeroBin/js/zerobin.js,ZeroBin/js/show.js,ZeroBin/test/show.js,ZeroBin/test/zerobin.js' && karma start karma.conf-ci.js" # The shared libraries plus ZeroBin show
 before_script:
-- cd test/ ; npm install -g karma-cli ; npm install ; cd ..
+- "cd test/ && npm install -g karma-cli && npm install && cd .."
 addons:
   sauce_connect:
     username: smcgregor

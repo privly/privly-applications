@@ -26,10 +26,23 @@ module.exports = function(config) {
   // by exporting an environment variable containing a list of
   // Javascripts.
   var filesToTest = [
-    'vendor/jquery.min.js', // Force jquery to load first since it is a requirement of some scripts
-    'shared/javascripts/*.js', // Load the shared libraries
-    'shared/test/*.js' // Load the shared library tests
-  ];
+
+    // HTML files to use as a fixtures
+    '*/*.html',
+
+    // Force jquery to load first since it is a dependency
+    'vendor/jquery.min.js',
+
+    // Load all the vendor libraries
+    'vendor/*.js',
+    'vendor/bootstrap/js/*.js',
+
+    // Load all the shared libraries at the top level
+    'shared/javascripts/*.js',
+
+    // Test the shared libraries
+    'shared/test/*.js'];
+
   var filesToExcludeFromTest = [];
   if (process.env.FILES_TO_TEST) {
     filesToTest = filesToTest.concat(process.env.FILES_TO_TEST.split(","));
@@ -74,8 +87,13 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine'],
 
+    // Provide the HTML document as a fixture
+    preprocessors: {
+          '*/*.html': ['html2js']
+        },
+
     // list of files / patterns to load in the browser
-    files: filesTotest,
+    files: filesToTest,
 
     // files to exclude from testing
     exclude: filesToExcludeFromTest,
