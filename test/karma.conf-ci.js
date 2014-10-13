@@ -91,8 +91,6 @@ module.exports = function(config) {
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['dots', 'saucelabs'],
 
-    tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
-
     // web server port
     port: 9876,
 
@@ -104,7 +102,9 @@ module.exports = function(config) {
 
     sauceLabs: {
       startConnect: thisFileLaunchesSauceConnect,
-      testName: 'Privly Jasmine Testing: Karma and Sauce Labs'
+      testName: 'Privly Jasmine Testing: Karma and Sauce Labs',
+      tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
+      build: process.env.TRAVIS_BUILD_NUMBER
     },
     captureTimeout: 120000,
     customLaunchers: customLaunchers,
