@@ -128,7 +128,7 @@ var callbacks = {
    */
   needToUpload: function(){
     var payload = ls.getItem('pgp:payload');
-    if (payload !== null ){ // have a stored playload to upload
+    if (payload !== undefined){ // have a stored playload to upload
       var directoryURL = ls.getItem('pgp:directoryURL');
       keyManager.notifyConnectivity(directoryURL);
     }
