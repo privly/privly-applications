@@ -24,6 +24,11 @@
  */
 
 // Immediately start random number generator collector.
+if(! window.orientation ) {
+  // Hack to solve https://github.com/bitwiseshiftleft/sjcl/issues/142
+  // This will be solved in the next release version of SJCL
+  window.orientation = 1;
+}
 sjcl.random.startCollectors();
 
 /**
