@@ -4,15 +4,7 @@ env:
   - TRAVIS_LAUNCHES_SAUCE_CONNECT=true # Tell the karma file that it does not need to launch Sauce connect
 script:
 - cd test
-- karma start karma.conf-ci.js # Only the shared libraries
-- "export FILES_TO_TEST='Help/test/*.js,Help/js/*.js' && karma start karma.conf-ci.js"# The shared libraries plus Help
-- "export FILES_TO_TEST='History/js/*.js,History/test/*.js' && karma start karma.conf-ci.js" # The shared libraries plus History
-- "export FILES_TO_TEST='Login/js/*.js,Login/test/*.js' && karma start karma.conf-ci.js" # The shared libraries plus Login
-- "export FILES_TO_TEST='Pages/js/options.js,Pages/js/tests/*.js' && karma start karma.conf-ci.js" # The shared libraries plus Pages
-- "export FILES_TO_TEST='shared/javascripts/privly-web/new.js,PlainPost/js/new.js,PlainPost/test/new.js' && karma start karma.conf-ci.js" # The shared libraries plus PlainPost new
-- "export FILES_TO_TEST='shared/javascripts/privly-web/show.js,PlainPost/js/show.js,PlainPost/test/show.js' && karma start karma.conf-ci.js" # The shared libraries plus PlainPost show
-- "export FILES_TO_TEST='shared/javascripts/privly-web/new.js,ZeroBin/js/base64.js,ZeroBin/js/rawdeflate.js,ZeroBin/js/rawinflate.js,ZeroBin/js/zerobin.js,ZeroBin/js/new.js,ZeroBin/test/new.js,ZeroBin/test/zerobin.js' && karma start karma.conf-ci.js" # The shared libraries plus ZeroBin new
-- "export FILES_TO_TEST='shared/javascripts/privly-web/show.js,ZeroBin/js/base64.js,ZeroBin/js/rawdeflate.js,ZeroBin/js/rawinflate.js,ZeroBin/js/zerobin.js,ZeroBin/js/show.js,ZeroBin/test/show.js,ZeroBin/test/zerobin.js' && karma start karma.conf-ci.js" # The shared libraries plus ZeroBin show
+- "./run_each.sh"
 before_script:
 - "cd test/ && npm install -g karma-cli && npm install && cd .."
 addons:
