@@ -64,7 +64,14 @@ function processResponseContent(response) {
 // Make the Tooltip display this App's name.
 privlyTooltip.appName = "PlainPost";
 
-// Initialize the application
-document.addEventListener('DOMContentLoaded', 
-  function(){callbacks.pendingContent(processResponseContent)});
 
+// Initialize the application
+document.addEventListener('DOMContentLoaded',
+  function() {
+
+    // Don't start the script if it is running in a Headless
+    // browser
+    if( document.getElementById("logout_link") )
+      callbacks.pendingContent(processResponseContent);
+  }
+);

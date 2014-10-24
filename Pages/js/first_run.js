@@ -19,7 +19,7 @@ function init() {
   var glyphHTML = privlyTooltip.glyphHTML();
   $("#tooltip").html(glyphHTML)
                .show()
-               .append("<p>This is your Privly Glyph</p>");
+               .append("<br/><br/><p>This is your Privly Glyph</p>");
 }
 
 // Initialize the application

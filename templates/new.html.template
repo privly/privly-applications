@@ -34,6 +34,8 @@
     </script>
     <script type="text/javascript" src="../shared/javascripts/extension_integration.js">
     </script>
+    <script type="text/javascript" src="../shared/javascripts/local_storage.js">
+    </script>
      
     {% block javascripts %}{% endblock %}
      
@@ -89,7 +91,10 @@
                   <h1>Your browser has scripting turned off. 
                     This application requires scripting to function properly</h1>
                 </noscript>
-                <h2>Create New {{ name }} Link</h2>
+                <h2>
+                  <span class="glyphicon glyphicon-pencil"></span>
+                  Create New {{ name }} Link
+                </h2>
                 <p id="loadingDiv"> <img src="../shared/images/ajax-loader.gif" alt="loading"/> </p>
                 <label for="content">Content</label>
                 <textarea id="content" class="form-control" rows="4" 

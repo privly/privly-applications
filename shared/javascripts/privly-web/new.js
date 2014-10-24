@@ -69,7 +69,7 @@ var callbacks = {
    */
   pendingLogin: function(callback) {
 
-    localStorage["Login:redirect_to_app"] = window.location.href;
+    ls.setItem("Login:redirect_to_app", window.location.href);
 
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
@@ -132,7 +132,7 @@ var callbacks = {
     $("#save").prop('disabled', false);
     $("#messages").toggle();
     $("#form").toggle();
-    
+
     if(callbacks.functionExists(callback)) {
       callback();
     }
@@ -214,6 +214,12 @@ var callbacks = {
 
       $("#copy_message").show();
 
+      $('#local_address').attr("href", url);
+      if ( privlyNetworkService.platformName() !== "HOSTED" ) {
+        var localCodeURL = "show.html?privlyOriginalURL=" + encodeURIComponent(url);
+        $('#local_address').attr("href", localCodeURL);
+      }
+
       $(".privlyUrl").text(url);
       $(".privlyUrl").css("cursor", "pointer");
       $(".privlyUrl").click(function() {
@@ -233,13 +239,6 @@ var callbacks = {
         $(".open-app-button").show();
       });
 
-      // Keep the user in local code if possible, but display the remote code link
-      // so the user does not accidentally copy the local code url
-      if ( privlyNetworkService.platformName() !== "HOSTED" ) {
-        var localCodeURL = "show.html?privlyOriginalURL=" + encodeURIComponent(url);
-        $('#local_address').one('click', function (e) {this.href = localCodeURL;});
-      }
-
       if(callbacks.functionExists(callback)) {
         callback();
       }
@@ -249,7 +248,7 @@ var callbacks = {
   },
   
   /**
-   * Determines whether a callback is defined before calling it.
+   * Determines whether a callback is defined.
    *
    * @param {function} callback Potentially a function.
    * @return {boolean} True if the parameter is a function, else false

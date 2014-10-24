@@ -1,0 +1,14 @@
+language: javascript
+env:
+  global:
+  - TRAVIS_LAUNCHES_SAUCE_CONNECT=true # Tell the karma file that it does not need to launch Sauce connect
+script:
+- cd test
+- "./run_each.sh karma.conf-ci.js"
+before_script:
+- "cd test/ && npm install -g karma-cli && npm install && cd .."
+addons:
+  sauce_connect:
+    username: privly
+    access_key:
+      secure: "cDwymRJmlOp8x9h07hbXS1L5QG1t7aXNU2se2AA+/p5kCZsU9sR/620Oy9PieH+qW6jpVyl2qDpe6kqCNCI800J3ZoFVljedg6cW72+MouTurxOE/1ReCkBv+BvLdERgkzSUqpvnX1Zr/Lz0AYGJ1sH6TDXpWDcddnYIj7PO8cQ="

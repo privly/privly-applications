@@ -6,7 +6,15 @@
  **/
 
 describe ("Privly-web show.js API Test Suite", function() {
-  
+
+  beforeEach(function() {
+    document.body.innerHTML = __html__['show.html'];
+  });
+
+  afterEach(function() {
+    document.body.innerHTML = "";
+  });
+
   /**
    * An event to simulate the click events that the callback
    * expects.
@@ -24,204 +32,67 @@ describe ("Privly-web show.js API Test Suite", function() {
   }
   
   
-  it("does not result in an error (pendingContent)", function() {
-    // used to check if asynchronous calls completed
-    var initializationFlag = false;
-    
-    // The runs function allows the testing library to complete the asynchronous
-    // calls before executing this testing code
-    runs(function() {
-      callbacks.pendingContent(function(){
-        initializationFlag = true});
-    });
-
-    // Waits for the initialization to complete or fails
-    waitsFor(function() {
-      return initializationFlag;
-    }, "The app was not initialized", 1000);
+  it("does not result in an error (pendingContent)", function(done) {
+    callbacks.pendingContent(done);
   });
   
-  it("does not result in an error (pendingLogin)", function() {
-    // used to check if asynchronous calls completed
-    var initializationFlag = false;
-    
-    // The runs function allows the testing library to complete the asynchronous
-    // calls before executing this testing code
-    runs(function() {
-      callbacks.pendingLogin(function(){initializationFlag = true});
-      
-    });
-
-    // Waits for the initialization to complete or fails
-    waitsFor(function() {
-      return initializationFlag;
-    }, "The app was not initialized", 1000);
+  it("does not result in an error (pendingLogin)", function(done) {
+    callbacks.pendingLogin(done);
   });
   
-  it("does not result in an error (contentReturned)", function() {
-    // used to check if asynchronous calls completed
-    var initializationFlag = false;
-    
-    // The runs function allows the testing library to complete the asynchronous
-    // calls before executing this testing code
-    runs(function() {
-      callbacks.contentReturned( mockServerResponse, function(){initializationFlag = true});
-      
-    });
-
-    // Waits for the initialization to complete or fails
-    waitsFor(function() {
-      return initializationFlag;
-    }, "The app was not initialized", 1000);
+  it("does not result in an error (contentReturned)", function(done) {
+    callbacks.contentReturned( mockServerResponse, done);
   });
   
   
-  it("does not result in an error (destroy)", function() {
+  it("does not result in an error (destroy)", function(done) {
     
     // The destroy request is not currently testable
     return;
     
-    // used to check if asynchronous calls completed
-    var initializationFlag = false;
-    
-    // The runs function allows the testing library to complete the asynchronous
-    // calls before executing this testing code
-    runs(function() {
-      callbacks.destroy(function(){initializationFlag = true});
-    });
-
-    // Waits for the initialization to complete or fails
-    waitsFor(function() {
-      return initializationFlag;
-    }, "The app was not initialized", 1000);
+    callbacks.destroy(done);
   });
   
   
-  it("does not result in an error (destroyed)", function() {
-    
-    // used to check if asynchronous calls completed
-    var initializationFlag = false;
-    
-    // The runs function allows the testing library to complete the asynchronous
-    // calls before executing this testing code
-    runs(function() {
-      callbacks.destroyed(mockServerResponse, function(){initializationFlag = true});
-    });
-
-    // Waits for the initialization to complete or fails
-    waitsFor(function() {
-      return initializationFlag;
-    }, "The app was not initialized", 1000);
+  it("does not result in an error (destroyed)", function(done) {
+    callbacks.destroyed(mockServerResponse, done);
   });
   
-  it("does not result in an error (edit)", function() {
-    // used to check if asynchronous calls completed
-    var initializationFlag = false;
-    
-    // The runs function allows the testing library to complete the asynchronous
-    // calls before executing this testing code
-    runs(function() {
-      callbacks.edit(
-        function(){initializationFlag = true});
-    });
-
-    // Waits for the initialization to complete or fails
-    waitsFor(function() {
-      return initializationFlag;
-    }, "The app was not initialized", 1000);
+  it("does not result in an error (edit)", function(done) {
+      callbacks.edit(done);
   });
   
-  it("does not result in an error (update)", function() {
+  it("does not result in an error (update)", function(done) {
     
     // The update request is not currently testable
     return;
     
-    // used to check if asynchronous calls completed
-    var initializationFlag = false;
-    
-    // The runs function allows the testing library to complete the asynchronous
-    // calls before executing this testing code
-    runs(function() {
-      callbacks.update(
+    callbacks.update(
         mockEvent,
-        function(){initializationFlag = true});
-    });
-
-    // Waits for the initialization to complete or fails
-    waitsFor(function() {
-      return initializationFlag;
-    }, "The app was not initialized", 1000);
+        done);
   });
   
-  it("does not result in an error (cancel)", function() {
-    // used to check if asynchronous calls completed
-    var initializationFlag = false;
-    
-    // The runs function allows the testing library to complete the asynchronous
-    // calls before executing this testing code
-    runs(function() {
+  it("does not result in an error (cancel)", function(done) {
       callbacks.cancel(
         mockEvent,
-        function(){initializationFlag = true});
-    });
-
-    // Waits for the initialization to complete or fails
-    waitsFor(function() {
-      return initializationFlag;
-    }, "The app was not initialized", 1000);
+        done);
   });
   
-  it("does not result in an error (click)", function() {
-    // used to check if asynchronous calls completed
-    var initializationFlag = false;
-    
-    // The runs function allows the testing library to complete the asynchronous
-    // calls before executing this testing code
-    runs(function() {
-      callbacks.click(
-        mockEvent,
-        function(){initializationFlag = true});
-    });
-
-    // Waits for the initialization to complete or fails
-    waitsFor(function() {
-      return initializationFlag;
-    }, "The app was not initialized", 1000);
+  it("does not result in an error (click)", function(done) {
+    callbacks.click(
+      mockEvent,
+      done);
   });
   
-  it("does not result in an error (singleClick)", function() {
-    // used to check if asynchronous calls completed
-    var initializationFlag = false;
-    
-    // The runs function allows the testing library to complete the asynchronous
-    // calls before executing this testing code
-    runs(function() {
-      callbacks.singleClick(
-        mockEvent,
-        function(){initializationFlag = true});
-    });
-
-    // Waits for the initialization to complete or fails
-    waitsFor(function() {
-      return initializationFlag;
-    }, "The app was not initialized", 1000);
+  it("does not result in an error (singleClick)", function(done) {
+    callbacks.singleClick(
+      mockEvent,
+      done);
   });
   
-  it("does not result in an error (doubleClick)", function() {
-    // used to check if asynchronous calls completed
-    var initializationFlag = false;
-    
-    // The runs function allows the testing library to complete the asynchronous
-    // calls before executing this testing code
-    runs(function() {
+  it("does not result in an error (doubleClick)", function(done) {
       callbacks.doubleClick(
-        function(){initializationFlag = true});
-    });
-
-    // Waits for the initialization to complete or fails
-    waitsFor(function() {
-      return initializationFlag;
-    }, "The app was not initialized", 1000);
+        done);
   });
   
   it("can differentiate a function from not a function", function() {

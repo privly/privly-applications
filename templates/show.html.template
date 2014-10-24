@@ -26,6 +26,8 @@
     <script type="text/javascript" src="../shared/javascripts/host_page_integration.js"></script>
     <script type="text/javascript" src="../shared/javascripts/network_service.js"></script>
     <script type="text/javascript" src="../shared/javascripts/tooltip.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/local_storage.js">
+    </script>
     
     <!-- Application Specific JavaScripts -->
     {% block javascripts %}{% endblock %}

@@ -14,6 +14,25 @@ function previewMarkdown() {
 }
 
 /**
+ * Attempt to find the key in local storage and redirect the app if
+ * possible to the URL with the key.
+ * @return {boolean} Indicates whether the key was resolved from history.
+ */
+function resolveKeyFromHistory() {
+  var urls = ls.getItem("ZeroBin:URLs");
+  if ( urls !== undefined ) {
+    for( var i = 0; i < urls.length; i++ ) {
+      var index = urls[i].indexOf(state.webApplicationURL);
+      if ( index === 0 ) {
+        state.key = privlyParameters.getParameterHash(urls[i]).privlyLinkKey;
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+/**
  * Application specific content type handler. This function
  * processes the encrypted markdown that should have been returned by
  * the server.
@@ -38,9 +57,13 @@ function processResponseContent(response) {
   if( json === null ) return;
   
   if (state.key === undefined || state.key === "") {
-    $('div#cleartext').text("You do not have the key required to decrypt this content.");
-    return;
-  } else if(json.structured_content !== undefined) {
+    if ( ! resolveKeyFromHistory() ) {
+      $('div#cleartext').text("You do not have the key required to decrypt this content.");
+      return;
+    }
+  }
+
+  if(json.structured_content !== undefined) {
     var cleartext = zeroDecipher(pageKey(state.key), json.structured_content);
     $("#edit_text").val(cleartext);
     var markdownHTML = markdown.toHTML(cleartext);
@@ -81,17 +104,28 @@ function encryptBeforeUpdate(evt, callback) {
   state.isInlineEdit = false;
 }
 
-document.addEventListener('DOMContentLoaded', 
-  function(){$( "#edit_text" ).bind("keyup", previewMarkdown);}
-);
 
+function initializeApplication() {
 
-// Make the Tooltip display this App's name.
-privlyTooltip.appName = "ZeroBin";
+  // Make the Tooltip display this App's name.
+  privlyTooltip.appName = "ZeroBin";
+
+  $( "#edit_text" ).bind("keyup", previewMarkdown);
+
+  callbacks.pendingContent(processResponseContent);
+
+  // Replace the update function so we never send the cleartext server side.
+  callbacks.update = encryptBeforeUpdate;
+}
 
 // Initialize the application
-document.addEventListener('DOMContentLoaded', 
-  function(){callbacks.pendingContent(processResponseContent)});
+document.addEventListener('DOMContentLoaded',
+  function() {
 
-// Replace the update function so we never send the cleartext server side.
-callbacks.update = encryptBeforeUpdate;
+    // Don't start the script if it is running in a Headless
+    // browser
+    if( document.getElementById("logout_link") )
+      initializeApplication();
+  }
+);
+

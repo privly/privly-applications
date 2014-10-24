@@ -30,6 +30,17 @@ function processURL(response, randomkey) {
   } else {
     url = url + "#privlyLinkKey=" + randomkey;
   }
+
+  // Save the URL to localStorage if we are not in the HOSTED platform
+  if ( privlyNetworkService.platformName() !== "HOSTED" ) {
+    var urls = ls.getItem("ZeroBin:URLs");
+    if ( urls !== undefined ) {
+      urls.push(url);
+      ls.setItem("ZeroBin:URLs", urls);
+    } else {
+      ls.setItem("ZeroBin:URLs", [url]);
+    }
+  }
   return url;
 }
 
@@ -41,19 +52,16 @@ function processURL(response, randomkey) {
 function save() {
   var randomkey = sjcl.codec.base64.fromBits(sjcl.random.randomWords(8, 0), 0);
   var cipherdata = zeroCipher(randomkey, $("#content")[0].value);
-  
-  // Pre-process the URL once it is returned from the server
-  var oldCallback = callbacks.postCompleted;
+
   callbacks.postCompleted = function(response) {
-    oldCallback(response, processURL(response, randomkey));
+    oldPostCompletedCallback(response, processURL(response, randomkey));
   }
-  
+
   // Submit the ciphertext to the server
   callbacks.postSubmit(cipherdata, 
     "ZeroBin", 
     $( "#seconds_until_burn" ).val(), 
-    "", 
-    processURL);
+    "");
 }
 
 /**
@@ -73,6 +81,18 @@ function initializeApplication() {
   
   // Make all text areas auto resize to show all their contents
   $('textarea').autosize();
+
+  // Save the old callback so it can be referenced later
+  oldPostCompletedCallback = callbacks.postCompleted;
 }
 
-document.addEventListener('DOMContentLoaded', initializeApplication);
+// Initialize the application
+document.addEventListener('DOMContentLoaded',
+  function() {
+
+    // Don't start the script if it is running in a Headless
+    // browser
+    if( document.getElementById("logout_link") )
+      initializeApplication();
+  }
+);

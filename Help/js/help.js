@@ -21,8 +21,8 @@ var callbacks = {
    */
   pendingLogin: function() {
 
-    // Save to localStorage the app to redirect to after succesful log in
-    localStorage["Login:redirect_to_app"] = window.location.href;
+    // Save to local storage the app to redirect to after succesful log in
+    ls.setItem("Login:redirect_to_app", window.location.href);
 
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
@@ -55,6 +55,7 @@ var callbacks = {
    * server's sign in endpoint is at "/users/sign_in".
    */
   loginFailure: function() {
+    privlyNetworkService.showLoggedOutNav();
     $("#messages").hide();
     $("#login_message").show();
     $("#refresh_link").click(function(){location.reload(true);});
@@ -70,11 +71,19 @@ var callbacks = {
    */
   pendingPost: function() {
     privlyNetworkService.showLoggedInNav();
-    $("#messages").toggle();
-    $("#form").toggle();
+    $("#messages").hide();
+    $("#form").show();
   }
   
 }
 
 // Initialize the application
-document.addEventListener('DOMContentLoaded', callbacks.pendingLogin);
+document.addEventListener('DOMContentLoaded',
+  function() {
+
+    // Don't start the script if it is running in a Headless
+    // browser
+    if( document.getElementById("logout_link") )
+      callbacks.pendingLogin();
+  }
+);

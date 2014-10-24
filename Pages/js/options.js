@@ -39,7 +39,7 @@ function saveCheckedSetting() {
   status.innerHTML = "";
 
   var checkedState = document.querySelector("#disableBtn").checked;
-  localStorage["Options:DissableButton"] = checkedState;
+  ls.setItem("Options:DissableButton", checkedState);
 
   status.innerHTML = "Setting Saved."; 
 }
@@ -48,11 +48,12 @@ function saveCheckedSetting() {
  * Restores user's setting to disable Privly button appearance
  */
 function restoreCheckedSetting() {
-  document.getElementById("disableBtn").checked = (localStorage["Options:DissableButton"] === "true");
+  var stored = ls.getItem("Options:DissableButton");
+  document.getElementById("disableBtn").checked = (stored !== undefined && stored === true);
 }
 
 /**
- * Saves user's custom whitelist to localStorage.
+ * Saves user's custom whitelist to local storage.
  */
 function saveWhitelist() {
   var csv = "";
@@ -120,8 +121,8 @@ function saveWhitelist() {
     }
   }
   var whitelist_csv = valid_domains.join(" , "); 
-  localStorage["user_whitelist_csv"] = whitelist_csv;
-  localStorage["user_whitelist_regexp"] = domain_regexp;
+  ls.setItem("user_whitelist_csv", whitelist_csv);
+  ls.setItem("user_whitelist_regexp", domain_regexp);
   
   // Update status to let user know options were saved.
   var status = document.getElementById("status");
@@ -136,13 +137,13 @@ function saveWhitelist() {
 
 
 /**
- * Restores select box state to saved value from localStorage.
+ * Restores select box state to saved value from local storage.
  */
 function restoreWhitelist() {
   
   restore_server();
   
-  var user_whitelist_csv = localStorage["user_whitelist_csv"];
+  var user_whitelist_csv = ls.getItem("user_whitelist_csv");
   if (!user_whitelist_csv) {
     return;
   }
@@ -162,7 +163,7 @@ function restoreWhitelist() {
  */
 function restore_server(){
   
-  var posting_content_server_url = localStorage["posting_content_server_url"];
+  var posting_content_server_url = ls.getItem("posting_content_server_url");
   var server_input = document.getElementById("content_server_url");
   
   // check for local storage content
@@ -248,13 +249,13 @@ function saveServer(event){
       if ( server_selected === "other" ) {
         var other_content_server = document.getElementById("other_content_server");
         var input = other_content_server.value;
-        localStorage["posting_content_server_url"] = input;
+        ls.setItem("posting_content_server_url", input);
       } else if( server_selected === "alpha" ) {
-        localStorage["posting_content_server_url"] = "https://privlyalpha.org";
+        ls.setItem("posting_content_server_url", "https://privlyalpha.org");
       } else if( server_selected === "dev" ) {
-        localStorage["posting_content_server_url"] = "https://dev.privly.org";
+        ls.setItem("posting_content_server_url", "https://dev.privly.org");
       } else if( server_selected === "local" ) {
-        localStorage["posting_content_server_url"] = "http://localhost:3000";
+        ls.setItem("posting_content_server_url", "http://localhost:3000");
       }
       status.innerHTML = "Content Server Saved.";
       break;
@@ -306,14 +307,14 @@ function regenerateGlyph() {
     div.removeChild(div.lastChild);
   }
 
-  localStorage["glyph_color"] = Math.floor(Math.random()*16777215).toString(16);
+  ls.setItem("glyph_color", Math.floor(Math.random()*16777215).toString(16));
 
   var glyph_cells = ((Math.random() < 0.5) ? "false" : "true");
   for(i = 0; i < 14; i++) {
     glyph_cells += "," + ((Math.random() < 0.5) ? "false" : "true");
   }
   
-  localStorage["glyph_cells"] = glyph_cells;
+  ls.setItem("glyph_cells", glyph_cells);
   
   writeGlyph();
 }
@@ -325,7 +326,7 @@ function regenerateGlyph() {
  */
 function writeGlyph() {
 
-  var glyphString = localStorage["glyph_cells"];
+  var glyphString = ls.getItem("glyph_cells");
   var glyphArray = glyphString.split(",");
   
   // The 5x5 table that will represent the glyph.
@@ -372,7 +373,7 @@ function writeGlyph() {
 
   document.getElementById("glyph_div").appendChild(table);  
   
-  $('.glyph_fill').css({"background-color": '#' + localStorage["glyph_color"]});
+  $('.glyph_fill').css({"background-color": '#' + ls.getItem("glyph_color")});
   $('.glyph_empty').css({"background-color": '#ffffff'});
 
 }
@@ -409,14 +410,18 @@ function removeUrlInputs (event) {
   }
 }
 
-// Restore value of the checkbox according to localStorage
-document.addEventListener('DOMContentLoaded', restoreCheckedSetting);
+// Initialize the application
+document.addEventListener('DOMContentLoaded',
+  function() {
 
-// Save updates to the white list
-document.addEventListener('DOMContentLoaded', restoreWhitelist);
+    // Don't start the script if it is running in a Headless
+    // browser
+    if( document.getElementById("logout_link") ) {
+      restoreCheckedSetting(); // Restore value of the checkbox according to local storage
+      restoreWhitelist(); // Save updates to the white list
+      listeners(); // Listen for UI events
+      writeGlyph(); // Write the spoofing glyph to the page
+    }
 
-// Listen for UI events
-document.addEventListener('DOMContentLoaded', listeners);
-
-// Write the spoofing glyph to the page
-document.addEventListener('DOMContentLoaded', writeGlyph);
+  }
+);

@@ -122,15 +122,23 @@ var callbacks = {
    */
   pendingPost: function() {
     
-    // get from localStorage the last known app to redirect to
-    if(localStorage["Login:redirect_to_app"] !== undefined &&
-       localStorage["Login:redirect_to_app"].indexOf("Login") < 0) {
-      window.location = localStorage["Login:redirect_to_app"];
+    // get from local storage the last known app to redirect to
+    if(ls.getItem("Login:redirect_to_app") !== undefined &&
+       ls.getItem("Login:redirect_to_app").indexOf("Login") < 0) {
+      window.location = ls.getItem("Login:redirect_to_app");
     } else {
       window.location = "../Help/new.html";
     }
   }
 }
 
-// Start the application
-document.addEventListener('DOMContentLoaded', callbacks.pendingLogin);
+// Initialize the application
+document.addEventListener('DOMContentLoaded',
+  function() {
+
+    // Don't start the script if it is running in a Headless
+    // browser
+    if( document.getElementById("logout_link") )
+      callbacks.pendingLogin();
+  }
+);
