@@ -219,9 +219,11 @@ var keyManager = {
   genPGPKeys: function(callback){
     console.log("Generating New Key");
     var workerProxy = new openpgp.AsyncProxy('../vendor/openpgp.worker.js');
-    // TODO: evaluate best value to use for a random seed.
-    // See https://github.com/privly/privly-applications/issues/65
-    workerProxy.seedRandom(10); 
+
+    // TODO: Research if 2000 is an appropriate number of bytes to use as a
+    // seed. See https://github.com/privly/privly-applications/issues/65
+    var rand_nums = window.crypto.getRandomValues(new Uint16Array(1000));
+    workerProxy.seedRandom(rand_nums);
     workerProxy.generateKeyPair(
       openpgp.enums.publicKey.rsa_encrypt_sign,
       512,'username','passphrase', function(err, data){ // TODO: increase key
@@ -262,9 +264,6 @@ var keyManager = {
     var pubkey = keypair.publicKeyArmored;
     keyManager.getPersonaKey(function(secretkey) {
       if (secretkey !== null) {
-        // TODO: Find a better way to seed jwcrypto.
-        // See https://github.com/privly/privly-applications/issues/65
-        jwcrypto.addEntropy("ACBpasdavbepOAEfBPBHESAEFGHA");
         PersonaId.bundle(pubkey, secretkey, email, function(payload){
           callback(payload);
         });

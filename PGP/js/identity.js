@@ -16,13 +16,6 @@
 var jwcrypto = require('/lib/jwcrypto');
 require('/lib/algs/ds');
 
-// TODO: jwcrypto requires some form of entropy when signing. Make sure
-// the RNG is seeded, or you call `jwcrypto.addEntropy` before using
-// functions `sign` or `bundle`.
-
-// TODO: We need to determine how to autoseed jwcrypto before putting this into
-// production without a hardcoded seed.
-// For more info see: https://github.com/privly/privly-applications/issues/65
 
 /**
  * The functions of PersonaId
@@ -56,6 +49,19 @@ var PersonaId = {
   },
 
   /**
+   * Seed jwcrypto. This is required before calling the jwcyrpto functions
+   * `sign` or `bundle`.
+   *
+   * TODO: Research if 2000 is an appropriate number of bytes to use as a seed.
+   * See https://github.com/privly/privly-applications/issues/65
+   **/
+  seed: function(){
+    var rand_nums = window.crypto.getRandomValues(new Uint16Array(1000));
+    var rand_nums_as_unicode = String.fromCharCode.apply(null,rand_nums);
+    jwcrypto.addEntropy(rand_nums_as_unicode);
+  },
+
+  /**
    * Sign a PGP public key with a Persona secret key.
    *
    * @param {object} pubkey A PGP public key.
@@ -64,6 +70,7 @@ var PersonaId = {
    * signs the pubkey.
    **/
   sign: function(pubkey, secretkey, callback) {
+    this.seed();
     // jwcrypto.sign never returns an error so we can ignore it.
     jwcrypto.sign({"key": pubkey}, secretkey, callback);
   },
