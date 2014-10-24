@@ -2,3 +2,4 @@
 *.swp
 .idea
 *~
+test/node_modules/*

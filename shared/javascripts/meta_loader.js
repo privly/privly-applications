@@ -1,14 +1,9 @@
 /** 
- * @fileOverview This file defines functions for loading testing specs,
+ * @fileOverview This file defines functions for loading
  * Javascripts, and CSS files.  The files are specified using a custom meta tag
- *
- * `PrivlySpec` defines testings specs
  *
  * `PrivlyTopCSS` defines CSS files that should be loaded when the application
  * is viewed as the top application on the page.
- *
- * Note on testing: Currently this file assumes that the only way
- * to run the tests is when manually executed from the javascript console.
  *
  **/
 
@@ -54,33 +49,6 @@ function getMetaValue(metaName){
     }
   }
   return "none";
-}
-
-/**
- * Loads test libraries, runs tests defined in spec file.
- */
-function runTests(){
-  var specToLoad = getMetaValue("PrivlySpec");
-  if (specToLoad === "none"){
-    return "Failed to load spec";
-  }
-  var testFiles= new Array();
-  testFiles.push("../vendor/jasmine/jasmine-1.3.1/jasmine.js");
-  testFiles.push("../vendor/jasmine/jasmine.console_reporter.js");
-  specToLoad.split(",").forEach(function(el){testFiles.push(el);});
-  testFiles.push("../shared/test/execute.js");
-  
-  // Ensures the testing scripts are loaded in the proper order
-  function timedFunction(filename) {
-    return function(){
-      loadJs(filename);
-    }
-  }
-  
-  for (var i = 0; i < testFiles.length; i++){
-    setTimeout(timedFunction(testFiles[i]), 100 * i);
-  }
-  return "Libraries and spec file loaded. Now running tests.";
 }
 
 /**
@@ -142,6 +110,3 @@ function loadInjectedCSS(){
 function loadInjectedJS(){
   return loadFilesFromMeta("PrivlyInjectedJS", "JS");
 }
-
-// Uncomment to always run tests.
-// setTimeout(function(){runTests();},1000)
