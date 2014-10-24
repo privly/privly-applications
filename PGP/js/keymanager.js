@@ -219,25 +219,20 @@ var keyManager = {
   genPGPKeys: function(callback){
     console.log("Generating New Key");
     var workerProxy = new openpgp.AsyncProxy('../vendor/openpgp.worker.js');
-
-    // TODO: Research if 2000 is an appropriate number of bytes to use as a
-    // seed. See https://github.com/privly/privly-applications/issues/65
-    var rand_nums = window.crypto.getRandomValues(new Uint16Array(1000));
-    workerProxy.seedRandom(rand_nums);
-    workerProxy.generateKeyPair(
-      openpgp.enums.publicKey.rsa_encrypt_sign,
-      512,'username','passphrase', function(err, data){ // TODO: increase key
-        keyManager.addNewPGPKey(data, function(result){
-          keyManager.createPayload(function(payload){
-            if (payload !== false){
-              keyManager.uploadPayload(payload, function(outcome){
-                callback(outcome);
-              });
-            } 
-          });
+    workerProxy.generateKeyPair({numBits: 512, // TODO: increase key size
+                                userId: 'username',
+                                passphrase: 'passphrase'},
+                                function(err, data){ 
+      keyManager.addNewPGPKey(data, function(result){
+        keyManager.createPayload(function(payload){
+          if (payload !== false){
+            keyManager.uploadPayload(payload, function(outcome){
+              callback(outcome);
+            });
+          } 
         });
-      }
-    );
+      });
+    });
   },
 
   
