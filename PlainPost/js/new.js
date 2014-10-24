@@ -40,4 +40,13 @@ function initializeApplication() {
   $('textarea').autosize();
 }
 
-document.addEventListener('DOMContentLoaded', initializeApplication);
+// Initialize the application
+document.addEventListener('DOMContentLoaded',
+  function() {
+
+    // Don't start the script if it is running in a Headless
+    // browser
+    if( document.getElementById("logout_link") )
+      initializeApplication();
+  }
+);

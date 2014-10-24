@@ -32,7 +32,6 @@ describe ("Local Storage Test Suite", function() {
     var obj = {"foo": "bar", "bar": "bazz"};
     ls.setItem("key", obj);
     var returned = ls.getItem("key");
-    ls.removeItem("key");
     expect(ls.getItem("key")).toEqual(obj);
     expect(returned["foo"]).toBe("bar");
     expect(returned["bar"]).toBe("bazz");

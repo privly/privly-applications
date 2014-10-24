@@ -104,17 +104,28 @@ function encryptBeforeUpdate(evt, callback) {
   state.isInlineEdit = false;
 }
 
-document.addEventListener('DOMContentLoaded', 
-  function(){$( "#edit_text" ).bind("keyup", previewMarkdown);}
-);
 
+function initializeApplication() {
 
-// Make the Tooltip display this App's name.
-privlyTooltip.appName = "ZeroBin";
+  // Make the Tooltip display this App's name.
+  privlyTooltip.appName = "ZeroBin";
+
+  $( "#edit_text" ).bind("keyup", previewMarkdown);
+
+  callbacks.pendingContent(processResponseContent);
+
+  // Replace the update function so we never send the cleartext server side.
+  callbacks.update = encryptBeforeUpdate;
+}
 
 // Initialize the application
-document.addEventListener('DOMContentLoaded', 
-  function(){callbacks.pendingContent(processResponseContent)});
+document.addEventListener('DOMContentLoaded',
+  function() {
 
-// Replace the update function so we never send the cleartext server side.
-callbacks.update = encryptBeforeUpdate;
+    // Don't start the script if it is running in a Headless
+    // browser
+    if( document.getElementById("logout_link") )
+      initializeApplication();
+  }
+);
+

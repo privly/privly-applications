@@ -410,14 +410,18 @@ function removeUrlInputs (event) {
   }
 }
 
-// Restore value of the checkbox according to local storage
-document.addEventListener('DOMContentLoaded', restoreCheckedSetting);
+// Initialize the application
+document.addEventListener('DOMContentLoaded',
+  function() {
 
-// Save updates to the white list
-document.addEventListener('DOMContentLoaded', restoreWhitelist);
+    // Don't start the script if it is running in a Headless
+    // browser
+    if( document.getElementById("logout_link") ) {
+      restoreCheckedSetting(); // Restore value of the checkbox according to local storage
+      restoreWhitelist(); // Save updates to the white list
+      listeners(); // Listen for UI events
+      writeGlyph(); // Write the spoofing glyph to the page
+    }
 
-// Listen for UI events
-document.addEventListener('DOMContentLoaded', listeners);
-
-// Write the spoofing glyph to the page
-document.addEventListener('DOMContentLoaded', writeGlyph);
+  }
+);

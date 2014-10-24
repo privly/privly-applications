@@ -2,34 +2,30 @@
  * @fileOverview tests.js Gives testing code for the new page.
  * This spec is managed by the Jasmine testing library.
  **/
- 
-describe ("PlainPost New Suite", function() {
-  
+
+describe ("Help New Suite", function() {
+
+  // Load the fixtures from html2js
+  var keys = Object.keys(__html__);
+  var selectKey;
+  keys.forEach(function(key) {
+    if( key.indexOf("Help/new.html") >= 0 ) {
+      selectKey = key;
+    }
+  });
+
   // Get an HTML document defined by the pre-processor.
   // This is a rough hack because HTML2JS seems to assign the
   // key to the absolute URL, which is not reliable on
   // continuous integration.
   beforeEach(function() {
-    var keys = Object.keys(__html__);
-    var selectKey;
-    keys.forEach(function(key) {
-      if( key.indexOf("PlainPost/new.html") >= 0 ) {
-        selectKey = key;
-      }
-    });
     document.body.innerHTML = __html__[selectKey];
   });
 
-  afterEach(function() {
-    document.body.innerHTML = "";
-  });
-
   it("initializes properly", function() {
-
-    // todo, this should be called automatically but I don't believe
-    // the DOMContentLoaded event is being fired in this testing environment
-    initializeApplication();
-
+    
+    // Should initialize the navigation
+    callbacks.pendingLogin();
     var domain = privlyNetworkService.contentServerDomain();
 
     if( privlyNetworkService.platformName() !== "HOSTED" ) {
@@ -44,5 +40,5 @@ describe ("PlainPost New Suite", function() {
     }
     expect(domain.split("/")[2]).toBe($(".home_domain").text());
   });
-
+  
 });

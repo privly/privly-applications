@@ -424,7 +424,8 @@ var privlyNetworkService = {
     // Change the target property to be self if the application is hosted
     // by a remote server.
     if( privlyNetworkService.platformName() === "HOSTED" ) {
-      $(".home_domain").attr("target", "_self"); 
+      $(".home_domain").attr("href", domain);
+      $(".home_domain").attr("target", "_self");
       $(".account_url").attr("target", "_self");
       $(".legal_nav").attr("target", "_self");
     }
