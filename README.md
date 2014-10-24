@@ -1,9 +1,9 @@
 ## About ##
 
-Privly is a developing set of browser extensions and applications for usable 
-internet content privacy. It allows users to view content on any website, without 
+Privly is a developing set of Javascript applications for usable 
+internet **content privacy.** It allows users to **view content on any website,** without 
 the host site being able to read the content. The Privly extensions support 
-"Injectable Applications" (also known as Privly Applications), which are web 
+"Privly Applications" (also known as Injectable Applications), which are web 
 applications viewed within the context of other web applications. These 
 applications can be any web application, but they are generally oriented to 
 supporting a privacy use case.
@@ -13,15 +13,16 @@ For more information on what Privly is,
 
 ## About this Repository ##
 
-This repository is oriented to cross-platform development of "Injectable 
-Applications," which are web applications viewed within the context of other web 
-applications. Since injectable applications are not necessarily viewed inside an 
+This repository is oriented to cross-platform development of Privly 
+Applications, which are web applications viewed within the context of other web 
+applications. Since Privly applications are not necessarily viewed inside an 
 iframe, they also support layout as the top document in the browser.
 
-The two current injectable applications are found in the PlainPost and ZeroBin 
+The two current Privly applications are found in the PlainPost and ZeroBin 
 folders. They are currently bundled into the 
 [Google Chrome Extension](https://github.com/privly/privly-chrome) and the hosted 
-[content server](https://github.com/privly/privly-web).
+[content server](https://github.com/privly/privly-web) as 
+[Git Submodules](http://git-scm.com/book/en/Git-Tools-Submodules).
 
 **For more information** on developing for this repository, read development.md in 
 this directory.
@@ -31,7 +32,7 @@ this directory.
 If you have discovered a bug, only 
 [open a public issue](https://github.com/privly/privly-web/issues/new) on GitHub 
 if it could not possibly be a security related bug. If the bug affects the 
-security of the system, please report it privately at 
+security of the system, please report it privately to privly@privly.org or at 
 [privly.org](http://www.privly.org/content/bug-report). We will then fix the bug 
 and follow a process of responsible disclosure.
 
