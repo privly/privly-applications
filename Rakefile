@@ -1,53 +1,70 @@
 #!/usr/bin/env rake
 
-require 'selenium-webdriver'
-require 'JSON'
-#require 'capybara'
-#require 'capybara/dsl'
+require 'selenium-webdriver' # Connecting to the browsers
+require 'JSON' # Crawling the manifest files to decide what to test
+require 'capybara' # Manages Selenium
+require 'capybara/dsl' # Syntax for interacting with Selenium
+# require 'capybara/rspec' # Provides syntax for expectation statements
 
-def test_creation(driver)
-  content = driver.find_element(:id, 'content')
-  content.send_keys "Hello WebDriver!"
-  driver.find_element(:id, 'save').click
-  wait = Selenium::WebDriver::Wait.new(:timeout => 10) # seconds
-  wait.until { driver.find_element(:class => "privlyUrl").displayed? }
-end
 
-def login(driver)
-  login_button = driver.find_element(:class => "login_url")
-  if login_button
-    login_button.click
-  end
-  user = "development@priv.ly"
-  password = "password"
-  driver.find_element(:id, 'user_email').send_keys(user)
-  driver.find_element(:id, 'user_password').send_keys(password)
-  title = driver.title # wait for the redirect
-  driver.find_element(:id, 'login').click
-  wait = Selenium::WebDriver::Wait.new(:timeout => 10) # seconds
-  wait.until { not driver.title == title }
-end
+# todos
+# 1. Re-write the tests in Capybara's syntax
+# 2. Re-write the tests in rspec or Cucumber's syntax
+# 3. Run the tests on Sauce labs using this example:
+#    https://saucelabs.com/docs/ondemand/getting-started/env/ruby/se2/mac
 
-def test_app(page_url, driver, content_server, subtemplate_dict)
-  
-  # Load the HTML page with Webdriver
-  puts "Testing: " + page_url
-  driver.navigate.to page_url
-  
-  if subtemplate_dict["action"] == "new" and
-    not subtemplate_dict["name"] == "Help" and
-    not subtemplate_dict["name"] == "Login"
-    
-    if not driver.find_element(:id, 'content').displayed?
-      login(driver)
+
+module ClickTesting
+  class Test
+    include Capybara::DSL
+    def test_creation(driver)
+      content = driver.find_element(:id, 'content')
+      content.send_keys "Hello WebDriver!"
+      driver.find_element(:id, 'save').click
+      wait = Selenium::WebDriver::Wait.new(:timeout => 10) # seconds
+      wait.until { driver.find_element(:class => "privlyUrl").displayed? }
     end
-    
-    wait = Selenium::WebDriver::Wait.new(:timeout => 10) # seconds
-    wait.until { driver.find_element(:id, 'content').displayed? }
-    test_creation(driver)
+
+    def login(driver)
+      login_button = driver.find_element(:class => "login_url")
+      if login_button
+        login_button.click
+      end
+      user = "development@priv.ly"
+      password = "password"
+      driver.find_element(:id, 'user_email').send_keys(user)
+      driver.find_element(:id, 'user_password').send_keys(password)
+      title = driver.title # wait for the redirect
+      driver.find_element(:id, 'login').click
+      wait = Selenium::WebDriver::Wait.new(:timeout => 10) # seconds
+      wait.until { not driver.title == title }
+    end
+
+    def test_app(page_url, driver, content_server, subtemplate_dict)
+
+      # This gives access to the vanilla webdriver: page.driver.browser
+
+      # Load the HTML page with Webdriver
+      puts "Testing: " + page_url
+      visit page_url
+
+      if subtemplate_dict["action"] == "new" and
+        not subtemplate_dict["name"] == "Help" and
+        not subtemplate_dict["name"] == "Login"
+
+        if not page.driver.browser.find_element(:id, 'content').displayed?
+          login(page.driver.browser)
+        end
+
+        wait = Selenium::WebDriver::Wait.new(:timeout => 10) # seconds
+        wait.until { page.driver.browser.find_element(:id, 'content').displayed? }
+        test_creation(page.driver.browser)
+      end
+
+    end
   end
-  
 end
+
 
 # The environment incorporating privly-applications provides serving the applications.
 # By convention, if the environment does not provide hosting for the data then the
@@ -57,19 +74,24 @@ end
 # example `rake webdriver_firefox[web,alpha,http://localhost:3000]`
 desc 'Run Webdriver Tests'
 task :webdriver, [:platform, :release_status, :content_server] do |t, args|
-  
+
   puts "You passed the positional arguments: #{args}"
   
   # Assume testing the web version unless otherwise noted
   platform = "web"
-  address_start = "http://localhost:3000/apps/"
+  address_start = "/apps/"
   
-  # Default to testing the web platform
-  # accross all available browsers
-  drivers = []
-  drivers.push Selenium::WebDriver.for :firefox
-  #drivers.push Selenium::WebDriver.for :chrome # todo, install driver on path
-  #drivers.push Selenium::WebDriver.for :safari # todo, debug running on Safari
+  # Register the vanilla drivers
+  Capybara.register_driver :firefox do |app|
+    Capybara::Selenium::Driver.new(app, :browser => :firefox)
+  end
+  Capybara.register_driver :chrome do |app|
+    Capybara::Selenium::Driver.new(app, :browser => :chrome)
+  end
+
+  Capybara.run_server = false
+  Capybara.current_driver = :firefox
+  Capybara.app_host = 'http://localhost:3000'
   
   content_server = ""
   
@@ -87,7 +109,8 @@ task :webdriver, [:platform, :release_status, :content_server] do |t, args|
     if platform == "firefox"
       
       # Assign the path to find the applications in the extension
-      address_start = "chrome://privly/content/privly-applications/"
+      Capybara.app_host = "chrome://privly/content/privly-applications/"
+      address_start = "" # todo, should this take the path from above?
       
       # package the extension
       system( "../../../package.sh" )
@@ -95,8 +118,12 @@ task :webdriver, [:platform, :release_status, :content_server] do |t, args|
       # Load the Firefox driver with the extension installed
       profile = Selenium::WebDriver::Firefox::Profile.new
       profile.add_extension("../../../PrivlyFirefoxExtension.xpi")
-      drivers = []
-      drivers.push = Selenium::WebDriver.for :firefox, :profile => profile
+
+      # todo, register the extension drivers
+      Capybara.register_driver :firefox_extension do |app|
+        Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile)
+      end
+      Capybara.current_driver = :firefox_extension
       
       # Assign the content server to the remote server
       content_server = "https://dev.privly.org"
@@ -107,6 +134,11 @@ task :webdriver, [:platform, :release_status, :content_server] do |t, args|
       content_server = "https://dev.privly.org"
       puts "This platform is not integrated into testing"
       exit 0
+
+      Capybara.register_driver :chrome_extension do |app|
+        Capybara::Selenium::Driver.new(app, :browser => :chrome)
+      end
+
     end
     
   end
@@ -129,6 +161,8 @@ task :webdriver, [:platform, :release_status, :content_server] do |t, args|
     address_start = args.address_start
   end
   
+  testing_module = ClickTesting::Test.new
+
   manifest_files = Dir["*/manifest.json"]
   manifest_files.each do |manifest_file|
     json = JSON.load(File.new(manifest_file))
@@ -148,15 +182,7 @@ task :webdriver, [:platform, :release_status, :content_server] do |t, args|
 
       # Pages to be tested
       page_url = address_start+outfile_path
-      drivers.each do |driver|
-        test_app(page_url, driver, content_server, app_manifest["subtemplate_dict"])
-      end
+      testing_module.test_app(page_url, Capybara, content_server, app_manifest["subtemplate_dict"])
     end
   end
-  
-  # Closing browser
-  drivers.each do |driver|
-      driver.quit
-  end
-  
 end
