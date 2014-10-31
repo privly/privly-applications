@@ -17,7 +17,7 @@ class TestInjected < Test::Unit::TestCase
 
   def test_showing_injected_posts
 
-    if @@privly_extension_active
+    if not @@privly_extension_active
       return
     end
 

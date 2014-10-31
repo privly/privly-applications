@@ -8,10 +8,11 @@ class TestShow < Test::Unit::TestCase
     # pass
   end
 
-  def test_showing_plain_post
+  def test_showing_plain_post_extension
     to_append = "?privlyOriginalURL=https%3A%2F%2Fprivlyalpha.org%2Fapps%2FPlainPost%2Fshow%3FprivlyApp%3DPlainPost%26privlyInject1%3Dtrue%26random_token%3D%26privlyDataURL%3Dhttps%253A%252F%252Fprivlyalpha.org%252Fposts%252F2.json%23privlyInject1"
     @@privly_test_set.each do |to_test|
-      if to_test[:manifest_dictionary]["action"] == "show" and
+      if @@privly_extension_active and
+        to_test[:manifest_dictionary]["action"] == "show" and
         to_test[:manifest_dictionary]["name"] == "PlainPost"
         url = to_test[:url]+to_append
         page.driver.browser.get(url);
