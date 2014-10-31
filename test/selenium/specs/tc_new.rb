@@ -4,7 +4,7 @@ class TestNew < Test::Unit::TestCase
   include Capybara::DSL # Provides for Webdriving
 
   def setup
-    # pass
+    # Set the content server
   end
 
   def test_creating_posts
@@ -14,25 +14,33 @@ class TestNew < Test::Unit::TestCase
         not to_test[:manifest_dictionary]["name"] == "Help" and
         not to_test[:manifest_dictionary]["name"] == "Login"
 
-        # Load the HTML page with Webdriver
-        visit to_test[:url]
+        page.driver.browser.get("http://test.privly.org");
 
-        if not page.driver.browser.find_element(:id, 'content').displayed?
+        # Load the HTML page with Webdriver
+        page.driver.browser.get(to_test[:url]);
+        setServer = "ls.setItem('posting_content_server_url', '" +
+          to_test[:content_server] + "')"
+        page.evaluate_script(setServer);
+        page.driver.browser.get(to_test[:url]);
+
+        if not page.find('#content').visible? #page.driver.browser.find_element(:id, 'content').displayed?
           # Log the user in
-            login_button = page.driver.browser.find_element(:class => "login_url")
+            login_button = page.all(:css, '.login_url')#page.driver.browser.find_element(:class => "login_url")
             if login_button
-              login_button.click
+              login_button[0].click
             end
             user = "development@priv.ly"
             password = "password"
             fill_in 'user_email', :with =>  user
             fill_in 'user_password', :with => password
-            click_on ('Login to http://localhost:3000')
+            domain = page.evaluate_script('privlyNetworkService.contentServerDomain()');
+            click_on ('Login to ' + domain)
         end
 
         fill_in 'content', :with =>  "Hello WebDriver!"
         click_on ('save')
-        assert page.find('.privlyUrl').visible?
+        urls = page.find('.privlyUrl')
+        assert urls.visible?
       end
     end
   end

@@ -41,12 +41,13 @@ puts "You passed the arguments: #{args}"
 
 # Assume testing the web version unless otherwise noted
 platform = "web"
-address_start = "/apps/"
+address_start = "http://localhost:3000/apps/"
 
 # Include deprecated apps by default
 release_status = "deprecated"
 
 # Register the vanilla drivers
+@@privly_extension_active = false
 Capybara.register_driver :firefox do |app|
  Capybara::Selenium::Driver.new(app, :browser => :firefox)
 end
@@ -62,9 +63,9 @@ Capybara.default_wait_time = 10
 content_server = "http://localhost:3000"
 
 # Intialize for the platform we are testing
-if args["platform"]
+if args[:platform]
 
-  platform = args["platform"]
+  platform = args[:platform]
 
   if platform == "web"
     address_start = "http://localhost:3000/apps/"
@@ -79,24 +80,27 @@ if args["platform"]
   if platform == "firefox"
 
     # Assign the path to find the applications in the extension
-    Capybara.app_host = "chrome://privly/content/privly-applications/"
-    address_start = "" # todo, should this take the path from above?
+    Capybara.app_host = "chrome://privly"
+    address_start = Capybara.app_host + "/content/privly-applications/"
 
-    # package the extension
-    system( "../../../package.sh" )
+    puts "Packaging the Firefox Extension"
+    system( "cd ../../../ && ./package.sh && cd chrome/content/privly-applications/" )
 
     # Load the Firefox driver with the extension installed
     profile = Selenium::WebDriver::Firefox::Profile.new
     profile.add_extension("../../../PrivlyFirefoxExtension.xpi")
 
-    # todo, register the extension drivers
     Capybara.register_driver :firefox_extension do |app|
       Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile)
     end
     Capybara.current_driver = :firefox_extension
+    Capybara.default_driver = :firefox_extension
 
     # Assign the content server to the remote server
     content_server = "https://dev.privly.org"
+
+    @@privly_extension_active = true
+
   end
 
   # Platforms that are not currently implemented
@@ -112,20 +116,12 @@ if args["platform"]
   end
 end
 
-if args["content_server"]
+if args[:content_server]
   content_server = args[:content_server]
 end
 
-if args["release_status"]
+if args[:release_status]
   release_status = args[:release_status]
-end
-
-# Assign the content server domain. If the platform
-# being tested is "web" then this parameter is ignored
-# and the localhost:3000 domain is used.
-address_start = "http://localhost:3000/apps/"
-if args["address_start"]
-  address_start = args["address_start"]
 end
 
 # Build the data structure used by some specs to determine what to test
