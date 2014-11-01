@@ -72,7 +72,13 @@ if args[:platform]
     content_server = "http://localhost:3000"
   end
 
-  # Untested
+  if platform == "chrome_web"
+    address_start = "http://localhost:3000/apps/"
+    content_server = "http://localhost:3000"
+    Capybara.default_driver = :chrome
+    Capybara.current_driver = :chrome
+  end
+
   # The environment incorporating privly-applications provides serving the applications.
   # By convention, if the environment does not provide hosting for the data then the
   # dev.privly.org server is used. Since only content servers provide hosting
@@ -103,8 +109,39 @@ if args[:platform]
 
   end
 
+  # requires ChromeDriver
+  # Mac: brew install chromedriver
+  if platform == "chrome"
+
+    # Assign the path to find the applications in the extension
+    Capybara.app_host = "chrome-extension://gipdbddcenpbjpmjblgmogkeblhoaejd"
+    address_start = Capybara.app_host + "/privly-applications/"
+
+    # Load the Firefox driver with the extension installed
+    profile = Selenium::WebDriver::Chrome::Profile.new
+    profile.add_extension("../PrivlyChromeExtension.zip")
+
+    caps = Selenium::WebDriver::Remote::Capabilities.chrome(
+      "chromeOptions" => {
+        "args" => [ "--disable-web-security", "load-extension=.." ]
+        }
+    )
+
+    Capybara.register_driver :chrome_extension do |app|
+      Capybara::Selenium::Driver.new(app, :browser => :chrome, :desired_capabilities => caps)
+    end
+    Capybara.current_driver = :chrome_extension
+    Capybara.default_driver = :chrome_extension
+
+    # Assign the content server to the remote server
+    content_server = "https://dev.privly.org"
+
+    @@privly_extension_active = true
+
+  end
+
   # Platforms that are not currently implemented
-  if platform == "safari" or platform == "ie" or platform == "chrome"
+  if platform == "safari" or platform == "ie"
     address_start = "TODO"
     content_server = "https://dev.privly.org"
     puts "This platform is not integrated into testing"
