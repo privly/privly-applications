@@ -20,10 +20,10 @@ class TestNew < Test::Unit::TestCase
         page.driver.browser.get(to_test[:url]);
         setServer = "ls.setItem('posting_content_server_url', '" +
           to_test[:content_server] + "')"
-        page.evaluate_script(setServer);
-        page.driver.browser.get(to_test[:url]);
+        page.execute_script(setServer);
+        page.driver.browser.get(to_test[:url]); # Re-load the page after we set the server
 
-        if not page.find('#content').visible? #page.driver.browser.find_element(:id, 'content').displayed?
+        if not page.find('#content').visible?
           # Log the user in
             login_button = page.all(:css, '.login_url')#page.driver.browser.find_element(:class => "login_url")
             if login_button
@@ -39,7 +39,7 @@ class TestNew < Test::Unit::TestCase
 
         fill_in 'content', :with =>  "Hello WebDriver!"
         click_on ('save')
-        urls = page.find('.privlyUrl')
+        urls = page.find('.privlyUrl', :visible => true)
         assert urls.visible?
       end
     end
