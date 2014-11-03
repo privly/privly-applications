@@ -17,6 +17,25 @@ require 'capybara' # Manages Selenium
 require 'capybara/dsl' # Syntax for interacting with Selenium
 require 'test/unit' # Provides syntax for expectation statements
 
+args = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: ruby example.rb [options]"
+  opts.on('-p', '--platform PLATFORM', 'The target platform (web, firefox, chrome, etc)') { |v| args[:platform] = v }
+  opts.on('-r', '--release-status RELEASE', 'The target release stage (experimental, deprecated, alpha, beta, release)') { |v| args[:release_status] = v }
+  opts.on('-c', '--content-server SERVER', 'The content server (http://localhost:3000)') { |v| args[:content_server] = v }
+end.parse!
+puts "You passed the arguments: #{args}"
+
+# Defaults
+platform = "firefox_web" # Assume testing the web version unless otherwise noted
+@@privly_extension_active = false # The apps are not in an extension env
+address_start = "http://localhost:3000/apps/"
+release_status = "deprecated" # Include deprecated apps by default
+Capybara.run_server = false
+Capybara.app_host = 'http://localhost:3000'
+content_server = "http://localhost:3000"
+Capybara.default_wait_time = 10
+
 # This global data structure provides a test set that each of the
 # specs can use to guarantee behavior across apps. The components
 # give the URL of the application to be opened in the browser,
@@ -29,128 +48,204 @@ require 'test/unit' # Provides syntax for expectation statements
   # manifest_dictionary
 ]
 
-args = {}
-OptionParser.new do |opts|
-  opts.banner = "Usage: ruby example.rb [options]"
-  opts.on('-p', '--platform PLATFORM', 'The target platform (web, firefox, chrome, etc)') { |v| args[:platform] = v }
-  opts.on('-r', '--release-status RELEASE', 'The target release stage (experimental, deprecated, alpha, beta, release)') { |v| args[:release_status] = v }
-  opts.on('-c', '--content-server SERVER', 'The content server (http://localhost:3000)') { |v| args[:content_server] = v }
-end.parse!
-puts "You passed the arguments: #{args}"
-
-
-# Assume testing the web version unless otherwise noted
-platform = "web"
-address_start = "http://localhost:3000/apps/"
-
-# Include deprecated apps by default
-release_status = "deprecated"
-
-# Register the vanilla drivers
-@@privly_extension_active = false
-Capybara.register_driver :firefox do |app|
- Capybara::Selenium::Driver.new(app, :browser => :firefox)
-end
-Capybara.register_driver :chrome do |app|
- Capybara::Selenium::Driver.new(app, :browser => :chrome)
-end
-
-Capybara.run_server = false
-Capybara.default_driver = :firefox
-Capybara.app_host = 'http://localhost:3000'
-Capybara.default_wait_time = 10
-
-content_server = "http://localhost:3000"
-
 # Intialize for the platform we are testing
+#
+# Valid options include:
+#  sauce_firefox_web: run Firefox on saucelabs without an extension.
+#                     This requires a webserver to run on localhost:3000
+#  sauce_firefox_extension: run Firefox on saucelabs with an extension.
+#  firefox_web: run Firefox locally without an extension.
+#               This requires a webserver to run on localhost:3000
+#  firefox_extension: run Firefox locally with an extension.
+#  sauce_chrome_web: run Chrome on saucelabs without an extension.
+#                     This requires a webserver to run on localhost:3000
+#  sauce_chrome_extension: run Chrome on saucelabs with an extension.
+#  chrome_web: run Chrome locally without an extension.
+#               This requires a webserver to run on localhost:3000
+#  chrome_extension: run Chrome locally with an extension.
 if args[:platform]
-
   platform = args[:platform]
+end
 
-  if platform == "web"
-    address_start = "http://localhost:3000/apps/"
-    content_server = "http://localhost:3000"
-  end
+@@privly_extension_active = platform.include?("extension")
 
-  if platform == "chrome_web"
-    address_start = "http://localhost:3000/apps/"
-    content_server = "http://localhost:3000"
-    Capybara.default_driver = :chrome
-    Capybara.current_driver = :chrome
-  end
-
-  # The environment incorporating privly-applications provides serving the applications.
-  # By convention, if the environment does not provide hosting for the data then the
-  # dev.privly.org server is used. Since only content servers provide hosting
-  # most scripting environments will use dev.privly.org.
-  if platform == "firefox"
-
-    # Assign the path to find the applications in the extension
-    Capybara.app_host = "chrome://privly"
-    address_start = Capybara.app_host + "/content/privly-applications/"
-
-    puts "Packaging the Firefox Extension"
-    system( "cd ../../../ && ./package.sh && cd chrome/content/privly-applications/" )
-
-    # Load the Firefox driver with the extension installed
-    profile = Selenium::WebDriver::Firefox::Profile.new
-    profile.add_extension("../../../PrivlyFirefoxExtension.xpi")
-
-    Capybara.register_driver :firefox_extension do |app|
-      Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile)
+# Setup the functionality common to all Sauce testing
+# Requires Sauce Connect
+# https://docs.saucelabs.com/reference/sauce-connect/
+if platform.start_with? "sauce"
+  require 'sauce'
+  require 'sauce/capybara'
+  browser = platform.split("_")[1]
+  Sauce.config do |config|
+    config['name'] = "Feature Specs"
+    config['browserName'] = browser
+    if browser == "firefox"
+      @sauce_caps = Selenium::WebDriver::Remote::Capabilities.firefox
+    elsif browser == "chrome"
+      @sauce_caps = Selenium::WebDriver::Remote::Capabilities.chrome
     end
-    Capybara.current_driver = :firefox_extension
-    Capybara.default_driver = :firefox_extension
-
-    # Assign the content server to the remote server
-    content_server = "https://dev.privly.org"
-
-    @@privly_extension_active = true
-
+    config['version'] = "beta"
+    @sauce_caps.version = "beta"
+    @sauce_caps.platform = "Windows 7"
+    @sauce_caps[:name] = "Testing Selenium 2 with Ruby on Sauce"
+    @sauce_url = "todo"
   end
+end
 
-  # requires ChromeDriver
-  # Mac: brew install chromedriver
-  if platform == "chrome"
-
-    # Assign the path to find the applications in the extension
-    Capybara.app_host = "chrome-extension://gipdbddcenpbjpmjblgmogkeblhoaejd"
-    address_start = Capybara.app_host + "/privly-applications/"
-
-    # Load the Firefox driver with the extension installed
-    profile = Selenium::WebDriver::Chrome::Profile.new
-    profile.add_extension("../PrivlyChromeExtension.zip")
-
-    caps = Selenium::WebDriver::Remote::Capabilities.chrome(
-      "chromeOptions" => {
-        "args" => [ "--disable-web-security", "load-extension=.." ]
-        }
+if platform == "sauce_firefox_web"
+  Capybara.register_driver :sauce_firefox_web do |app|
+   Capybara::Selenium::Driver.new(
+     app,
+     :browser => :remote,
+     :url => @sauce_url,
+     :desired_capabilities => @sauce_caps
     )
-
-    Capybara.register_driver :chrome_extension do |app|
-      Capybara::Selenium::Driver.new(app, :browser => :chrome, :desired_capabilities => caps)
-    end
-    Capybara.current_driver = :chrome_extension
-    Capybara.default_driver = :chrome_extension
-
-    # Assign the content server to the remote server
-    content_server = "https://dev.privly.org"
-
-    @@privly_extension_active = true
-
   end
+  Capybara.default_driver = :sauce_firefox_web
+  Capybara.current_driver = :sauce_firefox_web
+end
 
-  # Platforms that are not currently implemented
-  if platform == "safari" or platform == "ie"
-    address_start = "TODO"
-    content_server = "https://dev.privly.org"
-    puts "This platform is not integrated into testing"
-    exit 0
-
-    Capybara.register_driver :chrome_extension do |app|
-      Capybara::Selenium::Driver.new(app, :browser => :chrome)
-    end
+if platform == "sauce_chrome_web"
+  Capybara.register_driver :sauce_chrome_web do |app|
+   Capybara::Selenium::Driver.new(
+     app,
+     :browser => :remote,
+     :url => @sauce_url,
+     :desired_capabilities => @sauce_caps
+     )
   end
+  Capybara.default_driver = :sauce_chrome_web
+  Capybara.current_driver = :sauce_chrome_web
+end
+
+if platform == "firefox_web"
+  address_start = "http://localhost:3000/apps/"
+  content_server = "http://localhost:3000"
+  Capybara.default_driver = :firefox
+  Capybara.current_driver = :firefox
+end
+
+if platform == "chrome_web"
+  Capybara.register_driver :chrome_web do |app|
+   Capybara::Selenium::Driver.new(app, :browser => :chrome)
+  end
+  address_start = "http://localhost:3000/apps/"
+  content_server = "http://localhost:3000"
+  Capybara.default_driver = :chrome_web
+  Capybara.current_driver = :chrome_web
+end
+
+# The environment incorporating privly-applications provides serving the applications.
+# By convention, if the environment does not provide hosting for the data then the
+# dev.privly.org server is used. Since only content servers provide hosting
+# most scripting environments will use dev.privly.org.
+if platform == "firefox_extension"
+
+  # Assign the path to find the applications in the extension
+  Capybara.app_host = "chrome://privly"
+  address_start = Capybara.app_host + "/content/privly-applications/"
+  puts "Packaging the Firefox Extension"
+  system( "cd ../../../ && ./package.sh && cd chrome/content/privly-applications/" )
+
+  # Load the Firefox driver with the extension installed
+  profile = Selenium::WebDriver::Firefox::Profile.new
+  profile.add_extension("../../../PrivlyFirefoxExtension.xpi")
+
+  Capybara.register_driver :firefox_extension do |app|
+    Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile)
+  end
+  Capybara.current_driver = :firefox_extension
+  Capybara.default_driver = :firefox_extension
+
+  # Assign the content server to the remote server
+  content_server = "https://dev.privly.org"
+end
+
+# The environment incorporating privly-applications provides serving the applications.
+# By convention, if the environment does not provide hosting for the data then the
+# dev.privly.org server is used. Since only content servers provide hosting
+# most scripting environments will use dev.privly.org.
+if platform == "sauce_firefox_extension"
+
+  # Assign the path to find the applications in the extension
+  Capybara.app_host = "chrome://privly"
+  address_start = Capybara.app_host + "/content/privly-applications/"
+  puts "Packaging the Firefox Extension"
+  system( "cd ../../../ && ./package.sh && cd chrome/content/privly-applications/" )
+
+  # Load the Firefox driver with the extension installed
+  profile = Selenium::WebDriver::Firefox::Profile.new
+  profile.add_extension("../../../PrivlyFirefoxExtension.xpi")
+
+  Capybara.register_driver :sauce_firefox_extension do |app|
+    Capybara::Selenium::Driver.new(
+      app,
+      :browser => :remote,
+      :url => @sauce_url,
+      :desired_capabilities => @sauce_caps,
+      :profile => profile
+    )
+  end
+  Capybara.current_driver = :sauce_firefox_extension
+  Capybara.default_driver = :sauce_firefox_extension
+
+  # Assign the content server to the remote server
+  content_server = "https://dev.privly.org"
+end
+
+# requires ChromeDriver
+# Mac: brew install chromedriver
+if platform == "chrome_extension"
+
+  # Assign the path to find the applications in the extension
+  Capybara.app_host = "chrome-extension://gipdbddcenpbjpmjblgmogkeblhoaejd"
+  address_start = Capybara.app_host + "/privly-applications/"
+
+  caps = Selenium::WebDriver::Remote::Capabilities.chrome(
+    "chromeOptions" => {
+      "args" => [ "--disable-web-security", "load-extension=.." ]
+      }
+  )
+
+  Capybara.register_driver :chrome_extension do |app|
+    Capybara::Selenium::Driver.new(app, :browser => :chrome, :desired_capabilities => caps)
+  end
+  Capybara.current_driver = :chrome_extension
+  Capybara.default_driver = :chrome_extension
+
+  # Assign the content server to the remote server
+  content_server = "https://dev.privly.org"
+end
+
+if platform == "sauce_chrome_extension"
+
+  @sauce_caps["chromeOptions"] = {
+    "args" => [ "--disable-web-security", "load-extension=.." ]
+  }
+
+  # Assign the path to find the applications in the extension
+  Capybara.app_host = "chrome-extension://gipdbddcenpbjpmjblgmogkeblhoaejd"
+  address_start = Capybara.app_host + "/privly-applications/"
+
+  Capybara.register_driver :sauce_chrome_extension do |app|
+    Capybara::Selenium::Driver.new(
+      app,
+      :browser => :remote,
+      :url => @sauce_url,
+      :desired_capabilities => @sauce_caps
+    )
+  end
+  Capybara.current_driver = :sauce_chrome_extension
+  Capybara.default_driver = :sauce_chrome_extension
+
+  # Assign the content server to the remote server
+  content_server = "https://dev.privly.org"
+end
+
+# Platforms that are not currently implemented
+if platform == "safari" or platform == "ie"
+  puts "This platform is not integrated into testing"
+  exit 0
 end
 
 if args[:content_server]
