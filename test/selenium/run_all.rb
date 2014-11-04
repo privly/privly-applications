@@ -13,7 +13,7 @@
 #
 require 'optparse' # Options parsing
 require 'selenium-webdriver' # Connecting to the browsers
-require 'JSON' # Crawling the manifest files to decide what to test
+require 'json' # Crawling the manifest files to decide what to test
 require 'capybara' # Manages Selenium
 require 'capybara/dsl' # Syntax for interacting with Selenium
 require 'test/unit' # Provides syntax for expectation statements
@@ -76,13 +76,13 @@ end
 if platform.start_with? "sauce"
   require 'sauce'
   require 'sauce/capybara'
-  browser = platform.split("_")[1]
+  @browser = platform.split("_")[1]
   Sauce.config do |config|
     config['name'] = "Feature Specs"
-    config['browserName'] = browser
-    if browser == "firefox"
+    config['browserName'] = @browser
+    if @browser == "firefox"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.firefox
-    elsif browser == "chrome"
+    elsif @browser == "chrome"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.chrome
     end
     config['version'] = "beta"
@@ -97,6 +97,8 @@ if platform.start_with? "sauce"
     # You can also hard code the URL here, but remember it contains your credentials...
     @sauce_url = ENV['SAUCE_URL']
   end
+else
+  @browser = platform.split("_")[0]
 end
 
 if platform == "sauce_firefox_web" or platform == "sauce_chrome_web"
@@ -114,7 +116,7 @@ end
 
 if platform == "firefox_web" or platform == "chrome_web"
   Capybara.register_driver :web_browser do |app|
-   Capybara::Selenium::Driver.new(app, :browser => browser)
+   Capybara::Selenium::Driver.new(app, :browser => @browser.to_sym)
   end
   address_start = "http://localhost:3000/apps/"
   content_server = "http://localhost:3000"
