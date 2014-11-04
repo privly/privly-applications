@@ -96,6 +96,12 @@ if platform.start_with? "sauce"
 
     # You can also hard code the URL here, but remember it contains your credentials...
     @sauce_url = ENV['SAUCE_URL']
+
+    # Give the webserver time to boot when running on TravisCI
+    if ENV['TRAVIS_LAUNCHES_SAUCE_CONNECT']
+      puts "sleeping for 5 seconds"
+      sleep 5
+    end
   end
 else
   @browser = platform.split("_")[0]
