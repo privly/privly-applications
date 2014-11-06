@@ -414,6 +414,18 @@ function removeUrlInputs (event) {
 document.addEventListener('DOMContentLoaded',
   function() {
 
+    // Set the nav bar to the proper domain
+    privlyNetworkService.initializeNavigation();
+
+    privlyNetworkService.initPrivlyService(
+      privlyNetworkService.contentServerDomain(),
+      privlyNetworkService.showLoggedInNav,
+      privlyNetworkService.showLoggedOutNav
+    );
+
+    $("#messages").hide();
+    $("#form").show();
+
     // Don't start the script if it is running in a Headless
     // browser
     if( document.getElementById("logout_link") ) {
