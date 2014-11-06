@@ -58,14 +58,21 @@
      </div>
      <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-       <li class="logged_in_nav mobile_hide" style="display:none;">
+       <li class="logged_in_nav" style="display:none;">
         <a href="../History/new.html">
          History
          <span class="glyphicon glyphicon-list-alt">
          </span>
         </a>
        </li>
-       <li class="active dropdown logged_in_nav mobile_hide" style="display:none;">
+       <li class="active logged_out_nav">
+        <a class="login_url" href="../Login/new.html">
+         Login
+         <span class="glyphicon glyphicon-log-in">
+         </span>
+        </a>
+       </li>
+       <li class="active dropdown logged_in_nav" style="display:none;">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
          New Link
          <b class="caret">
@@ -98,33 +105,10 @@
          </li>
         </ul>
        </li>
-       <li class="dropdown logged_in_nav mobile_hide">
-        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-         Options
-         <b class="caret">
-         </b>
-        </a>
-        <ul class="dropdown-menu">
-         <li>
-          <a class="account_url" href="#" target="_blank">
-           <span class="glyphicon glyphicon-new-window">
-           </span>
-           Server Account
-          </a>
-         </li>
-        </ul>
-       </li>
-       <li class="logged_in_nav mobile_hide" style="display:none;">
+       <li class="logged_in_nav" style="display:none;">
         <a class="logout_url" href="#" id="logout_link">
          Logout
          <span class="glyphicon glyphicon-log-out">
-         </span>
-        </a>
-       </li>
-       <li class="active logged_out_nav mobile_hide">
-        <a class="login_url" href="../Login/new.html">
-         Login
-         <span class="glyphicon glyphicon-log-in">
          </span>
         </a>
        </li>
@@ -177,7 +161,11 @@
         <img alt="loading" src="../shared/images/ajax-loader.gif"/>
        </p>
        <h1>
-        Sign In to Content Server
+        Sign In to Content Server:
+        <span class="home_domain">
+         <span>
+         </span>
+        </span>
        </h1>
        <noscript>
         <h1>
@@ -202,11 +190,14 @@
        </div>
        <br/>
        <div class="form-group">
-        <button class="btn btn-default" id="login">
+        <button class="btn btn-primary" id="login">
          Login to
          <span class="content_server">
          </span>
         </button>
+        <a class="btn btn-warning" href="/users/invitation/new" target="_blank">
+         No account? Get invited!
+        </a>
        </div>
       </div>
      </div>
@@ -220,6 +211,9 @@
       <h2>
        Sign in Issues
       </h2>
+      <a href="http://priv.ly/pages/servers.html" target="_blank">
+       Not your host? Change your content server!
+      </a>
       <a class="login_issue" data-path-sub="/users/password/new" href="#" target="_blank">
        Forgot your password?
       </a>
@@ -232,18 +226,21 @@
        Didn't receive unlock instructions?
       </a>
      </div>
-     <div class="col-md-7">
+     <div class="col-md-6">
       <h2>
        What is this Page?
       </h2>
       <p>
-       This page logs you into the content server you host your content with.
+       This page logs you into the content server that hosts your content.
       Your password will be sent to the remote server so make sure the button
-      has the proper address. You don't want to send your password to the 
-      wrong server.
+      has the proper address. If you don't like your current host you can find
+      a new one on
+       <a href="http://priv.ly/pages/servers.html" target="_blank">
+        Priv.ly
+       </a>
       </p>
      </div>
-     <div class="col-md-2">
+     <div class="col-md-3">
       <h2>
        Warning
       </h2>
@@ -251,6 +248,11 @@
        Your password will be sent to the current content server:
        <span class="content_server">
        </span>
+       . If you don't know what
+      content server to send your data to you should read about
+       <a href="http://priv.ly/pages/servers.html" target="_blank">
+        finding a host.
+       </a>
       </p>
      </div>
     </div>
