@@ -14,7 +14,7 @@
     <p id="loadingDiv">
      <img alt="loading" src="../shared/images/ajax-loader.gif" />
     </p>
-    <h1>Sign In to Content Server</h1>
+    <h1>Sign In to Content Server or <a href="/users/invitation/new" class="btn btn-primary">get invited!</a></h1>
     <noscript>
       <h1>Your browser has scripting turned off. 
         This application requires scripting to function properly</h1>
