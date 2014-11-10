@@ -24,4 +24,12 @@ module AuthHelper
       loop until page.evaluate_script('jQuery.active').zero?
     end
   end
+
+  # Click he logout link on the current page then wait for the
+  # redirect to complete by looking for the user_email element
+  def logout()
+    click_link("logout_link")
+    page.find('#user_email', :visible => true)
+  end
+
 end

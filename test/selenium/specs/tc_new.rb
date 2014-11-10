@@ -22,7 +22,7 @@ class TestNew < Test::Unit::TestCase
         click_on ('save')
         urls = page.find('.privlyUrl', :visible => true)
         assert urls.visible?
-        click_link("logout_link")
+        logout
       end
     end
   end
@@ -71,8 +71,7 @@ class TestNew < Test::Unit::TestCase
       # Make sure the refreshed page has the new content
       assert page.has_text?('Updated!')
 
-      # Log the user out of the content server
-      click_link("logout_link")
+      logout
     end
   end
 
