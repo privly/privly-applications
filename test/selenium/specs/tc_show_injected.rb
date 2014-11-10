@@ -1,6 +1,6 @@
 # This test case checks whether the content at test.privly.org
-# injects into the host page properly. These specs should only
-# be run if the extension is loaded into the web browser.
+# injects into the host page properly. These specs only
+# run if the extension is loaded into the web browser.
 class TestInjected < Test::Unit::TestCase
 
   include Capybara::DSL # Provides for Webdriving
@@ -26,7 +26,7 @@ class TestInjected < Test::Unit::TestCase
       visit test_page
       links = page.all(:css, ".replace_link")
       links.each do |link|
-        assert link.has_xpath?('../iframe')
+        assert link.has_xpath?('..//iframe')
       end
     end
   end
@@ -41,7 +41,7 @@ class TestInjected < Test::Unit::TestCase
     test_pages = ["http://test.privly.org/test_pages/nonwhitelist.html"]
     test_pages.each do |test_page|
       visit test_page
-      assert page.has_no_xpath?('//iframe')
+      assert page.has_no_xpath?('//iframe') # The page should have no iframes.
     end
   end
 
