@@ -58,7 +58,7 @@
         %}
         <li id="permissions_nav" class="dropdown active"
           style="display:none;">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+          <a href="#" id="edit_nav" class="dropdown-toggle" data-toggle="dropdown">
             {{name}}
             <b class="caret"></b>
           </a>
@@ -119,7 +119,8 @@
           </a>
           <ul class="dropdown-menu">
             <li>
-              <a href="#" target="_blank" class="account_url logged_in_nav">
+              <a href="#" target="_blank" class="account_url logged_in_nav"
+                style="display:none;">
                  <span class="glyphicon glyphicon-new-window"></span>
                  Server Account
               </a>
