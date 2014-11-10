@@ -10,7 +10,7 @@
    New Options
   </title>
   <meta content="../shared/test/parameters.js,../shared/test/extension_integration.js,
-            ../shared/test/network_service.js" name="PrivlySpec"/>
+            ../shared/test/network_service.js,./js/tests/OptionsSpec.js" name="PrivlySpec"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <!-- Top Styles -->
   <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
@@ -115,7 +115,7 @@
         </a>
         <ul class="dropdown-menu">
          <li>
-          <a class="account_url logged_in_nav" href="#" target="_blank">
+          <a class="account_url logged_in_nav" href="#" style="display:none;" target="_blank">
            <span class="glyphicon glyphicon-new-window">
            </span>
            Server Account
@@ -192,22 +192,6 @@
        <h1 class="page-header">
         Extension Options
        </h1>
-       <section id="button_option">
-        <h2>
-         Privly Button
-        </h2>
-        <br/>
-        <input id="disableBtn" type="checkbox"/>
-        Disable the Privly button that appears in the top-right corner of textarea's
-        <br/>
-        <br/>
-        <button class="btn btn-primary" id="save_btnAppearance">
-         Save
-        </button>
-        <div id="button_status">
-        </div>
-       </section>
-       <hr/>
        <section id="glyph">
         <h2>
          Security Glyph
