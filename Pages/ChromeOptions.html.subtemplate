@@ -3,7 +3,7 @@
 {% block specs %}
   <meta name="PrivlySpec"
    content="../shared/test/parameters.js,../shared/test/extension_integration.js,
-            ../shared/test/network_service.js",./js/tests/OptionsSpec.js/>
+            ../shared/test/network_service.js,./js/tests/OptionsSpec.js"/>
 {% endblock %}
 
 {% block javascripts %}
@@ -21,6 +21,7 @@
   
   <h1 class="page-header">Extension Options</h1>
 
+{% if args.platform == "chrome" %}
   <section id="button_option">
 
     <h2>Privly Button</h2>
@@ -34,7 +35,8 @@
   </section>
 
   <hr />
-  
+{% endif %}
+
   <section id="glyph">
 
     <h2>Security Glyph</h2>

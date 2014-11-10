@@ -34,8 +34,11 @@
  */
 function saveCheckedSetting() {
 
-  // reset status
+  // Don't run on Firefox
   var status = document.getElementById("button_status");
+  if (status === null ) return;
+
+  // reset status
   status.innerHTML = "";
 
   var checkedState = document.querySelector("#disableBtn").checked;
@@ -48,8 +51,13 @@ function saveCheckedSetting() {
  * Restores user's setting to disable Privly button appearance
  */
 function restoreCheckedSetting() {
+  var btn = document.getElementById("disableBtn");
+  if ( btn === null ) return; // Don't run on Firefox
   var stored = ls.getItem("Options:DissableButton");
-  document.getElementById("disableBtn").checked = (stored !== undefined && stored === true);
+  btn.checked = (stored !== undefined && stored === true);
+
+  // Save the current setting for the Privly button appearance
+  btn.addEventListener('click', saveCheckedSetting);
 }
 
 /**
@@ -141,82 +149,80 @@ function saveWhitelist() {
  */
 function restoreWhitelist() {
   
-  restore_server();
+  restoreServer();
   
   var user_whitelist_csv = ls.getItem("user_whitelist_csv");
   if (!user_whitelist_csv) {
     return;
   }
   var user_whitelist = user_whitelist_csv.split(',');
-  for(i=1; i <= user_whitelist.length - 2; i++)
+  for(i=0; i <= user_whitelist.length - 1; i++)
     addUrlInputs();
   var inputs = document.getElementsByClassName("whitelist_url");
+  var removals = document.getElementsByClassName("remove_whitelist");
   
   // Replaces trailing whitespaces, if any
-  for(i=0; i< user_whitelist.length; i++)
-    inputs[i].value = user_whitelist[i].replace(/ /g,'');
+  for(i=0; i< user_whitelist.length; i++) {
+    var csvDisplay = user_whitelist[i].replace(/ /g,'');
+    inputs[i].value = csvDisplay;
+    removals[i].setAttribute("data-value-to-remove", csvDisplay);
+  }
 }
 
 
 /**
  * Restores the current content server setting.
  */
-function restore_server(){
+function restoreServer(){
   
   var posting_content_server_url = ls.getItem("posting_content_server_url");
   var server_input = document.getElementById("content_server_url");
   
-  // check for local storage content
+  // check content server
   if (!posting_content_server_url) {
-    return;
-  
-  } else {
+    ls.setItem("posting_content_server_url", "https://privlyalpha.org");
+  }
     
-    // check content type and restore
-    switch(posting_content_server_url){
-      
-      //diplay the on menu
-      case "https://privlyalpha.org":
-        
-        var alpha_input = document.getElementById("server_form");
-        alpha_input.style.display = "block";
-        server_input.selectedIndex = 0;
-        break;
-      
-      // display the on menu
-      case "https://dev.privly.org":
-        var dev_input = document.getElementById("server_form");
-        dev_input.style.display = "block";
-        server_input.selectedIndex = 1;
-        break;
-      
-      // diplay the on menu
-      case "http://localhost:3000":
-        var local_input = document.getElementById("server_form");
-        local_input.style.display = "block";
-        server_input.selectedIndex = 2;
-        break;
-      
-      // user defined data
-      default:
-      
-        // diplay the on menu
-        var other_input = document.getElementById("server_form");
-        other_input.style.display = "block";
-      
-        // diplay the other sub menu
-        var user_input = document.getElementById("user");
-        user_input.style.display = "inline";
-        server_input.selectedIndex = 3;
-      
-        // populate the text box
-        var other_content_server = document.getElementById("other_content_server");
-        other_content_server.value = posting_content_server_url;
-        
-        // show the other box
-        $("#user").css('display', 'inline');
-      
-    }
+   // check content type and restore
+  switch(posting_content_server_url){
+
+    //diplay the on menu
+    case "https://privlyalpha.org":
+      var alpha_input = document.getElementById("server_form");
+      alpha_input.style.display = "block";
+      server_input.selectedIndex = 0;
+      break;
+
+    // display the on menu
+    case "https://dev.privly.org":
+      var dev_input = document.getElementById("server_form");
+      dev_input.style.display = "block";
+      server_input.selectedIndex = 1;
+      break;
+
+    // diplay the on menu
+    case "http://localhost:3000":
+      var local_input = document.getElementById("server_form");
+      local_input.style.display = "block";
+      server_input.selectedIndex = 2;
+      break;
+
+    // user defined data
+    default:
+      var other_input = document.getElementById("server_form"); // diplay the on menu
+      other_input.style.display = "block";
+
+      // diplay the other sub menu
+      var user_input = document.getElementById("user");
+      user_input.style.display = "inline";
+      server_input.selectedIndex = 3;
+
+      // populate the text box
+      var other_content_server = document.getElementById("other_content_server");
+      other_content_server.value = posting_content_server_url;
+
+      // show the other box
+      $("#user").css('display', 'inline');
   }
 }
 
@@ -227,7 +233,7 @@ function restore_server(){
  *
  */
 function saveServer(event){
-  
+
   // fired event object
   var target = event.target;
   
@@ -270,27 +276,18 @@ function saveServer(event){
  * Sets the listeners on the UI elements of the page.
  */
 function listeners(){
-  
-  // Set the nav bar to the proper domain
-  privlyNetworkService.initializeNavigation();
-  $("#messages").hide();
-  $("#form").show();
-  privlyNetworkService.showLoggedInNav();
 
-  // Save the current setting for the Privly button appearance
-  document.querySelector('#save_btnAppearance').addEventListener('click', saveCheckedSetting);
-  
-  //Glyph generation
+  // Glyph generation
   document.querySelector('#regenerate_glyph').addEventListener('click', regenerateGlyph);
   
   // Options save button
   document.querySelector('#save').addEventListener('click', saveWhitelist);
     
   // content server menu listeners
-  document.querySelector('#content_server_url').addEventListener('change', saveServer);
   document.querySelector('#save_server').addEventListener('click', saveServer);
+  document.querySelector('#content_server_url').addEventListener('change', saveServer);
   document.querySelector('#add_more_urls').addEventListener('click', addUrlInputs);
-  
+
   // Click on body used to tackle dynamically created inputs as well
   document.querySelector('body').addEventListener('click', removeUrlInputs); 
 }
@@ -404,8 +401,30 @@ function addUrlInputs () {
  *
  */
 function removeUrlInputs (event) {
-  target = event.target;
+
+  var target = event.target;
   if(target.className.indexOf('remove_whitelist') >= 0) {
+
+    var domainToRemove = target.getAttribute("data-value-to-remove");
+    var CSVToRemove = target.getAttribute("data-value-to-remove");
+
+    var currentCSV = ls.getItem("user_whitelist_csv");
+    var currentValuesArr = currentCSV.split(",");
+    currentValuesArr.forEach(function(elem, idx, arr){arr[idx] = elem.trim()});
+
+    var newCSV = "";
+    var domainRegexp = "";
+    for( var i = 0 ; i < currentValuesArr.length ; i++ ) {
+      if ( currentValuesArr[i] !== domainToRemove ) {
+        domainRegexp += "|" + currentValuesArr[i] + "\\/";
+        if ( newCSV !== "" ) {
+          newCSV += ",";
+        }
+        newCSV += currentValuesArr;
+      }
+    }
+    ls.setItem("user_whitelist_csv", newCSV);
+    ls.setItem("user_whitelist_regexp", domainRegexp);
     target.parentElement.remove();
   }
 }
@@ -414,10 +433,28 @@ function removeUrlInputs (event) {
 document.addEventListener('DOMContentLoaded',
   function() {
 
+    // Don't initialize the app if it is running in a
+    // headless browser.
+    if( ! document.getElementById("logout_link") )
+      return;
+
+    // Set the nav bar to the proper domain
+    privlyNetworkService.initializeNavigation();
+
+    privlyNetworkService.initPrivlyService(
+      privlyNetworkService.contentServerDomain(),
+      privlyNetworkService.showLoggedInNav,
+      privlyNetworkService.showLoggedOutNav
+    );
+
+    $("#messages").hide();
+    $("#form").show();
+    $("#server_form").show();
+
     // Don't start the script if it is running in a Headless
     // browser
     if( document.getElementById("logout_link") ) {
-      restoreCheckedSetting(); // Restore value of the checkbox according to local storage
+      restoreCheckedSetting();
       restoreWhitelist(); // Save updates to the white list
       listeners(); // Listen for UI events
       writeGlyph(); // Write the spoofing glyph to the page

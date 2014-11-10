@@ -9,12 +9,19 @@
  * elements.
  */
 function init() {
+
   // Set the nav bar to the proper domain
   privlyNetworkService.initializeNavigation();
+
+  privlyNetworkService.initPrivlyService(
+    privlyNetworkService.contentServerDomain(),
+    privlyNetworkService.showLoggedInNav,
+    privlyNetworkService.showLoggedOutNav
+  );
+
   $("#messages").hide();
   $("#form").show();
-  privlyNetworkService.showLoggedInNav();
-  
+
   // Show a preview of the tooltip to the user
   var glyphHTML = privlyTooltip.glyphHTML();
   $("#tooltip").html(glyphHTML)

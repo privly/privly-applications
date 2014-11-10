@@ -14,7 +14,7 @@
 # [
 #  {
 #    "release_status": "alpha", // Required values: experimental, deprecated, alpha, beta, release
-#    "platforms": ["chrome"], // Optional values: web, chrome
+#    "platforms": ["chrome"], // Optional values: web, chrome, firefox
 #    "subtemplate_path": "Pages/ChromeFirstRun.html.subtemplate", // Required path to the subtemplate
 #    "outfile_path": "Pages/ChromeFirstRun.html", // Required path the othe output file
 #    "subtemplate_dict": {"name": "FirstRun", "action": "nav"} // Template dictionary values
@@ -123,7 +123,7 @@ if __name__ == "__main__":
 
   # Parse Arguments
   # Specify the potential build targets
-  platforms = ['web', 'chrome']
+  platforms = ['web', 'chrome', 'firefox']
   parser = argparse.ArgumentParser(description='Declare platform build target.')
   parser.add_argument('-p', '--platform', metavar='p', type=str,
                      help='The platform you are building for',

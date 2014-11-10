@@ -105,10 +105,6 @@ var privlyTooltip = {
 
       // Generate the glyph HTML and assign the color
       var glyph = privlyTooltip.glyphHTML();
-      var coloredValues = glyph.querySelectorAll(".glyph_fill");
-      for( var i = 0; i < coloredValues.length; i++ ) {
-        coloredValues[i].style["background-color"] = "#" + glyphColor;
-      }
 
       // Create the tooltip element
       var tooltipMessageElement = document.createElement("div");
@@ -140,12 +136,12 @@ var privlyTooltip = {
             textNodeDiv.appendChild(tooltipTextNode);
 
             var t = document.getElementById("tooltip");
-            t.style.top = (e.y - xOffset) + "px";
-            t.style.left = (e.x + yOffset) + "px";
+            t.style.top = (e.clientY - xOffset) + "px";
+            t.style.left = (e.clientX + yOffset) + "px";
           });
 
       // Remove the tooltip when the mouse leaves the app
-      bodyElement.addEventListener('mouseout',
+      bodyElement.addEventListener('mouseleave',
         function(e){
             if ( ! bodyElement.contains(e.toElement) ) {
               var t = document.getElementById("tooltip");
@@ -157,8 +153,8 @@ var privlyTooltip = {
       bodyElement.addEventListener('mousemove',
         function(e){
             var t = document.getElementById("tooltip");
-            t.style.top = (e.y - xOffset) + "px";
-            t.style.left = (e.x + yOffset) + "px";
+            t.style.top = (e.clientY - xOffset) + "px";
+            t.style.left = (e.clientX + yOffset) + "px";
           });
     },
     
@@ -179,9 +175,10 @@ var privlyTooltip = {
      */
     glyphHTML: function() {
       
-      //Add the CSS for the glyph
+      // Get the glyph from storage
       var glyphString = ls.getItem("glyph_cells");
       var glyphArray = glyphString.split(",");
+      var glyphColor = ls.getItem("glyph_color");
 
       // Construct the 5x5 table that will represent the glyph.
       // Its 3rd column is the axis of symmetry
@@ -209,12 +206,14 @@ var privlyTooltip = {
           if(j <= 2) {
             if(glyphArray[i * 3 + j] == "true") {
               td.setAttribute("class", "glyph_fill");
+              td.setAttribute("style", "background-color:#"+glyphColor);
             } else {
               td.setAttribute("class", "glyph_empty");
-            }        
+            }
           } else {
             if(glyphArray[i * 3 + (5 % (j + 1))] == "true") {
               td.setAttribute("class", "glyph_fill");
+              td.setAttribute("style", "background-color:#"+glyphColor);
             } else {
               td.setAttribute("class", "glyph_empty");
             }

@@ -457,9 +457,9 @@ var privlyNetworkService = {
     if(typeof privlyHostPage !== "undefined" && privlyHostPage.isInjected()) {
       return;
     }
+    $(".logged_out_nav").hide();
     $(".injected_hide").show();
     $(".logged_in_nav").show();
-    $(".logged_out_nav").hide();
     privlyNetworkService.mobileHide();
   }
 }
