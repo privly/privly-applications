@@ -433,6 +433,11 @@ function removeUrlInputs (event) {
 document.addEventListener('DOMContentLoaded',
   function() {
 
+    // Don't initialize the app if it is running in a
+    // headless browser.
+    if( ! document.getElementById("logout_link") )
+      return;
+
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
 
