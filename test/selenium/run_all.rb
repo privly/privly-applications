@@ -257,7 +257,7 @@ manifest_files.each do |manifest_file|
 
     outfile_path = app_manifest["outfile_path"]
     if app_manifest["platforms"] and
-      not app_manifest["platforms"].include?(platform)
+      not app_manifest["platforms"].include?(@browser)
       puts "Skipping due to target platform: " + outfile_path
       next
     end
