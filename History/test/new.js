@@ -46,64 +46,91 @@ function initializeApp(loggedOut) {
     callbacks.pendingLogin();
   }
   
-  // The runs function allows the testing library to complete the asynchronous
-  // calls before executing this testing code
-  runs(function() {
-    setTimeout(function() {
-      if($('#loadingDiv').is(":hidden")) initializationFlag = true;
-    }, 900);
-  });
-  
-  // Waits for the initialization to complete or fails
-  waitsFor(function() {
-    return initializationFlag;
-  }, "The app was not initialized", 1000);
+  setTimeout(function() {
+    if($('#loadingDiv').is(":hidden")) initializationFlag = true;
+  }, 900);
 }
+
+var keys = Object.keys(__html__);
+var selectKey;
+keys.forEach(function(key) {
+  if( key.indexOf("History/new.html") >= 0 ) {
+    selectKey = key;
+  }
+});
 
 // WARNING: These tests require the existence of an authentication_token
 // equal to: "pE8dHprCJ79QENLedELx"
 describe ("History Logged In New Suite", function() {
   
-  beforeEach(function(){initializeApp(false);});
-  
+  // Get an HTML document defined by the pre-processor.
+  // This is a rough hack because HTML2JS seems to assign the
+  // key to the absolute URL, which is not reliable on
+  // continuous integration.
+  beforeEach(function() {
+    document.body.innerHTML = __html__[selectKey];
+    initializeApp(false);
+  });
+
   it("initializes properly", function() {
-    runs(function() {
-      var domain = privlyNetworkService.contentServerDomain();
-      expect(domain).toBe($(".home_domain").attr("href"));
-      expect(domain.split("/")[2]).toBe($(".home_domain").text());
-      expect($(".logged_in_nav").is(':visible')).toBe(true);
-      expect($(".logged_out_nav").is(':hidden')).toBe(true);
-    });
+
+    // Should initialize the navigation
+    callbacks.pendingLogin();
+    var domain = privlyNetworkService.contentServerDomain();
+
+    if( privlyNetworkService.platformName() !== "HOSTED" ) {
+
+      // if the app is not hosted, the user should first be directed to the
+      // content_server page of the app bundle.
+      expect($(".home_domain").attr("href")).toBe('../Help/content_server.html');
+    } else {
+
+      // if the application is hosted, the URL should connect to the domain's root
+      expect($(".home_domain").attr("href")).toBe("http://" + window.location.href.split("/")[2]);
+    }
+    expect(domain.split("/")[2]).toBe($(".home_domain").text());
   });
   
   it("does not result in an error", function() {
-    runs(function() {
-      resizeIframePostedMessage({origin: "sham"});
-      expect(true).toBe(true);
-    });
+    resizeIframePostedMessage({data: "1,1"});
+    expect(true).toBe(true);
   });
   
 });
 
 describe ("History Logged out New Suite", function() {
   
-  beforeEach(function(){initializeApp(true);});
+  // Get an HTML document defined by the pre-processor.
+  // This is a rough hack because HTML2JS seems to assign the
+  // key to the absolute URL, which is not reliable on
+  // continuous integration.
+  beforeEach(function() {
+    document.body.innerHTML = __html__[selectKey];
+    initializeApp(true);
+  });
   
   it("initializes properly", function() {
-    runs(function() {
-      var domain = privlyNetworkService.contentServerDomain();
-      expect(domain).toBe($(".home_domain").attr("href"));
-      expect(domain.split("/")[2]).toBe($(".home_domain").text());
-      expect($(".logged_in_nav").is(':hidden')).toBe(true);
-      expect($(".logged_out_nav").is(':visible')).toBe(true);
-    });
+
+    // Should initialize the navigation
+    callbacks.pendingLogin();
+    var domain = privlyNetworkService.contentServerDomain();
+
+    if( privlyNetworkService.platformName() !== "HOSTED" ) {
+
+      // if the app is not hosted, the user should first be directed to the
+      // content_server page of the app bundle.
+      expect($(".home_domain").attr("href")).toBe('../Help/content_server.html');
+    } else {
+
+      // if the application is hosted, the URL should connect to the domain's root
+      expect($(".home_domain").attr("href")).toBe("http://" + window.location.href.split("/")[2]);
+    }
+    expect(domain.split("/")[2]).toBe($(".home_domain").text());
   });
   
   it("does not result in an error", function() {
-    runs(function() {
-      resizeIframePostedMessage({origin: "sham"});
-      expect(true).toBe(true);
-    });
+    resizeIframePostedMessage({data: "1,1"});
+    expect(true).toBe(true);
   });
   
 });

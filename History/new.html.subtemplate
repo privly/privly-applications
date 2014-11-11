@@ -22,10 +22,9 @@
   <div class="row">
     <div class="col-md-12">
       <div id="iframe_col" style="display:none;">
-        <h1 id="privly_iframe_title"></h1>
-        <p id="privly_iframe_meta"></p>
-        <button id="hide_preview" class="btn btn-default">Hide</button>
-        <button id="destroy_link" class="btn btn-danger">Destroy</button>
+        <p id="privly_iframe_meta">The App's contents are below</p>
+        <button id="hide_preview" class="btn btn-default">Hide Preview</button>
+        <button id="destroy_link" class="btn btn-danger">Destroy Content</button>
         <hr/>
         <div class="privly_iframe"></div>
         <hr/>

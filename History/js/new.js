@@ -134,7 +134,10 @@ var callbacks = {
       var href = response.json[i].privly_URL;
       var localHref = "/privly-applications/" + app + "/show.html?privlyOriginalURL=" +
         encodeURIComponent(href);
-      
+      if ( privlyNetworkService.platformName() === "FIREFOX" ) {
+        localHref = "/content" + localHref;
+      }
+
       var tr = document.createElement('tr');
       
       var td1 = document.createElement('td');
@@ -240,10 +243,6 @@ var callbacks = {
       // Clear the old iframe and insert the new one
       $(".privly_iframe").empty();
       $(".privly_iframe").append(iFrame);
-
-      // Label the iframe
-      $("#privly_iframe_title").text(app);
-      $("#privly_iframe_meta").text("The App's contents are below.");
     });
 
     $('button.open_link').on('click', function() {
@@ -265,7 +264,7 @@ var callbacks = {
     });
 
     $('#hide_preview').on('click', function() {
-      $('#iframe_col').hide('slow');
+    $('#iframe_col').hide('slow');
     });
   }
 }
@@ -337,4 +336,12 @@ function postUrl() {
 }
 
 // Initialize the application
-document.addEventListener('DOMContentLoaded', callbacks.pendingLogin);
+document.addEventListener('DOMContentLoaded',
+  function() {
+
+    // Don't start the script if it is running in a Headless
+    // browser
+    if( document.getElementById("logout_link") )
+      callbacks.pendingLogin();
+  }
+);
