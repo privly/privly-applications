@@ -1,14 +1,15 @@
 language: javascript
 env:
   global:
-  - TRAVIS_LAUNCHES_SAUCE_CONNECT=true # Tell the karma file that it does not need to launch Sauce connect
+  - TRAVIS_LAUNCHES_SAUCE_CONNECT=true
+  - secure: lTlOUWwrtyeN6HqCHNaqaQQF1aBx50W2F4r/KEg/nZcV/QDJAa0wqAbs11+4sEUW5FpA56zieha3G4fG+Iv/3IDAXahHC7LRYB06hK3l0PvaApzPDWq8JQpLs0KS+GRU/kwHA8vemn4KfcI1Ue7WNfCi1vp8V46miA2Gjdjf2e4=#SAUCE_USERNAME=smcgregor (smcgregor/privly-applications)
+  - secure: at4ygn2fOHba8vPRQi1ZEBIf+agBupMVtkY5ChpeZhcY3p0tgKV9PhQ5IxWLL6TxN86I2VgrC6W54y6kKGQ6TVz7j/z1P3z2DD7Ktb/WqwgLYY4ErSMCSXmOHVp5ckaVNuZL0zf9E0LEIM4MqiuWiqtEN1C+ChebsVQLLCUqeIo=#SAUCE_ACCESS_KEY=********-****-****-****-************ (smcgregor/privly-applications)
+  - secure: BHW3N0ZlHfTNgDFMM3YAIlh8D4yA2Iq5RO98eT0ZlE49Qf0LJFAyQM9FaCCf3vH6dM6F0Dfxog0dx3Lcvx+HTBw/mXKuAv8LoztJstPT1MrWiagMRUtiD2lV6fuHrTcKgIh7ZcJ4v3JsxK4MPr4/Jd+5R/7bHcZojnZER966TmM=#SAUCE_USERNAME=privly (privly/privly-applications)
+  - secure: Frwnui8FRWR+BfMGpgHY8ARtkcZ2s/MHSXKqdSfufvpOuX0kf2DO/C4qzN2qyapf/6+zEAjpfyLa5yTlL51fdOiQ6TXJvyWZbYBRzHR5E6GzOYpoBUmzx6AppK61/Gjl2mHA642qnSenNXjdnVjIGitEy/ByoDrFdTNx4ZqkWy4=#SAUCE_ACCESS_KEY=********-****-****-****-************ (privly/privly-applications)
 script:
 - cd test
 - "./run_each.sh karma.conf-ci.js"
 before_script:
 - "cd test/ && npm install -g karma-cli && npm install && cd .."
 addons:
-  sauce_connect:
-    username: privly
-    access_key:
-      secure: "cDwymRJmlOp8x9h07hbXS1L5QG1t7aXNU2se2AA+/p5kCZsU9sR/620Oy9PieH+qW6jpVyl2qDpe6kqCNCI800J3ZoFVljedg6cW72+MouTurxOE/1ReCkBv+BvLdERgkzSUqpvnX1Zr/Lz0AYGJ1sH6TDXpWDcddnYIj7PO8cQ="
+  sauce_connect: true
