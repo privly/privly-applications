@@ -37,8 +37,8 @@ runTest 'Login/js/*.js,Login/test/*.js'
 runTest 'Pages/js/options.js,Pages/js/tests/*.js'
 runTest 'shared/javascripts/privly-web/new.js,PlainPost/js/new.js,PlainPost/test/new.js'
 runTest 'shared/javascripts/privly-web/show.js,PlainPost/js/show.js,PlainPost/test/show.js'
-runTest 'shared/javascripts/privly-web/new.js,ZeroBin/js/base64.js,ZeroBin/js/rawdeflate.js,ZeroBin/js/rawinflate.js,ZeroBin/js/zerobin.js,ZeroBin/js/new.js,ZeroBin/test/new.js,ZeroBin/test/zerobin.js'
-runTest 'shared/javascripts/privly-web/show.js,ZeroBin/js/base64.js,ZeroBin/js/rawdeflate.js,ZeroBin/js/rawinflate.js,ZeroBin/js/zerobin.js,ZeroBin/js/show.js,ZeroBin/test/show.js,ZeroBin/test/zerobin.js'
+runTest 'shared/javascripts/privly-web/new.js,Message/js/base64.js,Message/js/rawdeflate.js,Message/js/rawinflate.js,Message/js/zerobin.js,Message/js/new.js,Message/test/new.js,Message/test/zerobin.js'
+runTest 'shared/javascripts/privly-web/show.js,Message/js/base64.js,Message/js/rawdeflate.js,Message/js/rawinflate.js,Message/js/zerobin.js,Message/js/show.js,Message/test/show.js,Message/test/zerobin.js'
 
 if [ ! $ISFAIL -eq 0 ]
 then
