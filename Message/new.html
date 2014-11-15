@@ -7,7 +7,7 @@
       See: https://github.com/privly/privly-applications/pull/19
      -->
   <title>
-   New ZeroBin
+   New Message
   </title>
   <meta content="../shared/test/privly-web/new.js,test/new.js,test/sjcl.js,test/ZeroBin.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js,../shared/test/local_storage.js" name="PrivlySpec"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -98,13 +98,6 @@
          <li class="dropdown-header">
           Select Application
          </li>
-         <li class="active">
-          <a href="../ZeroBin/new.html">
-           <span class="glyphicon glyphicon-pencil">
-           </span>
-           New ZeroBin
-          </a>
-         </li>
          <li>
           <a href="../PlainPost/new.html">
            <span class="glyphicon glyphicon-pencil">
@@ -112,11 +105,48 @@
            New PlainPost
           </a>
          </li>
+         <li class="active">
+          <a href="../Message/new.html">
+           <span class="glyphicon glyphicon-pencil">
+           </span>
+           New Message
+          </a>
+         </li>
          <li>
           <a href="../Help/new.html">
            <span class="glyphicon glyphicon-info-sign">
            </span>
            Help
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="dropdown logged_in_nav logged_out_nav">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+         Options
+         <b class="caret">
+         </b>
+        </a>
+        <ul class="dropdown-menu">
+         <li>
+          <a class="account_url logged_in_nav" href="#" style="display:none;" target="_blank">
+           <span class="glyphicon glyphicon-new-window">
+           </span>
+           Server Account
+          </a>
+         </li>
+         <li>
+          <a href="../Pages/ChromeOptions.html">
+           <span class="glyphicon glyphicon-wrench">
+           </span>
+           Extension Options
+          </a>
+         </li>
+         <li>
+          <a href="../Pages/ChromeFirstRun.html">
+           <span class="glyphicon glyphicon-info-sign">
+           </span>
+           Extension Information
           </a>
          </li>
         </ul>
@@ -182,7 +212,7 @@
        <h2>
         <span class="glyphicon glyphicon-pencil">
         </span>
-        Create New ZeroBin Link
+        Create New Message Link
        </h2>
        <p id="loadingDiv">
         <img alt="loading" src="../shared/images/ajax-loader.gif"/>
@@ -237,14 +267,14 @@
      <hr/>
      <div class="col-md-6">
       <h2>
-       What is a ZeroBin?
+       What is a Privly Message?
       </h2>
       <p>
-       ZeroBins are a
+       Message is a
        <a href="http://www.privly.org/content/introducing-privly-applications" target="_blank">
         privacy application
        </a>
-       on Privly. ZeroBins encrypt your content 
+       on Privly. Privly Messages encrypt your content 
       with a key that is attached to the link you share across the web.
       If someone has access to the server where the content is stored, 
       and to the link you create, they will be able to decrypt your content. 
@@ -258,7 +288,7 @@
        </a>
        about Privly Applications or about
        <a href="https://github.com/privly/privly-organization/wiki/ZeroBin" target="_blank">
-        ZeroBins
+        Messages
        </a>
        specifically.
       </p>
