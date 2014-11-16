@@ -132,10 +132,14 @@ var callbacks = {
 
       var app = response.json[i].privly_application;
       var href = response.json[i].privly_URL;
-      var localHref = "/privly-applications/" + app + "/show.html?privlyOriginalURL=" +
+      var localHref = "/apps/" + app + "/show.html?privlyOriginalURL=" +
         encodeURIComponent(href);
-      if ( privlyNetworkService.platformName() === "FIREFOX" ) {
+      var platform = privlyNetworkService.platformName();
+      if ( platform === "FIREFOX" ) {
         localHref = "/content" + localHref;
+      } else if(platform == "CHROME") {
+        localHref = "/privly-applications/" + app + "/show.html?privlyOriginalURL=" +
+          encodeURIComponent(href);
       }
 
       var tr = document.createElement('tr');
