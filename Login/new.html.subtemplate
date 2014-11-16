@@ -14,7 +14,7 @@
     <p id="loadingDiv">
      <img alt="loading" src="../shared/images/ajax-loader.gif" />
     </p>
-    <h1>Sign In to Content Server: <span class="home_domain"><span></h1>
+    <h1>Sign In</h1>
     <noscript>
       <h1>Your browser has scripting turned off. 
         This application requires scripting to function properly</h1>
@@ -42,7 +42,7 @@
     </div>
   </div>
   <div class="col-md-6 form-group">
-    <h1>Register on <span class="home_domain"></span></h1>
+    <h1>Register</h1>
     <br/>
     <div class="form-group">
       <label for="register_email">Email</label>
