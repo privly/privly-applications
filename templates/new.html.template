@@ -95,7 +95,7 @@
                   Create New {{ name }} Link
                 </h2>
                 <p id="loadingDiv"> <img src="../shared/images/ajax-loader.gif" alt="loading"/> </p>
-                <label for="content">Content</label>
+                <label for="content">Content you want to share</label>
                 <textarea id="content" class="form-control" rows="4" 
                   title="Enter a message to Post to Privly here." 
                   placeholder='Enter content here'></textarea>
