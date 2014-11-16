@@ -32,7 +32,17 @@
       <input id="user_password" name="user[password]" size="30" 
         type="password" placeholder="Enter Password" />
     </div>
-
+    {%
+      if args.platform == "chrome"
+    %}
+    <div class="form-group">
+      <input type="checkbox" id="stayLoggedIn">
+      <span id="checkbox_text">
+        Keep me logged in
+      </span>
+      <br/>
+    </div>
+    {% endif %}
     <br />
     <div class="form-group">
       <button id="login" class="btn btn-primary">Login to
