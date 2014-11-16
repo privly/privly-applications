@@ -8,6 +8,8 @@ env:
   - secure: Frwnui8FRWR+BfMGpgHY8ARtkcZ2s/MHSXKqdSfufvpOuX0kf2DO/C4qzN2qyapf/6+zEAjpfyLa5yTlL51fdOiQ6TXJvyWZbYBRzHR5E6GzOYpoBUmzx6AppK61/Gjl2mHA642qnSenNXjdnVjIGitEy/ByoDrFdTNx4ZqkWy4=#SAUCE_ACCESS_KEY=********-****-****-****-************(privly/privly-applications)
   - secure: FrGRLRd3vfQGp4mFMg5KwABny8OTvIGnx1EKP7QtmN6cr4DOuNtrs80SQenB12Ah4gB6sdTzvVo/TxTv1RTKTPlLhodxaikWirajpSGuX3s949vXoXZdCQIoWYOhmWnmhxkETyerVjlCPLMnPT9f2Q4/b6pADJIwBbgnjmovKPs=#SAUCE_USERNAME=spectralsun(spectralsun/privly-applications)
   - secure: Rw9uKH39KUMv0Nf51WyO/ZM/zFmoeEr89G1AwLdUsrqzP+YB877bAXegTQqfg82jPGDGj/IVbjPOkJdEutoamq55HoNr4vqY1AMG64CImkPpBa1mxouB1NTGrooWRRtJ13Aos8jVsV53VPbIluXMtEJpAr+TFZDyd1FN9w7ZGBg=#SAUCE_ACCESS_KEY=********-****-****-****-************(spectralsun/privly-applications)
+  - secure: h3fl8wyU9EW4SrsJ701BqgCjb6zL51K8Y0Q2oArgayEA4k4OXC/tE7yWwHxBSXbUf788hJRzmXqj+VtRkDSlGOK1hPqKQYuZX+6X349n1RddD6Bf92oTNqB5jKX9YrPItNbhPcMsb72BGQz2ddVjSkW4sIZ3nfFMMdRDrxyPi2I=#SAUCE_USERNAME=bramwelt(bramwelt/privly-applications)
+  - secure: ch0q30vSeO5YVrkG/Cuyk3BhGdHmDmHce/db4mm5fjvSNHfF4o1KWv+HVcy2Ok4rzD06lV/cp/Ps7mMbKrF3OruS6jPWW68PFVPJAD6enaXZW8K9Xlj7yfZOH1cFjw9mDcTkltUhlh97p3/Lp/2/97blXOG4cvd0Rb+I1KuQr7I=#SAUCE_ACCESS_KEY=********-****-****-****-************(bramwelt/privly-applications)
 script:
 - cd test
 - "if [ ${TRAVIS_PULL_REQUEST} = 'false' ]; then ./run_each.sh karma.conf-ci.js; fi"
