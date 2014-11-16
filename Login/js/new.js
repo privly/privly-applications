@@ -117,7 +117,7 @@ var callbacks = {
   },
   
   /**
-   * Check to see if the user's registration was accpeted by the server
+   * Check to see if the user's registration was accepted by the server.
    */
   checkRegistration: function(response) {
      if ( response.json.success === true ) {
