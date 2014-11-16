@@ -137,9 +137,10 @@ var callbacks = {
     
     // Display the data source to the user
     $(".meta_source_domain").text("Source URL: " + state.jsonURL);
-    
+
     // Register the click listener.
-    $("body").on("click", callbacks.click);
+    $("#post_content").on("click", callbacks.click);
+    $("#edit_form").on("click", callbacks.click);
 
     // Register the link and button listeners.
     $("#destroy_link").click(callbacks.destroy);
