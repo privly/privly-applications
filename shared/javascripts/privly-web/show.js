@@ -116,6 +116,7 @@ var state = {
  *    the application is injected into the context of a host page.
  *    Callback=click
  */
+
 var callbacks = {
 
   /**
@@ -201,6 +202,32 @@ var callbacks = {
    } else {
      $("#post_content").html("<p>Click to view this content.</p>");
    }
+    var is_http = /http[s]?\/\//; // matches http:// or https://
+    if( is_http.test(document.location.href) ){ // only if hosted context
+      // Pick which browser logo and link href to display
+      var browser = "firefox";
+      if (navigator.userAgent.indexOf("Chrome") !== -1){
+        browser = "chrome";
+      }
+      var target = $("#downloadmessage a").data("privly-" + browser);
+      $("#downloadmessage a").attr("href", target);
+      $("#downloadmessage p a").attr("href", target);
+
+      $("#" + browser + "_img").show(); // show current browser image
+
+      // Determine string of header
+      var referrer = document.referrer;
+      var msg = "You don't need to ";
+      if (referrer === ""){
+        msg += "visit this page!";
+      } else {
+        var url = referrer.split(".");
+        var domain = url[url.length - 2]; // not tld, and no subdomain
+        msg += "leave " + domain + "!";
+      }
+      $(".referrer").text(msg);
+      $("#downloadmessage").show();
+    }
   },
   
   /**

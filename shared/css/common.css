@@ -358,3 +358,11 @@ textarea {
   resize: none;
   min-height: 6em;
 }
+.download-extension-img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: none;
+  opacity: 0.9;
+  filter: alpha(opacity=90);
+}
