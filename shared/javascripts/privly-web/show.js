@@ -204,8 +204,9 @@ var callbacks = {
     } else {
       $("#post_content").html("<p>Click to view this content.</p>");
     }
-    var is_http = /http[s]?\/\//; // matches http:// or https://
-    if( is_http.test(document.location.href) ){ // only if hosted context
+
+    // Show the download extension link in the hosted context
+    if( document.location.href.indexOf("http") === 0 ){
 
       // Pick which browser logo and link href to display
       var browser = "firefox";
@@ -224,9 +225,9 @@ var callbacks = {
       if (referrer === ""){
         msg += "visit this page!";
       } else {
-        var url = referrer.split(".");
-        var domain = url[url.length - 2]; // not tld, and no subdomain
-        msg += "leave " + domain + "!";
+        var anchor = document.createElement("a");
+        anchor.href = referrer;
+        msg += "leave " + anchor.host + "!";
       }
       $(".referrer").text(msg);
       $("#downloadmessage").show();
