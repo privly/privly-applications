@@ -10,7 +10,7 @@ env:
   - secure: Rw9uKH39KUMv0Nf51WyO/ZM/zFmoeEr89G1AwLdUsrqzP+YB877bAXegTQqfg82jPGDGj/IVbjPOkJdEutoamq55HoNr4vqY1AMG64CImkPpBa1mxouB1NTGrooWRRtJ13Aos8jVsV53VPbIluXMtEJpAr+TFZDyd1FN9w7ZGBg=#SAUCE_ACCESS_KEY=********-****-****-****-************(spectralsun/privly-applications)
 script:
 - cd test
-- '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && ./run_each.sh karma.conf-ci.js'
+- "if [ ${TRAVIS_PULL_REQUEST} = 'false' ]; then ./run_each.sh karma.conf-ci.js; fi"
 before_script:
 - "cd test/ && npm install -g karma-cli && npm install && cd .."
 addons:
