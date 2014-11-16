@@ -13,6 +13,9 @@
     {% block specs %}{% endblock %}
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="description" content="This link contains your friend's private content. Click through to read.">
+    <meta name="og:description" content="This link contains your friend's private content. Click through to read.">
+    <meta name="twitter:description" content="This link contains your friend's private content. Click through to read.">
     
     <!-- Common Styles -->
     <link href="../shared/css/common.css" media="screen" rel="stylesheet"
