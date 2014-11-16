@@ -43,9 +43,16 @@ var callbacks = {
     
     // Monitor the login button
     document.querySelector('#login').addEventListener('click', callbacks.submitCredentials);
+    document.querySelector('#register').addEventListener('click', callbacks.submitRegistration);
     $("#user_password").keyup(function (e) {
         if (e.keyCode == 13) {
             callbacks.submitCredentials();
+        }
+    });
+
+    $('#register_email').keyup(function (e) {
+        if (e.keyCode == 13) {
+            callbacks.submitRegistration();
         }
     });
     
@@ -87,7 +94,16 @@ var callbacks = {
        });
   },
   
-  
+  /**
+   * Submit the registration form and await the return of the registration.
+   */
+  submitRegistration: function() {
+    privlyNetworkService.sameOriginPostRequest(
+      privlyNetworkService.contentServerDomain() + "/users/invitation", 
+      callbacks.checkRegistration,
+      { "user[email]":  $("#register_email").val() });
+  },
+
   /**
    * Check to see if the user's credentials were accepted by the server.
    */
@@ -100,6 +116,17 @@ var callbacks = {
     }
   },
   
+  /**
+   * Check to see if the user's registration was accepted by the server.
+   */
+  checkRegistration: function(response) {
+     if ( response.json.success === true ) {
+      callbacks.pendingRegistration();
+    } else {
+      callbacks.registrationFailure();
+    }
+  },
+
   /**
    * Tell the user their credentials were rejected.
    */
@@ -114,6 +141,23 @@ var callbacks = {
    */
   loginError: function() {
     $("#messages").text("Your content server is unavailable.");
+    $("#messages").show();
+  },
+
+  /**
+   * Tell the user their registration was rejected.
+   */
+  registrationFailure: function() {
+    $("#messages").text("Failed to submit to registration server.");
+    $("#messages").show();
+  },
+  
+  /**
+   * Tell the user their registration was submitted.
+   */
+  pendingRegistration: function() {
+    $("#messages").text("Thanks! If your email isn't already in our " + 
+      "database you should receive an email shortly.");
     $("#messages").show();
   },
   
