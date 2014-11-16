@@ -116,6 +116,7 @@ var state = {
  *    the application is injected into the context of a host page.
  *    Callback=click
  */
+
 var callbacks = {
 
   /**
@@ -132,7 +133,7 @@ var callbacks = {
     state.parameters = privlyParameters.getParameterHash(state.webApplicationURL);
     state.jsonURL = state.webApplicationURL;
     if (state.parameters["privlyDataURL"] !== undefined) {
-     state.jsonURL = state.parameters["privlyDataURL"];
+      state.jsonURL = state.parameters["privlyDataURL"];
     }
     
     // Display the data source to the user
@@ -189,19 +190,47 @@ var callbacks = {
       // Load CSS to show the nav and the rest of the non-injected page
       loadTopCSS();
       loadTopJS();
-   }
-   
-   // Ensure whitelist compliance of the data parameter when the content is
-   // injected
-   if( !privlyHostPage.isInjected() || 
-    privlyNetworkService.isWhitelistedDomain(state.jsonURL) ) {
-     // Make the cross origin request as if it were on the same origin.
-     // The "same origin" requirement is only possible on extension frameworks
-     privlyNetworkService.sameOriginGetRequest(state.jsonURL, 
-       function(response){callbacks.contentReturned(response, callback)});
-   } else {
-     $("#post_content").html("<p>Click to view this content.</p>");
-   }
+    }
+
+    // Ensure whitelist compliance of the data parameter when the content is
+    // injected
+    if( !privlyHostPage.isInjected() ||
+        privlyNetworkService.isWhitelistedDomain(state.jsonURL) ) {
+
+      // Make the cross origin request as if it were on the same origin.
+      // The "same origin" requirement is only possible on extension frameworks
+      privlyNetworkService.sameOriginGetRequest(state.jsonURL,
+        function(response){callbacks.contentReturned(response, callback)});
+    } else {
+      $("#post_content").html("<p>Click to view this content.</p>");
+    }
+    var is_http = /http[s]?\/\//; // matches http:// or https://
+    if( is_http.test(document.location.href) ){ // only if hosted context
+
+      // Pick which browser logo and link href to display
+      var browser = "firefox";
+      if (navigator.userAgent.indexOf("Chrome") !== -1){
+        browser = "chrome";
+      }
+      var target = $("#downloadmessage a").data("privly-" + browser);
+      $("#downloadmessage a").attr("href", target);
+      $("#downloadmessage p a").attr("href", target);
+
+      $("#" + browser + "_img").show(); // show current browser image
+
+      // Determine string of header
+      var referrer = document.referrer;
+      var msg = "You don't need to ";
+      if (referrer === ""){
+        msg += "visit this page!";
+      } else {
+        var url = referrer.split(".");
+        var domain = url[url.length - 2]; // not tld, and no subdomain
+        msg += "leave " + domain + "!";
+      }
+      $(".referrer").text(msg);
+      $("#downloadmessage").show();
+    }
   },
   
   /**
@@ -261,6 +290,7 @@ var callbacks = {
           privlyNetworkService.initPrivlyService(
             state.jsonURL, 
             function(){
+
               // Initialize the form for updating the post
               // if the user has permission.
               if( privlyNetworkService.permissions.canUpdate) {
@@ -311,6 +341,7 @@ var callbacks = {
           .text(Math.floor(currentSecondsUntilDestruction / 86400) + " Days");
         $("#seconds_until_burn").val(currentSecondsUntilDestruction);
       } else {
+
         // Set the displayed value on the form. The value is already infinity
         $("#current_destruction_time") 
           .text("Infinite");
