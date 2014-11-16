@@ -156,7 +156,7 @@
     </div>
     <div id="form" style="display:none;">
      <div class="row">
-      <div class="col-md-12 form-group">
+      <div class="col-md-6 form-group">
        <p id="loadingDiv">
         <img alt="loading" src="../shared/images/ajax-loader.gif"/>
        </p>
@@ -195,9 +195,29 @@
          <span class="content_server">
          </span>
         </button>
-        <a class="btn btn-warning" href="/users/invitation/new" target="_blank">
-         No account? Get invited!
-        </a>
+       </div>
+      </div>
+      <div class="col-md-6 form-group">
+       <h1>
+        Register on
+        <span class="home_domain">
+        </span>
+       </h1>
+       <br/>
+       <div class="form-group">
+        <label for="register_email">
+         Email
+        </label>
+        <br/>
+        <input id="register_email" name="user[email]" placeholder="Enter email" size="30" type="email" value=""/>
+       </div>
+       <br/>
+       <div class="form-group">
+        <button class="btn btn-primary" id="register">
+         Request invite on
+         <span class="content_server">
+         </span>
+        </button>
        </div>
       </div>
      </div>
