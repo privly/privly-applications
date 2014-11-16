@@ -153,7 +153,7 @@ var callbacks = {
   },
   
   /**
-   * Tell the user their content server could not be reached.
+   * Tell the user their registration was submitted.
    */
   pendingRegistration: function() {
     $("#messages").text("Thanks! If your email isn't already in our " + 
