@@ -114,15 +114,19 @@
     <div id="footer" class="injected_hide">
       <div class="container">
         <p class="text-muted credit">
-
-          You are viewing a Privly
-          <span style="vertical-align: super;font-size: xx-small">&reg;</span> Application, 
-          <a href="https://priv.ly/pages/about" target="_blank">learn more</a> about Privly. 
-          <a href="/pages/privacy" target="_blank" class="legal_nav">Terms of Service</a> and 
+          <a href="https://www.priv.ly/pages/donate.html" target="_blank">
+            <span class="glyphicon glyphicon-gift"></span>
+            Donate
+          </a>
+          to build a more private web.
+          You are viewing a
+          Privly<span style="vertical-align: super;font-size: xx-small">&reg;</span>
+          Application,
+          <a href="https://priv.ly/pages/about" target="_blank">learn more</a>
+          about Privly.
+          <a href="/pages/privacy" target="_blank" class="legal_nav">Terms of Service</a>
+          and
           <a href="/pages/privacy" target="_blank" class="legal_nav">DMCA</a>.
-          <br/>
-          <a href="https://www.priv.ly/pages/donate.html" target="_blank">Donate</a> to
-          build a more private web.
         </p>
       </div>
     </div>
