@@ -35,7 +35,7 @@ release_status = "deprecated" # Include deprecated apps by default
 Capybara.run_server = false
 Capybara.app_host = 'http://localhost:3000'
 content_server = "http://localhost:3000"
-Capybara.default_wait_time = 10
+Capybara.default_wait_time = 15
 
 # This global data structure provides a test set that each of the
 # specs can use to guarantee behavior across apps. The components
@@ -202,18 +202,17 @@ end
 
 if platform == "sauce_chrome_extension"
 
-  puts "This is not currently functional"
-  exit 1
+  # Package the extension
+  system("../../../package/travis.sh")
 
-  # Start a webserver so SauceLabs can get the extension
-  # todo, this may be needed to run the extension on Chrome
-  #system("ruby -run -e httpd -- -p 5000 ../../.. &")
-  #sleep 6 # Give it time to start
+  # extensions cannot be read as text
+  # Base64.strict_encode64 File.read(crx_path)
+  extension = Base64.strict_encode64 File.binread("../../../PrivlyChromeExtension.crx")
 
-  # todo: this will reference the file system on the browser's VM, which
-  # does not have the extension.
+  # Get the extension from localhost:5000 over Sauce Connect
   @sauce_caps["chromeOptions"] = {
-    "args" => [ "--disable-web-security", "load-extension=.." ]
+    "args" => [ "--disable-web-security" ],
+    "extensions" => [extension]
   }
 
   # Assign the path to find the applications in the extension

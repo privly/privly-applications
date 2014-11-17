@@ -91,7 +91,7 @@ var privlyNetworkService = {
   platformName: function() {
     if (navigator.userAgent.indexOf("iPhone") >= 0 || 
       navigator.userAgent.indexOf("iPad") >= 0) {
-      if( navigator.userAgent.indexOf("Safari") >= 0 ) return "HOSTED";
+      if( navigator.userAgent.indexOf("Safari") >= 0 ) { return "HOSTED" };
       return "IOS";
     } else if(typeof androidJsBridge !== "undefined") {
       return "ANDROID";
@@ -213,10 +213,11 @@ var privlyNetworkService = {
       for(var i = 0; i < whitelist.length; i++) {
         if( url.indexOf(whitelist[i]) > 0) {
           var url_split = url.split("/");
-          if(url_split[2] == whitelist[i] && 
+          if(url_split[2] === whitelist[i] &&
              url_split[1] === "" && 
-             (url_split[0] === "http:" || url_split[0] === "https:") )
+             (url_split[0] === "http:" || url_split[0] === "https:") ) {
                 return true;
+          }
         }
       }
     } else {
