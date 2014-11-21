@@ -22,6 +22,10 @@ env:
   - secure: XpyyEMPAvqtQIXap/dLAgl8JhAKfoSdsmoGY659eHZcijYv6d8pOX7JPUfwHhteoso/MkX9o+F8t7z7AIigNi0FJHQedP4cwhtbYEDFr8w4tRz9TYf7u4d/UUosVD4x95v9Yp+G84P/Rw6Vr90TgXExo4hVxJx2faNp9xkpMqE8=
   #SAUCE_ACCESS_KEY=********-****-****-****-************(irdan/privly-applications)
   - secure: gCbEFk/4uWMa41BFLLwHaoJebbZHpxIF6H2NCqiAYlVwAKB2Dzya9imwKzm6XUCXRyUakN8eaJBO9d9OQtRV+D2Uap7sUDGoAjeGgKQuGYpbSYgN8NQVAJdY+WeAeH4Ul4ExZOJKQH7AL6pFkCHn9m/RnXCosrOG+ob4fievJ8s=
+  #CODECLIMATE_REPO_TOKEN=**************************(smcgregor/privly-applications)
+  - secure: CevDxddWV/R2vF66U94Id30vSkQ2I1DBY36bl2VPyY5OsBGhSFWaF0l5j6KIgBZyYrwQF2IT1I/hUPtLbTvHhPgaE5CcV1LHGxueWtaYEXfAfHSVy0ChhhilKdUOOyA7245yad6UHYQIwx7Kz/EKXXA/0hczEcUl/OH6ZxkGcws=
+  #CODECLIMATE_REPO_TOKEN=**************************(privly/privly-applications)
+  - secure: HAqHN7zeSbDR7BP0pn6qH6ODOwuMD7eIR9t4h1gHkRy6WAQBrhQb1+kTzkGbhfKB1mftxN/0ERTK6xv+iBj4QylqOOXChnuthuHMZiAuwPJncj8FYE4LHt2Eh48+HnzSQUgzjxv11hvkLz4utaj0J4fub2q/tWzoAXucA13UGQU=
 script:
 - cd test
 - "if [ ${TRAVIS_PULL_REQUEST} = 'false' ]; then ./run_each.sh karma.conf-ci.js; fi"
