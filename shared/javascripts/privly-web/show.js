@@ -208,33 +208,7 @@ var callbacks = {
       $("#post_content").html("<p>Click to view this content.</p>");
     }
 
-    // Show the download extension link in the hosted context
-    if( document.location.href.indexOf("http") === 0 ){
-
-      // Pick which browser logo and link href to display
-      var browser = "firefox";
-      if (navigator.userAgent.indexOf("Chrome") !== -1){
-        browser = "chrome";
-      }
-      var target = $("#downloadmessage a").data("privly-" + browser);
-      $("#downloadmessage a").attr("href", target);
-      $("#downloadmessage p a").attr("href", target);
-
-      $("#" + browser + "_img").show(); // show current browser image
-
-      // Determine string of header
-      var referrer = document.referrer;
-      var msg = "You don't need to ";
-      if (referrer === ""){
-        msg += "visit this page!";
-      } else {
-        var anchor = document.createElement("a");
-        anchor.href = referrer;
-        msg += "leave " + anchor.host + "!";
-      }
-      $(".referrer").text(msg);
-      $("#downloadmessage").show();
-    }
+    callbacks.showDownloadMessage();
   },
   
   /**
@@ -594,6 +568,44 @@ var callbacks = {
     
     if(callbacks.functionExists(callback)) {
       callback();
+    }
+  },
+
+  /**
+   * If the application is shown in the hosted context then the download
+   * link should be shown.
+   *
+   * @param {function} callback The function to call after the doubleclick
+   * handler is complete.
+   */
+  showDownloadMessage: function(callback) {
+
+    // Show the download extension link in the hosted context
+    if( document.location.href.indexOf("http") === 0 ){
+
+      // Pick which browser logo and link href to display
+      var browser = "firefox";
+      if (navigator.userAgent.indexOf("Chrome") !== -1){
+        browser = "chrome";
+      }
+      var target = $("#downloadmessage a").data("privly-" + browser);
+      $("#downloadmessage a").attr("href", target);
+      $("#downloadmessage p a").attr("href", target);
+
+      $("#" + browser + "_img").show(); // show current browser image
+
+      // Determine string of header
+      var referrer = document.referrer;
+      var msg = "You don't need to ";
+      if (referrer === ""){
+        msg += "visit this page!";
+      } else {
+        var anchor = document.createElement("a");
+        anchor.href = referrer;
+        msg += "leave " + anchor.host + "!";
+      }
+      $(".referrer").text(msg);
+      $("#downloadmessage").show();
     }
   },
   
