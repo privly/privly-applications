@@ -52,6 +52,9 @@
  * }
  *
  **/
+/* jshint undef: true, unused: true */
+/* global privlyParameters, $, privlyNetworkService, privlyHostPage */
+/* global privlyTooltip, loadInjectedCSS, loadInjectedJS, loadTopCSS, loadTopJS */
 
 /**
  * @namespace
@@ -95,7 +98,7 @@ var state = {
   * 
   **/
   isInlineEdit: false
-}
+};
 
 /**
  * The callbacks assign the state of the application.
@@ -132,8 +135,8 @@ var callbacks = {
     state.webApplicationURL = privlyParameters.getApplicationUrl(href);
     state.parameters = privlyParameters.getParameterHash(state.webApplicationURL);
     state.jsonURL = state.webApplicationURL;
-    if (state.parameters["privlyDataURL"] !== undefined) {
-      state.jsonURL = state.parameters["privlyDataURL"];
+    if (state.parameters.privlyDataURL !== undefined) {
+      state.jsonURL = state.parameters.privlyDataURL;
     }
     
     // Display the data source to the user
@@ -149,7 +152,7 @@ var callbacks = {
     // Watch the update button and pass the content callback
     // to the update function
     document.getElementById("update").addEventListener('click', 
-      function(evt){callbacks.update(evt, callback)});
+      function(evt){callbacks.update(evt, callback);});
     $("#edit_link").click(callbacks.edit);
 
     // Set the nav bar to the proper domain
@@ -200,7 +203,7 @@ var callbacks = {
       // Make the cross origin request as if it were on the same origin.
       // The "same origin" requirement is only possible on extension frameworks
       privlyNetworkService.sameOriginGetRequest(state.jsonURL,
-        function(response){callbacks.contentReturned(response, callback)});
+        function(response){callbacks.contentReturned(response, callback);});
     } else {
       $("#post_content").html("<p>Click to view this content.</p>");
     }
@@ -379,7 +382,7 @@ var callbacks = {
   destroy: function(callback) {
     $("#edit_form").slideUp();
     privlyNetworkService.sameOriginDeleteRequest(state.jsonURL, 
-      function(response){callbacks.destroyed(response, callback)}, {});
+      function(response){callbacks.destroyed(response, callback);}, {});
   },
   
   /**
@@ -452,7 +455,7 @@ var callbacks = {
       },
       format:"json"};
     privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
-      function(response){callbacks.contentReturned(response, callback)}, 
+      function(response){callbacks.contentReturned(response, callback);},
         contentToPost);
     
     // needed to stop click event from propagating to body
@@ -508,7 +511,7 @@ var callbacks = {
     }
     
     if (state.isClicked) {
-      var target = $(evt.target)
+      var target = $(evt.target);
       if (state.isInlineEdit && !target.is("textarea") &&
           !target.is("select")) {
         
@@ -601,9 +604,9 @@ var callbacks = {
    * @return {boolean} True if the parameter is a function, else false
    */
   functionExists: function(callback) {
-    if (typeof callback == 'function') { 
+    if (typeof callback === "function") {
       return true;
     }
     return false;
   }
-}
+};
