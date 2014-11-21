@@ -30,7 +30,7 @@ script:
 - cd test
 - "if [ ${TRAVIS_PULL_REQUEST} = 'false' ]; then ./run_each.sh karma.conf-ci.js; fi"
 - codeclimate < coverage/Chrome\ 35.0.1916\ \(Windows\ 7\)/lcov.info
-- pwd ; ls ; cd coverage ; ls ; cd Chrome\ 35.0.1916\ \(Windows\ 7\)
+- pwd ; ls ; cd coverage ; ls ; cd Chrome\ 35.0.1916\ \(Windows\ 7\) ; ls
 before_script:
 - "cd test/ && npm install -g karma-cli && npm install && cd .."
 - npm install -g codeclimate-test-reporter
