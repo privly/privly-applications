@@ -33,7 +33,7 @@ script:
 # Move the lcov.info file to the root
 - "find . -name lcov.info -exec mv {} . \\;"
 # Send the file to CodeClimate
-- "codeclimate <  lcov.info"
+- "if [ ${TRAVIS_PULL_REQUEST} = 'false' ]; then codeclimate <  lcov.info; fi"
 before_script:
 - "cd test/ && npm install -g karma-cli && npm install && cd .."
 - npm install -g codeclimate-test-reporter
