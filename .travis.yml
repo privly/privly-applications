@@ -29,7 +29,11 @@ env:
 script:
 - cd test
 - "if [ ${TRAVIS_PULL_REQUEST} = 'false' ]; then ./run_each.sh karma.conf-ci.js; fi"
-- "cd .. && find . -name lcov.info -exec codeclimate \\<  {} \\;"
+- "cd .."
+# Move the lcov.info file to the root
+- "find . -name lcov.info -exec mv {} . \\;"
+# Send the file to CodeClimate
+- "codeclimate <  lcov.info"
 before_script:
 - "cd test/ && npm install -g karma-cli && npm install && cd .."
 - npm install -g codeclimate-test-reporter
