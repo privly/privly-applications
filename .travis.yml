@@ -2,20 +2,40 @@ language: javascript
 env:
   global:
   - TRAVIS_LAUNCHES_SAUCE_CONNECT=true
-  - secure: lTlOUWwrtyeN6HqCHNaqaQQF1aBx50W2F4r/KEg/nZcV/QDJAa0wqAbs11+4sEUW5FpA56zieha3G4fG+Iv/3IDAXahHC7LRYB06hK3l0PvaApzPDWq8JQpLs0KS+GRU/kwHA8vemn4KfcI1Ue7WNfCi1vp8V46miA2Gjdjf2e4=#SAUCE_USERNAME=smcgregor(smcgregor/privly-applications)
-  - secure: at4ygn2fOHba8vPRQi1ZEBIf+agBupMVtkY5ChpeZhcY3p0tgKV9PhQ5IxWLL6TxN86I2VgrC6W54y6kKGQ6TVz7j/z1P3z2DD7Ktb/WqwgLYY4ErSMCSXmOHVp5ckaVNuZL0zf9E0LEIM4MqiuWiqtEN1C+ChebsVQLLCUqeIo=#SAUCE_ACCESS_KEY=********-****-****-****-************(smcgregor/privly-applications)
-  - secure: BHW3N0ZlHfTNgDFMM3YAIlh8D4yA2Iq5RO98eT0ZlE49Qf0LJFAyQM9FaCCf3vH6dM6F0Dfxog0dx3Lcvx+HTBw/mXKuAv8LoztJstPT1MrWiagMRUtiD2lV6fuHrTcKgIh7ZcJ4v3JsxK4MPr4/Jd+5R/7bHcZojnZER966TmM=#SAUCE_USERNAME=privly(privly/privly-applications)
-  - secure: Frwnui8FRWR+BfMGpgHY8ARtkcZ2s/MHSXKqdSfufvpOuX0kf2DO/C4qzN2qyapf/6+zEAjpfyLa5yTlL51fdOiQ6TXJvyWZbYBRzHR5E6GzOYpoBUmzx6AppK61/Gjl2mHA642qnSenNXjdnVjIGitEy/ByoDrFdTNx4ZqkWy4=#SAUCE_ACCESS_KEY=********-****-****-****-************(privly/privly-applications)
-  - secure: FrGRLRd3vfQGp4mFMg5KwABny8OTvIGnx1EKP7QtmN6cr4DOuNtrs80SQenB12Ah4gB6sdTzvVo/TxTv1RTKTPlLhodxaikWirajpSGuX3s949vXoXZdCQIoWYOhmWnmhxkETyerVjlCPLMnPT9f2Q4/b6pADJIwBbgnjmovKPs=#SAUCE_USERNAME=spectralsun(spectralsun/privly-applications)
-  - secure: Rw9uKH39KUMv0Nf51WyO/ZM/zFmoeEr89G1AwLdUsrqzP+YB877bAXegTQqfg82jPGDGj/IVbjPOkJdEutoamq55HoNr4vqY1AMG64CImkPpBa1mxouB1NTGrooWRRtJ13Aos8jVsV53VPbIluXMtEJpAr+TFZDyd1FN9w7ZGBg=#SAUCE_ACCESS_KEY=********-****-****-****-************(spectralsun/privly-applications)
-  - secure: h3fl8wyU9EW4SrsJ701BqgCjb6zL51K8Y0Q2oArgayEA4k4OXC/tE7yWwHxBSXbUf788hJRzmXqj+VtRkDSlGOK1hPqKQYuZX+6X349n1RddD6Bf92oTNqB5jKX9YrPItNbhPcMsb72BGQz2ddVjSkW4sIZ3nfFMMdRDrxyPi2I=#SAUCE_USERNAME=bramwelt(bramwelt/privly-applications)
-  - secure: ch0q30vSeO5YVrkG/Cuyk3BhGdHmDmHce/db4mm5fjvSNHfF4o1KWv+HVcy2Ok4rzD06lV/cp/Ps7mMbKrF3OruS6jPWW68PFVPJAD6enaXZW8K9Xlj7yfZOH1cFjw9mDcTkltUhlh97p3/Lp/2/97blXOG4cvd0Rb+I1KuQr7I=#SAUCE_ACCESS_KEY=********-****-****-****-************(bramwelt/privly-applications)
-  - secure: XpyyEMPAvqtQIXap/dLAgl8JhAKfoSdsmoGY659eHZcijYv6d8pOX7JPUfwHhteoso/MkX9o+F8t7z7AIigNi0FJHQedP4cwhtbYEDFr8w4tRz9TYf7u4d/UUosVD4x95v9Yp+G84P/Rw6Vr90TgXExo4hVxJx2faNp9xkpMqE8=#SAUCE_USERNAME=irdan(irdan/privly-applications)
-  - secure: gCbEFk/4uWMa41BFLLwHaoJebbZHpxIF6H2NCqiAYlVwAKB2Dzya9imwKzm6XUCXRyUakN8eaJBO9d9OQtRV+D2Uap7sUDGoAjeGgKQuGYpbSYgN8NQVAJdY+WeAeH4Ul4ExZOJKQH7AL6pFkCHn9m/RnXCosrOG+ob4fievJ8s=#SAUCE_ACCESS_KEY=********-****-****-****-************(irdan/privly-applications)
+  #SAUCE_USERNAME=smcgregor(smcgregor/privly-applications)
+  - secure: lTlOUWwrtyeN6HqCHNaqaQQF1aBx50W2F4r/KEg/nZcV/QDJAa0wqAbs11+4sEUW5FpA56zieha3G4fG+Iv/3IDAXahHC7LRYB06hK3l0PvaApzPDWq8JQpLs0KS+GRU/kwHA8vemn4KfcI1Ue7WNfCi1vp8V46miA2Gjdjf2e4=
+  #SAUCE_ACCESS_KEY=********-****-****-****-************(smcgregor/privly-applications)
+  - secure: at4ygn2fOHba8vPRQi1ZEBIf+agBupMVtkY5ChpeZhcY3p0tgKV9PhQ5IxWLL6TxN86I2VgrC6W54y6kKGQ6TVz7j/z1P3z2DD7Ktb/WqwgLYY4ErSMCSXmOHVp5ckaVNuZL0zf9E0LEIM4MqiuWiqtEN1C+ChebsVQLLCUqeIo=
+  #SAUCE_USERNAME=privly(privly/privly-applications)
+  - secure: BHW3N0ZlHfTNgDFMM3YAIlh8D4yA2Iq5RO98eT0ZlE49Qf0LJFAyQM9FaCCf3vH6dM6F0Dfxog0dx3Lcvx+HTBw/mXKuAv8LoztJstPT1MrWiagMRUtiD2lV6fuHrTcKgIh7ZcJ4v3JsxK4MPr4/Jd+5R/7bHcZojnZER966TmM=
+  #SAUCE_ACCESS_KEY=********-****-****-****-************(privly/privly-applications)
+  - secure: Frwnui8FRWR+BfMGpgHY8ARtkcZ2s/MHSXKqdSfufvpOuX0kf2DO/C4qzN2qyapf/6+zEAjpfyLa5yTlL51fdOiQ6TXJvyWZbYBRzHR5E6GzOYpoBUmzx6AppK61/Gjl2mHA642qnSenNXjdnVjIGitEy/ByoDrFdTNx4ZqkWy4=
+  #SAUCE_USERNAME=spectralsun(spectralsun/privly-applications)
+  - secure: FrGRLRd3vfQGp4mFMg5KwABny8OTvIGnx1EKP7QtmN6cr4DOuNtrs80SQenB12Ah4gB6sdTzvVo/TxTv1RTKTPlLhodxaikWirajpSGuX3s949vXoXZdCQIoWYOhmWnmhxkETyerVjlCPLMnPT9f2Q4/b6pADJIwBbgnjmovKPs=
+  #SAUCE_ACCESS_KEY=********-****-****-****-************(spectralsun/privly-applications)
+  - secure: Rw9uKH39KUMv0Nf51WyO/ZM/zFmoeEr89G1AwLdUsrqzP+YB877bAXegTQqfg82jPGDGj/IVbjPOkJdEutoamq55HoNr4vqY1AMG64CImkPpBa1mxouB1NTGrooWRRtJ13Aos8jVsV53VPbIluXMtEJpAr+TFZDyd1FN9w7ZGBg=
+  #SAUCE_USERNAME=bramwelt(bramwelt/privly-applications)
+  - secure: h3fl8wyU9EW4SrsJ701BqgCjb6zL51K8Y0Q2oArgayEA4k4OXC/tE7yWwHxBSXbUf788hJRzmXqj+VtRkDSlGOK1hPqKQYuZX+6X349n1RddD6Bf92oTNqB5jKX9YrPItNbhPcMsb72BGQz2ddVjSkW4sIZ3nfFMMdRDrxyPi2I=
+  #SAUCE_ACCESS_KEY=********-****-****-****-************(bramwelt/privly-applications)
+  - secure: ch0q30vSeO5YVrkG/Cuyk3BhGdHmDmHce/db4mm5fjvSNHfF4o1KWv+HVcy2Ok4rzD06lV/cp/Ps7mMbKrF3OruS6jPWW68PFVPJAD6enaXZW8K9Xlj7yfZOH1cFjw9mDcTkltUhlh97p3/Lp/2/97blXOG4cvd0Rb+I1KuQr7I=
+  #SAUCE_USERNAME=irdan(irdan/privly-applications)
+  - secure: XpyyEMPAvqtQIXap/dLAgl8JhAKfoSdsmoGY659eHZcijYv6d8pOX7JPUfwHhteoso/MkX9o+F8t7z7AIigNi0FJHQedP4cwhtbYEDFr8w4tRz9TYf7u4d/UUosVD4x95v9Yp+G84P/Rw6Vr90TgXExo4hVxJx2faNp9xkpMqE8=
+  #SAUCE_ACCESS_KEY=********-****-****-****-************(irdan/privly-applications)
+  - secure: gCbEFk/4uWMa41BFLLwHaoJebbZHpxIF6H2NCqiAYlVwAKB2Dzya9imwKzm6XUCXRyUakN8eaJBO9d9OQtRV+D2Uap7sUDGoAjeGgKQuGYpbSYgN8NQVAJdY+WeAeH4Ul4ExZOJKQH7AL6pFkCHn9m/RnXCosrOG+ob4fievJ8s=
+  #CODECLIMATE_REPO_TOKEN=**************************(smcgregor/privly-applications)
+  - secure: CevDxddWV/R2vF66U94Id30vSkQ2I1DBY36bl2VPyY5OsBGhSFWaF0l5j6KIgBZyYrwQF2IT1I/hUPtLbTvHhPgaE5CcV1LHGxueWtaYEXfAfHSVy0ChhhilKdUOOyA7245yad6UHYQIwx7Kz/EKXXA/0hczEcUl/OH6ZxkGcws=
+  #CODECLIMATE_REPO_TOKEN=**************************(privly/privly-applications)
+  - secure: HAqHN7zeSbDR7BP0pn6qH6ODOwuMD7eIR9t4h1gHkRy6WAQBrhQb1+kTzkGbhfKB1mftxN/0ERTK6xv+iBj4QylqOOXChnuthuHMZiAuwPJncj8FYE4LHt2Eh48+HnzSQUgzjxv11hvkLz4utaj0J4fub2q/tWzoAXucA13UGQU=
 script:
 - cd test
 - "if [ ${TRAVIS_PULL_REQUEST} = 'false' ]; then ./run_each.sh karma.conf-ci.js; fi"
+- "cd .."
+# Move the lcov.info file to the root
+- "find . -name lcov.info -exec mv {} . \\;"
+# Send the file to CodeClimate
+- "if [ ${TRAVIS_PULL_REQUEST} = 'false' ]; then codeclimate <  lcov.info; fi"
 before_script:
 - "cd test/ && npm install -g karma-cli && npm install && cd .."
+- npm install -g codeclimate-test-reporter
 addons:
   sauce_connect: true

@@ -52,6 +52,9 @@
  * }
  *
  **/
+/* jshint undef: true, unused: true */
+/* global privlyParameters, $, privlyNetworkService, privlyHostPage */
+/* global privlyTooltip, loadInjectedCSS, loadInjectedJS, loadTopCSS, loadTopJS */
 
 /**
  * @namespace
@@ -95,7 +98,7 @@ var state = {
   * 
   **/
   isInlineEdit: false
-}
+};
 
 /**
  * The callbacks assign the state of the application.
@@ -132,8 +135,8 @@ var callbacks = {
     state.webApplicationURL = privlyParameters.getApplicationUrl(href);
     state.parameters = privlyParameters.getParameterHash(state.webApplicationURL);
     state.jsonURL = state.webApplicationURL;
-    if (state.parameters["privlyDataURL"] !== undefined) {
-      state.jsonURL = state.parameters["privlyDataURL"];
+    if (state.parameters.privlyDataURL !== undefined) {
+      state.jsonURL = state.parameters.privlyDataURL;
     }
     
     // Display the data source to the user
@@ -149,7 +152,7 @@ var callbacks = {
     // Watch the update button and pass the content callback
     // to the update function
     document.getElementById("update").addEventListener('click', 
-      function(evt){callbacks.update(evt, callback)});
+      function(evt){callbacks.update(evt, callback);});
     $("#edit_link").click(callbacks.edit);
 
     // Set the nav bar to the proper domain
@@ -200,38 +203,12 @@ var callbacks = {
       // Make the cross origin request as if it were on the same origin.
       // The "same origin" requirement is only possible on extension frameworks
       privlyNetworkService.sameOriginGetRequest(state.jsonURL,
-        function(response){callbacks.contentReturned(response, callback)});
+        function(response){callbacks.contentReturned(response, callback);});
     } else {
       $("#post_content").html("<p>Click to view this content.</p>");
     }
 
-    // Show the download extension link in the hosted context
-    if( document.location.href.indexOf("http") === 0 ){
-
-      // Pick which browser logo and link href to display
-      var browser = "firefox";
-      if (navigator.userAgent.indexOf("Chrome") !== -1){
-        browser = "chrome";
-      }
-      var target = $("#downloadmessage a").data("privly-" + browser);
-      $("#downloadmessage a").attr("href", target);
-      $("#downloadmessage p a").attr("href", target);
-
-      $("#" + browser + "_img").show(); // show current browser image
-
-      // Determine string of header
-      var referrer = document.referrer;
-      var msg = "You don't need to ";
-      if (referrer === ""){
-        msg += "visit this page!";
-      } else {
-        var anchor = document.createElement("a");
-        anchor.href = referrer;
-        msg += "leave " + anchor.host + "!";
-      }
-      $(".referrer").text(msg);
-      $("#downloadmessage").show();
-    }
+    callbacks.showDownloadMessage();
   },
   
   /**
@@ -379,7 +356,7 @@ var callbacks = {
   destroy: function(callback) {
     $("#edit_form").slideUp();
     privlyNetworkService.sameOriginDeleteRequest(state.jsonURL, 
-      function(response){callbacks.destroyed(response, callback)}, {});
+      function(response){callbacks.destroyed(response, callback);}, {});
   },
   
   /**
@@ -452,7 +429,7 @@ var callbacks = {
       },
       format:"json"};
     privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
-      function(response){callbacks.contentReturned(response, callback)}, 
+      function(response){callbacks.contentReturned(response, callback);},
         contentToPost);
     
     // needed to stop click event from propagating to body
@@ -508,7 +485,7 @@ var callbacks = {
     }
     
     if (state.isClicked) {
-      var target = $(evt.target)
+      var target = $(evt.target);
       if (state.isInlineEdit && !target.is("textarea") &&
           !target.is("select")) {
         
@@ -593,6 +570,44 @@ var callbacks = {
       callback();
     }
   },
+
+  /**
+   * If the application is shown in the hosted context then the download
+   * link should be shown.
+   *
+   * @param {function} callback The function to call after the doubleclick
+   * handler is complete.
+   */
+  showDownloadMessage: function(callback) {
+
+    // Show the download extension link in the hosted context
+    if( document.location.href.indexOf("http") === 0 ){
+
+      // Pick which browser logo and link href to display
+      var browser = "firefox";
+      if (navigator.userAgent.indexOf("Chrome") !== -1){
+        browser = "chrome";
+      }
+      var target = $("#downloadmessage a").data("privly-" + browser);
+      $("#downloadmessage a").attr("href", target);
+      $("#downloadmessage p a").attr("href", target);
+
+      $("#" + browser + "_img").show(); // show current browser image
+
+      // Determine string of header
+      var referrer = document.referrer;
+      var msg = "You don't need to ";
+      if (referrer === ""){
+        msg += "visit this page!";
+      } else {
+        var anchor = document.createElement("a");
+        anchor.href = referrer;
+        msg += "leave " + anchor.host + "!";
+      }
+      $(".referrer").text(msg);
+      $("#downloadmessage").show();
+    }
+  },
   
   /**
    * Determines whether a callback is defined before calling it.
@@ -601,9 +616,9 @@ var callbacks = {
    * @return {boolean} True if the parameter is a function, else false
    */
   functionExists: function(callback) {
-    if (typeof callback == 'function') { 
+    if (typeof callback === "function") {
       return true;
     }
     return false;
   }
-}
+};

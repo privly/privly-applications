@@ -28,6 +28,8 @@
  *   eg: ffffff,f0f0f0,3f3f3f
  *
  */
+/* jshint undef: true, unused: true */
+/* global ls */
 
 /**
  * Saves user's setting to disable Privly button appearance
@@ -36,7 +38,7 @@ function saveCheckedSetting() {
 
   // Don't run on Firefox
   var status = document.getElementById("button_status");
-  if (status === null ) return;
+  if (status === null ) {return};
 
   // reset status
   status.innerHTML = "";
@@ -52,7 +54,7 @@ function saveCheckedSetting() {
  */
 function restoreCheckedSetting() {
   var btn = document.getElementById("disableBtn");
-  if ( btn === null ) return; // Don't run on Firefox
+  if ( btn === null ) {return}; // Don't run on Firefox
   var stored = ls.getItem("Options:DissableButton");
   btn.checked = (stored !== undefined && stored === true);
 
@@ -65,10 +67,11 @@ function restoreCheckedSetting() {
  */
 function saveWhitelist() {
   var csv = "";
-  url_inputs = document.getElementsByClassName('whitelist_url');
-  for( i=0; i<url_inputs.length; i++ ){
-    if(url_inputs[i].value.length >0)
+  var url_inputs = document.getElementsByClassName('whitelist_url');
+  for( var i = 0; i < url_inputs.length ; i++ ){
+    if(url_inputs[i].value.length >0) {
       csv += url_inputs[i].value.replace(/.*?:\/\//g, "")+",";
+    }
   }
 
   var user_whitelist_input = csv;
@@ -156,8 +159,9 @@ function restoreWhitelist() {
     return;
   }
   var user_whitelist = user_whitelist_csv.split(',');
-  for(i=0; i <= user_whitelist.length - 1; i++)
+  for( var i = 0 ; i <= user_whitelist.length - 1 ; i++) {
     addUrlInputs();
+  }
   var inputs = document.getElementsByClassName("whitelist_url");
   var removals = document.getElementsByClassName("remove_whitelist");
   
@@ -307,7 +311,7 @@ function regenerateGlyph() {
   ls.setItem("glyph_color", Math.floor(Math.random()*16777215).toString(16));
 
   var glyph_cells = ((Math.random() < 0.5) ? "false" : "true");
-  for(i = 0; i < 14; i++) {
+  for( var i = 0; i < 14; i++) {
     glyph_cells += "," + ((Math.random() < 0.5) ? "false" : "true");
   }
   
@@ -337,7 +341,7 @@ function writeGlyph() {
 
   var tbody = document.createElement("tbody");
 
-  for(i = 0; i < 5; i++) {
+  for( var i = 0; i < 5; i++) {
     var tr = document.createElement("tr");
 
     for(j = 0; j < 5; j++) {
@@ -347,13 +351,13 @@ function writeGlyph() {
       // Fill only the first three columns with the coresponding values from glyphArray[]
       // The rest of two columns are simetrical to the first two
       if(j <= 2) {
-        if(glyphArray[i * 3 + j] == "true") {
+        if(glyphArray[i * 3 + j] === "true") {
           td.setAttribute("class", "glyph_fill");
         } else {
           td.setAttribute("class", "glyph_empty");
         }        
       } else {
-        if(glyphArray[i * 3 + (5 % (j + 1))] == "true") {
+        if(glyphArray[i * 3 + (5 % (j + 1))] === "true") {
           td.setAttribute("class", "glyph_fill");
         } else {
           td.setAttribute("class", "glyph_empty");
@@ -410,7 +414,7 @@ function removeUrlInputs (event) {
 
     var currentCSV = ls.getItem("user_whitelist_csv");
     var currentValuesArr = currentCSV.split(",");
-    currentValuesArr.forEach(function(elem, idx, arr){arr[idx] = elem.trim()});
+    currentValuesArr.forEach(function(elem, idx, arr){arr[idx] = elem.trim();});
 
     var newCSV = "";
     var domainRegexp = "";
@@ -435,8 +439,9 @@ document.addEventListener('DOMContentLoaded',
 
     // Don't initialize the app if it is running in a
     // headless browser.
-    if( ! document.getElementById("logout_link") )
+    if( ! document.getElementById("logout_link") ) {
       return;
+    }
 
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
