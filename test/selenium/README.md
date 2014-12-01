@@ -133,7 +133,10 @@ From the privly-applications directory, run: `ruby run_all.rb -p sauce_chrome_we
 
 ### sauce_chrome_extension
 
-Current **Does not work**. I am [finding out why](https://support.saucelabs.com/requests/16087).
+This will launch the current Beta version of Chrome on Windows. It will navigate the
+extension from which you launched the tests, but the applications expect localhost:3000 to present a content server for storage.
+
+From the privly-applications directory, run: `ruby run_all.rb -p sauce_chrome_extension -c http://localhost:3000`
 
 ## TravisCI
 
