@@ -98,13 +98,17 @@
                   <p class="meta_created_at"></p>
                   <p class="meta_destroyed_around"></p>
                   <p class="meta_updated_at"></p>
-                  <p class="meta_candestroy"></p>
-                  <p class="meta_canupdate"></p>
+                  <p class="meta_candestroy" style="display:none;">
+                    You can destroy this content now.
+                  </p>
+                  <p class="meta_canupdate" style="display:none;">
+                    You can update this content.
+                  </p>
                   <p class="meta_source_domain"></p>
                   <p>
-                    <strong>Warning:</strong> 
-                    This metadata has not been verified cryptographically. 
-                    The metadata may be altered at the source.
+                    <span class="glyphicon glyphicon-link"></span>
+                    Source Link:
+                    <span class="meta_source_url break_all"></span>
                   </p>
                 </div>
               </div>
