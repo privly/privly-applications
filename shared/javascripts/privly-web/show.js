@@ -138,9 +138,14 @@ var callbacks = {
     if (state.parameters.privlyDataURL !== undefined) {
       state.jsonURL = state.parameters.privlyDataURL;
     }
-    
+
     // Display the data source to the user
-    $(".meta_source_domain").text("Source URL: " + state.jsonURL);
+    var domainSelector = document.createElement('a');
+    domainSelector.href = state.jsonURL;
+    $(".meta_source_domain").text("Data Source: " + domainSelector.hostname);
+
+    // Display the data source to the user
+    $(".meta_source_url").text(state.webApplicationURL);
 
     // Register the click listener.
     $("#post_content").on("click", callbacks.click);
@@ -283,7 +288,7 @@ var callbacks = {
                 
                 var dataDomain = privlyNetworkService.getProtocolAndDomain(state.jsonURL);
                 privlyTooltip.updateMessage(dataDomain, "Editable");
-                $(".meta_canupdate").text("You can update this content.");
+                $(".meta_canupdate").show();
               }
 
               // Initialize the form for destroying the post
@@ -292,7 +297,7 @@ var callbacks = {
                 $("#destroy_link").show();
                 $("#no_permissions_nav").hide();
                 $("#permissions_nav").show();
-                $(".meta_candestroy").text("You can destroy this content.");
+                $(".meta_candestroy").show();
                 $("#destruction_select_block").show();
               }
             }, 
@@ -311,7 +316,7 @@ var callbacks = {
       // Set burnt date meta
       if( json.burn_after_date ) {
         var destroyedDate = new Date(json.burn_after_date);
-        $(".meta_destroyed_around").text("Destroyed Around " + 
+        $(".meta_destroyed_around").text("Automatically Destroyed Around " +
           destroyedDate.toDateString() + ". ");
         var currentSecondsUntilDestruction = Math.floor((destroyedDate - Date.now())/1000);
         $("#current_destruction_time")
