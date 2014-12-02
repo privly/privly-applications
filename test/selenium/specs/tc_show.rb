@@ -30,6 +30,8 @@ class TestShow < Test::Unit::TestCase
       url = to_test[:url]+to_append
       page.driver.browser.get(url)
       assert page.has_text?('The Apology')
+      assert page.has_text?('Metadata')
+      assert page.has_text?('https://privlyalpha.org/apps/')
     end
   end
 
