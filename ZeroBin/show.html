@@ -11,6 +11,9 @@
   </title>
   <meta content="test/show.js,test/sjcl.js,test/ZeroBin.js,../shared/test/privly-web/show.js,../shared/test/parameters.js,../shared/test/network_service.js,../shared/test/local_storage.js" name="PrivlySpec"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="This link contains your friend's private content. Click through to read." name="description"/>
+  <meta content="This link contains your friend's private content. Click through to read." name="og:description"/>
+  <meta content="This link contains your friend's private content. Click through to read." name="twitter:description"/>
   <!-- Common Styles -->
   <link href="../shared/css/common.css" media="screen" rel="stylesheet" type="text/css"/>
   <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet" type="text/css"/>
@@ -240,18 +243,20 @@
         </p>
         <p class="meta_updated_at">
         </p>
-        <p class="meta_candestroy">
+        <p class="meta_candestroy" style="display:none;">
+         You can destroy this content now.
         </p>
-        <p class="meta_canupdate">
+        <p class="meta_canupdate" style="display:none;">
+         You can update this content.
         </p>
         <p class="meta_source_domain">
         </p>
         <p>
-         <strong>
-          Warning:
-         </strong>
-         This metadata has not been verified cryptographically. 
-                    The metadata may be altered at the source.
+         <span class="glyphicon glyphicon-link">
+         </span>
+         Source Link:
+         <span class="meta_source_url break_all">
+         </span>
         </p>
        </div>
       </div>
