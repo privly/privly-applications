@@ -22,12 +22,22 @@ require 'test/unit' # Provides syntax for expectation statements
 Dir.chdir File.expand_path(File.dirname(__FILE__))
 
 args = {}
+optsHelp = ""
 OptionParser.new do |opts|
-  opts.banner = "Usage: ruby example.rb [options]"
-  opts.on('-p', '--platform PLATFORM', 'The target platform (web, firefox, chrome, etc)') { |v| args[:platform] = v }
+  opts.banner = "Usage: ruby run_all.rb [options]"
+  opts.on('-p', '--platform PLATFORM', 'The target platform (firefox_web, firefox_extension, chrome_web, chrome_extension, sauce_chrome_web, sauce_firefox_web, sauce_firefox_extension, sauce_chrome_extension)') { |v| args[:platform] = v }
   opts.on('-r', '--release-status RELEASE', 'The target release stage (experimental, deprecated, alpha, beta, release)') { |v| args[:release_status] = v }
   opts.on('-c', '--content-server SERVER', 'The content server (http://localhost:3000)') { |v| args[:content_server] = v }
+  optsHelp = opts.help
 end.parse!
+
+# Exit if three arguments were not supplied
+if not args.length == 3
+  puts "\nYou must specify all three arguments\n\n"
+  puts optsHelp
+  exit 0
+end
+
 puts "You passed the arguments: #{args}"
 
 # Defaults
