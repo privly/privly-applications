@@ -16,7 +16,7 @@ class TestNew < Test::Unit::TestCase
       if to_test[:manifest_dictionary]["action"] == "new" and
         not to_test[:manifest_dictionary]["name"] == "Help" and
         not to_test[:manifest_dictionary]["name"] == "Login"
-        page.driver.browser.get(to_test[:url]); # Re-load the page after we set the server
+        page.driver.browser.get(to_test[:url]) # Re-load the page after we set the server
         login(to_test[:content_server])
         fill_in 'content', :with =>  "Hello WebDriver!"
         click_on ('save')
