@@ -20,6 +20,15 @@ function previewMarkdown() {
  */
 function resolveKeyFromHistory() {
   var urls = ls.getItem("Message:URLs");
+
+  // Deprecated
+  var oldUrls = ls.getItem("ZeroBin:URLs");
+  if ( oldUrls !== undefined ) {
+    urls = urls.concat(oldUrls);
+    ls.setItem("Message:URLs", urls);
+    ls.removeItem("ZeroBin:URLs");
+  }
+
   if ( urls !== undefined ) {
     for( var i = 0; i < urls.length; i++ ) {
       var index = urls[i].indexOf(state.webApplicationURL);
