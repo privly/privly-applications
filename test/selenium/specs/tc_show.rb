@@ -17,7 +17,7 @@ class TestShow < Test::Unit::TestCase
     # These two addresses will be used for testing these applications
     testing_strings = {
       "PlainPost" => "?privlyOriginalURL=https%3A%2F%2Fprivlyalpha.org%2Fapps%2FPlainPost%2Fshow%3FprivlyApp%3DPlainPost%26privlyInject1%3Dtrue%26random_token%3D%26privlyDataURL%3Dhttps%253A%252F%252Fprivlyalpha.org%252Fposts%252F2.json%23privlyInject1",
-      "ZeroBin" => "?privlyOriginalURL=https%3A%2F%2Fprivlyalpha.org%2Fapps%2FZeroBin%2Fshow%3FprivlyApp%3DZeroBin%26privlyInject1%3Dtrue%26random_token%3D1ff0c35ce7%26privlyDataURL%3Dhttps%253A%252F%252Fprivlyalpha.org%252Fposts%252F1731.json%253Frandom_token%253D1ff0c35ce7%23privlyLinkKey%3DMuF%2BVWCmD%2FejlxeZQNcepvpXPIYhhfUD8M6lSRuak9k%3D"
+      "Message" => "?privlyOriginalURL=https%3A%2F%2Fprivlyalpha.org%2Fapps%2FMessage%2Fshow%3FprivlyApp%3DMessage%26privlyInject1%3Dtrue%26random_token%3D1ff0c35ce7%26privlyDataURL%3Dhttps%253A%252F%252Fprivlyalpha.org%252Fposts%252F1731.json%253Frandom_token%253D1ff0c35ce7%23privlyLinkKey%3DMuF%2BVWCmD%2FejlxeZQNcepvpXPIYhhfUD8M6lSRuak9k%3D"
     }
 
     # Loop over the applications and test them with their associated URL
