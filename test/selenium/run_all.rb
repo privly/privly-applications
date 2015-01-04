@@ -198,7 +198,7 @@ if platform == "chrome_extension"
   # This currently references the relative path to the URL
   caps = Selenium::WebDriver::Remote::Capabilities.chrome(
     "chromeOptions" => {
-      "args" => [ "--disable-web-security", "load-extension=.." ]
+      "args" => [ "--disable-web-security", "load-extension=../../.." ]
       }
   )
 
@@ -216,11 +216,11 @@ end
 if platform == "sauce_chrome_extension"
 
   # Package the extension
-  system("../../../package/travis.sh")
+  system("../../../../../package/travis.sh")
 
   # extensions cannot be read as text
   # Base64.strict_encode64 File.read(crx_path)
-  extension = Base64.strict_encode64 File.binread("../../../PrivlyChromeExtension.crx")
+  extension = Base64.strict_encode64 File.binread("../../../../../PrivlyChromeExtension.crx")
 
   # Get the extension from localhost:5000 over Sauce Connect
   @sauce_caps["chromeOptions"] = {
@@ -274,7 +274,7 @@ manifest_files.each do |manifest_file|
       next
     end
 
-    release_titles = ["experimental", "deprecated", "alpha", "beta", "release"]
+    release_titles = ["redirect", "experimental", "deprecated", "alpha", "beta", "release"]
     unless release_titles.index(app_manifest["release_status"]) >= 
       release_titles.index(release_status)
       puts "Skipping due to release status: " + outfile_path

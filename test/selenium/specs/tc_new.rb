@@ -8,6 +8,8 @@ class TestNew < Test::Unit::TestCase
   include Capybara::DSL # Provides for Webdriving
 
   def setup
+    page.driver.browser.get(@@privly_test_set[0][:url])
+    login(@@privly_test_set[0][:content_server])
   end
 
   # Test post creation for each application that presents a "new" action.
@@ -17,12 +19,10 @@ class TestNew < Test::Unit::TestCase
         not to_test[:manifest_dictionary]["name"] == "Help" and
         not to_test[:manifest_dictionary]["name"] == "Login"
         page.driver.browser.get(to_test[:url]) # Re-load the page after we set the server
-        login(to_test[:content_server])
         fill_in 'content', :with =>  "Hello WebDriver!"
         click_on ('save')
         urls = page.find('.privlyUrl', :visible => true)
         assert urls.visible?
-        logout
       end
     end
   end
@@ -39,9 +39,6 @@ class TestNew < Test::Unit::TestCase
       # Navigate to the page we are testing
       page.driver.browser.get(to_test[:url])
 
-      # Set and login to the content server
-      login(@@privly_test_set[0][:content_server])
-
       # Refresh the page we are going to test creation
       page.driver.browser.get(to_test[:url])
 
@@ -52,30 +49,34 @@ class TestNew < Test::Unit::TestCase
       page.find(:css,"span.privlyUrl").click
 
       # Open the created content in the "show" endpoint
-      click_link("local_address")
+      new_window = window_opened_by do
+        click_link("local_address")
+      end
+      assert page.has_text?("Copy and paste")
+      within_window new_window do
 
-      # Switch focus to the window that was just opened
-      page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
+        assert page.has_text?("Hello WebDriver!")
 
-      # Open the editing menu
-      click_link("edit_nav")
-      page.driver.browser.find_element(:css, "span.glyphicon.glyphicon-edit").click
+        # Open the editing menu
+        find_by_id("edit_nav").click
+        page.driver.browser.find_element(:css, "span.glyphicon.glyphicon-edit").click
 
-      # Change the content and submit it
-      fill_in 'edit_text', :with =>  "Updated!"
-      find_button("Update").click
+        # Change the content and submit it
+        fill_in 'edit_text', :with =>  "Updated!"
+        find_button("Update").click
 
-      # Refresh
-      page.driver.browser.get(page.evaluate_script("window.location.href"))
+        # Refresh
+        page.driver.browser.get(page.evaluate_script("window.location.href"))
 
-      # Make sure the refreshed page has the new content
-      assert page.has_text?('Updated!')
-
-      logout
+        # Make sure the refreshed page has the new content
+        assert page.has_text?('Updated!')
+      end
     end
   end
 
   def teardown
+    page.driver.browser.get(@@privly_test_set[0][:url])
+    logout
     Capybara.reset_sessions!
     Capybara.use_default_driver
   end
