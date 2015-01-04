@@ -18,13 +18,26 @@ require 'capybara' # Manages Selenium
 require 'capybara/dsl' # Syntax for interacting with Selenium
 require 'test/unit' # Provides syntax for expectation statements
 
+# Change the directory to this script's directory
+Dir.chdir File.expand_path(File.dirname(__FILE__))
+
 args = {}
+optsHelp = ""
 OptionParser.new do |opts|
-  opts.banner = "Usage: ruby example.rb [options]"
-  opts.on('-p', '--platform PLATFORM', 'The target platform (web, firefox, chrome, etc)') { |v| args[:platform] = v }
+  opts.banner = "Usage: ruby run_all.rb [options]"
+  opts.on('-p', '--platform PLATFORM', 'The target platform (firefox_web, firefox_extension, chrome_web, chrome_extension, sauce_chrome_web, sauce_firefox_web, sauce_firefox_extension, sauce_chrome_extension)') { |v| args[:platform] = v }
   opts.on('-r', '--release-status RELEASE', 'The target release stage (experimental, deprecated, alpha, beta, release)') { |v| args[:release_status] = v }
   opts.on('-c', '--content-server SERVER', 'The content server (http://localhost:3000)') { |v| args[:content_server] = v }
+  optsHelp = opts.help
 end.parse!
+
+# Exit if three arguments were not supplied
+if not args.length == 3
+  puts "\nYou must specify all three arguments\n\n"
+  puts optsHelp
+  exit 0
+end
+
 puts "You passed the arguments: #{args}"
 
 # Defaults
@@ -142,11 +155,11 @@ if platform.include? "firefox_extension"
    Capybara.app_host = "chrome://privly"
    address_start = Capybara.app_host + "/content/privly-applications/"
    puts "Packaging the Firefox Extension"
-   system( "cd ../../../ && ./package.sh && cd chrome/content/privly-applications/" )
+   system( "cd ../../../../../ && pwd && ./package.sh && cd chrome/content/privly-applications/test/selenium" )
 
    # Load the Firefox driver with the extension installed
    @profile = Selenium::WebDriver::Firefox::Profile.new
-   @profile.add_extension("../../../PrivlyFirefoxExtension.xpi")
+   @profile.add_extension("../../../../../PrivlyFirefoxExtension.xpi")
 end
 
 if platform == "firefox_extension"
@@ -249,7 +262,7 @@ if args[:release_status]
 end
 
 # Build the data structure used by some specs to determine what to test
-manifest_files = Dir["*/manifest.json"]
+manifest_files = Dir["../../*/manifest.json"]
 manifest_files.each do |manifest_file|
   json = JSON.load(File.new(manifest_file))
   json.each do |app_manifest|
