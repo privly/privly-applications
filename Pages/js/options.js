@@ -285,7 +285,7 @@ function listeners(){
   document.querySelector('#regenerate_glyph').addEventListener('click', regenerateGlyph);
   
   // Options save button
-  document.querySelector('#save').addEventListener('click', saveWhitelist);
+  document.querySelector('#save_whitelist').addEventListener('click', saveWhitelist);
     
   // content server menu listeners
   document.querySelector('#save_server').addEventListener('click', saveServer);

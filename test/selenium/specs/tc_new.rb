@@ -16,7 +16,7 @@ class TestNew < Test::Unit::TestCase
       if to_test[:manifest_dictionary]["action"] == "new" and
         not to_test[:manifest_dictionary]["name"] == "Help" and
         not to_test[:manifest_dictionary]["name"] == "Login"
-        page.driver.browser.get(to_test[:url]); # Re-load the page after we set the server
+        page.driver.browser.get(to_test[:url]) # Re-load the page after we set the server
         login(to_test[:content_server])
         fill_in 'content', :with =>  "Hello WebDriver!"
         click_on ('save')
@@ -49,7 +49,7 @@ class TestNew < Test::Unit::TestCase
       fill_in 'content', :with =>  "Hello WebDriver!"
       Selenium::WebDriver::Support::Select.new(page.driver.browser.find_element(:id, "seconds_until_burn")).select_by(:text, "1 Day")
       find_button("save").click
-      page.driver.browser.find_element(:css, "span.privlyUrl").click
+      page.find(:css,"span.privlyUrl").click
 
       # Open the created content in the "show" endpoint
       click_link("local_address")
