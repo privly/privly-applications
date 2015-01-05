@@ -19,18 +19,22 @@
 {% endblock %}
 
 {% block pre_form %}
-  <div class="row">
-    <div class="col-md-12">
-      <div id="iframe_col" style="display:none;">
-        <p id="privly_iframe_meta">The App's contents are below</p>
-        <button id="hide_preview" class="btn btn-default">Hide Preview</button>
-        <button id="destroy_link" class="btn btn-danger">Destroy Content</button>
-        <hr/>
-        <div class="privly_iframe"></div>
-        <hr/>
-      </div>
-    </div>
-  </div>
+  <div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="privly_iframe_meta">The App's contents are below</h4>
+        </div>
+        <div class="modal-body privly_iframe">
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="hide_preview" class="btn btn-default" data-dismiss="modal">Hide Preview</button>
+          <button type="button" id="destroy_link" class="btn btn-danger">Destroy Content</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 {% endblock %}
 
 {% block form %}

@@ -152,6 +152,8 @@ var callbacks = {
       td1b.setAttribute("type", "submit");
       td1b.setAttribute("class", "btn btn-default preview_link");
       td1b.setAttribute("data-canonical-href", localHref);
+      td1b.setAttribute("data-toggle","modal");
+      td1b.setAttribute("data-target","#myModal");
       td1b.textContent = "Preview " + app;
       td1b.style.width = "150px";
       td1b.style.height = "33px";
@@ -210,7 +212,7 @@ var callbacks = {
     
     $('button.preview_link').on('click', function() {
 
-      $('html, body').animate({ scrollTop: 0 }, 'slow');
+      //$('html, body').animate({ scrollTop: 0 }, 'slow');
 
       $('#iframe_col').show('slow', function() {
         $(this).css('display', 'inherit');
@@ -249,6 +251,8 @@ var callbacks = {
       // Clear the old iframe and insert the new one
       $(".privly_iframe").empty();
       $(".privly_iframe").append(iFrame);
+
+
     });
 
     $('button.open_link').on('click', function() {
