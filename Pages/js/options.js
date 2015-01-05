@@ -127,7 +127,7 @@ function saveWhitelist() {
     //if all parts of domain are valid
     //append to regex for restricting domains of injected content
     if (valid_parts_count === parts.length && parts.length > 1){
-      domain_regexp += "|" + domains[i].toLowerCase() + "\\/";
+      domain_regexp += ("|" + domains[i].toLowerCase().replace(/\./g, "\\.") + "\\\/");
       valid_domains.push(domains[i].toLowerCase());
     }
   }
