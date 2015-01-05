@@ -29,6 +29,8 @@
         <div class="modal-body privly_iframe">
         </div>
         <div class="modal-footer">
+          <button type="button" id="prev_preview" class="btn btn-primary">Prev</button>
+          <button type="button" id="next_preview" class="btn btn-primary">Next</button>
           <button type="button" id="hide_preview" class="btn btn-default" data-dismiss="modal">Hide Preview</button>
           <button type="button" id="destroy_link" class="btn btn-danger">Destroy Content</button>
         </div>

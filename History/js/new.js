@@ -197,7 +197,7 @@ var callbacks = {
       
       tableBody.appendChild(tr);
       
-    }
+    } //for loop completion.
     
     dataTable = $('#posts').dataTable({"bPaginate": false, "bFilter": false});
 
@@ -209,17 +209,12 @@ var callbacks = {
         $('#posts').removeClass("cell-border");
       }
     });
-    
-    $('button.preview_link').on('click', function() {
 
-      //$('html, body').animate({ scrollTop: 0 }, 'slow');
-
-      $('#iframe_col').show('slow', function() {
-        $(this).css('display', 'inherit');
-      });
-      
+    /**
+    *   Retrieves the data and puts into iframe for displaying.
+    */
+    function iframeReturn($reference){
       var iFrame = document.createElement('iframe');
-
       // Styling and display attributes that mirror those
       // of the privly.js content script
       iFrame.setAttribute("frameborder","0");
@@ -237,7 +232,7 @@ var callbacks = {
       iFrame.setAttribute("data-privly-accept-resize","true");
 
       // The href of the original link as dictated by the remote server
-      var canonicalHref = $(this).attr("data-canonical-href");
+      var canonicalHref = $reference.attr("data-canonical-href");
       iFrame.setAttribute("data-canonical-href", canonicalHref);
 
       //Set the source URL
@@ -251,7 +246,36 @@ var callbacks = {
       // Clear the old iframe and insert the new one
       $(".privly_iframe").empty();
       $(".privly_iframe").append(iFrame);
+    }
 
+    $('button#prev_preview').on('click',function(){
+      //finds the previous button with preview_link class and passes its reference.
+      //more info : http://jsfiddle.net/5QdgB/
+      var index = $('.preview_link').index(buttonClicked);
+      var previous = $('.preview_link').slice(index-1).first();
+      buttonClicked = previous;
+      iframeReturn(previous);
+    });
+
+    $('button#next_preview').on('click',function(){
+      //finds the next button with preview_link class and passes its reference.
+      var index = $('.preview_link').index(buttonClicked);
+      var next = $('.preview_link').slice(index+1).first();
+      buttonClicked=next;
+      iframeReturn(next);
+    });
+    
+    $('button.preview_link').on('click', function() {
+
+      //$('html, body').animate({ scrollTop: 0 }, 'slow');
+
+      // $('#iframe_col').show('slow', function() {
+      //   $(this).css('display', 'inherit');
+      // });
+      
+      buttonClicked = $(this);
+      iframeReturn(buttonClicked);
+      iter = 1;
 
     });
 
@@ -268,14 +292,17 @@ var callbacks = {
             if( response.jqXHR.status === 200 ) {
               var tr = $(this).closest('tr');
               tr.hide();
-              $('#iframe_col').hide('slow');
+              //$('#iframe_col').hide('slow');
+              $('#myModal').modal('hide');
             }
         }, {});
     });
 
-    $('#hide_preview').on('click', function() {
-      $('#iframe_col').hide('slow');
-    });
+    // After adding the modal box, there's no need for this.
+    // $('#hide_preview').on('click', function() {
+    //   $('#iframe_col').hide('slow');
+    // });
+
   }
 };
 
