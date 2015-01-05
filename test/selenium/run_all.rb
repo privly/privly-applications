@@ -216,11 +216,11 @@ end
 if platform == "sauce_chrome_extension"
 
   # Package the extension
-  system("../../../../../package/travis.sh")
+  system("../../../package/travis.sh")
 
   # extensions cannot be read as text
   # Base64.strict_encode64 File.read(crx_path)
-  extension = Base64.strict_encode64 File.binread("../../../../../PrivlyChromeExtension.crx")
+  extension = Base64.strict_encode64 File.binread("../../../PrivlyChromeExtension.crx")
 
   # Get the extension from localhost:5000 over Sauce Connect
   @sauce_caps["chromeOptions"] = {
