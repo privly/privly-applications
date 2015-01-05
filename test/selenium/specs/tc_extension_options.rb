@@ -62,6 +62,8 @@ class TestOptions < Test::Unit::TestCase
       return
     end
 
+    page.driver.browser.get(@options_url)
+
     page.select 'https://dev.privly.org', :from => 'content_server_url'
     click_button('save_server')
     page.driver.browser.get(@options_url)

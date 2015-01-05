@@ -98,8 +98,8 @@ if platform.start_with? "sauce"
     elsif @browser == "chrome"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.chrome
     end
-    config['version'] = "beta"
-    @sauce_caps.version = "beta"
+    config['version'] = "34"
+    @sauce_caps.version = "34"
     @sauce_caps.platform = "Windows 7"
     @sauce_caps[:name] = "Testing Selenium 2 with Ruby on Sauce"
     if ENV['SAUCE_URL'] == nil or ENV['SAUCE_URL'] == ""
