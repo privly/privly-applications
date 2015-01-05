@@ -18,13 +18,26 @@ require 'capybara' # Manages Selenium
 require 'capybara/dsl' # Syntax for interacting with Selenium
 require 'test/unit' # Provides syntax for expectation statements
 
+# Change the directory to this script's directory
+Dir.chdir File.expand_path(File.dirname(__FILE__))
+
 args = {}
+optsHelp = ""
 OptionParser.new do |opts|
-  opts.banner = "Usage: ruby example.rb [options]"
-  opts.on('-p', '--platform PLATFORM', 'The target platform (web, firefox, chrome, etc)') { |v| args[:platform] = v }
+  opts.banner = "Usage: ruby run_all.rb [options]"
+  opts.on('-p', '--platform PLATFORM', 'The target platform (firefox_web, firefox_extension, chrome_web, chrome_extension, sauce_chrome_web, sauce_firefox_web, sauce_firefox_extension, sauce_chrome_extension)') { |v| args[:platform] = v }
   opts.on('-r', '--release-status RELEASE', 'The target release stage (experimental, deprecated, alpha, beta, release)') { |v| args[:release_status] = v }
   opts.on('-c', '--content-server SERVER', 'The content server (http://localhost:3000)') { |v| args[:content_server] = v }
+  optsHelp = opts.help
 end.parse!
+
+# Exit if three arguments were not supplied
+if not args.length == 3
+  puts "\nYou must specify all three arguments\n\n"
+  puts optsHelp
+  exit 0
+end
+
 puts "You passed the arguments: #{args}"
 
 # Defaults
@@ -35,7 +48,7 @@ release_status = "deprecated" # Include deprecated apps by default
 Capybara.run_server = false
 Capybara.app_host = 'http://localhost:3000'
 content_server = "http://localhost:3000"
-Capybara.default_wait_time = 10
+Capybara.default_wait_time = 15
 
 # This global data structure provides a test set that each of the
 # specs can use to guarantee behavior across apps. The components
@@ -142,11 +155,11 @@ if platform.include? "firefox_extension"
    Capybara.app_host = "chrome://privly"
    address_start = Capybara.app_host + "/content/privly-applications/"
    puts "Packaging the Firefox Extension"
-   system( "cd ../../../ && ./package.sh && cd chrome/content/privly-applications/" )
+   system( "cd ../../../../../ && pwd && ./package.sh && cd chrome/content/privly-applications/test/selenium" )
 
    # Load the Firefox driver with the extension installed
    @profile = Selenium::WebDriver::Firefox::Profile.new
-   @profile.add_extension("../../../PrivlyFirefoxExtension.xpi")
+   @profile.add_extension("../../../../../PrivlyFirefoxExtension.xpi")
 end
 
 if platform == "firefox_extension"
@@ -185,7 +198,7 @@ if platform == "chrome_extension"
   # This currently references the relative path to the URL
   caps = Selenium::WebDriver::Remote::Capabilities.chrome(
     "chromeOptions" => {
-      "args" => [ "--disable-web-security", "load-extension=.." ]
+      "args" => [ "--disable-web-security", "load-extension=../../.." ]
       }
   )
 
@@ -202,18 +215,17 @@ end
 
 if platform == "sauce_chrome_extension"
 
-  puts "This is not currently functional"
-  exit 1
+  # Package the extension
+  system("../../../package/travis.sh")
 
-  # Start a webserver so SauceLabs can get the extension
-  # todo, this may be needed to run the extension on Chrome
-  #system("ruby -run -e httpd -- -p 5000 ../../.. &")
-  #sleep 6 # Give it time to start
+  # extensions cannot be read as text
+  # Base64.strict_encode64 File.read(crx_path)
+  extension = Base64.strict_encode64 File.binread("../../../PrivlyChromeExtension.crx")
 
-  # todo: this will reference the file system on the browser's VM, which
-  # does not have the extension.
+  # Get the extension from localhost:5000 over Sauce Connect
   @sauce_caps["chromeOptions"] = {
-    "args" => [ "--disable-web-security", "load-extension=.." ]
+    "args" => [ "--disable-web-security" ],
+    "extensions" => [extension]
   }
 
   # Assign the path to find the applications in the extension
@@ -250,7 +262,7 @@ if args[:release_status]
 end
 
 # Build the data structure used by some specs to determine what to test
-manifest_files = Dir["*/manifest.json"]
+manifest_files = Dir["../../*/manifest.json"]
 manifest_files.each do |manifest_file|
   json = JSON.load(File.new(manifest_file))
   json.each do |app_manifest|
@@ -262,7 +274,7 @@ manifest_files.each do |manifest_file|
       next
     end
 
-    release_titles = ["experimental", "deprecated", "alpha", "beta", "release"]
+    release_titles = ["redirect", "experimental", "deprecated", "alpha", "beta", "release"]
     unless release_titles.index(app_manifest["release_status"]) >= 
       release_titles.index(release_status)
       puts "Skipping due to release status: " + outfile_path

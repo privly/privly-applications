@@ -7,9 +7,9 @@
       See: https://github.com/privly/privly-applications/pull/19
      -->
   <title>
-   Help
+   New Message
   </title>
-  <meta content="../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js,../shared/test/local_storage.js" name="PrivlySpec"/>
+  <meta content="../shared/test/privly-web/new.js,test/new.js,test/sjcl.js,test/ZeroBin.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js,../shared/test/local_storage.js" name="PrivlySpec"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <!-- Top Styles -->
   <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
@@ -29,7 +29,23 @@
   </script>
   <script src="../vendor/jquery.min.js" type="text/javascript">
   </script>
-  <script src="js/help.js" type="text/javascript">
+  <script src="../vendor/jquery.autosize.js" type="text/javascript">
+  </script>
+  <script src="../vendor/markdown.js" type="text/javascript">
+  </script>
+  <script src="../vendor/sjcl.js" type="text/javascript">
+  </script>
+  <script src="js/base64.js" type="text/javascript">
+  </script>
+  <script src="js/rawdeflate.js" type="text/javascript">
+  </script>
+  <script src="js/rawinflate.js" type="text/javascript">
+  </script>
+  <script src="js/zerobin.js" type="text/javascript">
+  </script>
+  <script src="../shared/javascripts/privly-web/new.js" type="text/javascript">
+  </script>
+  <script src="js/new.js" type="text/javascript">
   </script>
  </head>
  <body data-privly-exclude="true">
@@ -89,7 +105,7 @@
            New PlainPost
           </a>
          </li>
-         <li>
+         <li class="active">
           <a href="../Message/new.html">
            <span class="glyphicon glyphicon-pencil">
            </span>
@@ -186,90 +202,60 @@
     </div>
     <div id="form" style="display:none;">
      <div class="row">
-      <div class="col-lg-12">
-       <h1>
-        Select Privly Application
-       </h1>
-       <p>
-        This page summarizes the privacy of your Privly
-      application bundle. We group applications according to the privacy they give
-      your data. While applications may provide stronger privacy
-      than is stated here, the motivating principle grouping apps is
-      "users make mistakes." If you need to be an expert in an
-      application to use it effectively, then it doesn't deserve 
-      a strong classification.
+      <div class="col-md-8">
+       <noscript>
+        <h1>
+         Your browser has scripting turned off. 
+                    This application requires scripting to function properly
+        </h1>
+       </noscript>
+       <h2>
+        <span class="glyphicon glyphicon-pencil">
+        </span>
+        Create New Message Link
+       </h2>
+       <p id="loadingDiv">
+        <img alt="loading" src="../shared/images/ajax-loader.gif"/>
        </p>
-      </div>
-     </div>
-     <div class="row">
-      <div class="col-md-6">
-       <p>
-        <strong>
-         <span class="glyphicon glyphicon-eye-close">
-         </span>
-         Honest but curious:
-        </strong>
-        Only the intended recipients can 
-      view the content if no parties break the law.
-       </p>
-       <div class="col-md-3">
-        <form action="../Message/new.html" style="display:inline;">
-         <button class="btn btn-default" type="submit">
-          New Message
-         </button>
-        </form>
+       <label for="content">
+        Content
+       </label>
+       <textarea class="form-control" id="content" placeholder="Enter content here" rows="4" title="Enter a message to Post to Privly here."></textarea>
+       <div id="destruction_select_block">
+        <label for="seconds_until_burn">
+         Time until content is destroyed
+        </label>
+        <select class="form-control" id="seconds_until_burn" name="seconds_until_burn">
+         <option value="86400">
+          1 Day
+         </option>
+         <option value="604800">
+          7 Days
+         </option>
+         <option value="1209600">
+          14 Days
+         </option>
+         <option selected="" value="2419200">
+          28 Days
+         </option>
+         <option value="">
+          Infinite? - WARNING! Data in Alpha may still be destroyed.
+         </option>
+        </select>
        </div>
-       <div class="col-md-9">
-        <ul>
-         <li>
-          Content server does not have access to decrypted text without
-          actively attacking users.
-         </li>
-         <li>
-          Online service provider does not have access to decrypted text without
-          violating the content server's terms of service.
-         </li>
-        </ul>
-       </div>
+       <br/>
+       <button class="btn btn-default" disabled="" id="save">
+        <span class="glyphicon glyphicon-cloud-upload">
+        </span>
+        Save
+       </button>
       </div>
-      <div class="col-md-6">
-       <p>
-        <strong>
-         <span class="glyphicon glyphicon-lock">
-         </span>
-         Trust No One:
-        </strong>
-        We are developing solutions 
-      that remove the need to trust any remote parties. More Apps are Coming!
-       </p>
-      </div>
-     </div>
-     <div class="row">
-      <div class="col-md-6">
-       <p>
-        <strong>
-         <span class="glyphicon glyphicon-eye-open">
-         </span>
-         Experts Only:
-        </strong>
-        Other applications built on Privly provide privacy only in special 
-      circumstances and should be viewed as "experts only."
-       </p>
-       <div class="col-md-3">
-        <form action="../PlainPost/new.html" style="display:inline;">
-         <button class="btn btn-default" type="submit">
-          New PlainPost
-         </button>
-        </form>
-       </div>
-       <div class="col-md-9">
-        <ul>
-         <li>
-          The PlainPost application provides privacy from "Honest but curious" 
-           online service providers, but not the content server. You should not
-           create a PlainPost unless you trust your content server.
-         </li>
-        </ul>
+      <div class="col-md-4">
+       <h2 id="preview_heading">
+        Preview
+       </h2>
+       <hr/>
+       <div id="preview">
        </div>
       </div>
      </div>
@@ -281,19 +267,30 @@
      <hr/>
      <div class="col-md-6">
       <h2>
-       Getting Help
+       What is a Privly Message?
       </h2>
       <p>
-       The Priv.ly Project is an open source, community-driven
-      collection of software. Developers support users on
-       <a href="http://www.privly.org/content/irc" target="_blank">
-        chat
+       Message is a
+       <a href="http://www.privly.org/content/introducing-privly-applications" target="_blank">
+        privacy application
        </a>
-       and 
-      on
-       <a href="https://groups.google.com/forum/#!forum/privly" target="_blank">
-        email.
+       on Privly. Privly Messages encrypt your content 
+      with a key that is attached to the link you share across the web.
+      If someone has access to the server where the content is stored, 
+      and to the link you create, they will be able to decrypt your content. 
+      You can use
+       <a href="http://daringfireball.net/projects/markdown/basics">
+        Markdown
        </a>
+       to format your posts. You can
+       <a href="http://www.privly.org/content/introducing-privly-applications" target="_blank">
+        read more
+       </a>
+       about Privly Applications or about
+       <a href="https://github.com/privly/privly-organization/wiki/ZeroBin" target="_blank">
+        Messages
+       </a>
+       specifically.
       </p>
      </div>
      <div class="col-md-6">
@@ -306,17 +303,21 @@
         <strong>
          do not
         </strong>
-        post private 
-        information until the system reaches a Beta release.
+        post private information until the system reaches a Beta release.
        </li>
        <li>
-        This page vastly simplifies privacy properties of different 
-        applications. For a more comprehensive treatment of the applications
-        you should read about them on the
-        <a href="https://github.com/privly/privly-organization/wiki" target="_blank">
-         wiki
-        </a>
+        This post is
+        <strong>
+         temporary.
+        </strong>
+        All new content is destroyed within
+        <strong>
+         30 days
+        </strong>
         .
+       </li>
+       <li>
+        This post will be encrypted, but it is likely that a sophisticated adversary, e.g. governments, will be able to decrypt the content without the key.
        </li>
       </ul>
      </div>
@@ -329,19 +330,12 @@
   <div id="footer">
    <div class="container">
     <p class="text-muted credit">
-     <a href="https://www.priv.ly/pages/donate.html" target="_blank">
-      <span class="glyphicon glyphicon-gift">
-      </span>
-      Donate
-     </a>
-     to build a more private web.
-          You are viewing a
-          Privly
+     You are viewing a Privly
      <span style="vertical-align: super;font-size: xx-small">
       ®
      </span>
      Application,
-     <a href="https://priv.ly/pages/about" target="_blank">
+     <a href="http://priv.ly" target="_blank">
       learn more
      </a>
      about Privly.

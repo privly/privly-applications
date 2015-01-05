@@ -19,7 +19,16 @@ function previewMarkdown() {
  * @return {boolean} Indicates whether the key was resolved from history.
  */
 function resolveKeyFromHistory() {
-  var urls = ls.getItem("ZeroBin:URLs");
+  var urls = ls.getItem("Message:URLs");
+
+  // Deprecated
+  var oldUrls = ls.getItem("ZeroBin:URLs");
+  if ( oldUrls !== undefined ) {
+    urls = urls.concat(oldUrls);
+    ls.setItem("Message:URLs", urls);
+    ls.removeItem("ZeroBin:URLs");
+  }
+
   if ( urls !== undefined ) {
     for( var i = 0; i < urls.length; i++ ) {
       var index = urls[i].indexOf(state.webApplicationURL);
@@ -108,7 +117,7 @@ function encryptBeforeUpdate(evt, callback) {
 function initializeApplication() {
 
   // Make the Tooltip display this App's name.
-  privlyTooltip.appName = "ZeroBin";
+  privlyTooltip.appName = "Message";
 
   $( "#edit_text" ).bind("keyup", previewMarkdown);
 

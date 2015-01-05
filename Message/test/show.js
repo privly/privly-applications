@@ -3,7 +3,7 @@
  * This spec is managed by the Jasmine testing library.
  **/
  
-describe ("ZeroBin Show Suite", function() {
+describe ("Message Show Suite", function() {
 
   // Get an HTML document defined by the pre-processor.
   // This is a rough hack because HTML2JS seems to assign the
@@ -13,7 +13,7 @@ describe ("ZeroBin Show Suite", function() {
     var keys = Object.keys(__html__);
     var selectKey;
     keys.forEach(function(key) {
-      if( key.indexOf("ZeroBin/show.html") >= 0 ) {
+      if( key.indexOf("Message/show.html") >= 0 ) {
         selectKey = key;
       }
     });
@@ -42,43 +42,43 @@ describe ("ZeroBin Show Suite", function() {
   it("recovers key from localStorage", function() {
 
     // Save old values
-    var oldURLs = ls.getItem("ZeroBin:URLs");
+    var oldURLs = ls.getItem("Message:URLs");
     var oldAppAddress = state.webApplicationURL;
 
     // Run test
     state.webApplicationURL = "https://priv.ly/test/show?fu=bar";
-    ls.setItem("ZeroBin:URLs", [state.webApplicationURL + "#privlyLinkKey=testKey"]);
+    ls.setItem("Message:URLs", [state.webApplicationURL + "#privlyLinkKey=testKey"]);
     expect(resolveKeyFromHistory()).toBe(true);
 
     // Try something more confusing
-    ls.setItem("ZeroBin:URLs", ["AAA", "AAA",
+    ls.setItem("Message:URLs", ["AAA", "AAA",
      state.webApplicationURL + "#privlyLinkKey=testKey"]);
     expect(resolveKeyFromHistory()).toBe(true);
 
     // Cleanup
-    ls.setItem("ZeroBin:URLs", oldURLs);
+    ls.setItem("Message:URLs", oldURLs);
     state.webApplicationURL = oldAppAddress;
   });
 
   it("does not recover key from localStorage", function() {
 
     // Save old values
-    var oldURLs = ls.getItem("ZeroBin:URLs");
+    var oldURLs = ls.getItem("Message:URLs");
     var oldAppAddress = state.webApplicationURL;
 
     // Run test
     state.webApplicationURL = "https://priv.ly/test/show?fu=bar";
-    ls.setItem("ZeroBin:URLs", "#privlyLinkKey=testKey");
+    ls.setItem("Message:URLs", "#privlyLinkKey=testKey");
     expect(resolveKeyFromHistory()).toBe(false);
 
     // Try something more confusing
     state.webApplicationURL = "https://test.com/fu/bar?fubar=hello_world";
-    ls.setItem("ZeroBin:URLs", "||" +
+    ls.setItem("Message:URLs", "||" +
      "https://faketest.com/fu/bar?fubar=hello_world#privlyLinkKey=testKey");
     expect(resolveKeyFromHistory()).toBe(false);
 
     // Cleanup
-    ls.setItem("ZeroBin:URLs", oldURLs);
+    ls.setItem("Message:URLs", oldURLs);
     state.webApplicationURL = oldAppAddress;
   });
 });

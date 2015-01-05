@@ -23,13 +23,19 @@
  *
  */
 
-// Immediately start random number generator collector.
-if(! window.orientation ) {
-  // Hack to solve https://github.com/bitwiseshiftleft/sjcl/issues/142
-  // This will be solved in the next release version of SJCL
-  window.orientation = 1;
+// Seed the SJCL entropy with the web crypto API or fall back to SJCL's
+// collectors
+var webCryptoEntropy = new Uint32Array(128);
+if (window.crypto && window.crypto.getRandomValues) {
+  window.crypto.getRandomValues(webCryptoEntropy);
+  sjcl.random.addEntropy(webCryptoEntropy, 4096, "crypto.getRandomValues");
+} else if (window.msCrypto && window.msCrypto.getRandomValues) {
+  window.msCrypto.getRandomValues(webCryptoEntropy);
+  sjcl.random.addEntropy(webCryptoEntropy, 4096, "crypto.getRandomValues");
+} else {
+  sjcl.random.startCollectors();
 }
-sjcl.random.startCollectors();
+
 
 /**
  * Compress a message (deflate compression).

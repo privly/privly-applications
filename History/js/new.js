@@ -112,7 +112,7 @@ var callbacks = {
     hours = hours > 0 ? hours + "h " : "";
 
     var end;
-    if(minutes == 0 && hours == 0 && days == 0) {
+    if(minutes === 0 && hours === 0 && days === 0) {
       minutes = "";
       end = "Just now";
     } else {
@@ -130,13 +130,24 @@ var callbacks = {
     var tableBody = document.getElementById("table_body");
     for(var i = 0; i < response.json.length; i++) {
 
-      var app = response.json[i].privly_application;
       var href = response.json[i].privly_URL;
-      var localHref = "/privly-applications/" + app + "/show.html?privlyOriginalURL=" +
-        encodeURIComponent(href);
-      if ( privlyNetworkService.platformName() === "FIREFOX" ) {
-        localHref = "/content" + localHref;
+      var app = response.json[i].privly_application;
+
+      // Rename deperecated apps
+      if ( app === "ZeroBin" ) {
+        app = "Message";
       }
+
+      // Assumes web and checks for other platforms
+      var localHref = "/apps/";
+      var platform = privlyNetworkService.platformName();
+      if ( platform === "FIREFOX" ) {
+        localHref = "/content/privly-applications/";
+      } else if(platform === "CHROME") {
+        localHref = "/privly-applications/";
+      }
+      localHref += app + "/show.html?privlyOriginalURL=" +
+        encodeURIComponent(href);
 
       var tr = document.createElement('tr');
       
@@ -187,7 +198,7 @@ var callbacks = {
       td4.appendChild(i3);
       tr.appendChild(td4);
       
-      tableBody.appendChild(tr)
+      tableBody.appendChild(tr);
       
     }
     
@@ -202,7 +213,7 @@ var callbacks = {
       }
     });
     
-    $('button.preview_link').on('click', function(evt) {
+    $('button.preview_link').on('click', function() {
 
       $('html, body').animate({ scrollTop: 0 }, 'slow');
 
@@ -264,10 +275,10 @@ var callbacks = {
     });
 
     $('#hide_preview').on('click', function() {
-    $('#iframe_col').hide('slow');
+      $('#iframe_col').hide('slow');
     });
   }
-}
+};
 
 /**
  * Message handlers for integration with extension framworks.
@@ -279,32 +290,12 @@ var messaging = {
    * and the injectable application.
    */
   initialize: function() {
-      privlyExtension.initialContent = messaging.initialContent;
-      privlyExtension.messageSecret = messaging.messageSecret;
+      privlyExtension.initialContent = function(){};
+      privlyExtension.messageSecret = function(){};
       
       // Initialize message pathway to the extension.
       privlyExtension.firePrivlyMessageSecretEvent();
-  },
-  
-  
-  /**
-   * Listener for the initial content that should be dropped into the form.
-   * This may be sent by a browser extension.
-   *
-   * @param {json} data A json document containing the initial content for
-   * the form.
-   */
-  initialContent: function(data) {},
-
-  /**
-   * Request the initial content from the extension. This callback is executed
-   * after the extension successfully messages the secret message back to the
-   * application.
-   * 
-   * @param {json} data A json document that is ignored by this function.
-   */
-  messageSecret: function(data) {}
-  
+  }
 }
 
 /**

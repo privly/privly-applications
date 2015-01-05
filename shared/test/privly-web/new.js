@@ -15,7 +15,7 @@ describe ("Privly-web new.js API Test Suite", function() {
     var keys = Object.keys(__html__);
     var selectKey;
     keys.forEach(function(key) {
-      if( key.indexOf("ZeroBin/new.html") >= 0 ) {
+      if( key.indexOf("Message/new.html") >= 0 ) {
         selectKey = key;
       }
     });

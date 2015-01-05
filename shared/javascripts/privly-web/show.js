@@ -52,6 +52,9 @@
  * }
  *
  **/
+/* jshint undef: true, unused: true */
+/* global privlyParameters, $, privlyNetworkService, privlyHostPage */
+/* global privlyTooltip, loadInjectedCSS, loadInjectedJS, loadTopCSS, loadTopJS */
 
 /**
  * @namespace
@@ -95,7 +98,7 @@ var state = {
   * 
   **/
   isInlineEdit: false
-}
+};
 
 /**
  * The callbacks assign the state of the application.
@@ -116,6 +119,7 @@ var state = {
  *    the application is injected into the context of a host page.
  *    Callback=click
  */
+
 var callbacks = {
 
   /**
@@ -131,15 +135,21 @@ var callbacks = {
     state.webApplicationURL = privlyParameters.getApplicationUrl(href);
     state.parameters = privlyParameters.getParameterHash(state.webApplicationURL);
     state.jsonURL = state.webApplicationURL;
-    if (state.parameters["privlyDataURL"] !== undefined) {
-     state.jsonURL = state.parameters["privlyDataURL"];
+    if (state.parameters.privlyDataURL !== undefined) {
+      state.jsonURL = state.parameters.privlyDataURL;
     }
-    
+
     // Display the data source to the user
-    $(".meta_source_domain").text("Source URL: " + state.jsonURL);
-    
+    var domainSelector = document.createElement('a');
+    domainSelector.href = state.jsonURL;
+    $(".meta_source_domain").text("Data Source: " + domainSelector.hostname);
+
+    // Display the data source to the user
+    $(".meta_source_url").text(state.webApplicationURL);
+
     // Register the click listener.
-    $("body").on("click", callbacks.click);
+    $("#post_content").on("click", callbacks.click);
+    $("#edit_form").on("click", callbacks.click);
 
     // Register the link and button listeners.
     $("#destroy_link").click(callbacks.destroy);
@@ -147,7 +157,7 @@ var callbacks = {
     // Watch the update button and pass the content callback
     // to the update function
     document.getElementById("update").addEventListener('click', 
-      function(evt){callbacks.update(evt, callback)});
+      function(evt){callbacks.update(evt, callback);});
     $("#edit_link").click(callbacks.edit);
 
     // Set the nav bar to the proper domain
@@ -188,19 +198,22 @@ var callbacks = {
       // Load CSS to show the nav and the rest of the non-injected page
       loadTopCSS();
       loadTopJS();
-   }
-   
-   // Ensure whitelist compliance of the data parameter when the content is
-   // injected
-   if( !privlyHostPage.isInjected() || 
-    privlyNetworkService.isWhitelistedDomain(state.jsonURL) ) {
-     // Make the cross origin request as if it were on the same origin.
-     // The "same origin" requirement is only possible on extension frameworks
-     privlyNetworkService.sameOriginGetRequest(state.jsonURL, 
-       function(response){callbacks.contentReturned(response, callback)});
-   } else {
-     $("#post_content").html("<p>Click to view this content.</p>");
-   }
+    }
+
+    // Ensure whitelist compliance of the data parameter when the content is
+    // injected
+    if( !privlyHostPage.isInjected() ||
+        privlyNetworkService.isWhitelistedDomain(state.jsonURL) ) {
+
+      // Make the cross origin request as if it were on the same origin.
+      // The "same origin" requirement is only possible on extension frameworks
+      privlyNetworkService.sameOriginGetRequest(state.jsonURL,
+        function(response){callbacks.contentReturned(response, callback);});
+    } else {
+      $("#post_content").html("<p>Click to view this content.</p>");
+    }
+
+    callbacks.showDownloadMessage();
   },
   
   /**
@@ -260,6 +273,7 @@ var callbacks = {
           privlyNetworkService.initPrivlyService(
             state.jsonURL, 
             function(){
+
               // Initialize the form for updating the post
               // if the user has permission.
               if( privlyNetworkService.permissions.canUpdate) {
@@ -274,7 +288,7 @@ var callbacks = {
                 
                 var dataDomain = privlyNetworkService.getProtocolAndDomain(state.jsonURL);
                 privlyTooltip.updateMessage(dataDomain, "Editable");
-                $(".meta_canupdate").text("You can update this content.");
+                $(".meta_canupdate").show();
               }
 
               // Initialize the form for destroying the post
@@ -283,7 +297,7 @@ var callbacks = {
                 $("#destroy_link").show();
                 $("#no_permissions_nav").hide();
                 $("#permissions_nav").show();
-                $(".meta_candestroy").text("You can destroy this content.");
+                $(".meta_candestroy").show();
                 $("#destruction_select_block").show();
               }
             }, 
@@ -302,7 +316,7 @@ var callbacks = {
       // Set burnt date meta
       if( json.burn_after_date ) {
         var destroyedDate = new Date(json.burn_after_date);
-        $(".meta_destroyed_around").text("Destroyed Around " + 
+        $(".meta_destroyed_around").text("Automatically Destroyed Around " +
           destroyedDate.toDateString() + ". ");
         var currentSecondsUntilDestruction = Math.floor((destroyedDate - Date.now())/1000);
         $("#current_destruction_time")
@@ -310,6 +324,7 @@ var callbacks = {
           .text(Math.floor(currentSecondsUntilDestruction / 86400) + " Days");
         $("#seconds_until_burn").val(currentSecondsUntilDestruction);
       } else {
+
         // Set the displayed value on the form. The value is already infinity
         $("#current_destruction_time") 
           .text("Infinite");
@@ -346,7 +361,7 @@ var callbacks = {
   destroy: function(callback) {
     $("#edit_form").slideUp();
     privlyNetworkService.sameOriginDeleteRequest(state.jsonURL, 
-      function(response){callbacks.destroyed(response, callback)}, {});
+      function(response){callbacks.destroyed(response, callback);}, {});
   },
   
   /**
@@ -419,7 +434,7 @@ var callbacks = {
       },
       format:"json"};
     privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
-      function(response){callbacks.contentReturned(response, callback)}, 
+      function(response){callbacks.contentReturned(response, callback);},
         contentToPost);
     
     // needed to stop click event from propagating to body
@@ -475,7 +490,7 @@ var callbacks = {
     }
     
     if (state.isClicked) {
-      var target = $(evt.target)
+      var target = $(evt.target);
       if (state.isInlineEdit && !target.is("textarea") &&
           !target.is("select")) {
         
@@ -560,6 +575,44 @@ var callbacks = {
       callback();
     }
   },
+
+  /**
+   * If the application is shown in the hosted context then the download
+   * link should be shown.
+   *
+   * @param {function} callback The function to call after the doubleclick
+   * handler is complete.
+   */
+  showDownloadMessage: function(callback) {
+
+    // Show the download extension link in the hosted context
+    if( document.location.href.indexOf("http") === 0 ){
+
+      // Pick which browser logo and link href to display
+      var browser = "firefox";
+      if (navigator.userAgent.indexOf("Chrome") !== -1){
+        browser = "chrome";
+      }
+      var target = $("#downloadmessage a").data("privly-" + browser);
+      $("#downloadmessage a").attr("href", target);
+      $("#downloadmessage p a").attr("href", target);
+
+      $("#" + browser + "_img").show(); // show current browser image
+
+      // Determine string of header
+      var referrer = document.referrer;
+      var msg = "You don't need to ";
+      if (referrer === ""){
+        msg += "visit this page!";
+      } else {
+        var anchor = document.createElement("a");
+        anchor.href = referrer;
+        msg += "leave " + anchor.host + "!";
+      }
+      $(".referrer").text(msg);
+      $("#downloadmessage").show();
+    }
+  },
   
   /**
    * Determines whether a callback is defined before calling it.
@@ -568,9 +621,9 @@ var callbacks = {
    * @return {boolean} True if the parameter is a function, else false
    */
   functionExists: function(callback) {
-    if (typeof callback == 'function') { 
+    if (typeof callback === "function") {
       return true;
     }
     return false;
   }
-}
+};

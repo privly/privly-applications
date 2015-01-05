@@ -1,5 +1,7 @@
 # Status and Overview
 
+The Message application was previously known as the ZeroBin app.  We are still using a fork of the [Zerobin project](http://sebsauvage.net/wiki/doku.php?id=php:zerobin) in the app. We renamed "ZeroBin" to "Message" since it is significantly less confusing to users.
+
 ZeroBin encrypts the content in the browser using Javascript before sending it to the remote server for storage. The decryption key is then added to the anchor of the URL before it is inserted into the host page. The anchor is never shared with the remote server, so it is never able to read the decrypted text. In order to read the content, users must have both the link, and the ciphertext.
 
 We modified the ZeroBin application to work with the Privly [URL Specification](http://github.com/privly/privly-organization/wiki/URL-Specification). It now places the ciphertext URL onto the anchor with the decryption key. This change removed ZeroBin's dependence on server rendering.

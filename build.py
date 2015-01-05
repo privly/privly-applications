@@ -25,6 +25,14 @@
 # Prerequisites for running this script include
 # BeautifulSoup and Jinja2. You can install
 # them both with:
+#
+# `pip install -r requirements.txt`
+#
+# This assumes you have python-pip installed:
+# `sudo apt-get install python-pip`
+#
+# Alternatively, these can be installed using `easy_install`:
+#
 # `sudo easy_install beautifulsoup4 jinja2`
 #
 # This assumes you have python-setuptools:
@@ -109,7 +117,7 @@ def get_link_creation_apps():
             creation_apps.append(template["subtemplate_dict"]["name"])
 
   # Hack to maintain current app order
-  creation_apps.sort(reverse=True)
+  creation_apps.sort()
   return creation_apps
 
 release_titles = ["experimental", "deprecated", "alpha", "beta", "release"]

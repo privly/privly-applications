@@ -83,17 +83,17 @@
           Select Application
          </li>
          <li>
-          <a href="../ZeroBin/new.html">
-           <span class="glyphicon glyphicon-pencil">
-           </span>
-           New ZeroBin
-          </a>
-         </li>
-         <li>
           <a href="../PlainPost/new.html">
            <span class="glyphicon glyphicon-pencil">
            </span>
            New PlainPost
+          </a>
+         </li>
+         <li>
+          <a href="../Message/new.html">
+           <span class="glyphicon glyphicon-pencil">
+           </span>
+           New Message
           </a>
          </li>
          <li>
@@ -186,16 +186,12 @@
     </div>
     <div id="form" style="display:none;">
      <div class="row">
-      <div class="col-md-12 form-group">
+      <div class="col-md-6 form-group">
        <p id="loadingDiv">
         <img alt="loading" src="../shared/images/ajax-loader.gif"/>
        </p>
        <h1>
-        Sign In to Content Server:
-        <span class="home_domain">
-         <span>
-         </span>
-        </span>
+        Sign In
        </h1>
        <noscript>
         <h1>
@@ -225,9 +221,27 @@
          <span class="content_server">
          </span>
         </button>
-        <a class="btn btn-warning" href="/users/invitation/new" target="_blank">
-         No account? Get invited!
-        </a>
+       </div>
+      </div>
+      <div class="col-md-6 form-group">
+       <h1>
+        Register
+       </h1>
+       <br/>
+       <div class="form-group">
+        <label for="register_email">
+         Email
+        </label>
+        <br/>
+        <input id="register_email" name="user[email]" placeholder="Enter email" size="30" type="email" value=""/>
+       </div>
+       <br/>
+       <div class="form-group">
+        <button class="btn btn-primary" id="register">
+         Request invite on
+         <span class="content_server">
+         </span>
+        </button>
        </div>
       </div>
      </div>
@@ -294,12 +308,19 @@
   <div id="footer">
    <div class="container">
     <p class="text-muted credit">
-     You are viewing a Privly
+     <a href="https://www.priv.ly/pages/donate.html" target="_blank">
+      <span class="glyphicon glyphicon-gift">
+      </span>
+      Donate
+     </a>
+     to build a more private web.
+          You are viewing a
+          Privly
      <span style="vertical-align: super;font-size: xx-small">
       ®
      </span>
      Application,
-     <a href="http://priv.ly" target="_blank">
+     <a href="https://priv.ly/pages/about" target="_blank">
       learn more
      </a>
      about Privly.

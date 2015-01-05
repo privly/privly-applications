@@ -44,7 +44,10 @@ module.exports = function(config) {
 
     // Provide the HTML document as a fixture
     preprocessors: {
-          '*/*.html': ['html2js']
+          '*/*.html': ['html2js'],
+
+          // Load all the shared libraries at the top level
+          'shared/javascripts/*.js': 'coverage'
         },
 
     // list of files / patterns to load in the browser
@@ -56,8 +59,13 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['progress', 'coverage'],
 
+    coverageReporter: {
+      type : 'lcov',
+      dir : 'test/coverage/',
+      file : 'coverage.txt'
+    },
 
     // web server port
     port: 9876,
