@@ -198,7 +198,7 @@ if platform == "chrome_extension"
   # This currently references the relative path to the URL
   caps = Selenium::WebDriver::Remote::Capabilities.chrome(
     "chromeOptions" => {
-      "args" => [ "--disable-web-security", "load-extension=.." ]
+      "args" => [ "--disable-web-security", "load-extension=../../.." ]
       }
   )
 
@@ -274,7 +274,7 @@ manifest_files.each do |manifest_file|
       next
     end
 
-    release_titles = ["experimental", "deprecated", "alpha", "beta", "release"]
+    release_titles = ["redirect", "experimental", "deprecated", "alpha", "beta", "release"]
     unless release_titles.index(app_manifest["release_status"]) >= 
       release_titles.index(release_status)
       puts "Skipping due to release status: " + outfile_path
