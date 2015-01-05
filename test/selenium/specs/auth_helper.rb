@@ -9,6 +9,9 @@ module AuthHelper
   # server
   def login(content_server)
 
+    # Ensures the user is currently on a page with a login link
+    assert page.has_content?('Login')
+
     # Default to a user defined on localhost
     user = "development@priv.ly"
     password = "password"
@@ -25,6 +28,10 @@ module AuthHelper
     page.driver.browser.navigate.refresh
     login_button = page.all(:css, '.login_url')
     login_button[0].click
+
+    # Forces page to wait for load
+    assert page.has_content?('Sign In')
+
     fill_in 'user_email', :with =>  user
     fill_in 'user_password', :with => password
     domain = page.evaluate_script('privlyNetworkService.contentServerDomain()');
