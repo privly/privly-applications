@@ -211,7 +211,7 @@ var callbacks = {
     });
 
     /**
-    *   Retrieves the data and puts into iframe for displaying.
+    *   Takes reference of the button, retrieves the data and puts into iframe for displaying.
     */
     function iframeReturn($reference){
       var iFrame = document.createElement('iframe');
@@ -248,6 +248,11 @@ var callbacks = {
       $(".privly_iframe").append(iFrame);
     }
 
+    /** 
+    * Get the reference of button previous to the one who's data is displayed and call iframeReturn function. 
+    * 'buttonClicked' variable basically stores the 'Preview ZeroBin/PlainPost' button whose corresponding
+    * data is being displayed in the lightbox.  
+    */ 
     $('button#prev_preview').on('click',function(){
       //finds the previous button with preview_link class and passes its reference.
       //a small example of why this works : http://jsfiddle.net/5QdgB/
@@ -257,6 +262,11 @@ var callbacks = {
       iframeReturn(previous);
     });
 
+    /** 
+    * Get the reference of button next to the one who's data is displayed and call iframeReturn function. 
+    * If the user is currently viewing the last message, and clicks on 'Next'
+    * roll back up to the first message (index = 0) and display that.  
+    */ 
     $('button#next_preview').on('click',function(){
       //finds the next button with preview_link class and passes its reference.
       var index = $('.preview_link').index(buttonClicked);
@@ -267,7 +277,9 @@ var callbacks = {
       buttonClicked=next;
       iframeReturn(next);
     });
-    
+    /** 
+    * Take the reference of the button that was clicked and pass to iframeReturn function.  
+    */ 
     $('button.preview_link').on('click', function() {      
       buttonClicked = $(this);
       iframeReturn(buttonClicked);
