@@ -210,6 +210,8 @@ var callbacks = {
       }
     });
 
+
+    var buttonClicked;
     /**
     *   Takes reference of the button, retrieves the data and puts into iframe for displaying.
     */
@@ -283,7 +285,6 @@ var callbacks = {
     $('button.preview_link').on('click', function() {      
       buttonClicked = $(this);
       iframeReturn(buttonClicked);
-      iter = 1;
     });
 
     $('button.open_link').on('click', function() {
