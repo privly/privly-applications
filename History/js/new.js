@@ -253,7 +253,6 @@ var callbacks = {
       //a small example of why this works : http://jsfiddle.net/5QdgB/
       var index = $('.preview_link').index(buttonClicked);
       var previous = $('.preview_link').slice(index-1).first();
-      console.log("previous = "+previous);
       buttonClicked = previous;
       iframeReturn(previous);
     });
@@ -265,7 +264,6 @@ var callbacks = {
         index = -1;     //rolling back to the first message after the last.
       }
       var next = $('.preview_link').slice(index+1).first();
-      console.log("next = "+next);
       buttonClicked=next;
       iframeReturn(next);
     });
@@ -289,16 +287,10 @@ var callbacks = {
             if( response.jqXHR.status === 200 ) {
               var tr = $(this).closest('tr');
               tr.hide();
-              //$('#iframe_col').hide('slow');
               $('#myModal').modal('hide');
             }
         }, {});
     });
-
-    // After adding the modal box, there's no need for this.
-    // $('#hide_preview').on('click', function() {
-    //   $('#iframe_col').hide('slow');
-    // });
 
   }
 };
