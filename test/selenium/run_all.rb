@@ -95,13 +95,16 @@ if platform.start_with? "sauce"
     config['browserName'] = @browser
     if @browser == "firefox"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.firefox
+      config['version'] = "34"
+      @sauce_caps.version = "34"
     elsif @browser == "chrome"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.chrome
+      config['version'] = "39"
+      @sauce_caps.version = "39"
     end
-    config['version'] = "34"
-    @sauce_caps.version = "34"
+
     @sauce_caps.platform = "Windows 7"
-    @sauce_caps[:name] = "Testing Selenium 2 with Ruby on Sauce"
+    @sauce_caps[:name] = "Privly.ly Project Integration Tests"
     if ENV['SAUCE_URL'] == nil or ENV['SAUCE_URL'] == ""
       puts "Before you can test on Sauce you need to set an environmental variable containing your Sauce URL"
       exit 1
@@ -222,7 +225,6 @@ if platform == "sauce_chrome_extension"
   # Base64.strict_encode64 File.read(crx_path)
   extension = Base64.strict_encode64 File.binread("../../../PrivlyChromeExtension.crx")
 
-  # Get the extension from localhost:5000 over Sauce Connect
   @sauce_caps["chromeOptions"] = {
     "args" => [ "--disable-web-security" ],
     "extensions" => [extension]
@@ -242,9 +244,6 @@ if platform == "sauce_chrome_extension"
   end
   Capybara.current_driver = :sauce_chrome_extension
   Capybara.default_driver = :sauce_chrome_extension
-
-  # Assign the content server to the remote server
-  content_server = "https://dev.privly.org"
 end
 
 # Platforms that are not currently implemented
