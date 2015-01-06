@@ -197,7 +197,7 @@ var callbacks = {
       
       tableBody.appendChild(tr);
       
-    } //for loop completion.
+    }
     
     dataTable = $('#posts').dataTable({"bPaginate": false, "bFilter": false});
 
@@ -250,9 +250,10 @@ var callbacks = {
 
     $('button#prev_preview').on('click',function(){
       //finds the previous button with preview_link class and passes its reference.
-      //more info : http://jsfiddle.net/5QdgB/
+      //a small example of why this works : http://jsfiddle.net/5QdgB/
       var index = $('.preview_link').index(buttonClicked);
       var previous = $('.preview_link').slice(index-1).first();
+      console.log("previous = "+previous);
       buttonClicked = previous;
       iframeReturn(previous);
     });
@@ -260,23 +261,19 @@ var callbacks = {
     $('button#next_preview').on('click',function(){
       //finds the next button with preview_link class and passes its reference.
       var index = $('.preview_link').index(buttonClicked);
+      if(index == $('.preview_link').length - 1){
+        index = -1;     //rolling back to the first message after the last.
+      }
       var next = $('.preview_link').slice(index+1).first();
+      console.log("next = "+next);
       buttonClicked=next;
       iframeReturn(next);
     });
     
-    $('button.preview_link').on('click', function() {
-
-      //$('html, body').animate({ scrollTop: 0 }, 'slow');
-
-      // $('#iframe_col').show('slow', function() {
-      //   $(this).css('display', 'inherit');
-      // });
-      
+    $('button.preview_link').on('click', function() {      
       buttonClicked = $(this);
       iframeReturn(buttonClicked);
       iter = 1;
-
     });
 
     $('button.open_link').on('click', function() {
