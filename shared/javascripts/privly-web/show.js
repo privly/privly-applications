@@ -165,6 +165,11 @@ var callbacks = {
 
     if(privlyHostPage.isInjected()) {
 
+      // Force links to open in a new window/tab
+      var openBlank = document.createElement("base");
+      openBlank.setAttribute("target", "_blank");
+      document.getElementsByTagName('head')[0].appendChild(openBlank);
+
       // Creates a tooptip which indicates the content is not a 
       // natural element of the page
       privlyTooltip.tooltip();

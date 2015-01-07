@@ -8,12 +8,7 @@ class TestOptions < Test::Unit::TestCase
     if not @@privly_extension_active
       return
     end
-    @current_browser = page.driver.browser.browser.to_s
-    if @current_browser == "firefox"
-      @options_url = "chrome://privly/content/privly-applications/Pages/ChromeOptions.html"
-    elsif @current_browser == "chrome"
-      @options_url = "chrome-extension://gipdbddcenpbjpmjblgmogkeblhoaejd/privly-applications/Pages/ChromeOptions.html"
-    end
+    @options_url = Capybara.app_host + "/privly-applications/Pages/ChromeOptions.html"
     page.driver.browser.get(@options_url)
   end
 
@@ -61,6 +56,8 @@ class TestOptions < Test::Unit::TestCase
     if not @@privly_extension_active
       return
     end
+
+    page.driver.browser.get(@options_url)
 
     page.select 'https://dev.privly.org', :from => 'content_server_url'
     click_button('save_server')
