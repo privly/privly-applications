@@ -104,7 +104,7 @@ if platform.start_with? "sauce"
     end
 
     @sauce_caps.platform = "Windows 7"
-    @sauce_caps[:name] = "Privly.ly Project Integration Tests"
+    @sauce_caps[:name] = "Priv.ly Project Integration Tests"
     if ENV['SAUCE_URL'] == nil or ENV['SAUCE_URL'] == ""
       puts "Before you can test on Sauce you need to set an environmental variable containing your Sauce URL"
       exit 1
@@ -231,7 +231,7 @@ if platform == "sauce_chrome_extension"
   }
 
   # Assign the path to find the applications in the extension
-  Capybara.app_host = "chrome-extension://gipdbddcenpbjpmjblgmogkeblhoaejd"
+  Capybara.app_host = "chrome-extension://gbgechigghkleokfnpebmlfldpbloelf"
   address_start = Capybara.app_host + "/privly-applications/"
 
   Capybara.register_driver :sauce_chrome_extension do |app|
