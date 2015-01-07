@@ -8,7 +8,7 @@ class TestOptions < Test::Unit::TestCase
     if not @@privly_extension_active
       return
     end
-    @options_url = Capybara.app_host + "/privly-applications/Pages/ChromeOptions.html"
+    @options_url = @@privly_applications_folder_path + "/Pages/ChromeOptions.html"
     page.driver.browser.get(@options_url)
   end
 
