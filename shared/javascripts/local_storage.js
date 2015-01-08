@@ -24,11 +24,12 @@ var ls = {
     }
 
     if ( ls.localStorageDefined ) {
-      return localStorage.setItem(key, value);
+      localStorage.setItem(key, value);
     } else {
       ls.preferences.setCharPref(key, value);
-      return value;
     }
+
+    return value;
   },
 
   /**
