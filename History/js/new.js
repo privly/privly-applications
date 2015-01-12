@@ -213,6 +213,7 @@ var callbacks = {
 
     var buttonClicked;    //stores the reference of the preview button clicked to bring up the modal box.
     var destroyButtonClicked;   //stores the reference of destroy button clicked.
+
     /**
     *   Takes reference of the button, retrieves the data and puts into iframe for displaying.
     */
@@ -280,6 +281,7 @@ var callbacks = {
       buttonClicked=next;
       iframeReturn(next);
     });
+
     /** 
     * Take the reference of the button that was clicked and pass to iframeReturn function.  
     */ 
@@ -304,7 +306,6 @@ var callbacks = {
         function(response) {
             if( response.jqXHR.status === 200 ) {
               var tr = destroyButtonClicked.closest('tr');
-              alert(tr);
               tr.hide();
             }
         }, {});
