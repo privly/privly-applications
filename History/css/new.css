@@ -167,3 +167,20 @@ table.dataTable.display tbody tr.odd:hover > .sorting_1,
 table.dataTable.display tbody tr.even:hover > .sorting_1 {
   background-color: #C4C4C4;
 }
+
+
+/* In the modal box historyPreview, move Previous and Next button a bit up, to align perfectly */
+#prev_preview{
+  position: relative;
+  bottom: 8px;      /* no need to make it percentage or relative. 8px works for all resolutions perfectly. Tested. */
+}
+
+#next_preview{
+  position: relative;
+  bottom: 8px;
+}
+
+/* So, the previous and next button don't stick up to it in the modal box/light box for history preview */
+button.close {
+    padding-left: 1%;
+}
