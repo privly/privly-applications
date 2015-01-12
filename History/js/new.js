@@ -152,8 +152,8 @@ var callbacks = {
       td1b.setAttribute("type", "submit");
       td1b.setAttribute("class", "btn btn-default preview_link");
       td1b.setAttribute("data-canonical-href", localHref);
-      td1b.setAttribute("data-toggle","modal");
-      td1b.setAttribute("data-target","#myModal");
+      td1b.setAttribute("data-toggle","modal");       //so it triggers a modal on click.
+      td1b.setAttribute("data-target","#historyPreview");    //ID for the modal box in HTML.
       td1b.textContent = "Preview " + app;
       td1b.style.width = "150px";
       td1b.style.height = "33px";
@@ -211,7 +211,8 @@ var callbacks = {
     });
 
 
-    var buttonClicked;
+    var buttonClicked;    //stores the reference of the preview button clicked to bring up the modal box.
+    var destroyButtonClicked;   //stores the reference of destroy button clicked.
     /**
     *   Takes reference of the button, retrieves the data and puts into iframe for displaying.
     */
@@ -292,17 +293,23 @@ var callbacks = {
     });
 
     $('#destroy_link').on('click', function() {
+      destroyButtonClicked = $(this);
+    });
+
+    $("#ok_confirm").on('click',function(){
       var url = privlyParameters.getApplicationUrl($("iframe").attr("data-canonical-href"));
       var dataURL =  privlyParameters.getParameterHash(url).privlyDataURL;
       privlyNetworkService.sameOriginDeleteRequest(
         dataURL,
         function(response) {
             if( response.jqXHR.status === 200 ) {
-              var tr = $(this).closest('tr');
+              var tr = destroyButtonClicked.closest('tr');
+              alert(tr);
               tr.hide();
-              $('#myModal').modal('hide');
             }
         }, {});
+      $('#historyPreview').modal('hide');
+      $('#confirmBox').modal('hide');
     });
 
   }
