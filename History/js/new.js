@@ -157,6 +157,8 @@ var callbacks = {
       td1b.setAttribute("type", "submit");
       td1b.setAttribute("class", "btn btn-default preview_link");
       td1b.setAttribute("data-canonical-href", localHref);
+      td1b.setAttribute("data-toggle","modal");       //so it triggers a modal on click.
+      td1b.setAttribute("data-target","#historyPreview");    //ID for the modal box in HTML.
       td1b.textContent = "Preview " + app;
       td1b.style.width = "150px";
       td1b.style.height = "33px";
@@ -212,17 +214,16 @@ var callbacks = {
         $('#posts').removeClass("cell-border");
       }
     });
-    
-    $('button.preview_link').on('click', function() {
 
-      $('html, body').animate({ scrollTop: 0 }, 'slow');
 
-      $('#iframe_col').show('slow', function() {
-        $(this).css('display', 'inherit');
-      });
-      
+    var buttonClicked;    //stores the reference of the preview button clicked to bring up the modal box.
+    var destroyButtonClicked;   //stores the reference of destroy button clicked.
+
+    /**
+    *   Takes reference of the button, retrieves the data and puts into iframe for displaying.
+    */
+    function iframeReturn($reference){
       var iFrame = document.createElement('iframe');
-
       // Styling and display attributes that mirror those
       // of the privly.js content script
       iFrame.setAttribute("frameborder","0");
@@ -240,7 +241,7 @@ var callbacks = {
       iFrame.setAttribute("data-privly-accept-resize","true");
 
       // The href of the original link as dictated by the remote server
-      var canonicalHref = $(this).attr("data-canonical-href");
+      var canonicalHref = $reference.attr("data-canonical-href");
       iFrame.setAttribute("data-canonical-href", canonicalHref);
 
       //Set the source URL
@@ -254,6 +255,44 @@ var callbacks = {
       // Clear the old iframe and insert the new one
       $(".privly_iframe").empty();
       $(".privly_iframe").append(iFrame);
+    }
+
+    /** 
+    * Get the reference of button previous to the one who's data is displayed and call iframeReturn function. 
+    * 'buttonClicked' variable basically stores the 'Preview ZeroBin/PlainPost' button whose corresponding
+    * data is being displayed in the lightbox.  
+    */ 
+    $('button#prev_preview').on('click',function(){
+      //finds the previous button with preview_link class and passes its reference.
+      //a small example of why this works : http://jsfiddle.net/5QdgB/
+      var index = $('.preview_link').index(buttonClicked);
+      var previous = $('.preview_link').slice(index-1).first();
+      buttonClicked = previous;
+      iframeReturn(previous);
+    });
+
+    /** 
+    * Get the reference of button next to the one who's data is displayed and call iframeReturn function. 
+    * If the user is currently viewing the last message, and clicks on 'Next'
+    * roll back up to the first message (index = 0) and display that.  
+    */ 
+    $('button#next_preview').on('click',function(){
+      //finds the next button with preview_link class and passes its reference.
+      var index = $('.preview_link').index(buttonClicked);
+      if(index == $('.preview_link').length - 1){
+        index = -1;     //rolling back to the first message after the last.
+      }
+      var next = $('.preview_link').slice(index+1).first();
+      buttonClicked=next;
+      iframeReturn(next);
+    });
+
+    /** 
+    * Take the reference of the button that was clicked and pass to iframeReturn function.  
+    */ 
+    $('button.preview_link').on('click', function() {      
+      buttonClicked = $(this);
+      iframeReturn(buttonClicked);
     });
 
     $('button.open_link').on('click', function() {
@@ -261,22 +300,24 @@ var callbacks = {
     });
 
     $('#destroy_link').on('click', function() {
+      destroyButtonClicked = $(this);
+    });
+
+    $("#ok_confirm").on('click',function(){
       var url = privlyParameters.getApplicationUrl($("iframe").attr("data-canonical-href"));
       var dataURL =  privlyParameters.getParameterHash(url).privlyDataURL;
       privlyNetworkService.sameOriginDeleteRequest(
         dataURL,
         function(response) {
             if( response.jqXHR.status === 200 ) {
-              var tr = $(this).closest('tr');
+              var tr = destroyButtonClicked.closest('tr');
               tr.hide();
-              $('#iframe_col').hide('slow');
             }
         }, {});
+      $('#historyPreview').modal('hide');
+      $('#confirmBox').modal('hide');
     });
 
-    $('#hide_preview').on('click', function() {
-      $('#iframe_col').hide('slow');
-    });
   }
 };
 
