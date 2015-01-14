@@ -2,6 +2,8 @@
  * @fileOverview Manages the form interaction with remote servers.
  **/
 
+/*global historyModal:true */
+
 /**
  * The callbacks assign the state of the application.
  *
@@ -201,123 +203,16 @@ var callbacks = {
       tr.appendChild(td4);
       
       tableBody.appendChild(tr);
-      
     }
     
-    dataTable = $('#posts').dataTable({"bPaginate": false, "bFilter": false});
-
-    // Add 'cell-border' class when the window has a width smaller than 768px
-    $(window).resize(function() {
-      if($(window).width() < 768) {
-        $('#posts').addClass("cell-border");
-      } else {
-        $('#posts').removeClass("cell-border");
-      }
-    });
-
-
-    var buttonClicked;    //stores the reference of the preview button clicked to bring up the modal box.
-    var destroyButtonClicked;   //stores the reference of destroy button clicked.
-
-    /**
-    *   Takes reference of the button, retrieves the data and puts into iframe for displaying.
-    */
-    function iframeReturn($reference){
-      var iFrame = document.createElement('iframe');
-      // Styling and display attributes that mirror those
-      // of the privly.js content script
-      iFrame.setAttribute("frameborder","0");
-      iFrame.setAttribute("vspace","0");
-      iFrame.setAttribute("hspace","0");
-      iFrame.setAttribute("width","100%");
-      iFrame.setAttribute("marginwidth","0");
-      iFrame.setAttribute("marginheight","0");
-      iFrame.setAttribute("height","1px");
-      iFrame.setAttribute("frameborder","0");
-      iFrame.setAttribute("style","width: 100%; height: 32px; " +
-        "overflow: hidden;");
-      iFrame.setAttribute("scrolling","no");
-      iFrame.setAttribute("overflow","hidden");
-      iFrame.setAttribute("data-privly-accept-resize","true");
-
-      // The href of the original link as dictated by the remote server
-      var canonicalHref = $reference.attr("data-canonical-href");
-      iFrame.setAttribute("data-canonical-href", canonicalHref);
-
-      //Set the source URL
-      iFrame.setAttribute("src", canonicalHref);
-
-      //The id and the name are the same so that the iframe can be
-      //uniquely identified and resized by resizeIframePostedMessage()
-      iFrame.setAttribute("id", "ifrm0");
-      iFrame.setAttribute("name", "ifrm0");
-
-      // Clear the old iframe and insert the new one
-      $(".privly_iframe").empty();
-      $(".privly_iframe").append(iFrame);
-    }
-
-    /** 
-    * Get the reference of button previous to the one who's data is displayed and call iframeReturn function. 
-    * 'buttonClicked' variable basically stores the 'Preview ZeroBin/PlainPost' button whose corresponding
-    * data is being displayed in the lightbox.  
-    */ 
-    $('button#prev_preview').on('click',function(){
-      //finds the previous button with preview_link class and passes its reference.
-      //a small example of why this works : http://jsfiddle.net/5QdgB/
-      var index = $('.preview_link').index(buttonClicked);
-      var previous = $('.preview_link').slice(index-1).first();
-      buttonClicked = previous;
-      iframeReturn(previous);
-    });
-
-    /** 
-    * Get the reference of button next to the one who's data is displayed and call iframeReturn function. 
-    * If the user is currently viewing the last message, and clicks on 'Next'
-    * roll back up to the first message (index = 0) and display that.  
-    */ 
-    $('button#next_preview').on('click',function(){
-      //finds the next button with preview_link class and passes its reference.
-      var index = $('.preview_link').index(buttonClicked);
-      if(index == $('.preview_link').length - 1){
-        index = -1;     //rolling back to the first message after the last.
-      }
-      var next = $('.preview_link').slice(index+1).first();
-      buttonClicked=next;
-      iframeReturn(next);
-    });
-
-    /** 
-    * Take the reference of the button that was clicked and pass to iframeReturn function.  
-    */ 
-    $('button.preview_link').on('click', function() {      
-      buttonClicked = $(this);
-      iframeReturn(buttonClicked);
-    });
+    var dataTable = $('#posts').dataTable({"bPaginate": false, "bFilter": false});
 
     $('button.open_link').on('click', function() {
       window.open($(this).attr("data-canonical-href"), '_blank');
     });
 
-    $('#destroy_link').on('click', function() {
-      destroyButtonClicked = $(this);
-    });
-
-    $("#ok_confirm").on('click',function(){
-      var url = privlyParameters.getApplicationUrl($("iframe").attr("data-canonical-href"));
-      var dataURL =  privlyParameters.getParameterHash(url).privlyDataURL;
-      privlyNetworkService.sameOriginDeleteRequest(
-        dataURL,
-        function(response) {
-            if( response.jqXHR.status === 200 ) {
-              var tr = destroyButtonClicked.closest('tr');
-              tr.hide();
-            }
-        }, {});
-      $('#historyPreview').modal('hide');
-      $('#confirmBox').modal('hide');
-    });
-
+    // Bind the preview to the modal
+    historyModal.initialize();
   }
 };
 
