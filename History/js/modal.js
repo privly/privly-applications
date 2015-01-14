@@ -1,3 +1,5 @@
+/* global privlyParameters:true */
+
 /**
  * Adds a modal box for previewing content on the History application.
  */
@@ -71,7 +73,6 @@ var historyModal = {
       // Clear the old iframe and insert the new one
       $(".privly_iframe").empty();
       $(".privly_iframe").append(iFrame);
-      
     },
 
     /** 
