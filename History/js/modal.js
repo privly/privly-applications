@@ -1,4 +1,4 @@
-/* global privlyParameters:true */
+/* global privlyParameters:false */
 
 /**
  * Adds a modal box for previewing content on the History application.
