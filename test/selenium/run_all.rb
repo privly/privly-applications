@@ -18,19 +18,32 @@ require 'capybara' # Manages Selenium
 require 'capybara/dsl' # Syntax for interacting with Selenium
 require 'test/unit' # Provides syntax for expectation statements
 
+# Change the directory to this script's directory
+Dir.chdir File.expand_path(File.dirname(__FILE__))
+
 args = {}
+optsHelp = ""
 OptionParser.new do |opts|
-  opts.banner = "Usage: ruby example.rb [options]"
-  opts.on('-p', '--platform PLATFORM', 'The target platform (web, firefox, chrome, etc)') { |v| args[:platform] = v }
+  opts.banner = "Usage: ruby run_all.rb [options]"
+  opts.on('-p', '--platform PLATFORM', 'The target platform (firefox_web, firefox_extension, chrome_web, chrome_extension, sauce_chrome_web, sauce_firefox_web, sauce_firefox_extension, sauce_chrome_extension)') { |v| args[:platform] = v }
   opts.on('-r', '--release-status RELEASE', 'The target release stage (experimental, deprecated, alpha, beta, release)') { |v| args[:release_status] = v }
   opts.on('-c', '--content-server SERVER', 'The content server (http://localhost:3000)') { |v| args[:content_server] = v }
+  optsHelp = opts.help
 end.parse!
+
+# Exit if three arguments were not supplied
+if not args.length == 3
+  puts "\nYou must specify all three arguments\n\n"
+  puts optsHelp
+  exit 0
+end
+
 puts "You passed the arguments: #{args}"
 
 # Defaults
 platform = "firefox_web" # Assume testing the web version unless otherwise noted
 @@privly_extension_active = false # The apps are not in an extension env
-address_start = "http://localhost:3000/apps/"
+@@privly_applications_folder_path = "http://localhost:3000/apps/"
 release_status = "deprecated" # Include deprecated apps by default
 Capybara.run_server = false
 Capybara.app_host = 'http://localhost:3000'
@@ -82,13 +95,16 @@ if platform.start_with? "sauce"
     config['browserName'] = @browser
     if @browser == "firefox"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.firefox
+      config['version'] = "34"
+      @sauce_caps.version = "34"
     elsif @browser == "chrome"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.chrome
+      config['version'] = "39"
+      @sauce_caps.version = "39"
     end
-    config['version'] = "beta"
-    @sauce_caps.version = "beta"
+
     @sauce_caps.platform = "Windows 7"
-    @sauce_caps[:name] = "Testing Selenium 2 with Ruby on Sauce"
+    @sauce_caps[:name] = "Priv.ly Project Integration Tests"
     if ENV['SAUCE_URL'] == nil or ENV['SAUCE_URL'] == ""
       puts "Before you can test on Sauce you need to set an environmental variable containing your Sauce URL"
       exit 1
@@ -129,7 +145,7 @@ if platform == "firefox_web" or platform == "chrome_web"
   Capybara.register_driver :web_browser do |app|
    Capybara::Selenium::Driver.new(app, :browser => @browser.to_sym)
   end
-  address_start = "http://localhost:3000/apps/"
+  @@privly_applications_folder_path = "http://localhost:3000/apps/"
   content_server = "http://localhost:3000"
   Capybara.default_driver = :web_browser
   Capybara.current_driver = :web_browser
@@ -140,13 +156,13 @@ if platform.include? "firefox_extension"
 
   # Assign the path to find the applications in the extension
    Capybara.app_host = "chrome://privly"
-   address_start = Capybara.app_host + "/content/privly-applications/"
+   @@privly_applications_folder_path = Capybara.app_host + "/content/privly-applications/"
    puts "Packaging the Firefox Extension"
-   system( "cd ../../../ && ./package.sh && cd chrome/content/privly-applications/" )
+   system( "cd ../../../../../ && pwd && ./package.sh && cd chrome/content/privly-applications/test/selenium" )
 
    # Load the Firefox driver with the extension installed
    @profile = Selenium::WebDriver::Firefox::Profile.new
-   @profile.add_extension("../../../PrivlyFirefoxExtension.xpi")
+   @profile.add_extension("../../../../../PrivlyFirefoxExtension.xpi")
 end
 
 if platform == "firefox_extension"
@@ -180,12 +196,12 @@ if platform == "chrome_extension"
 
   # Assign the path to find the applications in the extension
   Capybara.app_host = "chrome-extension://gipdbddcenpbjpmjblgmogkeblhoaejd"
-  address_start = Capybara.app_host + "/privly-applications/"
+  @@privly_applications_folder_path = Capybara.app_host + "/privly-applications/"
 
   # This currently references the relative path to the URL
   caps = Selenium::WebDriver::Remote::Capabilities.chrome(
     "chromeOptions" => {
-      "args" => [ "--disable-web-security", "load-extension=.." ]
+      "args" => [ "--disable-web-security", "load-extension=../../.." ]
       }
   )
 
@@ -209,15 +225,14 @@ if platform == "sauce_chrome_extension"
   # Base64.strict_encode64 File.read(crx_path)
   extension = Base64.strict_encode64 File.binread("../../../PrivlyChromeExtension.crx")
 
-  # Get the extension from localhost:5000 over Sauce Connect
   @sauce_caps["chromeOptions"] = {
     "args" => [ "--disable-web-security" ],
     "extensions" => [extension]
   }
 
   # Assign the path to find the applications in the extension
-  Capybara.app_host = "chrome-extension://gipdbddcenpbjpmjblgmogkeblhoaejd"
-  address_start = Capybara.app_host + "/privly-applications/"
+  Capybara.app_host = "chrome-extension://gbgechigghkleokfnpebmlfldpbloelf"
+  @@privly_applications_folder_path = Capybara.app_host + "/privly-applications/"
 
   Capybara.register_driver :sauce_chrome_extension do |app|
     Capybara::Selenium::Driver.new(
@@ -229,9 +244,6 @@ if platform == "sauce_chrome_extension"
   end
   Capybara.current_driver = :sauce_chrome_extension
   Capybara.default_driver = :sauce_chrome_extension
-
-  # Assign the content server to the remote server
-  content_server = "https://dev.privly.org"
 end
 
 # Platforms that are not currently implemented
@@ -249,7 +261,7 @@ if args[:release_status]
 end
 
 # Build the data structure used by some specs to determine what to test
-manifest_files = Dir["*/manifest.json"]
+manifest_files = Dir["../../*/manifest.json"]
 manifest_files.each do |manifest_file|
   json = JSON.load(File.new(manifest_file))
   json.each do |app_manifest|
@@ -261,7 +273,7 @@ manifest_files.each do |manifest_file|
       next
     end
 
-    release_titles = ["experimental", "deprecated", "alpha", "beta", "release"]
+    release_titles = ["redirect", "experimental", "deprecated", "alpha", "beta", "release"]
     unless release_titles.index(app_manifest["release_status"]) >= 
       release_titles.index(release_status)
       puts "Skipping due to release status: " + outfile_path
@@ -269,7 +281,7 @@ manifest_files.each do |manifest_file|
     end
 
     # Pages to be tested
-    page_url = address_start+outfile_path
+    page_url = @@privly_applications_folder_path+outfile_path
     
     @@privly_test_set.push({
         :url => page_url, 

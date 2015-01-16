@@ -130,8 +130,13 @@ var callbacks = {
     var tableBody = document.getElementById("table_body");
     for(var i = 0; i < response.json.length; i++) {
 
-      var app = response.json[i].privly_application;
       var href = response.json[i].privly_URL;
+      var app = response.json[i].privly_application;
+
+      // Rename deperecated apps
+      if ( app === "ZeroBin" ) {
+        app = "Message";
+      }
 
       // Assumes web and checks for other platforms
       var localHref = "/apps/";

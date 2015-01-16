@@ -13,7 +13,7 @@
 #
 # [
 #  {
-#    "release_status": "alpha", // Required values: experimental, deprecated, alpha, beta, release
+#    "release_status": "alpha", // Required values: redirect, experimental, deprecated, alpha, beta, release
 #    "platforms": ["chrome"], // Optional values: web, chrome, firefox
 #    "subtemplate_path": "Pages/ChromeFirstRun.html.subtemplate", // Required path to the subtemplate
 #    "outfile_path": "Pages/ChromeFirstRun.html", // Required path the othe output file
@@ -117,10 +117,10 @@ def get_link_creation_apps():
             creation_apps.append(template["subtemplate_dict"]["name"])
 
   # Hack to maintain current app order
-  creation_apps.sort(reverse=True)
+  creation_apps.sort()
   return creation_apps
 
-release_titles = ["experimental", "deprecated", "alpha", "beta", "release"]
+release_titles = ["redirect", "experimental", "deprecated", "alpha", "beta", "release"]
 
 if __name__ == "__main__":
   
