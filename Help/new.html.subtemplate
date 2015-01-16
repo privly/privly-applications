@@ -35,8 +35,8 @@
       view the content if no parties break the law.
     </p>
     <div class="col-md-3">
-      <form action="../ZeroBin/new.html" style="display:inline;">
-          <button type="submit" class="btn btn-default">New ZeroBin</button>
+      <form action="../Message/new.html" style="display:inline;">
+          <button type="submit" class="btn btn-default">New Message</button>
       </form>
     </div>
     <div class="col-md-9">

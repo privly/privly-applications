@@ -3,7 +3,7 @@
  * This spec is managed by the Jasmine testing library.
  **/
  
-describe ("ZeroBin New Suite", function() {
+describe ("Message New Suite", function() {
 
   // Get an HTML document defined by the pre-processor.
   // This is a rough hack because HTML2JS seems to assign the
@@ -13,7 +13,7 @@ describe ("ZeroBin New Suite", function() {
     var keys = Object.keys(__html__);
     var selectKey;
     keys.forEach(function(key) {
-      if( key.indexOf("PlainPost/new.html") >= 0 ) {
+      if( key.indexOf("Message/new.html") >= 0 ) {
         selectKey = key;
       }
     });

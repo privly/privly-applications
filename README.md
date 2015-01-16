@@ -23,9 +23,10 @@ Applications, which are web applications viewed within the context of other web
 applications. Since Privly applications are not necessarily viewed inside an 
 iframe, they also support layout as the top document in the browser.
 
-The two current Privly applications are found in the PlainPost and ZeroBin 
+The two current Privly applications are found in the PlainPost and Message
 folders. They are currently bundled into the 
-[Google Chrome Extension](https://github.com/privly/privly-chrome) and the hosted 
+[Google Chrome Extension](https://github.com/privly/privly-chrome),
+[Firefox Extension](https://github.com/privly/privly-firefox) and the hosted
 [content server](https://github.com/privly/privly-web) as 
 [Git Submodules](http://git-scm.com/book/en/Git-Tools-Submodules).
 
