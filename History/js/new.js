@@ -2,7 +2,7 @@
  * @fileOverview Manages the form interaction with remote servers.
  **/
 
-/*global historyModal:true */
+/* global historyModal:true */
 
 /**
  * The callbacks assign the state of the application.

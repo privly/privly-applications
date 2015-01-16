@@ -133,7 +133,7 @@ var historyModal = {
         dataURL,
         function(response) {
             if( response.jqXHR.status === 200 ) {
-              var tr = historyModal.eventHandlers.destroyButtonClicked.closest('tr');
+              var tr = historyModal.eventHandlers.buttonClicked.closest('tr');
               tr.hide();
             }
         }, {});
