@@ -159,8 +159,8 @@ var callbacks = {
       td1b.setAttribute("type", "submit");
       td1b.setAttribute("class", "btn btn-default preview_link");
       td1b.setAttribute("data-canonical-href", localHref);
-      td1b.setAttribute("data-toggle","modal");       //so it triggers a modal on click.
-      td1b.setAttribute("data-target","#historyPreview");    //ID for the modal box in HTML.
+      td1b.setAttribute("data-toggle", "modal");       //so it triggers a modal on click.
+      td1b.setAttribute("data-target", "#historyPreview");    //ID for the modal box in HTML.
       td1b.textContent = "Preview " + app;
       td1b.style.width = "150px";
       td1b.style.height = "33px";
