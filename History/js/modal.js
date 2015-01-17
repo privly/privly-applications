@@ -75,18 +75,18 @@ var historyModal = {
       $(".privly_iframe").append(iFrame);
     },
 
-    /** 
-     * Take the reference of the button that was clicked and pass to iframeReturn function.  
+    /**
+     * Take the reference of the button that was clicked and pass to iframeReturn function.
      */
     previewLink: function() {
       historyModal.eventHandlers.buttonClicked = $(this);
       historyModal.eventHandlers.iframeReturn(historyModal.eventHandlers.buttonClicked);
     },
 
-    /** 
-     * Get the reference of button previous to the one who's data is displayed and call iframeReturn function. 
+    /**
+     * Get the reference of button previous to the one who's data is displayed and call iframeReturn function.
      * 'buttonClicked' variable basically stores the 'Preview ZeroBin/PlainPost' button whose corresponding
-     * data is being displayed in the lightbox.  
+     * data is being displayed in the lightbox.
      */
     prevPreview: function() {
 
@@ -98,16 +98,17 @@ var historyModal = {
       historyModal.eventHandlers.iframeReturn(previous);
     },
 
-    /** 
-     * Get the reference of button next to the one who's data is displayed and call iframeReturn function. 
+    /**
+     * Get the reference of button next to the one who's data is displayed and call iframeReturn function.
      * If the user is currently viewing the last message, and clicks on 'Next'
-     * roll back up to the first message (index = 0) and display that.  
+     * roll back up to the first message (index = 0) and display that.
      */
     nextPreview: function() {
+
       //finds the next button with preview_link class and passes its reference.
       var index = $('.preview_link').index(historyModal.eventHandlers.buttonClicked);
       if(index == $('.preview_link').length - 1){
-        index = -1;     //rolling back to the first message after the last.
+        index = -1; //rolling back to the first message after the last.
       }
       var next = $('.preview_link').slice(index+1).first();
       historyModal.eventHandlers.buttonClicked=next;
@@ -117,7 +118,7 @@ var historyModal = {
     /**
      * Remembers the button that was clicked for destroying content.
      * A seconday confirmation modal is opened by the jquery API and
-     * is not specified in this Javascript. 
+     * is not specified in this Javascript.
      */
     destroyLink: function() {
       destroyButtonClicked = $(this);
@@ -140,7 +141,6 @@ var historyModal = {
       $('#historyPreview').modal('hide');
       $('#confirmBox').modal('hide');
     }
-    
   },
 
   /**
