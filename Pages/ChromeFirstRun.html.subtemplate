@@ -50,7 +50,10 @@
   <br/>
   <div class="row">
     <div class="col-md-7">
-      <p>Often when you are viewing a web page, you will want to know if that content has been added by the Privly extension. To allow you to differentiate Privly and non-Privly content, your extension shows a random sequence of colors, a "glyph," that will only be displayed when your mouse is over Privly-type content. Often the Privly extension will display additional information next to the glyph like verified identity information, security properties, and more. Keep an eye on this little popup and remember to commit your specific glyph to memory.</p>
+      <p>
+        Often when you are viewing a web page, you will want to know if that content has been added by the Privly extension. To allow you to differentiate Privly and non-Privly content, your extension shows a random sequence of colors, a "glyph," that will only be displayed when your mouse is over Privly-type content. Often the Privly extension will display additional information next to the glyph like verified identity information, security properties, and more. Keep an eye on this little popup and remember to commit your specific glyph to memory.
+      </p>
+      <br/>
       <div id="tooltip"></div>
     </div>
     <div class="col-md-5" alt="Animation of the Privly Glyph at work">
