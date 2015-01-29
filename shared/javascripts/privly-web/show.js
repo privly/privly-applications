@@ -591,7 +591,7 @@ var callbacks = {
   showDownloadMessage: function(callback) {
 
     // Show the download extension link in the hosted context
-    if( document.location.href.indexOf("http") === 0 ){
+    if( privlyNetworkService.platformName() === "HOSTED" && !privlyHostPage.isInjected() ){
 
       // Pick which browser logo and link href to display
       var browser = "firefox";
@@ -616,6 +616,10 @@ var callbacks = {
       }
       $(".referrer").text(msg);
       $("#downloadmessage").show();
+    }
+
+    if(callbacks.functionExists(callback)) {
+      callback();
     }
   },
   
