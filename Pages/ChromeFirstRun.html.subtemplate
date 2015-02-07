@@ -1,10 +1,5 @@
 {% extends "templates/new.html.template" %}
 
-{% block specs %}
-  <meta name="PrivlySpec"
-   content="../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js"/>
-{% endblock %}
-
 {% block javascripts %}
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
   <script type="text/javascript" src="../shared/javascripts/tooltip.js"></script>

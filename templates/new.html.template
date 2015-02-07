@@ -10,8 +10,6 @@
 
     {% block title %}<title> New {{ name }}</title>{% endblock %}
     
-    {% block specs %}{% endblock %}
-    
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     
     <!-- Top Styles -->
