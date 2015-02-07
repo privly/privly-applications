@@ -12,6 +12,8 @@
   </script>
   <script type="text/javascript" src="js/new.js">
   </script>
+  <script type="text/javascript" src="js/modal.js">
+  </script>
 {% endblock %}
 
 {% block css %}
@@ -19,18 +21,43 @@
 {% endblock %}
 
 {% block pre_form %}
-  <div class="row">
-    <div class="col-md-12">
-      <div id="iframe_col" style="display:none;">
-        <p id="privly_iframe_meta">The App's contents are below</p>
-        <button id="hide_preview" class="btn btn-default">Hide Preview</button>
-        <button id="destroy_link" class="btn btn-danger">Destroy Content</button>
-        <hr/>
-        <div class="privly_iframe"></div>
-        <hr/>
-      </div>
-    </div>
-  </div>
+  <div class="modal fade" id="historyPreview">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <span class="pull-right">
+          <button type="button" id="prev_preview" class="btn btn-primary">Prev</button>
+          <button type="button" id="next_preview" class="btn btn-primary">Next</button>
+          </span>
+          <h4 class="modal-title" id="privly_iframe_meta">The App's contents are below</h4>
+        </div>
+        <div class="modal-body privly_iframe">
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="hide_preview" class="btn btn-default" data-dismiss="modal">Hide Preview</button>
+          <button type="button" id="destroy_link "class="btn btn-danger" data-toggle="modal" data-target="#confirmBox">Destroy Content</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+  <div class="modal fade" id="confirmBox">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Are you sure you want to delete this message?</h4>
+        </div>
+        <div class="modal-body">
+        <p> You'll never be able to undo this. </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="ok_confirm" class="btn btn-primary">OK</button>
+          <button type="button" id="cancel_confirm" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 {% endblock %}
 
 {% block form %}

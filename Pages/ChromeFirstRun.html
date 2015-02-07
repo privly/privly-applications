@@ -9,6 +9,7 @@
   <title>
    New FirstRun
   </title>
+  <meta content="../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js" name="PrivlySpec"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <!-- Top Styles -->
   <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
@@ -189,33 +190,86 @@
     <div id="form" style="display:none;">
      <div class="row">
       <div class="container">
+       <br/>
        <div class="row">
         <div class="col-md-12">
-         <h1 class="page-header">
-          Your Privly Extension has Been Updated to 0.4.0
-         </h1>
          <h1>
-          News and Update Summary
+          Thank you for installing Privly
          </h1>
+         <hr/>
+         <br/>
+        </div>
+       </div>
+       <div class="row">
+        <div class="col-md-5">
+         <h2>
+          What Now?
+         </h2>
          <p>
-          <strong>
-           Big news:
-          </strong>
-          The Privly Foundation
-          <a alt="The public purpose is upheld" href="https://www.privly.org/content/privly-gains-non-profit-status" target="_blank">
-           gained non-profit status!
-          </a>
+          Test out your new extension:
          </p>
+         <ol>
+          <li>
+           <strong>
+            Get an account on
+            <a href="https://privlyalpha.org/apps/Login/new.html" target="_blank">
+             PrivlyAlpha.org
+            </a>
+            then login.
+           </strong>
+          </li>
+          <li>
+           Now it is time to post content using Privly! Right click on the form and select "New Message." A window will popup.
+          </li>
+          <li>
+           Type your content into the popup window.
+          </li>
+          <li>
+           Submit the form on the popup window.
+          </li>
+          <li>
+           Submit the form on your webmail or social network.
+          </li>
+          <li>
+           Done!
+          </li>
+         </ol>
          <p>
-          This update has numerous advances in the user interface of the
-        Privly system including performance and user experience fixes.
-        By default the new posting button will be deactivated for current
-        users. To turn this control on, visit the options page.
-        Included in this version are
-        changes from new contributors Vlad Fulgeanu and Dragoș Alin Rotaru.
+          Now you have a more private web!
+         </p>
+        </div>
+        <div class="col-md-7">
+         <p>
+          <img class="img-responsive center-block" src="img/firstrun.gif" style="border:3px solid #021a40;"/>
          </p>
         </div>
        </div>
+       <br/>
+       <div class="row">
+        <div class="col-md-12">
+         <h1>
+          Don't Get Spoofed - Know Your Privly Glyph
+         </h1>
+        </div>
+       </div>
+       <br/>
+       <div class="row">
+        <div class="col-md-7">
+         <p>
+          Often when you are viewing a web page, you will want to know if that content has been added by the Privly extension. To allow you to differentiate Privly and non-Privly content, your extension shows a random block of colors, a "glyph," that will only be displayed when your mouse is over Privly-type content. Often the Privly extension will display additional information next to the glyph like verified identity information, security properties, and more. Remember to commit your specific glyph to memory and don't trust content without your glyph!
+         </p>
+         <br/>
+         <div id="tooltip">
+         </div>
+        </div>
+        <div alt="Animation of the Privly Glyph at work" class="col-md-5">
+         <img class="img-responsive" src="img/glyph_animation.gif"/>
+        </div>
+       </div>
+       <br/>
+      </div>
+      <!-- /container -->
+      <div class="container">
        <div class="row">
         <div class="col-md-12">
          <h1>
@@ -228,7 +282,7 @@
          </p>
          <ul>
           <li>
-           Added this page
+           Added posting button when clicking on text areas.
           </li>
           <li>
            Renamed the "Index" application to "History".
@@ -251,18 +305,13 @@
           <li>
            Refactored build system to pull from manifest.json files.
           </li>
-          <li>
-           Added a "help" application to the Privly applications.
-          </li>
-          <li>
-           Fixed initialization of links on login application.
-          </li>
-          <li>
-           Added glyphicons to menus.
-          </li>
-          <li>
-           Updated pages to use Bootstrap 3.
-          </li>
+         </ul>
+         <p>
+          <strong>
+           Version 0.3.7
+          </strong>
+         </p>
+         <ul>
           <li>
            Added in-place editing of content via double clicking the content.
           </li>
@@ -284,8 +333,200 @@
           <li>
            Improved error messaging for users.
           </li>
+         </ul>
+         <p>
+          <strong>
+           Version 0.3.6
+          </strong>
+         </p>
+         <ul>
           <li>
-           Numerous bug fixes.
+           Switched Privly icon into a dropdown menu.
+          </li>
+          <li>
+           Added a "help" application to the Privly applications.
+          </li>
+          <li>
+           Fixed initialization of links on login application.
+          </li>
+          <li>
+           Forced address bar to show in popups that do not show the anti-spoofing glyph.
+          </li>
+          <li>
+           Added glyphicons to menus.
+          </li>
+          <li>
+           Updated pages to use Bootstrap 3.
+          </li>
+         </ul>
+         <p>
+          <strong>
+           Version 0.3.5
+          </strong>
+         </p>
+         <ul>
+          <li>
+           Updated Stanford Javascript Cryptography Library
+           <a href="https://github.com/bitwiseshiftleft/sjcl" target="_blank">
+            (SJCL)
+           </a>
+           .
+          </li>
+          <li>
+           Added templating system.
+          </li>
+          <li>
+           Fixed user experience on link generation.
+          </li>
+          <li>
+           Switched privly.js to mutation observers from mutation events.
+          </li>
+          <li>
+           Can now login without leaving the extension.
+          </li>
+          <li>
+           Updated Privly Applications.
+          </li>
+         </ul>
+         <p>
+          <strong>
+           Version 0.3.4
+          </strong>
+         </p>
+         <ul>
+          <li>
+           Updated Privly Applications.
+          </li>
+          <li>
+           Fixed initialization of content server.
+          </li>
+         </ul>
+         <p>
+          <strong>
+           Version 0.3.3
+          </strong>
+         </p>
+         <ul>
+          <li>
+           Bug fix
+          </li>
+         </ul>
+         <p>
+          <strong>
+           Version 0.3.2
+          </strong>
+         </p>
+         <ul>
+          <li>
+           Added locally-served posting applications.
+          </li>
+          <li>
+           Added "Index" Privly Application.
+          </li>
+          <li>
+           Updated PlainPost and ZeroBin Privly Applications.
+          </li>
+          <li>
+           Added new programmatic test loading scheme.
+          </li>
+          <li>
+           Added domains to tooltip.
+          </li>
+          <li>
+           Numerous bug fixes and usability enhancements.
+          </li>
+          <li>
+           Updated the first-run document.
+          </li>
+         </ul>
+         <p>
+          <strong>
+           Version 0.3.1
+          </strong>
+         </p>
+         <ul>
+          <li>
+           <a href="http://www.privly.org/content/chrome-extension-alpha-release">
+            Blog Post Regarding Release
+           </a>
+          </li>
+          <li>
+           Updated the first-run document.
+          </li>
+         </ul>
+         <p>
+          <strong>
+           Version 0.3.0
+          </strong>
+         </p>
+         <ul>
+          <li>
+           <a href="http://www.privly.org/content/chrome-extension-alpha-release">
+            Blog Post Regarding Release
+           </a>
+          </li>
+          <li>
+           Added the first-run document.
+          </li>
+          <li>
+           Updated page styling.
+          </li>
+         </ul>
+         <p>
+          <strong>
+           Version 0.2.0
+          </strong>
+         </p>
+         <ul>
+          <li>
+           Added content server selection.
+          </li>
+          <li>
+           Added user-defined whitelists.
+          </li>
+          <li>
+           Added options page.
+          </li>
+          <li>
+           Added toggling capabilities.
+          </li>
+          <li>
+           Added loading message.
+          </li>
+          <li>
+           Added anti-spoofing glyph.
+          </li>
+          <li>
+           Added local PlainPosts.
+          </li>
+          <li>
+           Added local
+           <a href="https://github.com/privly/privly-chrome/issues/15" target="_blank">
+            ZeroBins
+           </a>
+           .
+          </li>
+          <li>
+           Adopted Google's Native Client for compiled library architecture.
+          </li>
+         </ul>
+         <p>
+          <strong>
+           Version 0.1.1
+          </strong>
+         </p>
+         <ul>
+          <li>
+           Posting directly to content servers
+          </li>
+          <li>
+           Context menu for posting ZeroBins
+          </li>
+          <li>
+           Context menu for posting PlainPosts
+          </li>
+          <li>
+           Modal button for turning the extension off
           </li>
          </ul>
          <h2>
@@ -322,7 +563,7 @@
             </a>
            </li>
            <li>
-            <a href="http://www.privly.org/content/bug-report" target="_blank">
+            <a href="https://priv.ly/pages/bug.html" target="_blank">
              Submit a Bug
             </a>
            </li>
@@ -358,25 +599,6 @@
           <br/>
           Corvallis, OR 97339
          </p>
-        </div>
-       </div>
-       <div class="row">
-        <div class="col-md-12">
-         <h1>
-          Your Privly Glyph
-         </h1>
-        </div>
-       </div>
-       <div class="row">
-        <div class="col-md-7">
-         <p>
-          Often when you are viewing a web page, you will want to know if that content has been added by the Privly extension. To allow you to differentiate Privly and non-Privly content, your extension shows a random sequence of colors, a "glyph," that will only be displayed when your mouse is over Privly-type content. Often the Privly extension will display additional information next to the glyph like verified identity information, security properties, and more. Keep an eye on this little popup and remember to commit your specific glyph to memory.
-         </p>
-         <div id="tooltip">
-         </div>
-        </div>
-        <div alt="Animation of the Privly Glyph at work" class="col-md-5">
-         <img src="img/glyph_animation.gif"/>
         </div>
        </div>
       </div>
