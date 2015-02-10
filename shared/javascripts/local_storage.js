@@ -24,11 +24,12 @@ var ls = {
     }
 
     if ( ls.localStorageDefined ) {
-      return localStorage[key] = value;
+      localStorage.setItem(key, value);
     } else {
       ls.preferences.setCharPref(key, value);
-      return value;
     }
+
+    return value;
   },
 
   /**
@@ -41,11 +42,15 @@ var ls = {
    */
   getItem: function(key) {
     if ( ls.localStorageDefined ) {
+      var value = localStorage.getItem(key);
+      if (value === null){
+        return undefined;
+      }
       try {  // try to parse stored value as JSON
-        var value = JSON.parse(localStorage[key]);
-        return value;
+        var parsed = JSON.parse(value);
+        return parsed;
       } catch(e) { // return original value
-        return localStorage[key];
+        return value;
       }
     } else {
       try {

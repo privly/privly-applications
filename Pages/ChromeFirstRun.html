@@ -9,7 +9,6 @@
   <title>
    New FirstRun
   </title>
-  <meta content="../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js" name="PrivlySpec"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <!-- Top Styles -->
   <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
@@ -190,33 +189,93 @@
     <div id="form" style="display:none;">
      <div class="row">
       <div class="container">
+       <br/>
        <div class="row">
         <div class="col-md-12">
-         <h1 class="page-header">
-          Your Privly Extension has Been Updated to 0.4.0
-         </h1>
          <h1>
-          News and Update Summary
+          Thank you for installing Privly
          </h1>
+         <hr/>
+         <br/>
+        </div>
+       </div>
+       <div class="row">
+        <div class="col-md-5">
+         <h2>
+          What Now?
+         </h2>
          <p>
           <strong>
-           Big news:
+           Accounts on PrivlyAlpha.org open March 1st.
           </strong>
-          The Privly Foundation
-          <a alt="The public purpose is upheld" href="https://www.privly.org/content/privly-gains-non-profit-status" target="_blank">
-           gained non-profit status!
-          </a>
+          After that date you can activate an account.
+        Developers can get an account by signing up for one on dev.privly.org,
+        but to associate the extension with dev.privly.org you will need to
+        change your server on the extension options page.
          </p>
          <p>
-          This update has numerous advances in the user interface of the
-        Privly system including performance and user experience fixes.
-        By default the new posting button will be deactivated for current
-        users. To turn this control on, visit the options page.
-        Included in this version are
-        changes from new contributors Vlad Fulgeanu and Dragoș Alin Rotaru.
+          How to get an account and test your extension:
+         </p>
+         <ol>
+          <li>
+           Get an account on
+           <a href="https://privlyalpha.org/apps/Login/new.html" target="_blank">
+            PrivlyAlpha.org
+           </a>
+           then login.
+          </li>
+          <li>
+           Now it is time to post content using Privly! Right click on the form and select "New Message." A window will popup.
+          </li>
+          <li>
+           Type your content into the popup window.
+          </li>
+          <li>
+           Submit the form on the popup window.
+          </li>
+          <li>
+           Submit the form on your webmail or social network.
+          </li>
+          <li>
+           Done!
+          </li>
+         </ol>
+         <p>
+          Now you have a more private web!
+         </p>
+        </div>
+        <div class="col-md-7">
+         <p>
+          <img class="img-responsive center-block" src="img/firstrun.gif" style="border:3px solid #021a40;"/>
          </p>
         </div>
        </div>
+       <br/>
+       <div class="row">
+        <div class="col-md-12">
+         <h1>
+          Don't Get Spoofed - Know Your Privly Glyph
+         </h1>
+        </div>
+       </div>
+       <br/>
+       <div class="row">
+        <div class="col-md-7">
+         <p>
+          Often when you are viewing a web page, you will want to know if that content has been added by the Privly extension. To allow you to differentiate Privly and non-Privly content, your extension shows a random block of colors, a "glyph," that will only be displayed when your mouse is over Privly-type content. Often the Privly extension will display additional information next to the glyph like verified identity information, security properties, and more. Remember to commit your specific glyph to memory and don't trust content without your glyph!
+         </p>
+         <br/>
+         <div id="tooltip">
+         </div>
+        </div>
+        <div alt="Animation of the Privly Glyph at work" class="col-md-5">
+         <img class="img-responsive" src="img/glyph_animation.gif"/>
+        </div>
+       </div>
+       <br/>
+      </div>
+      <!-- /container -->
+      <div class="container">
        <div class="row">
         <div class="col-md-12">
          <h1>
@@ -224,7 +283,23 @@
          </h1>
          <p>
           <strong>
-           Version 0.4.0 (this version)
+           Version 0.4.1 (this version)
+          </strong>
+         </p>
+         <ul>
+          <li>
+           Renamed the "ZeroBin" application to "Message".
+          </li>
+          <li>
+           Improved UX on History application.
+          </li>
+          <li>
+           Numerous small bug and UX fixes.
+          </li>
+         </ul>
+         <p>
+          <strong>
+           Version 0.4.0
           </strong>
          </p>
          <ul>
@@ -511,7 +586,7 @@
            </a>
           </li>
           <li>
-           <a href="http://www.privly.org/content/bug-report" target="_blank">
+           <a href="https://priv.ly/pages/bug.html" target="_blank">
             Submit a Bug
            </a>
           </li>
@@ -546,25 +621,6 @@
           <br/>
           Corvallis, OR 97339
          </p>
-        </div>
-       </div>
-       <div class="row">
-        <div class="col-md-12">
-         <h1>
-          Your Privly Glyph
-         </h1>
-        </div>
-       </div>
-       <div class="row">
-        <div class="col-md-7">
-         <p>
-          Often when you are viewing a web page, you will want to know if that content has been added by the Privly extension. To allow you to differentiate Privly and non-Privly content, your extension shows a random sequence of colors, a "glyph," that will only be displayed when your mouse is over Privly-type content. Often the Privly extension will display additional information next to the glyph like verified identity information, security properties, and more. Keep an eye on this little popup and remember to commit your specific glyph to memory.
-         </p>
-         <div id="tooltip">
-         </div>
-        </div>
-        <div alt="Animation of the Privly Glyph at work" class="col-md-5">
-         <img src="img/glyph_animation.gif"/>
         </div>
        </div>
       </div>

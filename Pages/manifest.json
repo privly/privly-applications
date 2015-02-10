@@ -1,28 +1,14 @@
 [
   {
     "release_status": "alpha",
-    "platforms": ["chrome"],
+    "platforms": ["chrome", "firefox"],
     "subtemplate_path": "Pages/ChromeFirstRun.html.subtemplate",
     "outfile_path": "Pages/ChromeFirstRun.html",
     "subtemplate_dict": {"name": "FirstRun", "action": "nav"}
   },
   {
     "release_status": "alpha",
-    "platforms": ["chrome"],
-    "subtemplate_path": "Pages/ChromeOptions.html.subtemplate",
-    "outfile_path": "Pages/ChromeOptions.html",
-    "subtemplate_dict": {"name": "Options", "action": "nav"}
-  },
-  {
-    "release_status": "alpha",
-    "platforms": ["firefox"],
-    "subtemplate_path": "Pages/FirefoxFirstRun.html.subtemplate",
-    "outfile_path": "Pages/ChromeFirstRun.html",
-    "subtemplate_dict": {"name": "FirstRun", "action": "nav"}
-  },
-  {
-    "release_status": "alpha",
-    "platforms": ["firefox"],
+    "platforms": ["chrome", "firefox"],
     "subtemplate_path": "Pages/ChromeOptions.html.subtemplate",
     "outfile_path": "Pages/ChromeOptions.html",
     "subtemplate_dict": {"name": "Options", "action": "nav"}

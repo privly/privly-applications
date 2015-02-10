@@ -43,7 +43,7 @@ puts "You passed the arguments: #{args}"
 # Defaults
 platform = "firefox_web" # Assume testing the web version unless otherwise noted
 @@privly_extension_active = false # The apps are not in an extension env
-address_start = "http://localhost:3000/apps/"
+@@privly_applications_folder_path = "http://localhost:3000/apps/"
 release_status = "deprecated" # Include deprecated apps by default
 Capybara.run_server = false
 Capybara.app_host = 'http://localhost:3000'
@@ -145,7 +145,7 @@ if platform == "firefox_web" or platform == "chrome_web"
   Capybara.register_driver :web_browser do |app|
    Capybara::Selenium::Driver.new(app, :browser => @browser.to_sym)
   end
-  address_start = "http://localhost:3000/apps/"
+  @@privly_applications_folder_path = "http://localhost:3000/apps/"
   content_server = "http://localhost:3000"
   Capybara.default_driver = :web_browser
   Capybara.current_driver = :web_browser
@@ -156,7 +156,7 @@ if platform.include? "firefox_extension"
 
   # Assign the path to find the applications in the extension
    Capybara.app_host = "chrome://privly"
-   address_start = Capybara.app_host + "/content/privly-applications/"
+   @@privly_applications_folder_path = Capybara.app_host + "/content/privly-applications/"
    puts "Packaging the Firefox Extension"
    system( "cd ../../../../../ && pwd && ./package.sh && cd chrome/content/privly-applications/test/selenium" )
 
@@ -196,7 +196,7 @@ if platform == "chrome_extension"
 
   # Assign the path to find the applications in the extension
   Capybara.app_host = "chrome-extension://gipdbddcenpbjpmjblgmogkeblhoaejd"
-  address_start = Capybara.app_host + "/privly-applications/"
+  @@privly_applications_folder_path = Capybara.app_host + "/privly-applications/"
 
   # This currently references the relative path to the URL
   caps = Selenium::WebDriver::Remote::Capabilities.chrome(
@@ -232,7 +232,7 @@ if platform == "sauce_chrome_extension"
 
   # Assign the path to find the applications in the extension
   Capybara.app_host = "chrome-extension://gbgechigghkleokfnpebmlfldpbloelf"
-  address_start = Capybara.app_host + "/privly-applications/"
+  @@privly_applications_folder_path = Capybara.app_host + "/privly-applications/"
 
   Capybara.register_driver :sauce_chrome_extension do |app|
     Capybara::Selenium::Driver.new(
@@ -281,7 +281,7 @@ manifest_files.each do |manifest_file|
     end
 
     # Pages to be tested
-    page_url = address_start+outfile_path
+    page_url = @@privly_applications_folder_path+outfile_path
     
     @@privly_test_set.push({
         :url => page_url, 

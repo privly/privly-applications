@@ -2,6 +2,8 @@
  * @fileOverview Manages the form interaction with remote servers.
  **/
 
+/* global historyModal:true */
+
 /**
  * The callbacks assign the state of the application.
  *
@@ -157,6 +159,8 @@ var callbacks = {
       td1b.setAttribute("type", "submit");
       td1b.setAttribute("class", "btn btn-default preview_link");
       td1b.setAttribute("data-canonical-href", localHref);
+      td1b.setAttribute("data-toggle", "modal");       //so it triggers a modal on click.
+      td1b.setAttribute("data-target", "#historyPreview");    //ID for the modal box in HTML.
       td1b.textContent = "Preview " + app;
       td1b.style.width = "150px";
       td1b.style.height = "33px";
@@ -199,84 +203,16 @@ var callbacks = {
       tr.appendChild(td4);
       
       tableBody.appendChild(tr);
-      
     }
     
-    dataTable = $('#posts').dataTable({"bPaginate": false, "bFilter": false});
-
-    // Add 'cell-border' class when the window has a width smaller than 768px
-    $(window).resize(function() {
-      if($(window).width() < 768) {
-        $('#posts').addClass("cell-border");
-      } else {
-        $('#posts').removeClass("cell-border");
-      }
-    });
-    
-    $('button.preview_link').on('click', function() {
-
-      $('html, body').animate({ scrollTop: 0 }, 'slow');
-
-      $('#iframe_col').show('slow', function() {
-        $(this).css('display', 'inherit');
-      });
-      
-      var iFrame = document.createElement('iframe');
-
-      // Styling and display attributes that mirror those
-      // of the privly.js content script
-      iFrame.setAttribute("frameborder","0");
-      iFrame.setAttribute("vspace","0");
-      iFrame.setAttribute("hspace","0");
-      iFrame.setAttribute("width","100%");
-      iFrame.setAttribute("marginwidth","0");
-      iFrame.setAttribute("marginheight","0");
-      iFrame.setAttribute("height","1px");
-      iFrame.setAttribute("frameborder","0");
-      iFrame.setAttribute("style","width: 100%; height: 32px; " +
-        "overflow: hidden;");
-      iFrame.setAttribute("scrolling","no");
-      iFrame.setAttribute("overflow","hidden");
-      iFrame.setAttribute("data-privly-accept-resize","true");
-
-      // The href of the original link as dictated by the remote server
-      var canonicalHref = $(this).attr("data-canonical-href");
-      iFrame.setAttribute("data-canonical-href", canonicalHref);
-
-      //Set the source URL
-      iFrame.setAttribute("src", canonicalHref);
-
-      //The id and the name are the same so that the iframe can be
-      //uniquely identified and resized by resizeIframePostedMessage()
-      iFrame.setAttribute("id", "ifrm0");
-      iFrame.setAttribute("name", "ifrm0");
-
-      // Clear the old iframe and insert the new one
-      $(".privly_iframe").empty();
-      $(".privly_iframe").append(iFrame);
-    });
+    var dataTable = $('#posts').dataTable({"bPaginate": false, "bFilter": false});
 
     $('button.open_link').on('click', function() {
       window.open($(this).attr("data-canonical-href"), '_blank');
     });
 
-    $('#destroy_link').on('click', function() {
-      var url = privlyParameters.getApplicationUrl($("iframe").attr("data-canonical-href"));
-      var dataURL =  privlyParameters.getParameterHash(url).privlyDataURL;
-      privlyNetworkService.sameOriginDeleteRequest(
-        dataURL,
-        function(response) {
-            if( response.jqXHR.status === 200 ) {
-              var tr = $(this).closest('tr');
-              tr.hide();
-              $('#iframe_col').hide('slow');
-            }
-        }, {});
-    });
-
-    $('#hide_preview').on('click', function() {
-      $('#iframe_col').hide('slow');
-    });
+    // Bind the preview to the modal
+    historyModal.initialize();
   }
 };
 
