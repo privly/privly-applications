@@ -30,7 +30,7 @@
       <a href="http://www.privly.org/content/introducing-privly-applications"
        target="_blank">
         read more</a> about Privly Applications or about 
-      <a href="https://github.com/privly/privly-organization/wiki/ZeroBin" 
+      <a href="https://github.com/privly/privly-applications/blob/master/Message/docs/ZeroBin.md"
         target="_blank">
         Messages
       </a> specifically.
@@ -40,8 +40,10 @@
     <h2>Warnings</h2>
     <ul>
       <li>Privly is still in Alpha, <strong>do not</strong> post private information until the system reaches a Beta release.</li>
-      <li>This post is <strong>temporary.</strong> All new content is destroyed within <strong>30 days</strong>.</li>
-      <li>This post will be encrypted, but it is likely that a sophisticated adversary, e.g. governments, will be able to decrypt the content without the key.</li>
+      <li>If your social network violates your legal rights they will be able to view this content.</li>
+      <li>No web applications will protect you from a targeted government attacked. If you are being directly targeted by your government do not use this software.</li>
+      <li>We have more safety information available at <a href="https://priv.ly/pages/safety.html"
+        target="_blank">Priv.ly</a>.</li>
     </ul>
   </div>
 {% endblock %}

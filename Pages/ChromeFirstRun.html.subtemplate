@@ -25,9 +25,16 @@
   <div class="row">
     <div class="col-md-5">
       <h2>What Now?</h2>
-      <p>Test out your new extension:</p>
+      <p>
+        <strong>Accounts on PrivlyAlpha.org open March 1st.</strong>
+        After that date you can activate an account.
+        Developers can get an account by signing up for one on dev.privly.org,
+        but to associate the extension with dev.privly.org you will need to
+        change your server on the extension options page.
+      </p>
+      <p>How to get an account and test your extension:</p>
       <ol>
-        <li><strong>Get an account on <a href="https://privlyalpha.org/apps/Login/new.html" target="_blank">PrivlyAlpha.org</a> then login.</strong></li>
+        <li>Get an account on <a href="https://privlyalpha.org/apps/Login/new.html" target="_blank">PrivlyAlpha.org</a> then login.</li>
         <li>
            Now it is time to post content using Privly! Right click on the form and select "New Message." A window will popup.
         </li>
@@ -83,7 +90,14 @@
     <div class="col-md-12">
       <h1>Change History</h1>
 
-      <p><strong>Version 0.4.0 (this version)</strong></p>
+      <p><strong>Version 0.4.1 (this version)</strong></p>
+      <ul>
+        <li>Renamed the "ZeroBin" application to "Message".</li>
+        <li>Improved UX on History application.</li>
+        <li>Numerous small bug and UX fixes.</li>
+      </ul>
+
+      <p><strong>Version 0.4.0</strong></p>
       <ul>
         <li>Added posting button when clicking on text areas.</li>
         <li>Renamed the "Index" application to "History".</li>
