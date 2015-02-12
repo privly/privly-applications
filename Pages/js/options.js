@@ -38,7 +38,7 @@ function saveCheckedSetting() {
 
   // Don't run on Firefox
   var status = document.getElementById("button_status");
-  if (status === null ) {return};
+  if (status === null ) {return;}
 
   // reset status
   status.innerHTML = "";
@@ -54,7 +54,7 @@ function saveCheckedSetting() {
  */
 function restoreCheckedSetting() {
   var btn = document.getElementById("disableBtn");
-  if ( btn === null ) {return}; // Don't run on Firefox
+  if ( btn === null ) {return;} // Don't run on Firefox
   var stored = ls.getItem("Options:DissableButton");
   btn.checked = (stored !== undefined && stored === true);
 
@@ -77,7 +77,7 @@ function saveWhitelist() {
   var user_whitelist_input = csv;
   
   // characters to split entered domains on
-  var invalid_chars = new RegExp("[^a-zA-Z0-9\-._]","g"); 
+  var invalid_chars = new RegExp(/[^a-zA-Z0-9\-._]/, "g"); 
   var domains = user_whitelist_input.split(invalid_chars); 
 
   // Each subdomain can be from 1-63 characters and may contain alphanumeric 
@@ -85,19 +85,19 @@ function saveWhitelist() {
   // Each domain can be from 1-63 characters and may contain alphanumeric 
   // characters and - but may not begin or end with - Each top level domain may
   // be from 2 to 9 characters and may contain alpha characters
-  var validateSubdomain = new RegExp("^(?!\-|_)[\\w\-]{1,63}","g"); //subdomains
-  var validateDomain = new RegExp("^(?!\-)[a-zA-Z0-9\-?]{1,63}$","g"); //domain
-  var validateTLD = new RegExp("^[a-zA-Z]{2,9}$","g"); //top level domain
+  var validateSubdomain = new RegExp(/^(?!\-|_)[\\w\-]{1,63}/, "g"); //subdomains
+  var validateDomain = new RegExp(/^(?!\-)[a-zA-Z0-9\-?]{1,63}$/, "g"); //domain
+  var validateTLD = new RegExp(/^[a-zA-Z]{2,9}$/, "g"); //top level domain
   
   //needed because js regex does not have look-behind
-  var notEndInHyphenOrUnder = new RegExp("[^\-_]$","g"); 
-  var notEndInHyphen = new RegExp("[^\-]$","g");
+  var notEndInHyphenOrUnder = new RegExp(/[^\-_]$/, "g"); 
+  var notEndInHyphen = new RegExp(/[^\-]$/, "g");
 
   var domain_regexp = "";  //stores regex to match validated domains
   var valid_domains = [];  //stores validated domains
   
   //iterate over entered list, split by invalid chars
-  for (var i = 0; i < domains.length; i++){ 
+  for (i = 0; i < domains.length; i++){ 
     var parts = domains[i].split(".");
     var valid_parts_count = 0;
     
@@ -341,10 +341,10 @@ function writeGlyph() {
 
   var tbody = document.createElement("tbody");
 
-  for( var i = 0; i < 5; i++) {
+  for(var i = 0; i < 5; i++) {
     var tr = document.createElement("tr");
 
-    for(j = 0; j < 5; j++) {
+    for(var j = 0; j < 5; j++) {
       var td = document.createElement("td");
       td.innerHTML = "&nbsp";
 
