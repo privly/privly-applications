@@ -66,9 +66,10 @@ function restoreCheckedSetting() {
  * Saves user's custom whitelist to local storage.
  */
 function saveWhitelist() {
+  var i;
   var csv = "";
   var url_inputs = document.getElementsByClassName('whitelist_url');
-  for( var i = 0; i < url_inputs.length ; i++ ){
+  for(i = 0; i < url_inputs.length ; i++ ){
     if(url_inputs[i].value.length >0) {
       csv += url_inputs[i].value.replace(/.*?:\/\//g, "")+",";
     }
