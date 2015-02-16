@@ -106,7 +106,7 @@ function pageKey(key) {
     i = key.indexOf('&'); if (i>-1) { key = key.substring(0,i); }
     
     // Then add trailing equal sign if it's missing
-    if (key.charAt(key.length-1)!=='=') key+='=';
+    if (key.charAt(key.length-1)!=='=') {key+='=';}
     
     return key;
 }

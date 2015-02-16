@@ -91,7 +91,7 @@ var privlyNetworkService = {
   platformName: function() {
     if (navigator.userAgent.indexOf("iPhone") >= 0 || 
       navigator.userAgent.indexOf("iPad") >= 0) {
-      if( navigator.userAgent.indexOf("Safari") >= 0 ) { return "HOSTED" };
+      if( navigator.userAgent.indexOf("Safari") >= 0 ) { return "HOSTED"; }
       return "IOS";
     } else if(typeof androidJsBridge !== "undefined") {
       return "ANDROID";
@@ -462,4 +462,4 @@ var privlyNetworkService = {
     $(".logged_in_nav").show();
     privlyNetworkService.mobileHide();
   }
-}
+};

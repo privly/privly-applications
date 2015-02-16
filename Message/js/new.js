@@ -55,7 +55,7 @@ function save() {
 
   callbacks.postCompleted = function(response) {
     oldPostCompletedCallback(response, processURL(response, randomkey));
-  }
+  };
 
   // Submit the ciphertext to the server
   callbacks.postSubmit(cipherdata, 
@@ -92,7 +92,8 @@ document.addEventListener('DOMContentLoaded',
 
     // Don't start the script if it is running in a Headless
     // browser
-    if( document.getElementById("logout_link") )
+    if( document.getElementById("logout_link") ) {
       initializeApplication();
+    }
   }
 );

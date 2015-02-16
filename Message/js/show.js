@@ -63,7 +63,7 @@ function processResponseContent(response) {
   privlyNetworkService.permissions.canShow = true;
   
   var json = response.json;
-  if( json === null ) return;
+  if( json === null ) {return;}
   
   if (state.key === undefined || state.key === "") {
     if ( ! resolveKeyFromHistory() ) {
@@ -99,7 +99,8 @@ function encryptBeforeUpdate(evt, callback) {
   var cipherdata = zeroCipher(state.key + "=", $("#edit_text")[0].value);
   privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
     function(response){
-      callbacks.contentReturned(response, processResponseContent)},
+      callbacks.contentReturned(response, processResponseContent);
+    },
     {post: {structured_content: cipherdata,
     seconds_until_burn: $( "#seconds_until_burn" ).val()}});
   
@@ -133,8 +134,9 @@ document.addEventListener('DOMContentLoaded',
 
     // Don't start the script if it is running in a Headless
     // browser
-    if( document.getElementById("logout_link") )
+    if( document.getElementById("logout_link") ) {
       initializeApplication();
+    }
   }
 );
 
