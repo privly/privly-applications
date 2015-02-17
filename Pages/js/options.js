@@ -78,7 +78,7 @@ function saveWhitelist() {
   var user_whitelist_input = csv;
   
   // characters to split entered domains on
-  var invalid_chars = new RegExp(/[^a-zA-Z0-9\-._]/, "g"); 
+  var invalid_chars = /[^a-zA-Z0-9\-._]/g; 
   var domains = user_whitelist_input.split(invalid_chars); 
 
   // Each subdomain can be from 1-63 characters and may contain alphanumeric 
@@ -86,13 +86,13 @@ function saveWhitelist() {
   // Each domain can be from 1-63 characters and may contain alphanumeric 
   // characters and - but may not begin or end with - Each top level domain may
   // be from 2 to 9 characters and may contain alpha characters
-  var validateSubdomain = new RegExp(/^(?!\-|_)[\\w\-]{1,63}/, "g"); //subdomains
-  var validateDomain = new RegExp(/^(?!\-)[a-zA-Z0-9\-?]{1,63}$/, "g"); //domain
-  var validateTLD = new RegExp(/^[a-zA-Z]{2,9}$/, "g"); //top level domain
+  var validateSubdomain = /^(?!\-|_)[\w\-]{1,63}/g; //subdomains
+  var validateDomain = /^(?!\-)[a-zA-Z0-9\-?]{1,63}$/g; //domain
+  var validateTLD = /^[a-zA-Z]{2,9}$/g; //top level domain
   
   //needed because js regex does not have look-behind
-  var notEndInHyphenOrUnder = new RegExp(/[^\-_]$/, "g"); 
-  var notEndInHyphen = new RegExp(/[^\-]$/, "g");
+  var notEndInHyphenOrUnder = /[^\-_]$/g; 
+  var notEndInHyphen = /[^\-]$/g;
 
   var domain_regexp = "";  //stores regex to match validated domains
   var valid_domains = [];  //stores validated domains
