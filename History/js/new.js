@@ -14,11 +14,11 @@ var messaging = {
    * and the injectable application.
    */
   initialize: function() {
-      privlyExtension.initialContent = function(){};
-      privlyExtension.messageSecret = function(){};
+    privlyExtension.initialContent = function(){};
+    privlyExtension.messageSecret = function(){};
       
-      // Initialize message pathway to the extension.
-      privlyExtension.firePrivlyMessageSecretEvent();
+    // Initialize message pathway to the extension.
+    privlyExtension.firePrivlyMessageSecretEvent();
   }
 };
 
