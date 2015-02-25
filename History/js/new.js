@@ -5,6 +5,24 @@
 /* global historyModal:true */
 
 /**
+ * Message handlers for integration with extension framworks.
+ */
+var messaging = {
+  
+  /**
+   * Attach the message listeners to the interface between the extension
+   * and the injectable application.
+   */
+  initialize: function() {
+    privlyExtension.initialContent = function(){};
+    privlyExtension.messageSecret = function(){};
+      
+    // Initialize message pathway to the extension.
+    privlyExtension.firePrivlyMessageSecretEvent();
+  }
+};
+
+/**
  * The callbacks assign the state of the application.
  *
  * This application can be placed into the following states:
@@ -217,24 +235,6 @@ var callbacks = {
 };
 
 /**
- * Message handlers for integration with extension framworks.
- */
-var messaging = {
-  
-  /**
-   * Attach the message listeners to the interface between the extension
-   * and the injectable application.
-   */
-  initialize: function() {
-      privlyExtension.initialContent = function(){};
-      privlyExtension.messageSecret = function(){};
-      
-      // Initialize message pathway to the extension.
-      privlyExtension.firePrivlyMessageSecretEvent();
-  }
-}
-
-/**
  * Resize eligible iframes to the proper height based on their contents.
  *
  * @param {message} e The message posted by an iframe. 
@@ -268,7 +268,8 @@ document.addEventListener('DOMContentLoaded',
 
     // Don't start the script if it is running in a Headless
     // browser
-    if( document.getElementById("logout_link") )
+    if( document.getElementById("logout_link") ) {
       callbacks.pendingLogin();
+    }
   }
 );
