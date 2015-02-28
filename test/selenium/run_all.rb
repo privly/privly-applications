@@ -154,6 +154,11 @@ end
 # Package and add the Firefox extension as necessary
 if platform.include? "firefox_extension"
 
+  if `pwd`.include? "privly-chrome"
+    puts "\nCannot test the firefox extension from within the chrome extension\n\n"
+    exit 0
+  end
+
   # Assign the path to find the applications in the extension
   Capybara.app_host = "chrome://privly"
   @@privly_applications_folder_path = Capybara.app_host + "/content/privly-applications/"
