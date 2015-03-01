@@ -54,6 +54,13 @@
       <p>
         Now you have a more private web!
       </p>
+      <hr />
+      <div style="color:#FF0000">
+        <p>
+          Read our <a href="https://priv.ly/pages/safety.html">safety page</a> before using the extension. Until you understand the risks of modern technology you should assume your communications are public.
+        </p>
+      </div>
+      <hr />
     </div>
     <div class="col-md-7">
       <p>
