@@ -15,9 +15,8 @@ class TestInjected < Test::Unit::TestCase
       return
     end
 
-    ggroups = "https://groups.google.com/forum/#!topic/privly/f6iBZ8Z-YMQ/discussion"
-    visit ggroups
-    page.assert_selector("iframe[src^='chrome']", :count => 1)
+    visit "https://groups.google.com/forum/#!topic/privly/f6iBZ8Z-YMQ/discussion"
+    page.assert_selector("iframe[data-privly-display='true']", :count => 1)
   end
 
   def test_twitter_injection
@@ -26,9 +25,8 @@ class TestInjected < Test::Unit::TestCase
       return
     end
 
-    twitter = "http://twitter.com/privlytest"
-    visit twitter
-    page.assert_selector("iframe[src^='chrome']", :count => 4)
+    visit "http://twitter.com/privlytest"
+    page.assert_selector("iframe[data-privly-display='true']", :count => 4)
   end
 
   def test_showing_injected_posts
