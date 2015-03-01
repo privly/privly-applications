@@ -93,14 +93,16 @@ if platform.start_with? "sauce"
   Sauce.config do |config|
     config['name'] = "Feature Specs"
     config['browserName'] = @browser
+
+    # https://docs.saucelabs.com/reference/platforms-configurator
     if @browser == "firefox"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.firefox
-      config['version'] = "34"
-      @sauce_caps.version = "34"
+      config['version'] = "dev"
+      @sauce_caps.version = "dev"
     elsif @browser == "chrome"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.chrome
-      config['version'] = "39"
-      @sauce_caps.version = "39"
+      config['version'] = "dev"
+      @sauce_caps.version = "dev"
     end
 
     @sauce_caps.platform = "Windows 7"
