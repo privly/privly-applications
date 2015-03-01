@@ -9,6 +9,17 @@ class TestInjected < Test::Unit::TestCase
     # pass
   end
 
+  def test_twitter_injection
+
+    if not @@privly_extension_active
+      return
+    end
+
+    twitter = "http://twitter.com/privlytest"
+    visit twitter
+    page.assert_selector("iframe[src^='chrome']", :count => 4)
+  end
+
   def test_showing_injected_posts
 
     if not @@privly_extension_active
