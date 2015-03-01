@@ -1,5 +1,9 @@
 # Integration Testing
 
+Note! You should already be aware of and knowledgeable in the
+[testing guide](https://priv.ly/pages/develop#Testing101)
+found on priv.ly.
+
 ## Why
 
 Privly runs on many operating systems, browsers, and scripting contexts. Such
@@ -41,29 +45,15 @@ of the run_all.rb file.
 To run these tests you need to download several software packages.
 
 * Ruby 1.9.3 or higher. This has been tested on 1.9.3.
-* The browser your are testing against (Chrome and Firefox are currently available).
-* If you are testing against Chrome, you need to install Chromedriver as well.
-You can install Chrome Driver with `brew install chromedriver` (if you have Brew),
-otherwise [see the docs](https://code.google.com/p/selenium/wiki/ChromeDriver) and
-update this guide :).
+* The browser you are testing against (Chrome and Firefox are currently available).
 * A running [content server](https://github.com/privly/privly-web). This is necessary
 even if you are note testing the content server because the extension tests will
 expect to have a place it can store content.
-* If you want to run the tests against [SauceLabs](http://saucelabs.com) you will also
-need to install [SauceConnect](https://docs.saucelabs.com/reference/sauce-connect/).
-SauceLabs provides many different browsers and operating systems to test against.
-
-Typically Ruby installs will not include the following libraries
-required for the testing framework:
-
-* selenium-webdriver  
-* capybara  
-
-You should install them with `gem install LIBRARY`.
-
-If you are using SauceLabs, you will also need to install the Sauce gem:
-
-* sauce
+* Several gems are required and can be installed with bundler, which is installed
+with `gem install bundler`.
+* Once you have bundler, you can install all the remaining prerequisites by changing
+into the directory about this one and running: `bundle install`. In the future you may
+need to re-run bundler to install updates with `bundle update` and `bundle install`.
 
 ## Running Integration Tests Locally
 
@@ -95,48 +85,50 @@ this from the privly-applications directory of the privly-firefox extension.
 **chrome_extension:** run Chrome locally with an extension. You should only run
 this from the privly-applications directory of the privly-chrome extension.
 
-You can run each of these from the privly-applications directory with
-`ruby run_all.rb -p INSERT_PLATFORM_HERE`. The corresponding browser will be
-opened and the specs included by `run_all.rb` will be run.
+You can run each of these from the `privly-applications/test/selenium` directory with
+`ruby run_all.rb -p INSERT_PLATFORM_HERE -r experimental -c http://localhost:3000`.
+The corresponding browser will be opened and the specs included by `run_all.rb` will be run.
 
 ## Running Integration Tests on Sauce Labs
 
-Since no individual dev has all 20+ supported scripting contexts, it is often
+Since no individual dev has all 100+ supported scripting contexts, it is often
 necessary to test against the hundreds of virtualized browsers found on SauceLabs.
 
 Each test requires **SauceConnect to be running**, as well as **a local webserver.**
 
 To launch on Sauce, you need to replace the `@sauce_url` variable in run_all.rb
 with the URL for your SauceLabs account. You can find that URL if you are logged
-in to SauceLab's website by visiting [this web page](https://saucelabs.com/docs/ondemand/getting-started/env/ruby/se2/mac).
+in to SauceLab's website by visiting [this web page](https://saucelabs.com/docs/ondemand/getting-started/env/ruby/se2/mac)
+when you are logged in and viewing the specially formatted URL that SauceLabs
+displays for you.
 
 ### sauce_firefox_web
 
 This will launch the current Beta version of Firefox on Windows. It will navigate the
 webserver you have running on localhost so make sure that is where the application files are that you want to test.
 
-From the privly-applications directory, run: `ruby run_all.rb -p sauce_firefox_web -c http://localhost:3000`
+From the privly-applications directory, run: `ruby run_all.rb -p sauce_firefox_web -c http://localhost:3000 -r experimental`
 
 ### sauce_firefox_extension
 
 This will launch the current Beta version of Firefox on Windows. It will navigate the
 extension from which you launched the tests, but the applications expect localhost:3000 to present a content server for storage.
 
-From the privly-applications directory, run: `ruby run_all.rb -p sauce_firefox_extension -c http://localhost:3000`
+From the privly-applications directory, run: `ruby run_all.rb -p sauce_firefox_extension -c http://localhost:3000 -r experimental`
 
 ### sauce_chrome_web
 
 This will launch the current Beta version of Chrome on Windows. It will navigate the
 webserver you have running on localhost so make sure that is where the application files are that you want to test.
 
-From the privly-applications directory, run: `ruby run_all.rb -p sauce_chrome_web -c http://localhost:3000`
+From the privly-applications directory, run: `ruby run_all.rb -p sauce_chrome_web -c http://localhost:3000 -r experimental`
 
 ### sauce_chrome_extension
 
 This will launch the current Beta version of Chrome on Windows. It will navigate the
 extension from which you launched the tests, but the applications expect localhost:3000 to present a content server for storage.
 
-From the privly-applications directory, run: `ruby run_all.rb -p sauce_chrome_extension -c http://localhost:3000`
+From the privly-applications directory, run: `ruby run_all.rb -p sauce_chrome_extension -c http://localhost:3000 -r experimental`
 
 ## TravisCI
 
