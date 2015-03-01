@@ -9,6 +9,17 @@ class TestInjected < Test::Unit::TestCase
     # pass
   end
 
+  def test_google_groups_injection
+
+    if not @@privly_extension_active
+      return
+    end
+
+    ggroups = "https://groups.google.com/forum/#!topic/privly/f6iBZ8Z-YMQ/discussion"
+    visit ggroups
+    page.assert_selector("iframe[src^='chrome']", :count => 1)
+  end
+
   def test_twitter_injection
 
     if not @@privly_extension_active
