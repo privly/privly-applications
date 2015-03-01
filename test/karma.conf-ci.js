@@ -57,12 +57,12 @@ module.exports = function(config) {
           base: 'SauceLabs',
           browserName: 'chrome',
           platform: 'Windows 7',
-          version: '35'
+          version: 'dev'
         },
     'sl_firefox': {
       base: 'SauceLabs',
       browserName: 'firefox',
-      version: '30'
+      version: 'dev'
     }
   };
 
