@@ -70,4 +70,5 @@ body {
   -webkit-hyphens: auto;
   -moz-hyphens: auto;
   hyphens: auto;
+  display: inline-block;
 }

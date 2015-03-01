@@ -33,7 +33,7 @@ var callbacks = {
     
     // Set the domain to the proper content server
     $(".login_issue").each( function( key, value ) {
-      $(value).attr("href", domain + $(value).attr("data-path-sub"))
+      $(value).attr("href", domain + $(value).attr("data-path-sub"));
     });
     
     privlyNetworkService.showLoggedOutNav();
@@ -45,13 +45,13 @@ var callbacks = {
     document.querySelector('#login').addEventListener('click', callbacks.submitCredentials);
     document.querySelector('#register').addEventListener('click', callbacks.submitRegistration);
     $("#user_password").keyup(function (e) {
-        if (e.keyCode == 13) {
+        if (e.keyCode === 13) {
             callbacks.submitCredentials();
         }
     });
 
     $('#register_email').keyup(function (e) {
-        if (e.keyCode == 13) {
+        if (e.keyCode === 13) {
             callbacks.submitRegistration();
         }
     });
@@ -174,7 +174,7 @@ var callbacks = {
       window.location = "../Help/new.html";
     }
   }
-}
+};
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded',
@@ -182,7 +182,8 @@ document.addEventListener('DOMContentLoaded',
 
     // Don't start the script if it is running in a Headless
     // browser
-    if( document.getElementById("logout_link") )
+    if( document.getElementById("logout_link") ) {
       callbacks.pendingLogin();
+    }
   }
 );
