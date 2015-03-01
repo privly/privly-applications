@@ -32,8 +32,9 @@ var privlyHostPage = {
         element.setAttribute("frame_id", frameId);  
         document.documentElement.appendChild(element);    
         element.dispatchEvent(evt);
-        // Send the message "id,height" to the parent window
-        parent.postMessage(frameId+","+height,"*");
+        // Send the message "id,height" to the parent window as JSON object.
+        var resizeData = { 'frame_id':frameId, 'resize':height};
+        parent.postMessage(JSON.stringify(resizeData),"*");
         element.parentNode.removeChild(element);
     },
     
