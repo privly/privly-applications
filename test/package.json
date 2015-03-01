@@ -1,7 +1,7 @@
 {
-  "name": "karma-sauce-example",
+  "name": "karma-privly",
   "version": "0.0.0",
-  "description": "An example of using the Karma test runner with Sauce Labs' browser cloud to run JavaScript unit tests",
+  "description": "Karma test runner with Sauce Labs' browser cloud to run Privly Project JavaScript unit tests",
   "main": "karma.conf-ci.js",
   "scripts": {
     "test": "karma start karma.conf-ci.js",
@@ -10,13 +10,13 @@
   "author": "Sauce Labs",
   "license": "Apache V2",
   "devDependencies": {
-    "karma": "^0.12.0",
-    "karma-chrome-launcher": "^0.1.2",
-    "karma-firefox-launcher": "^0.1.3",
+    "karma": "^0.12.31",
+    "karma-chrome-launcher": "^0.1.7",
+    "karma-firefox-launcher": "^0.1.4",
     "karma-html2js-preprocessor": "^0.1.0",
-    "karma-jasmine": "^0.2.2",
+    "karma-jasmine": "^0.3.5",
     "karma-safari-launcher": "^0.1.1",
-    "karma-sauce-launcher": "^0.2.3",
+    "karma-sauce-launcher": "^0.2.10",
     "karma-coverage": "~0.2"
   }
 }

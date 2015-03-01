@@ -13,7 +13,8 @@ originals.
 * [bootstrap](https://github.com/twbs/bootstrap/releases/download/v3.0.2/bootstrap-3.0.2-dist.zip)
 * [markdown](https://raw.github.com/evilstreak/markdown-js/v0.5.0/lib/markdown.js)
 * [jQuery](http://code.jquery.com/jquery-1.10.2.min.js)
-* [jquery.datatables.min.js](http://datatables.net/releases/DataTables-1.9.4.zip)
+* [jquery.dataTables.min.js](http://datatables.net/releases/DataTables-1.10.5.zip)
+* [dataTables.bootstrap.min.js](https://github.com/DataTables/Plugins/blob/master/integration/bootstrap/3/dataTables.bootstrap.min.js)
 * [jquery.autosize.js](https://github.com/jackmoore/autosize/releases/tag/1.18.7)
 
 ## Audited for Privly's Use Case ##
