@@ -3,7 +3,9 @@
 {% block javascripts %}
   <script type="text/javascript" src="../vendor/jquery.min.js">
   </script>
-  <script type="text/javascript" src="../vendor/jquery.dataTables.min.js">
+  <script type="text/javascript" src="../vendor/datatables/jquery.dataTables.min.js">
+  </script>
+  <script type="text/javascript" src="../vendor/datatables/dataTables.bootstrap.min.js">
   </script>
   <script type="text/javascript" src="js/new.js">
   </script>
@@ -12,6 +14,7 @@
 {% endblock %}
 
 {% block css %}
+  <link href="../vendor/datatables/dataTables.bootstrap.css" rel="stylesheet"/>
   <link href="css/new.css" rel="stylesheet"/>
 {% endblock %}
 
