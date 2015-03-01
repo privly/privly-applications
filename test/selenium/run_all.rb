@@ -157,14 +157,14 @@ end
 if platform.include? "firefox_extension"
 
   # Assign the path to find the applications in the extension
-   Capybara.app_host = "chrome://privly"
-   @@privly_applications_folder_path = Capybara.app_host + "/content/privly-applications/"
-   puts "Packaging the Firefox Extension"
-   system( "cd ../../../../../ && pwd && ./package.sh && cd chrome/content/privly-applications/test/selenium" )
+  Capybara.app_host = "chrome://privly"
+  @@privly_applications_folder_path = Capybara.app_host + "/content/privly-applications/"
+  puts "Packaging the Firefox Extension"
+  system( "cd ../../../../../ && pwd && ./package.sh && cd chrome/content/privly-applications/test/selenium" )
 
-   # Load the Firefox driver with the extension installed
-   @profile = Selenium::WebDriver::Firefox::Profile.new
-   @profile.add_extension("../../../../../PrivlyFirefoxExtension.xpi")
+  # Load the Firefox driver with the extension installed
+  @profile = Selenium::WebDriver::Firefox::Profile.new
+  @profile.add_extension("../../../../../PrivlyFirefoxExtension.xpi")
 end
 
 if platform == "firefox_extension"
