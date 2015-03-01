@@ -53,6 +53,16 @@ class TestInjected < Test::Unit::TestCase
     end
   end
 
+  def test_showing_injected_posts_reddit
+
+    if not @@privly_extension_active
+      return
+    end
+
+    visit "http://www.reddit.com/r/Privly/comments/2xipzl/privly_demonstration_link/"
+    page.assert_selector("iframe[data-privly-display='true']", :count => 1)
+  end
+
   def test_non_whitelisted
 
     if not @@privly_extension_active
