@@ -35,7 +35,7 @@ end.parse!
 if not args.length == 3
   puts "\nYou must specify all three arguments\n\n"
   puts optsHelp
-  exit 0
+  exit 1
 end
 
 puts "You passed the arguments: #{args}"
@@ -158,7 +158,7 @@ if platform.include? "firefox_extension"
 
   if `pwd`.include? "privly-chrome"
     puts "\nCannot test the firefox extension from within the chrome extension\n\n"
-    exit 0
+    exit 1
   end
 
   # Assign the path to find the applications in the extension
@@ -227,7 +227,7 @@ if platform == "sauce_chrome_extension"
 
   if `pwd`.include? "privly-firefox"
     puts "\nCannot test the chrome extension from within the firefox extension\n\n"
-    exit 0
+    exit 1
   end
 
   # Package the extension
@@ -261,7 +261,7 @@ end
 # Platforms that are not currently implemented
 if platform == "safari" or platform == "ie"
   puts "This platform is not integrated into testing"
-  exit 0
+  exit 1
 end
 
 if args[:content_server]
