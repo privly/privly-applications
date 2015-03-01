@@ -160,4 +160,4 @@ var historyModal = {
     $("#ok_confirm").on('click',
       historyModal.eventHandlers.confirmDestruction);
   }
-}
+};

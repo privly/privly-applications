@@ -75,7 +75,7 @@ var ls = {
    */
   removeItem: function(key) {
     if ( ls.localStorageDefined ) {
-      return localStorage.removeItem(key)
+      return localStorage.removeItem(key);
     } else {
       try {
         ls.preferences.clearUserPref(key);

@@ -35,6 +35,8 @@ module.exports = function(config) {
 
     // Load all the vendor libraries
     'vendor/*.js',
+    'vendor/datatables/jquery.dataTables.min.js',
+    'vendor/datatables/dataTables.bootstrap.min.js',
     'vendor/bootstrap/js/*.js',
 
     // Load all the shared libraries at the top level
@@ -57,12 +59,12 @@ module.exports = function(config) {
           base: 'SauceLabs',
           browserName: 'chrome',
           platform: 'Windows 7',
-          version: '35'
+          version: 'dev'
         },
     'sl_firefox': {
       base: 'SauceLabs',
       browserName: 'firefox',
-      version: '30'
+      version: 'dev'
     }
   };
 

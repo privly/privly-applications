@@ -1,0 +1,8 @@
+source "https://rubygems.org"
+
+gem 'chromedriver-helper', '~> 0.0.8'
+gem 'sauce', '~> 3.5.4'
+gem 'sauce-connect', '~> 3.5.1'
+gem 'selenium-webdriver', '~> 2.45.0'
+gem 'capybara', '~> 2.4.4'
+gem 'test-unit', '~> 3.0.9'

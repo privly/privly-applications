@@ -46,7 +46,8 @@ document.addEventListener('DOMContentLoaded',
 
     // Don't start the script if it is running in a Headless
     // browser
-    if( document.getElementById("logout_link") )
+    if( document.getElementById("logout_link") ) {
       initializeApplication();
+    }
   }
 );

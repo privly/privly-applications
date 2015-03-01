@@ -35,7 +35,7 @@ end.parse!
 if not args.length == 3
   puts "\nYou must specify all three arguments\n\n"
   puts optsHelp
-  exit 0
+  exit 1
 end
 
 puts "You passed the arguments: #{args}"
@@ -93,14 +93,16 @@ if platform.start_with? "sauce"
   Sauce.config do |config|
     config['name'] = "Feature Specs"
     config['browserName'] = @browser
+
+    # https://docs.saucelabs.com/reference/platforms-configurator
     if @browser == "firefox"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.firefox
-      config['version'] = "34"
-      @sauce_caps.version = "34"
+      config['version'] = "dev"
+      @sauce_caps.version = "dev"
     elsif @browser == "chrome"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.chrome
-      config['version'] = "39"
-      @sauce_caps.version = "39"
+      config['version'] = "dev"
+      @sauce_caps.version = "dev"
     end
 
     @sauce_caps.platform = "Windows 7"
@@ -154,15 +156,20 @@ end
 # Package and add the Firefox extension as necessary
 if platform.include? "firefox_extension"
 
-  # Assign the path to find the applications in the extension
-   Capybara.app_host = "chrome://privly"
-   @@privly_applications_folder_path = Capybara.app_host + "/content/privly-applications/"
-   puts "Packaging the Firefox Extension"
-   system( "cd ../../../../../ && pwd && ./package.sh && cd chrome/content/privly-applications/test/selenium" )
+  if `pwd`.include? "privly-chrome"
+    puts "\nCannot test the firefox extension from within the chrome extension\n\n"
+    exit 1
+  end
 
-   # Load the Firefox driver with the extension installed
-   @profile = Selenium::WebDriver::Firefox::Profile.new
-   @profile.add_extension("../../../../../PrivlyFirefoxExtension.xpi")
+  # Assign the path to find the applications in the extension
+  Capybara.app_host = "chrome://privly"
+  @@privly_applications_folder_path = Capybara.app_host + "/content/privly-applications/"
+  puts "Packaging the Firefox Extension"
+  system( "cd ../../../../../ && pwd && ./package.sh && cd chrome/content/privly-applications/test/selenium" )
+
+  # Load the Firefox driver with the extension installed
+  @profile = Selenium::WebDriver::Firefox::Profile.new
+  @profile.add_extension("../../../../../PrivlyFirefoxExtension.xpi")
 end
 
 if platform == "firefox_extension"
@@ -218,6 +225,11 @@ end
 
 if platform == "sauce_chrome_extension"
 
+  if `pwd`.include? "privly-firefox"
+    puts "\nCannot test the chrome extension from within the firefox extension\n\n"
+    exit 1
+  end
+
   # Package the extension
   system("../../../package/travis.sh")
 
@@ -249,7 +261,7 @@ end
 # Platforms that are not currently implemented
 if platform == "safari" or platform == "ie"
   puts "This platform is not integrated into testing"
-  exit 0
+  exit 1
 end
 
 if args[:content_server]
