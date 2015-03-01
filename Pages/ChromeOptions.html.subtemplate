@@ -21,7 +21,7 @@
     <h2>Privly Button</h2>
     <br />
     <input type="checkbox" id="disableBtn">
-    Disable the Privly button that appears in the top-right corner of textarea's
+    <label for="disableBtn">Disable the Privly button that appears in the top-right corner of textarea's</label>
     <br />
     <br />
     <button id="save_btnAppearance" class="btn btn-primary">Save</button>
