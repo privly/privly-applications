@@ -225,6 +225,11 @@ end
 
 if platform == "sauce_chrome_extension"
 
+  if `pwd`.include? "privly-firefox"
+    puts "\nCannot test the chrome extension from within the firefox extension\n\n"
+    exit 0
+  end
+
   # Package the extension
   system("../../../package/travis.sh")
 
