@@ -336,12 +336,16 @@ var callbacks = {
         $(".meta_destroyed_around").text("This content is not scheduled to destruct.");
       }
       
-    } else if(response.jqXHR.status === 403) {
+    } else if(response.jqXHR.status === 403 || response.jqXHR.status === 422) {
       $("#post_content").html(
-        "<p class='flash notice'>Your current user account does not have access to this. " + 
-        "It is also possible that the content was destroyed at the source.</p>");
+          "<p class='flash notice'>" +
+          "<span class='glyphicon glyphicon-remove-sign' aria-hidden='true'></span> " +
+          "Your current user account does not have access to this. " +
+          "It is also possible that the content was destroyed at the source.</p>");
     } else {
-      $("#post_content").html("<p class='flash notice'>You do not have access to this.</p>");
+      $("#post_content").html("<p class='flash notice'>" +
+        "<span class='glyphicon glyphicon-remove-sign' aria-hidden='true'></span> " +
+        "You do not have access to this.</p>");
     }
     
     // Tells the parent document how tall the iframe is so that
@@ -382,7 +386,7 @@ var callbacks = {
       
       // Tell the user the content was probably destroyed
       $("#post_content").html(
-        "<p class='flash notice'>The remote server says it destroyed the content. " + 
+        "<p class='flash notice'>The remote server says it destroyed the content. " +
         "If the server cannot be trusted, then it may have copies.</p>");
       
       // Hide the drop down menu
