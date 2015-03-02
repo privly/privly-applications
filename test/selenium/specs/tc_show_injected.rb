@@ -25,8 +25,8 @@ class TestInjected < Test::Unit::TestCase
       return
     end
 
-    visit "http://twitter.com/privlytest"
-    page.assert_selector("iframe[data-privly-display='true']", :count => 4)
+    visit "https://twitter.com/PrivlyTest/status/308809779655102464"
+    page.assert_selector("iframe[data-privly-display='true']", :count => 1)
   end
 
   def test_showing_injected_posts
