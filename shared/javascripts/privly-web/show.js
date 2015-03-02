@@ -336,7 +336,7 @@ var callbacks = {
         $(".meta_destroyed_around").text("This content is not scheduled to destruct.");
       }
       
-    } else if(response.jqXHR.status === 403) {
+    } else if(response.jqXHR.status === 403 || response.jqXHR.status === 422) {
       $("#post_content").html(
         "<p class='flash notice'>Your current user account does not have access to this. " + 
         "It is also possible that the content was destroyed at the source.</p>");
