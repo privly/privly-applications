@@ -34,7 +34,22 @@
       </p>
       <p>How to get an account and test your extension:</p>
       <ol>
-        <li>Get an account on <a href="https://privlyalpha.org/apps/Login/new.html" target="_blank">PrivlyAlpha.org</a> then login.</li>
+        <li><a href="../Login/new.html">Sign in</a> or <a id="registration">register</a> for an account.
+          <div style="overflow: hidden">
+            <div class="form-group" id="registration-form">
+              <label for="register_email">Registration</label>
+              <br />
+              <input id="register_email" name="user[email]" size="30" type="email"
+                value="" placeholder="Enter email" />
+              <br />
+              <button id="register_btn" class="btn btn-primary">Register on
+                <span id="content_server_btn"></span>
+              </button>
+              <br />
+              <span id="register_feedback"></span>
+            </div>
+         </div>
+        </li>
         <li>
            Now it is time to post content using Privly! Right click on the form and select "New Message." A window will popup.
         </li>
