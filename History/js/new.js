@@ -149,85 +149,14 @@ var callbacks = {
     
     var tableBody = document.getElementById("table_body");
     for(var i = 0; i < response.json.length; i++) {
-
-      var href = response.json[i].privly_URL;
-      var app = response.json[i].privly_application;
-
-      // Rename deperecated apps
-      if ( app === "ZeroBin" ) {
-        app = "Message";
-      }
-
-      // Assumes web and checks for other platforms
-      var localHref = "/apps/";
-      var platform = privlyNetworkService.platformName();
-      if ( platform === "FIREFOX" ) {
-        localHref = "/content/privly-applications/";
-      } else if(platform === "CHROME") {
-        localHref = "/privly-applications/";
-      }
-      localHref += app + "/show.html?privlyOriginalURL=" +
-        encodeURIComponent(href);
-
-      var tr = document.createElement('tr');
-      
-      var td1 = document.createElement('td');
-      td1.setAttribute("class", "first-history-cell");
-
-      var td1b = document.createElement('button');
-      td1b.setAttribute("type", "submit");
-      td1b.setAttribute("class", "btn btn-default preview_link");
-      td1b.setAttribute("data-canonical-href", localHref);
-      td1b.setAttribute("data-toggle", "modal");       //so it triggers a modal on click.
-      td1b.setAttribute("data-target", "#historyPreview");    //ID for the modal box in HTML.
-      td1b.textContent = "Preview " + app;
-      td1.appendChild(td1b);
-
-      var td1b2 = document.createElement('button');
-      td1b2.setAttribute("type", "submit");
-      td1b2.setAttribute("class", "btn btn-info open_link");
-      td1b2.setAttribute("data-canonical-href", localHref);
-      td1b2.textContent = "Open";
-      td1.appendChild(td1b2);
-
-      tr.appendChild(td1);
-
-      // For the next three columns hide the Json date format (used for sorting),
-      // and create an <i> child in which the difference in time will be shown
-      var td2 = document.createElement('td');
-      td2.textContent = response.json[i].created_at;
-      td2.setAttribute("class", "hide-td-content");
-
-      var i1 = document.createElement('i');
-      i1.textContent = callbacks.parseDate(response.json[i].created_at, true);
-      td2.appendChild(i1);
-      tr.appendChild(td2);
-
-      var td3 = document.createElement('td');
-      td3.textContent = response.json[i].burn_after_date;
-      td3.setAttribute("class", "hide-td-content");
-
-      var i2 = document.createElement('i');
-      i2.textContent = callbacks.parseDate(response.json[i].burn_after_date, false);
-      td3.appendChild(i2);
-      tr.appendChild(td3);
-
-      var td4 = document.createElement('td');
-      td4.textContent = response.json[i].updated_at;
-      td4.setAttribute("class", "hide-td-content");
-
-      var i3 = document.createElement('i');
-      i3.textContent = callbacks.parseDate(response.json[i].updated_at, true);
-      td4.appendChild(i3);
-      tr.appendChild(td4);
-
-      tableBody.appendChild(tr);
+      tableBody.appendChild(getMessageDOM(response.json[i]));
     }
 
-    var dataTable = $('#posts').dataTable({
+    $('#posts').dataTable({
         bPaginate: false,
         bFilter: false
     });
+
     $('#posts').removeClass('display')
             .addClass('table table-striped table-bordered');
     $('button.open_link').on('click', function() {
@@ -238,6 +167,80 @@ var callbacks = {
     historyModal.initialize();
   }
 };
+
+/**
+ * Transform the row object into a DOM object for a single message
+ * @param  {object}  row A row from the server
+ * @return {element}     The generated table row
+ */
+function getMessageDOM(row) {
+  var href = row.privly_URL;
+  var app = row.privly_application;
+
+  // Assumes web and checks for other platforms
+  var localHref = "/apps/";
+  var platform = privlyNetworkService.platformName();
+  if ( platform === "FIREFOX" ) {
+    localHref = "/content/privly-applications/";
+  } else if(platform === "CHROME") {
+    localHref = "/privly-applications/";
+  }
+  localHref += app + "/show.html?privlyOriginalURL=" + encodeURIComponent(href);
+
+  var tr = document.createElement('tr');
+
+  var td1 = document.createElement('td');
+  td1.setAttribute("class", "first-history-cell");
+
+  var td1b = document.createElement('button');
+  td1b.setAttribute("type", "submit");
+  td1b.setAttribute("class", "btn btn-default preview_link");
+  td1b.setAttribute("data-canonical-href", localHref);
+  td1b.setAttribute("data-toggle", "modal");       //so it triggers a modal on click.
+  td1b.setAttribute("data-target", "#historyPreview");    //ID for the modal box in HTML.
+  td1b.textContent = "Preview " + app;
+  td1.appendChild(td1b);
+
+  var td1b2 = document.createElement('button');
+  td1b2.setAttribute("type", "submit");
+  td1b2.setAttribute("class", "btn btn-info open_link");
+  td1b2.setAttribute("data-canonical-href", localHref);
+  td1b2.textContent = "Open";
+  td1.appendChild(td1b2);
+
+  tr.appendChild(td1);
+
+  // For the next three columns hide the Json date format (used for sorting),
+  // and create an <i> child in which the difference in time will be shown
+  var td2 = document.createElement('td');
+  td2.textContent = row.created_at;
+  td2.setAttribute("class", "hide-td-content");
+
+  var i1 = document.createElement('i');
+  i1.textContent = callbacks.parseDate(row.created_at, true);
+  td2.appendChild(i1);
+  tr.appendChild(td2);
+
+  var td3 = document.createElement('td');
+  td3.textContent = row.burn_after_date;
+  td3.setAttribute("class", "hide-td-content");
+
+  var i2 = document.createElement('i');
+  i2.textContent = callbacks.parseDate(row.burn_after_date, false);
+  td3.appendChild(i2);
+  tr.appendChild(td3);
+
+  var td4 = document.createElement('td');
+  td4.textContent = row.updated_at;
+  td4.setAttribute("class", "hide-td-content");
+
+  var i3 = document.createElement('i');
+  i3.textContent = callbacks.parseDate(row.updated_at, true);
+  td4.appendChild(i3);
+  tr.appendChild(td4);
+
+  return tr;
+}
 
 /**
  * Resize eligible iframes to the proper height based on their contents.
