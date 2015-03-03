@@ -169,13 +169,19 @@ var callbacks = {
 };
 
 /**
- * Transform the row object into a DOM object for a single message
+ * Create a node for insertion into the jquery datatables plugin using plain javascript.
+ * Avoiding jquery and datatables APIs for this task reduces the risk of the content server XSS.
  * @param  {object}  row A row from the server
  * @return {element}     The generated table row
  */
 function getMessageDOM(row) {
   var href = row.privly_URL;
   var app = row.privly_application;
+
+  // Rename deperecated apps - TODO Will be removed soon
+  if ( app === "ZeroBin" ) {
+    app = "Message";
+  }
 
   // Assumes web and checks for other platforms
   var localHref = "/apps/";
