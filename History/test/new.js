@@ -95,6 +95,48 @@ describe ("History Logged In New Suite", function() {
     resizeIframePostedMessage({data: "1,1"});
     expect(true).toBe(true);
   });
+
+  it("fill the history array", function() {
+
+    // Exemple of output
+    var data = {
+      json: [
+        {
+          created_at: "Mar 01 2015",
+          burn_after_date: "Mar 10 2015",
+          updated_at: "Mar 05 2015",
+          privly_URL: "testUrl",
+          privly_application: "Tester"
+        },
+        {
+          created_at: "Mar 01 2014",
+          burn_after_date: "Mar 10 2014",
+          updated_at: "Mar 05 2014",
+          privly_URL: "testUrl2",
+          privly_application: "Tester2"
+        }
+      ]
+    };
+
+    callbacks.postCompleted(data);
+
+    //Check existence
+    expect(jQuery("#table_body tr").length).toBe(2);
+    expect(jQuery("#table_body tr:first td").length).toBe(4);
+    expect(jQuery("#table_body tr:first td:first button").length).toBe(2);
+
+    //Check content
+    var cells = jQuery("#table_body tr:first td");
+    var buttons = jQuery(cells[0]).children("button");
+    
+    expect(buttons[0].getAttribute("data-target")).toBe("#historyPreview");
+    expect(buttons[0].textContent).toMatch(/Preview Tester/);
+    expect(buttons[1].getAttribute("data-canonical-href")).toMatch(/show.html\?privlyOriginalURL\=testUrl/);
+
+    for(var i = 1; i <= 3; i++)
+      expect(cells[i].textContent).not.toBe(""); // TODO unit tests for parseDate
+
+  });
   
 });
 
