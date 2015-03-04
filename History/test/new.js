@@ -96,7 +96,7 @@ describe ("History Logged In New Suite", function() {
     expect(true).toBe(true);
   });
 
-  it("fill the history array", function() {
+  it("fills the history array", function() {
 
     // Exemple of output
     var data = {
@@ -120,12 +120,12 @@ describe ("History Logged In New Suite", function() {
 
     callbacks.postCompleted(data);
 
-    //Check existence
+    // Check existence
     expect(jQuery("#table_body tr").length).toBe(2);
     expect(jQuery("#table_body tr:first td").length).toBe(4);
     expect(jQuery("#table_body tr:first td:first button").length).toBe(2);
 
-    //Check content
+    // Check content
     var cells = jQuery("#table_body tr:first td");
     var buttons = jQuery(cells[0]).children("button");
     
@@ -133,11 +133,12 @@ describe ("History Logged In New Suite", function() {
     expect(buttons[0].textContent).toMatch(/Preview Tester/);
     expect(buttons[1].getAttribute("data-canonical-href")).toMatch(/show.html\?privlyOriginalURL\=testUrl/);
 
-    for(var i = 1; i <= 3; i++)
+    for(var i = 1; i <= 3; i++) {
       expect(cells[i].textContent).not.toBe(""); // TODO unit tests for parseDate
+    }
 
   });
-  
+
 });
 
 describe ("History Logged out New Suite", function() {
@@ -177,3 +178,31 @@ describe ("History Logged out New Suite", function() {
   
 });
 
+describe("History side functions", function() {
+  describe("getMessageDOM", function() {
+    it("transforms a single JSON object to DOM array row", function() {
+
+      var data = {
+        created_at: "Mar 01 2015",
+        burn_after_date: "Mar 10 2015",
+        updated_at: "Mar 05 2015",
+        privly_URL: "testUrl",
+        privly_application: "Tester"
+      };
+
+      var DOM = getMessageDOM(data);
+      var cells = jQuery(DOM).children("td");
+
+      // Check existence
+      expect(jQuery(cells[0]).children("button").length).toBe(2);
+      expect(cells.length).toBe(4);
+
+      // Check content
+      expect(jQuery(cells[0]).children("button")[0].textContent).toMatch(/Preview Tester/);
+      for(var i = 1; i <= 3; i++) {
+        expect(cells[i].textContent).not.toBe(""); // TODO unit tests for parseDate
+      }
+
+    });
+  });
+});
