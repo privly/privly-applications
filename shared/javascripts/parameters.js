@@ -58,6 +58,7 @@ var privlyParameters = {
         if (param2.hasOwnProperty(attrname)) {
           parameters[attrname] = param2[attrname];
         }
+      }
     }
     return parameters;
   },
