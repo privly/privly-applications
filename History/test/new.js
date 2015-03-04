@@ -200,7 +200,7 @@ describe("History side functions", function() {
       // Check content
       expect(jQuery(cells[0]).children("button")[0].textContent).toMatch(/Preview Tester/);
       for(var i = 1; i <= 3; i++) {
-        expect(cells[i].textContent).not.toBe(""); // TODO unit tests for parseDate
+        expect(cells[i].textContent).not.toBe("");
       }
 
     });
