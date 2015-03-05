@@ -41,19 +41,25 @@ var callbacks = {
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
     
-    // Monitor the login button
-    document.querySelector('#login').addEventListener('click', callbacks.submitCredentials);
-    document.querySelector('#register').addEventListener('click', callbacks.submitRegistration);
-    $("#user_password").keyup(function (e) {
-        if (e.keyCode === 13) {
-            callbacks.submitCredentials();
-        }
+    // hijack submit event
+    $('#login-form').submit(function(e) {
+      e.preventDefault();
+      callbacks.submitCredentials();
+    });
+    $('#register-form').submit(function(e) {
+      e.preventDefault();
+      callbacks.submitRegistration();
     });
 
-    $('#register_email').keyup(function (e) {
-        if (e.keyCode === 13) {
-            callbacks.submitRegistration();
-        }
+    // switch login/register
+    $('#link-sign-up').click(function() {
+      $('#login-form').hide();
+      $('#register-form').show();
+    });
+
+    $('#link-sign-in').click(function() {
+      $('#login-form').show();
+      $('#register-form').hide();
     });
     
     // Add listeners to show loading animation while making ajax requests
