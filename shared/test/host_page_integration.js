@@ -7,22 +7,20 @@
  
 describe ("Host Page Integration Test Suite", function() {
   
-  it("does not result in an error", function() {
-    if( ! privlyHostPage.isInjected() ) return;
-    
-    // The runs function allows the testing library to complete the asynchronous
-    // calls before executing this testing code
-    runs(function() {
-      privlyHostPage.dispatchResize(1000);
-      privlyHostPage.dispatchResize(15);
-      jQuery("body").attr("height","100%");
-      var newHeight = document.getElementById("privlyHeightWrapper").offsetHeight;
-      newHeight += 18; // add 18px just to accommodate the tooltip
+  it("does not result in an error", function(done) {
 
-      privlyHostPage.resizeToWrapper();
-      expect(true).toBe(true);
-    });
+    if( ! privlyHostPage.isInjected() || jQuery("privlyHeightWrapper").length === 0 ) {
+      done();
+      return;
+    }
     
+    privlyHostPage.dispatchResize(1000);
+    privlyHostPage.dispatchResize(15);
+    var newHeight = 18; // add 18px just to accommodate the tooltip
+
+    privlyHostPage.resizeToWrapper();
+    expect(true).toBe(true);
+    done();
   });
   
 });

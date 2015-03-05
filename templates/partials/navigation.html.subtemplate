@@ -1,0 +1,153 @@
+{#
+# Partial used for the common navigation among all the applications.
+#
+# The menus are compiled without knowing if the user will be logged in
+# or the nav will be shown in the injected context. This means
+# that the navigation is hidden by default to avoid a shudder in the
+# injected context, and will be shown only if
+# JavaScript choses to display it. For an example of how this
+# nav should be shown, you should look at network_service.js
+# and view the showLoggedOutNav() and showLoggedInNav() functions.
+#
+# Specifically, if you want to show the logged out nav:
+# $("logged_in_nav").hide();
+# $(".logged_out_nav").show();
+# $(".injected_hide").show();
+#
+# and similarly for the logged in nav:
+# $(".logged_out_nav").hide();
+# $("logged_in_nav").show();
+# $(".injected_hide").show();
+#
+#}
+<div class="navbar navbar-inverse navbar-fixed-top injected_hide mobile_hide"
+  role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" 
+        data-toggle="collapse"data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a title="This is your current content server" class="navbar-brand lobster home_domain"
+       href="../Help/content_server.html">
+      Privly
+      </a>
+    </div>
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li style="display:none;" class="{% if name == "History" %}active {% endif %}logged_in_nav">
+          <a href="../History/new.html">
+            History
+            <span class="glyphicon glyphicon-list-alt"></span>
+          </a>
+        </li>
+        
+        <li class="{% if name == "Login" %}active {% endif %}logged_out_nav">
+          <a href="../Login/new.html" class="login_url">
+            Login
+            <span class="glyphicon glyphicon-log-in"></span>
+          </a>
+        </li>
+
+        {# Add the editing menus as needed #}
+        {%
+          if action == "show" 
+        %}
+        <li id="permissions_nav" class="dropdown active"
+          style="display:none;">
+          <a href="#" id="edit_nav" class="dropdown-toggle" data-toggle="dropdown">
+            {{name}}
+            <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu">
+            <li class="dropdown-header" style="display:none;" >
+              Post Actions
+            </li>
+            <li>
+              <a id="edit_link" style="display:none;cursor:pointer;">
+                <span class="glyphicon glyphicon-edit"></span>
+                Edit
+              </a>
+            </li>
+            <li>
+              <a id="destroy_link" style="display:none;" href="#">
+                <span class="glyphicon glyphicon-fire"></span>
+                Destroy
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li id="no_permissions_nav" class="active">
+          <a style="cursor:pointer;">{{name}}</a>
+        </li>
+        {% 
+          endif 
+        %}
+        
+        <li class="{% if action == "new" %}active {% endif %}dropdown logged_in_nav" style="display:none;">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            New Link
+            <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu">
+            <li class="dropdown-header">Select Application</li>
+            {% for app in packages.new %}
+                <li {% if action == "new" and app == name %}class="active" {% endif %}>
+                  <a href="../{{ app }}/new.html">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                    New {{app}}
+                  </a>
+                </li>
+            {% endfor %}
+            <li>
+              <a href="../Help/new.html">
+                <span class="glyphicon glyphicon-info-sign"></span>
+                Help
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        {% if args.platform != "web" %}
+        <li class="{% if name == "Options" or name == "FirstRun" %}active {% endif %}dropdown logged_in_nav logged_out_nav">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            Options
+            <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a href="#" target="_blank" class="account_url logged_in_nav"
+                style="display:none;">
+                 <span class="glyphicon glyphicon-new-window"></span>
+                 Server Account
+              </a>
+            </li>
+            <li {% if name == "Options" %}class="active" {% endif %}>
+              <a href="../Pages/ChromeOptions.html">
+                 <span class="glyphicon glyphicon-wrench"></span> 
+                 Extension Options
+              </a>
+            </li>
+            <li {% if name == "FirstRun" %}class="active" {% endif %}>
+              <a href="../Pages/ChromeFirstRun.html">
+                 <span class="glyphicon glyphicon-info-sign"></span> 
+                 Extension Information
+              </a>
+            </li>
+          </ul>
+        </li>
+        {% endif %}
+
+        <li style="display:none;" class="logged_in_nav">
+          <a href="#" id="logout_link" class="logout_url">
+            Logout
+            <span class="glyphicon glyphicon-log-out"></span>
+          </a>
+        </li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div>
+</div>

@@ -30,16 +30,6 @@ body {
   background-color: #222;
 }
 
-/* Lastly, apply responsive CSS fixes as necessary */
-@media (max-width: 767px) {
-  #footer {
-    margin-left: -20px;
-    margin-right: -20px;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-}
-
 .container .credit {
   margin: 10px 10px 0px 10px;
 }
@@ -73,3 +63,12 @@ body {
     background-color: #FF8787;
 }
 
+.break_all {
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto;
+  display: inline-block;
+}

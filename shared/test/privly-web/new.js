@@ -7,6 +7,19 @@
 
 describe ("Privly-web new.js API Test Suite", function() {
   
+
+  // Get an HTML document defined by the pre-processor.
+  // This is a rough hack because HTML2JS seems to assign the
+  // key to the absolute URL, which is not reliable on
+  // continuous integration.
+  beforeEach(function() {
+    var keys = Object.keys(__html__);
+    var selectKey;
+    keys.forEach(function(key) {
+      if( key.indexOf("Message/new.html") >= 0 ) {
+        selectKey = key;
+      }
+
   /**
    * A mock server response to test the post-processing functions.
    */
@@ -25,66 +38,40 @@ describe ("Privly-web new.js API Test Suite", function() {
       callbacks.pendingLogin(function(){
         initializationFlag = true});
     });
+    document.body.innerHTML = __html__[selectKey];
+  });
 
-    // Waits for the initialization to complete or fails
-    waitsFor(function() {
-      return initializationFlag;
-    }, "The app was not initialized", 1000);
+  afterEach(function() {
+    document.body.innerHTML = "";
   });
   
-  it("does not result in an error (loginFailure)", function() {
-    // used to check if asynchronous calls completed
-    var initializationFlag = false;
-    
-    // The runs function allows the testing library to complete the asynchronous
-    // calls before executing this testing code
-    runs(function() {
-      callbacks.loginFailure(function(){initializationFlag = true});
-      
-    });
-
-    // Waits for the initialization to complete or fails
-    waitsFor(function() {
-      return initializationFlag;
-    }, "The app was not initialized", 1000);
+  it("does not result in an error (pending login)", function(done) {
+    callbacks.pendingLogin(done);
   });
   
-  it("does not result in an error (pendingPost)", function() {
-    // used to check if asynchronous calls completed
-    var initializationFlag = false;
-    
-    // The runs function allows the testing library to complete the asynchronous
-    // calls before executing this testing code
-    runs(function() {
-      callbacks.pendingPost(function(){initializationFlag = true});
-      
-    });
-
-    // Waits for the initialization to complete or fails
-    waitsFor(function() {
-      return initializationFlag;
-    }, "The app was not initialized", 1000);
+  it("does not result in an error (loginFailure)", function(done) {
+    callbacks.loginFailure(done);
+  });
+  
+  it("does not result in an error (pendingPost)", function(done) {
+    callbacks.pendingPost(done);
+  });
+  
+  it("does not result in an error (postSubmit)", function(done) {
+    callbacks.postSubmit( {jqXHR: {status: "500"}}, "TestFunction", 10, "",
+        done);
   });
   
   
-  it("does not result in an error (postSubmit)", function() {
-    // used to check if asynchronous calls completed
-    var initializationFlag = false;
-    
-    // The runs function allows the testing library to complete the asynchronous
-    // calls before executing this testing code
-    runs(function() {
-      callbacks.postSubmit( {}, "TestFunction", 10, "", 
-        function(){initializationFlag = true});
-    });
-
-    // Waits for the initialization to complete or fails
-    waitsFor(function() {
-      return initializationFlag;
-    }, "The app was not initialized", 1000);
+<<<<<<< HEAD
+  it("does not result in an error (createError)", function(done) {
+    callbacks.createError({jqXHR: {status: "500"}}, done);
   });
   
-  
+  it("does not result in an error (postComplete)", function(done) {
+    callbacks.postCompleted( {jqXHR: {status: 201}, url: "mock"}, "URL",
+        done);
+=======
   it("does not result in an error (createError)", function() {
     // used to check if asynchronous calls completed
     var initializationFlag = false;
@@ -117,6 +104,7 @@ describe ("Privly-web new.js API Test Suite", function() {
     waitsFor(function() {
       return initializationFlag;
     }, "The app was not initialized", 1000);
+>>>>>>> upstream/experimental-SplitImage
   });
   
   it("can differentiate a function from not a function", function() {

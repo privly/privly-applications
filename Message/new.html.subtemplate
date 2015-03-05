@@ -1,0 +1,49 @@
+{% extends "templates/new.html.template" %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+  <script type="text/javascript" src="../vendor/jquery.autosize.js"></script>
+  <script type="text/javascript" src="../vendor/markdown.js"></script>
+  <script type="text/javascript" src="../vendor/sjcl.js"></script>
+  <script type="text/javascript" src="js/base64.js"></script>
+  <script type="text/javascript" src="js/rawdeflate.js"></script>
+  <script type="text/javascript" src="js/rawinflate.js"></script>
+  <script type="text/javascript" src="js/zerobin.js"></script>
+  <script type="text/javascript" src="../shared/javascripts/privly-web/new.js"></script>
+  <script type="text/javascript" src="js/new.js"></script>
+{% endblock %}
+
+{% block app_info %}
+  <hr/>
+  <div class="col-md-6">
+    <h2>What is a Privly Message?</h2>
+    <p>Message is a
+      <a href="http://www.privly.org/content/introducing-privly-applications" target="_blank">
+        privacy application</a> on Privly. Privly Messages encrypt your content
+      with a key that is attached to the link you share across the web.
+      If someone has access to the server where the content is stored, 
+      and to the link you create, they will be able to decrypt your content. 
+      You can use 
+      <a href="http://daringfireball.net/projects/markdown/basics">
+        Markdown</a>
+      to format your posts. You can 
+      <a href="http://www.privly.org/content/introducing-privly-applications"
+       target="_blank">
+        read more</a> about Privly Applications or about 
+      <a href="https://github.com/privly/privly-applications/blob/master/Message/docs/ZeroBin.md"
+        target="_blank">
+        Messages
+      </a> specifically.
+    </p>
+  </div>
+  <div class="col-md-6">
+    <h2>Warnings</h2>
+    <ul>
+      <li>Privly is still in Alpha, <strong>do not</strong> post private information until the system reaches a Beta release.</li>
+      <li>If your social network violates your legal rights they will be able to view this content.</li>
+      <li>No web applications will protect you from a targeted government attacked. If you are being directly targeted by your government do not use this software.</li>
+      <li>We have more safety information available at <a href="https://priv.ly/pages/safety.html"
+        target="_blank">Priv.ly</a>.</li>
+    </ul>
+  </div>
+{% endblock %}

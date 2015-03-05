@@ -1,0 +1,120 @@
+{% extends "templates/new.html.template" %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+  <script type="text/javascript" src="../shared/javascripts/tooltip.js"></script>
+  <script type="text/javascript" src="js/first_run.js"></script>
+{% endblock %}
+
+{% block css %}
+  <link href="css/options.css" media="screen" rel="stylesheet"
+   type="text/css"/>
+{% endblock %}
+
+{% block form %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1 class="page-header">Your Privly Extension has Been Updated to 0.4.0</h1>
+      <h1>News and Update Summary</h1>
+      <p>
+        <strong>Big news:</strong>
+        The Privly Foundation 
+        <a href="https://www.privly.org/content/privly-gains-non-profit-status"
+          alt="The public purpose is upheld"
+          target="_blank">
+          gained non-profit status!
+        </a>
+      </p>
+      <p>
+        This update has numerous advances in the user interface of the
+        Privly system including performance and user experience fixes.
+        By default the new posting button will be deactivated for current
+        users. To turn this control on, visit the options page.
+        Included in this version are
+        changes from new contributors Vlad Fulgeanu and Dragoș Alin Rotaru.
+      </p>
+    </div>
+  </div> 
+  
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Change History</h1>
+      
+      <p><strong>Version 0.4.0 (this version)</strong></p>
+      <ul>
+        <li>Added this page</li>
+        <li>Renamed the "Index" application to "History".</li>
+        <li>Added local key remembrance to ZeroBin Privly applications.</li>
+        <li>Added page to explain what users are looking at when they click on the content server's name.</li>
+        <li>Improved anti-spoofing glyph.</li>
+        <li>Improved copy/paste of newly generated links.</li>
+        <li>Added a shim for supporting localStorage across all browser platforms.</li>
+        <li>Refactored build system to pull from manifest.json files.</li>
+        <li>Added a "help" application to the Privly applications.</li>
+        <li>Fixed initialization of links on login application.</li>
+        <li>Added glyphicons to menus.</li>
+        <li>Updated pages to use Bootstrap 3.</li>
+        <li>Added in-place editing of content via double clicking the content.</li>
+        <li>Fixed injection of content on dynamic frames (affected Google hangouts).</li>
+        <li>Updated UI on options page.</li>
+        <li>Made text areas auto-resize when typing in them.</li>
+        <li>Added ability to save long-lived posts.</li>
+        <li>Content now previews the update to the content as the user types in the form.</li>
+        <li>Improved error messaging for users.</li>
+        <li>Numerous bug fixes.</li>
+      </ul>
+
+      <h2>Privly Resources</h3>
+
+      <ul>
+        <li><a href="http://privly.org" target="_blank">Foundation Home</a></li>
+        <li><a href="https://github.com/privly/privly-organization/wiki" target="_blank">Development Wiki</a></li>
+        <li><a href="https://github.com/privly" target="_blank">Repository List</a></li>
+        <li><a href="http://groups.google.com/group/privly" target="_blank">Development Mailing List</a></li>
+        <li><a href="http://groups.google.com/group/privly-test" target="_blank">Testing Mailing List</a></li>
+        <li><a href="http://groups.google.com/group/privly-announce" target="_blank">Announcements Mailing List</a></li>
+        <li><a href="http://www.privly.org/content/bug-report" target="_blank">Submit a Bug</a></li>
+        <li><a href="http://www.privly.org/content/irc" target="_blank">IRC</a></li>
+        <li><a href="https://priv.ly/pages/download" target="_blank">Download</a></li>
+      </ul>
+
+      <h1>Contributors</h1>
+
+      <p>
+        Sean McGregor,
+        Daniel Reichert,
+        Vlad Fulgeanu,
+        Dragoș Alin Rotaru,
+        Jason Jacob
+      </p>
+  
+      <h1>Contact</h1>
+      <p>
+        privly@privly.org <br />
+        PO Box 79 <br />
+        Corvallis, OR 97339
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Your Privly Glyph</h1>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-7">
+      <p>Often when you are viewing a web page, you will want to know if that content has been added by the Privly extension. To allow you to differentiate Privly and non-Privly content, your extension shows a random sequence of colors, a "glyph," that will only be displayed when your mouse is over Privly-type content. Often the Privly extension will display additional information next to the glyph like verified identity information, security properties, and more. Keep an eye on this little popup and remember to commit your specific glyph to memory.</p>
+      <div id="tooltip"></div>
+    </div>
+    <div class="col-md-5" alt="Animation of the Privly Glyph at work">
+      <img src="img/glyph_animation.gif">
+    </div>
+  </div>
+</div> <!-- /container -->
+
+{% endblock %}
+
+
+{% block app_info %}
+{% endblock %}

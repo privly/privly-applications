@@ -1,0 +1,14 @@
+[
+  {
+    "release_status": "alpha",
+    "subtemplate_path": "Help/new.html.subtemplate",
+    "outfile_path": "Help/new.html",
+    "subtemplate_dict": {"name": "Help", "action": "new"}
+  },
+  {
+    "release_status": "alpha",
+    "subtemplate_path": "Help/content_server.html.subtemplate",
+    "outfile_path": "Help/content_server.html",
+    "subtemplate_dict": {"name": "Help", "action": "nav"}
+  }
+]
