@@ -31,7 +31,7 @@ runTest () {
 }
 
 # Each line below executes the scripts in order in the context of the browsers.
-runTest 'Help/test/*.js,Help/js/*.js'
+runTest 'Help/js/*.js,Help/test/*.js'
 runTest 'History/js/*.js,History/test/*.js'
 runTest 'Login/js/*.js,Login/test/*.js'
 runTest 'Pages/js/options.js,Pages/js/tests/*.js'
