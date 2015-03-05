@@ -39,7 +39,10 @@
     <!-- Injected Styles, will be added by JS if viewed in iframe -->
     <meta name="PrivlyInjectedCSS"
      content="../shared/css/injected/injected.css"/>
-     
+    
+    <!-- Application Specific CSS -->
+    {% block css %}{% endblock %}
+    
   </head>
   <body data-privly-exclude="true">
     
@@ -92,7 +95,7 @@
 
               <div class="col-md-4 injected_hide">
                 <div id="side_block">
-                  <h2>Metadata</h2>
+                  <h2>{{name}} Metadata</h2>
                   <p class="meta_created_at"></p>
                   <p class="meta_destroyed_around"></p>
                   <p class="meta_updated_at"></p>

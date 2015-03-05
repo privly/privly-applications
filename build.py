@@ -155,6 +155,16 @@ if __name__ == "__main__":
   
   # Listing of other apps so they can be added to the common nav
   packages = {"new": get_link_creation_apps()}
+    # Nav packages are specialized applications that may be rendered into the top
+    # level navigation of the packages.
+    "nav": ["Index", "Login"],
+    
+    # New packages are apps that can generate new Privly-type links.
+    "new": ["ZeroBin", "PlainPost", "SplitImage"],
+    
+    # Show packages are apps that can be injected into a host page.
+    "show": ["ZeroBin", "PlainPost", "SplitImage"]
+  }
   
   print("################################################")
   print("Targeting the *{0}* platform".format(args.platform))
