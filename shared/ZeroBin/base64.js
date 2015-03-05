@@ -8,15 +8,15 @@
 
 (function(global){
 
-if (global.Base64) return;
+if (global.Base64) {return;}
 
 var b64chars 
     = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-var b64tab = function(bin){
+var b64tab = (function(bin){
     var t = {};
-    for (var i = 0, l = bin.length; i < l; i++) t[bin.charAt(i)] = i;
+    for (var i = 0, l = bin.length; i < l; i++) {t[bin.charAt(i)] = i;}
     return t;
-}(b64chars);
+}(b64chars));
 
 var sub_toBase64 = function(m){
     var n = (m.charCodeAt(0) << 16)
@@ -29,16 +29,16 @@ var sub_toBase64 = function(m){
 };
 
 var toBase64 = function(bin){
-    if (bin.match(/[^\x00-\xFF]/)) throw 'unsupported character found' ;
+    if (bin.match(/[^\x00-\xFF]/)) {throw 'unsupported character found';}
     var padlen = 0;
     while(bin.length % 3) {
         bin += '\0';
         padlen++;
-    };
+    }
     var b64 = bin.replace(/[\x00-\xFF]{3}/g, sub_toBase64);
-    if (!padlen) return b64;
+    if (!padlen) {return b64;}
     b64 = b64.substr(0, b64.length - padlen);
-    while(padlen--) b64 += '=';
+    while(padlen--) {b64 += '=';}
     return b64;
 };
 
@@ -62,8 +62,9 @@ var fromBase64 = function(b64){
         padlen++;
     }
     var bin = b64.replace(/[A-Za-z0-9\+\/]{4}/g, sub_fromBase64);
-    if (padlen >= 2)
+    if (padlen >= 2) {
         bin = bin.substring(0, bin.length - [0,0,2,1][padlen]);
+    }
     return bin;
 };
 

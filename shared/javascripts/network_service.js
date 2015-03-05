@@ -91,14 +91,13 @@ var privlyNetworkService = {
   platformName: function() {
     if (navigator.userAgent.indexOf("iPhone") >= 0 || 
       navigator.userAgent.indexOf("iPad") >= 0) {
-      if( navigator.userAgent.indexOf("Safari") >= 0 ) return "HOSTED";
-      return "IOS";
+      if( navigator.userAgent.indexOf("Safari") >= 0 ) { return "HOSTED"; }
+        return "IOS";
     } else if(typeof androidJsBridge !== "undefined") {
       return "ANDROID";
     }  else if (typeof chrome !== "undefined" && typeof chrome.extension !== "undefined") {
       return "CHROME";
-    } else if(typeof Components !== "undefined" &&
-    typeof Components.classes !== "undefined") {
+    } else if(window.location.href.indexOf("chrome://") === 0) {
       return "FIREFOX";
     } else {
       return "HOSTED";
@@ -188,18 +187,18 @@ var privlyNetworkService = {
    */
   isWhitelistedDomain: function(url) {
     
-    // Chrome maintains an explicit whitelist in localStorage
+    // Chrome maintains an explicit whitelist in local storage
     if( privlyNetworkService.platformName() === "CHROME" || 
       privlyNetworkService.platformName() === "FIREFOX") {
       
       // get the user defined whitelist and add in the default whitelist
       var whitelist = [];
       
-      // There is no localStorage API on Firefox XUL
+      // There is no local storage API on Firefox XUL
       if ( privlyNetworkService.platformName() === "CHROME" &&
-        localStorage["user_whitelist_csv"] !== undefined ) {
+        ls.getItem("user_whitelist_csv") !== undefined ) {
         whitelist = whitelist.concat(
-          localStorage["user_whitelist_csv"].split(" , "));
+          ls.getItem("user_whitelist_csv").split(" , "));
       }
       whitelist.push("priv.ly");
       whitelist.push("dev.privly.org");
@@ -213,10 +212,11 @@ var privlyNetworkService = {
       for(var i = 0; i < whitelist.length; i++) {
         if( url.indexOf(whitelist[i]) > 0) {
           var url_split = url.split("/");
-          if(url_split[2] == whitelist[i] && 
+          if(url_split[2] === whitelist[i] &&
              url_split[1] === "" && 
-             (url_split[0] === "http:" || url_split[0] === "https:") )
+             (url_split[0] === "http:" || url_split[0] === "https:") ) {
                 return true;
+          }
         }
       }
     } else {
@@ -235,20 +235,16 @@ var privlyNetworkService = {
     var protocolDomainPort = location.protocol + 
                              '//'+location.hostname + 
                              (location.port ? ':'+location.port: '');
-    
-    if (privlyNetworkService.platformName() === "HOSTED") {
+
+    var platformName = privlyNetworkService.platformName();
+    if (platformName === "HOSTED") {
       return protocolDomainPort;
-    } else if (privlyNetworkService.platformName() === "CHROME" ||
-              (privlyNetworkService.platformName() === "IOS")) {
-      return localStorage["posting_content_server_url"];
-    } else if (privlyNetworkService.platformName() === "ANDROID") {
+    } else if (platformName === "CHROME" ||
+               platformName === "FIREFOX" ||
+               platformName === "IOS") {
+      return ls.getItem("posting_content_server_url");
+    } else if (platformName === "ANDROID") {
       return androidJsBridge.fetchDomainName();
-    } else if (privlyNetworkService.platformName() === "FIREFOX") {
-      if( privlyNetworkService.firefoxPrefs === undefined )
-        privlyNetworkService.firefoxPrefs = Components.classes["@mozilla.org/preferences-service;1"]
-                            .getService(Components.interfaces.nsIPrefService)
-                            .getBranch("extensions.privly.");
-      return privlyNetworkService.firefoxPrefs.getCharPref("contentServerUrl");
     } else {
       return protocolDomainPort;
     }
@@ -400,12 +396,23 @@ var privlyNetworkService = {
   },
   
   /**
+   * Hide all the elements not required by mobile and adjust the CSS appropriately.
+   * Elements will only be modified for mobile apps.
+   */
+  mobileHide: function() {
+    if( privlyNetworkService.platformName() === "IOS" ||
+        privlyNetworkService.platformName() === "ANDROID" ) {
+      $(".mobile_hide").hide();
+      $("body").css("padding-top", "0px");
+    }
+  },
+
+  /**
    * Assign the href attribute of navigation links appropriately.
    */
   initializeNavigation: function() {
     var domain = privlyNetworkService.contentServerDomain();
-    $(".home_domain").attr("href", domain);
-    $(".home_domain").text(domain.split("/")[2]);  
+    $(".home_domain").text(domain.split("/")[2]);
     $(".account_url").attr("href", domain + "/pages/account");
     $(".legal_nav").attr("href", domain + "/pages/privacy");
     document.getElementById("logout_link").addEventListener('click', function(){
@@ -417,39 +424,42 @@ var privlyNetworkService = {
     // Change the target property to be self if the application is hosted
     // by a remote server.
     if( privlyNetworkService.platformName() === "HOSTED" ) {
-      $(".home_domain").attr("target", "_self"); 
+      $(".home_domain").attr("href", domain);
+      $(".home_domain").attr("target", "_self");
       $(".account_url").attr("target", "_self");
       $(".legal_nav").attr("target", "_self");
     }
-    
-    if( privlyNetworkService.platformName() === "IOS" ||
-        privlyNetworkService.platformName() === "ANDROID" ) {
-      $(".mobile_hide").hide(); 
-    }
-    
+
+    privlyNetworkService.mobileHide();
   },
-  
+
   /**
    * Show/hide the appropriate navigation items for when the user is logged out.
    */
   showLoggedOutNav: function() {
+    
+    // Don't show the nav at all if the content is injected.
+    if(typeof privlyHostPage !== "undefined" && privlyHostPage.isInjected()) {
+      return;
+    }
     $(".logged_in_nav").hide();
     $(".logged_out_nav").show();
-    if( privlyNetworkService.platformName() === "IOS" ||
-        privlyNetworkService.platformName() === "ANDROID" ) {
-      $(".mobile_hide").hide(); 
-    }
+    $(".injected_hide").show();
+    privlyNetworkService.mobileHide();
   },
   
   /**
    * Show/hide the appropriate navigation items for when the user is logged in.
    */
   showLoggedInNav: function() {
-    $(".logged_in_nav").show();
-    $(".logged_out_nav").hide();
-    if( privlyNetworkService.platformName() === "IOS" ||
-        privlyNetworkService.platformName() === "ANDROID" ) {
-      $(".mobile_hide").hide(); 
+    
+    // Don't show the nav at all if the content is injected.
+    if(typeof privlyHostPage !== "undefined" && privlyHostPage.isInjected()) {
+      return;
     }
+    $(".logged_out_nav").hide();
+    $(".injected_hide").show();
+    $(".logged_in_nav").show();
+    privlyNetworkService.mobileHide();
   }
-}
+};

@@ -4,9 +4,18 @@
 #tooltip {
   position:absolute; 
   border:1px solid #333;
-  background:#f7f5d1;
-  padding:1px 1px;
+  background:#daffff;
+  padding:2px 5px 3px 1px;
   color:#333;
-  display:none;
+  display:inline-block;
   font:14px Helvetica;
+}
+
+.glyph_empty {background-color:#ffffff;}
+
+.glyph_table {
+  border-collapse: collapse;
+  line-height: 4px;
+  float: left;
+  margin-right: 5px;
 }

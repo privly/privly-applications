@@ -23,8 +23,19 @@
  *
  */
 
-// Immediately start random number generator collector.
-sjcl.random.startCollectors();
+// Seed the SJCL entropy with the web crypto API or fall back to SJCL's
+// collectors
+var webCryptoEntropy = new Uint32Array(128);
+if (window.crypto && window.crypto.getRandomValues) {
+  window.crypto.getRandomValues(webCryptoEntropy);
+  sjcl.random.addEntropy(webCryptoEntropy, 4096, "crypto.getRandomValues");
+} else if (window.msCrypto && window.msCrypto.getRandomValues) {
+  window.msCrypto.getRandomValues(webCryptoEntropy);
+  sjcl.random.addEntropy(webCryptoEntropy, 4096, "crypto.getRandomValues");
+} else {
+  sjcl.random.startCollectors();
+}
+
 
 /**
  * Compress a message (deflate compression).
@@ -95,7 +106,7 @@ function pageKey(key) {
     i = key.indexOf('&'); if (i>-1) { key = key.substring(0,i); }
     
     // Then add trailing equal sign if it's missing
-    if (key.charAt(key.length-1)!=='=') key+='=';
+    if (key.charAt(key.length-1)!=='=') {key+='=';}
     
     return key;
 }

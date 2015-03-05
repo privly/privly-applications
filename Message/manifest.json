@@ -1,0 +1,15 @@
+[
+  {
+    "release_status": "alpha",
+    "nav": "new",
+    "subtemplate_path": "Message/new.html.subtemplate",
+    "outfile_path": "Message/new.html",
+    "subtemplate_dict": {"name": "Message", "action": "new"}
+  },
+  {
+    "release_status": "alpha",
+    "subtemplate_path": "Message/show.html.subtemplate",
+    "outfile_path": "Message/show.html",
+    "subtemplate_dict": {"name": "Message", "action": "show"}
+  }
+]

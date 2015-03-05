@@ -1,13 +1,10 @@
 {% extends "templates/new.html.template" %}
 
-{% block specs %}
-  <meta name="PrivlySpec"
-   content="../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js"/>
-{% endblock %}
+{% block title %}<title>{{name}}</title>{% endblock %}
 
 {% block javascripts %}
 <script type="text/javascript" src="../vendor/jquery.min.js"></script>
-<script type="text/javascript" src="js/new.js"></script>
+<script type="text/javascript" src="js/help.js"></script>
 {% endblock %}
 
 {% block form %}
@@ -33,8 +30,8 @@
       view the content if no parties break the law.
     </p>
     <div class="col-md-3">
-      <form action="../ZeroBin/new.html" style="display:inline;">
-          <button type="submit" class="btn btn-default">New ZeroBin</button>
+      <form action="../Message/new.html" style="display:inline;">
+          <button type="submit" class="btn btn-default">New Message</button>
       </form>
     </div>
     <div class="col-md-9">
