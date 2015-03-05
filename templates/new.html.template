@@ -60,6 +60,7 @@
             </p>
             <div id="copy_message" style="display:none;">
               <p class="flash notice">
+                <strong>Step 1.</strong>
                 Copy and paste the address found below to any website
                 you want to share this information through.
               </p>
@@ -68,8 +69,8 @@
                 <span class="privlyUrl" data-privly-exclude="true"></span>
               </p>
               <p class="flash notice open-app-button" style="display:none;">
-                <strong>Now copy/paste</strong>
-                the highlighted address anywhere you want to share it. You can also
+                <strong>Step 2.</strong>
+                Now copy/paste the highlighted address anywhere you want to share it. You can also
                 <a id="local_address" href="" target="_blank" class="btn btn-default">
                   open the link
                 </a>
