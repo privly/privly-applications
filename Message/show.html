@@ -10,49 +10,52 @@
    Message
   </title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <meta content="This link contains your friend's private content. Click through to read." name="description"/>
-  <meta content="This link contains your friend's private content. Click through to read." name="og:description"/>
-  <meta content="This link contains your friend's private content. Click through to read." name="twitter:description"/>
-  <!-- Common Styles -->
-  <link href="../shared/css/common.css" media="screen" rel="stylesheet" type="text/css"/>
-  <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet" type="text/css"/>
-  <!-- Shared JavaScripts -->
-  <script src="../shared/javascripts/meta_loader.js" type="text/javascript">
-  </script>
-  <script src="../shared/javascripts/parameters.js" type="text/javascript">
-  </script>
-  <script src="../shared/javascripts/host_page_integration.js" type="text/javascript">
-  </script>
-  <script src="../shared/javascripts/network_service.js" type="text/javascript">
-  </script>
-  <script src="../shared/javascripts/tooltip.js" type="text/javascript">
-  </script>
-  <script src="../shared/javascripts/local_storage.js" type="text/javascript">
-  </script>
-  <!-- Application Specific JavaScripts -->
-  <script src="../vendor/markdown.js" type="text/javascript">
-  </script>
-  <script src="../vendor/jquery.min.js" type="text/javascript">
-  </script>
-  <script src="../vendor/sjcl.js" type="text/javascript">
-  </script>
-  <script src="js/base64.js" type="text/javascript">
-  </script>
-  <script src="js/rawdeflate.js" type="text/javascript">
-  </script>
-  <script src="js/rawinflate.js" type="text/javascript">
-  </script>
-  <script src="js/zerobin.js" type="text/javascript">
-  </script>
-  <script src="../shared/javascripts/privly-web/show.js" type="text/javascript">
-  </script>
-  <script src="js/show.js" type="text/javascript">
-  </script>
-  <meta content="../vendor/jquery.autosize.js" name="PrivlyTopJS"/>
-  <!-- Top Styles, will be added by JS if not viewed in iframe -->
-  <meta content="../vendor/bootstrap/css/bootstrap.min.css;../shared/css/top/top.css" name="PrivlyTopCSS"/>
-  <!-- Injected Styles, will be added by JS if viewed in iframe -->
-  <meta content="../shared/css/injected/injected.css" name="PrivlyInjectedCSS"/>
+  <meta content="This link contains your friend's private content. Click through to read." name="description">
+   <meta content="This link contains your friend's private content. Click through to read." name="og:description">
+    <meta content="This link contains your friend's private content. Click through to read." name="twitter:description">
+     <!-- Common Styles -->
+     <link href="../shared/css/common.css" media="screen" rel="stylesheet" type="text/css"/>
+     <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet" type="text/css"/>
+     <!-- Shared JavaScripts -->
+     <script src="../shared/javascripts/meta_loader.js" type="text/javascript">
+     </script>
+     <script src="../shared/javascripts/parameters.js" type="text/javascript">
+     </script>
+     <script src="../shared/javascripts/host_page_integration.js" type="text/javascript">
+     </script>
+     <script src="../shared/javascripts/network_service.js" type="text/javascript">
+     </script>
+     <script src="../shared/javascripts/tooltip.js" type="text/javascript">
+     </script>
+     <script src="../shared/javascripts/local_storage.js" type="text/javascript">
+     </script>
+     <!-- Application Specific JavaScripts -->
+     <script src="../vendor/markdown.js" type="text/javascript">
+     </script>
+     <script src="../vendor/jquery.min.js" type="text/javascript">
+     </script>
+     <script src="../vendor/sjcl.js" type="text/javascript">
+     </script>
+     <script src="js/base64.js" type="text/javascript">
+     </script>
+     <script src="js/rawdeflate.js" type="text/javascript">
+     </script>
+     <script src="js/rawinflate.js" type="text/javascript">
+     </script>
+     <script src="js/zerobin.js" type="text/javascript">
+     </script>
+     <script src="../shared/javascripts/privly-web/show.js" type="text/javascript">
+     </script>
+     <script src="js/show.js" type="text/javascript">
+     </script>
+     <meta content="../vendor/jquery.autosize.js" name="PrivlyTopJS"/>
+     <!-- Top Styles, will be added by JS if not viewed in iframe -->
+     <meta content="../vendor/bootstrap/css/bootstrap.min.css;../shared/css/top/top.css" name="PrivlyTopCSS"/>
+     <!-- Injected Styles, will be added by JS if viewed in iframe -->
+     <meta content="../shared/css/injected/injected.css" name="PrivlyInjectedCSS"/>
+    </meta>
+   </meta>
+  </meta>
  </head>
  <body data-privly-exclude="true">
   <script src="../vendor/bootstrap/js/bootstrap.min.js">
@@ -154,6 +157,36 @@
             <span class="glyphicon glyphicon-info-sign">
             </span>
             Help
+           </a>
+          </li>
+         </ul>
+        </li>
+        <li class="dropdown logged_in_nav logged_out_nav">
+         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+          Options
+          <b class="caret">
+          </b>
+         </a>
+         <ul class="dropdown-menu">
+          <li>
+           <a class="account_url logged_in_nav" href="#" style="display:none;" target="_blank">
+            <span class="glyphicon glyphicon-new-window">
+            </span>
+            Server Account
+           </a>
+          </li>
+          <li>
+           <a href="../Pages/ChromeOptions.html">
+            <span class="glyphicon glyphicon-wrench">
+            </span>
+            Extension Options
+           </a>
+          </li>
+          <li>
+           <a href="../Pages/ChromeFirstRun.html">
+            <span class="glyphicon glyphicon-info-sign">
+            </span>
+            Extension Information
            </a>
           </li>
          </ul>
@@ -262,82 +295,42 @@
      </div>
     </div>
     <!-- /.container -->
-    <div class="container" id="downloadmessage" style="display:none;">
-     <div class="row">
-      <div class="col-xs-12">
-       <hr/>
-      </div>
-     </div>
-     <div class="row">
-      <div class="col-md-3">
-       <a data-privly-chrome="https://chrome.google.com/webstore/detail/pkokikcdapfpkkkjpdaamjanniaempol" data-privly-firefox="https://addons.mozilla.org/en-US/firefox/addon/privly/" href="https://">
-        <div style="position:relative;width:10em;padding:1em;height:150px">
-         <img alt="Google Chrome Logo" class="download-extension-img" id="chrome_img" src="../shared/images/chrome-logo_150.png"/>
-         <img alt="Firefox Logo" class="download-extension-img" id="firefox_img" src="../shared/images/firefox-logo_150.png"/>
-         <img alt="Privly Icon" src="../shared/images/icon_96.png" style="position:absolute;right:33px;top:15px;"/>
-        </div>
-       </a>
-      </div>
-      <div class="col-md-9">
-       <h2>
-        <span class="referrer">
-        </span>
-       </h2>
-       <p>
-        <a href="https://priv.ly/pages/download">
-         Download
-        </a>
-        the Privly Extension, and you will
-        <strong>
-         see this content instead
-                 of the link
-        </strong>
-        that brought you to this page. We don't want
-                 you waste your time coming back to this website again.
-        <a href="https://priv.ly/pages/download">
-         Download
-        </a>
-        the extension and you won't have to.
-       </p>
-      </div>
-      <!-- /col-md-3 -->
-     </div>
-     <!-- /row -->
-    </div>
-    <!-- /container -->
    </div>
-   <!-- /privlyHeightWrapper -->
+   <!-- /col-md-3 -->
   </div>
-  <!-- /wrap -->
-  <div class="injected_hide" id="footer">
-   <div class="container">
-    <p class="text-muted credit">
-     <a href="https://www.priv.ly/pages/donate.html" target="_blank">
-      <span class="glyphicon glyphicon-gift">
-      </span>
-      Donate
-     </a>
-     to build a more private web.
-          You are viewing a
-          Privly
-     <span style="vertical-align: super;font-size: xx-small">
-      ®
-     </span>
-     Application,
-     <a href="https://priv.ly/pages/about" target="_blank">
-      learn more
-     </a>
-     about Privly.
-     <a class="legal_nav" href="/pages/privacy" target="_blank">
-      Terms of Service
-     </a>
-     and
-     <a class="legal_nav" href="/pages/privacy" target="_blank">
-      DMCA
-     </a>
-     .
-    </p>
-   </div>
-  </div>
+  <!-- /row -->
  </body>
 </html>
+<!-- /container -->
+<!-- /privlyHeightWrapper -->
+<!-- /wrap -->
+<div class="injected_hide" id="footer">
+ <div class="container">
+  <p class="text-muted credit">
+   <a href="https://www.priv.ly/pages/donate.html" target="_blank">
+    <span class="glyphicon glyphicon-gift">
+    </span>
+    Donate
+   </a>
+   to build a more private web.
+          You are viewing a
+          Privly
+   <span style="vertical-align: super;font-size: xx-small">
+    ®
+   </span>
+   Application,
+   <a href="https://priv.ly/pages/about" target="_blank">
+    learn more
+   </a>
+   about Privly.
+   <a class="legal_nav" href="/pages/privacy" target="_blank">
+    Terms of Service
+   </a>
+   and
+   <a class="legal_nav" href="/pages/privacy" target="_blank">
+    DMCA
+   </a>
+   .
+  </p>
+ </div>
+</div>
