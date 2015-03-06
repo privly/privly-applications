@@ -60,10 +60,11 @@
             </p>
             <div id="copy_message" style="display:none;">
               <p class="flash notice">
-              <strong>Step 1.</strong>
-              Copy and paste the address found below to any website
-                you want to share this information through.
-                <hr style="margin: 5px 0;">
+                <span id="step1_message">
+                  <strong>Step 1.</strong>
+                  Copy and paste the address found below to any website
+                  you want to share this information through.
+                </span>
                 <span class="glyphicon glyphicon-link"></span>
                 <span class="privlyUrl" data-privly-exclude="true"></span>
               </p>
