@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <!--
+      This was likely rendered from the Privly-application templating system
+      See: https://github.com/privly/privly-applications/pull/19
+     -->
+  <title>
+   New Message
+  </title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <!-- Top Styles -->
+  <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
+  <link class="top" href="../shared/css/top/top.css" rel="stylesheet"/>
+  <!-- Common Styles -->
+  <link href="../shared/css/common.css" media="screen" rel="stylesheet" type="text/css"/>
+  <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet" type="text/css"/>
+  <script src="../shared/javascripts/meta_loader.js" type="text/javascript">
+  </script>
+  <script src="../shared/javascripts/parameters.js" type="text/javascript">
+  </script>
+  <script src="../shared/javascripts/network_service.js" type="text/javascript">
+  </script>
+  <script src="../shared/javascripts/extension_integration.js" type="text/javascript">
+  </script>
+  <script src="../shared/javascripts/local_storage.js" type="text/javascript">
+  </script>
+  <script src="../vendor/jquery.min.js" type="text/javascript">
+  </script>
+  <script src="../vendor/jquery.autosize.js" type="text/javascript">
+  </script>
+  <script src="../vendor/markdown.js" type="text/javascript">
+  </script>
+  <script src="../vendor/sjcl.js" type="text/javascript">
+  </script>
+  <script src="../Message/js/base64.js" type="text/javascript">
+  </script>
+  <script src="../Message/js/rawdeflate.js" type="text/javascript">
+  </script>
+  <script src="../Message/js/rawinflate.js" type="text/javascript">
+  </script>
+  <script src="../Message/js/zerobin.js" type="text/javascript">
+  </script>
+  <script src="../shared/javascripts/privly-web/new.js" type="text/javascript">
+  </script>
+  <script src="js/new.js" type="text/javascript">
+  </script>
+ </head>
+ <body data-privly-exclude="true">
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="../vendor/bootstrap/js/bootstrap.min.js">
+  </script>
+  <!-- Wrap all page content here -->
+  <div id="wrap">
+   <div class="navbar navbar-inverse navbar-fixed-top injected_hide mobile_hide" role="navigation">
+    <div class="container">
+     <div class="navbar-header">
+      <button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse" type="button">
+       <span class="sr-only">
+        Toggle navigation
+       </span>
+       <span class="icon-bar">
+       </span>
+       <span class="icon-bar">
+       </span>
+       <span class="icon-bar">
+       </span>
+      </button>
+      <a class="navbar-brand lobster home_domain" href="../Help/content_server.html" title="This is your current content server">
+       Privly
+      </a>
+     </div>
+     <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+       <li class="logged_in_nav" style="display:none;">
+        <a href="../History/new.html">
+         History
+         <span class="glyphicon glyphicon-list-alt">
+         </span>
+        </a>
+       </li>
+       <li class="logged_out_nav">
+        <a class="login_url" href="../Login/new.html">
+         Login
+         <span class="glyphicon glyphicon-log-in">
+         </span>
+        </a>
+       </li>
+       <li class="active dropdown logged_in_nav" style="display:none;">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+         New Link
+         <b class="caret">
+         </b>
+        </a>
+        <ul class="dropdown-menu">
+         <li class="dropdown-header">
+          Select Application
+         </li>
+         <li class="active">
+          <a href="../Message/new.html">
+           <span class="glyphicon glyphicon-pencil">
+           </span>
+           New Message
+          </a>
+         </li>
+         <li>
+          <a href="../PlainPost/new.html">
+           <span class="glyphicon glyphicon-pencil">
+           </span>
+           New PlainPost
+          </a>
+         </li>
+         <li>
+          <a href="../SplitImage/new.html">
+           <span class="glyphicon glyphicon-pencil">
+           </span>
+           New SplitImage
+          </a>
+         </li>
+         <li>
+          <a href="../Help/new.html">
+           <span class="glyphicon glyphicon-info-sign">
+           </span>
+           Help
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="dropdown logged_in_nav logged_out_nav">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+         Options
+         <b class="caret">
+         </b>
+        </a>
+        <ul class="dropdown-menu">
+         <li>
+          <a class="account_url logged_in_nav" href="#" style="display:none;" target="_blank">
+           <span class="glyphicon glyphicon-new-window">
+           </span>
+           Server Account
+          </a>
+         </li>
+         <li>
+          <a href="../Pages/ChromeOptions.html">
+           <span class="glyphicon glyphicon-wrench">
+           </span>
+           Extension Options
+          </a>
+         </li>
+         <li>
+          <a href="../Pages/ChromeFirstRun.html">
+           <span class="glyphicon glyphicon-info-sign">
+           </span>
+           Extension Information
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="logged_in_nav" style="display:none;">
+        <a class="logout_url" href="#" id="logout_link">
+         Logout
+         <span class="glyphicon glyphicon-log-out">
+         </span>
+        </a>
+       </li>
+      </ul>
+     </div>
+     <!--/.nav-collapse -->
+    </div>
+   </div>
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12">
+      <p class="flash notice" id="messages">
+       Pending server check. The application is checking its connection 
+              with the remote server.
+      </p>
+      <p class="flash notice" id="login_message" style="display:none;">
+       You are not currently signed into your content server. Please
+       <a class="login_url btn btn-default" href="../Login/new.html">
+        login
+       </a>
+      </p>
+      <div id="copy_message" style="display:none;">
+       <p class="flash notice">
+        Copy and paste the address found below to any website
+                you want to share this information through.
+       </p>
+       <p class="flash notice">
+        <span class="glyphicon glyphicon-link">
+        </span>
+        <span class="privlyUrl" data-privly-exclude="true">
+        </span>
+       </p>
+       <p class="flash notice open-app-button" style="display:none;">
+        <strong>
+         Now copy/paste
+        </strong>
+        the highlighted address anywhere you want to share it. You can also
+        <a class="btn btn-default" href="" id="local_address" target="_blank">
+         open the link
+        </a>
+        to view the content yourself.
+       </p>
+      </div>
+     </div>
+    </div>
+    <div id="form" style="display:none;">
+     <div class="row">
+      <div class="col-md-8">
+       <noscript>
+        <h1>
+         Your browser has scripting turned off. 
+                    This application requires scripting to function properly
+        </h1>
+       </noscript>
+       <h2>
+        <span class="glyphicon glyphicon-pencil">
+        </span>
+        Create New Message Link
+       </h2>
+       <p id="loadingDiv">
+        <img alt="loading" src="../shared/images/ajax-loader.gif"/>
+       </p>
+       <label for="content">
+        Content you want to share
+       </label>
+       <textarea class="form-control" id="content" placeholder="Enter content here" rows="4" title="Enter a message to Post to Privly here."></textarea>
+       <div id="destruction_select_block">
+        <label for="seconds_until_burn">
+         Time until content is destroyed
+        </label>
+        <select class="form-control" id="seconds_until_burn" name="seconds_until_burn">
+         <option value="86400">
+          1 Day
+         </option>
+         <option value="604800">
+          7 Days
+         </option>
+         <option value="1209600">
+          14 Days
+         </option>
+         <option selected="" value="2419200">
+          28 Days
+         </option>
+         <option value="">
+          Infinite? - WARNING! Data in Alpha may still be destroyed.
+         </option>
+        </select>
+       </div>
+       <br/>
+       <button class="btn btn-default" disabled="" id="save">
+        <span class="glyphicon glyphicon-cloud-upload">
+        </span>
+        Save
+       </button>
+      </div>
+      <div class="col-md-4">
+       <h2 id="preview_heading">
+        Preview
+       </h2>
+       <hr/>
+       <div id="preview">
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <!-- /.container -->
+   <div class="container">
+    <div class="row">
+     <hr/>
+     <div class="col-md-6">
+      <h2>
+       What is a Privly Message?
+      </h2>
+      <p>
+       Message is a
+       <a href="http://www.privly.org/content/introducing-privly-applications" target="_blank">
+        privacy application
+       </a>
+       on Privly. Privly Messages encrypt your content
+      with a key that is attached to the link you share across the web.
+      If someone has access to the server where the content is stored, 
+      and to the link you create, they will be able to decrypt your content. 
+      You can use
+       <a href="http://daringfireball.net/projects/markdown/basics">
+        Markdown
+       </a>
+       to format your posts. You can
+       <a href="http://www.privly.org/content/introducing-privly-applications" target="_blank">
+        read more
+       </a>
+       about Privly Applications or about
+       <a href="https://github.com/privly/privly-applications/blob/master/Message/docs/ZeroBin.md" target="_blank">
+        Messages
+       </a>
+       specifically.
+      </p>
+     </div>
+     <div class="col-md-6">
+      <h2>
+       Warnings
+      </h2>
+      <ul>
+       <li>
+        Privly is still in Alpha,
+        <strong>
+         do not
+        </strong>
+        post private information until the system reaches a Beta release.
+       </li>
+       <li>
+        If your social network violates your legal rights they will be able to view this content.
+       </li>
+       <li>
+        No web applications will protect you from a targeted government attacked. If you are being directly targeted by your government do not use this software.
+       </li>
+       <li>
+        We have more safety information available at
+        <a href="https://priv.ly/pages/safety.html" target="_blank">
+         Priv.ly
+        </a>
+        .
+       </li>
+      </ul>
+     </div>
+    </div>
+    <!-- /.row -->
+   </div>
+   <!-- /.container -->
+  </div>
+  <!-- /.wrap -->
+  <div id="footer">
+   <div class="container">
+    <p class="text-muted credit">
+     <a href="https://www.priv.ly/pages/donate.html" target="_blank">
+      <span class="glyphicon glyphicon-gift">
+      </span>
+      Donate
+     </a>
+     to build a more private web.
+          You are viewing a
+          Privly
+     <span style="vertical-align: super;font-size: xx-small">
+      ®
+     </span>
+     Application,
+     <a href="https://priv.ly/pages/about" target="_blank">
+      learn more
+     </a>
+     about Privly.
+     <a class="legal_nav" href="http://priv.ly" target="_blank">
+      Terms of Service
+     </a>
+     and
+     <a class="legal_nav" href="http://priv.ly" target="_blank">
+      DMCA
+     </a>
+     .
+    </p>
+   </div>
+  </div>
+ </body>
+</html>

@@ -15,9 +15,10 @@ button{
   cursor: pointer;
 }
 
-#status, #server_status{
+#status, #server_status, #button_status{
   color: #666666;
   font-family: 'Lobster';
+  padding-top: 5px;
 }
 
 fieldset{
@@ -356,4 +357,12 @@ pre code {
 textarea {
   resize: none;
   min-height: 6em;
+}
+.download-extension-img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: none;
+  opacity: 0.9;
+  filter: alpha(opacity=90);
 }

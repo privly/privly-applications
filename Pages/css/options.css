@@ -1,0 +1,62 @@
+fieldset{
+  border: none;
+}
+
+fieldset#server_form, #user{
+  display: none;
+}
+
+.glyph_table {
+  border-collapse: collapse;  
+  line-height: 4px;
+}
+
+#glyph_div {
+  border:1px solid #333;
+  background:#daffff;
+  padding:1px 1px;
+  color:#333;
+  font:14px Helvetica;
+  width:34px;
+}
+
+label {
+  display:inline; 
+  position:relative;
+  margin-left: 0.2em; 
+  _top:0.2em; 
+}
+
+input { 
+  display: inline; 
+  margin-left: 0.5em; 
+}
+
+.whitelist_url{
+  margin-left: 0;
+  width: 270px;
+  padding-left: 5px;
+  margin-bottom: 6px;
+  display: inline;
+}
+
+#add_more_urls{
+  cursor: pointer;
+}
+
+#save{
+  margin-left: 135px;
+}
+
+.remove_whitelist{
+  cursor: pointer;
+  -webkit-filter:invert(30%);
+}
+
+.remove_whitelist:hover{
+  -webkit-filter:invert(0%);
+}
+
+li {
+  line-height: 24px;
+}

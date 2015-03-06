@@ -68,7 +68,9 @@ var callbacks = {
    * returns from the server.
    */
   pendingLogin: function(callback) {
-    
+
+    ls.setItem("Login:redirect_to_app", window.location.href);
+
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
     
@@ -106,6 +108,9 @@ var callbacks = {
    * to tell the user they are not logged in.
    */
   loginFailure: function(callback) {
+    
+    privlyNetworkService.showLoggedOutNav();
+    
     $("#messages").hide();
     $("#login_message").show();
     if(callbacks.functionExists(callback)) {
@@ -127,7 +132,7 @@ var callbacks = {
     $("#save").prop('disabled', false);
     $("#messages").toggle();
     $("#form").toggle();
-    
+
     if(callbacks.functionExists(callback)) {
       callback();
     }
@@ -206,18 +211,34 @@ var callbacks = {
     
     if(response.jqXHR.status === 201 && url !== undefined && url !== "") {
       privlyExtension.firePrivlyURLEvent(url);
-      $("#messages").text(
-        "Copy the address found below to any website you want to share this information through");
-      $(".privlyUrl").text(url);
-      $(".privlyUrl").attr("href", url);
-      
-      // Keep the user in local code if possible, but display the remote code link
-      // so the user does not accidentally copy the local code url
+
+      $("#copy_message").show();
+
+      $('#local_address').attr("href", url);
       if ( privlyNetworkService.platformName() !== "HOSTED" ) {
         var localCodeURL = "show.html?privlyOriginalURL=" + encodeURIComponent(url);
-        $('.privlyUrl').one('click', function (e) {this.href = localCodeURL;});
+        $('#local_address').attr("href", localCodeURL);
       }
-      $("#messages").show();
+
+      $(".privlyUrl").text(url);
+      $(".privlyUrl").css("cursor", "pointer");
+      $(".privlyUrl").click(function() {
+        var range, selection;
+
+        if (window.getSelection && document.createRange) {
+            selection = window.getSelection();
+            range = document.createRange();
+            range.selectNodeContents($(this)[0]);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        } else if (document.selection && document.body.createTextRange) {
+            range = document.body.createTextRange();
+            range.moveToElementText($(this)[0]);
+            range.select();
+        }
+        $(".open-app-button").show();
+      });
+
       if(callbacks.functionExists(callback)) {
         callback();
       }
@@ -227,7 +248,7 @@ var callbacks = {
   },
   
   /**
-   * Determines whether a callback is defined before calling it.
+   * Determines whether a callback is defined.
    *
    * @param {function} callback Potentially a function.
    * @return {boolean} True if the parameter is a function, else false

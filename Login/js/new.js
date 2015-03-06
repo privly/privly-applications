@@ -31,19 +31,28 @@ var callbacks = {
     // Display the content server the user is asssociated with
     $(".content_server").text(domain);
     
+    // Set the domain to the proper content server
     $(".login_issue").each( function( key, value ) {
-      $(value).attr("href", domain + $(value).attr("data-path-sub"))
+      $(value).attr("href", domain + $(value).attr("data-path-sub"));
     });
     
+    privlyNetworkService.showLoggedOutNav();
     
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
     
     // Monitor the login button
     document.querySelector('#login').addEventListener('click', callbacks.submitCredentials);
+    document.querySelector('#register').addEventListener('click', callbacks.submitRegistration);
     $("#user_password").keyup(function (e) {
-        if (e.keyCode == 13) {
+        if (e.keyCode === 13) {
             callbacks.submitCredentials();
+        }
+    });
+
+    $('#register_email').keyup(function (e) {
+        if (e.keyCode === 13) {
+            callbacks.submitRegistration();
         }
     });
     
@@ -85,7 +94,16 @@ var callbacks = {
        });
   },
   
-  
+  /**
+   * Submit the registration form and await the return of the registration.
+   */
+  submitRegistration: function() {
+    privlyNetworkService.sameOriginPostRequest(
+      privlyNetworkService.contentServerDomain() + "/users/invitation", 
+      callbacks.checkRegistration,
+      { "user[email]":  $("#register_email").val() });
+  },
+
   /**
    * Check to see if the user's credentials were accepted by the server.
    */
@@ -98,6 +116,17 @@ var callbacks = {
     }
   },
   
+  /**
+   * Check to see if the user's registration was accepted by the server.
+   */
+  checkRegistration: function(response) {
+     if ( response.json.success === true ) {
+      callbacks.pendingRegistration();
+    } else {
+      callbacks.registrationFailure();
+    }
+  },
+
   /**
    * Tell the user their credentials were rejected.
    */
@@ -114,14 +143,47 @@ var callbacks = {
     $("#messages").text("Your content server is unavailable.");
     $("#messages").show();
   },
+
+  /**
+   * Tell the user their registration was rejected.
+   */
+  registrationFailure: function() {
+    $("#messages").text("Failed to submit to registration server.");
+    $("#messages").show();
+  },
+  
+  /**
+   * Tell the user their registration was submitted.
+   */
+  pendingRegistration: function() {
+    $("#messages").text("Thanks! If your email isn't already in our " + 
+      "database you should receive an email shortly.");
+    $("#messages").show();
+  },
   
   /**
    * Tell the user they are now logged in to the server.
    */
   pendingPost: function() {
-    window.location = "../Help/new.html";
+    
+    // get from local storage the last known app to redirect to
+    if(ls.getItem("Login:redirect_to_app") !== undefined &&
+       ls.getItem("Login:redirect_to_app").indexOf("Login") < 0) {
+      window.location = ls.getItem("Login:redirect_to_app");
+    } else {
+      window.location = "../Help/new.html";
+    }
   }
-}
+};
 
-// Start the application
-document.addEventListener('DOMContentLoaded', callbacks.pendingLogin);
+// Initialize the application
+document.addEventListener('DOMContentLoaded',
+  function() {
+
+    // Don't start the script if it is running in a Headless
+    // browser
+    if( document.getElementById("logout_link") ) {
+      callbacks.pendingLogin();
+    }
+  }
+);

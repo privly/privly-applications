@@ -7,15 +7,39 @@
 # wanting to ship the application, we will work to
 # integrate it with this build system.
 #
+# This build script looks for applications to build
+# by looking at all the subfolders for manifest.json
+# files. These files are expected to have the following format
+#
+# [
+#  {
+#    "release_status": "alpha", // Required values: redirect, experimental, deprecated, alpha, beta, release
+#    "platforms": ["chrome"], // Optional values: web, chrome, firefox
+#    "subtemplate_path": "Pages/ChromeFirstRun.html.subtemplate", // Required path to the subtemplate
+#    "outfile_path": "Pages/ChromeFirstRun.html", // Required path the othe output file
+#    "subtemplate_dict": {"name": "FirstRun", "action": "nav"} // Template dictionary values
+#  },
+#  {...}
+# ]
+#
 # Prerequisites for running this script include
 # BeautifulSoup and Jinja2. You can install
 # them both with:
+#
+# `pip install -r requirements.txt`
+#
+# This assumes you have python-pip installed:
+# `sudo apt-get install python-pip`
+#
+# Alternatively, these can be installed using `easy_install`:
+#
 # `sudo easy_install beautifulsoup4 jinja2`
 #
 # This assumes you have python-setuptools:
 # `sudo apt-get install python-setuptools`
 #
-# This script uses the jinja2 templating system:
+# This script uses the jinja2 templating system. For
+# information on Jinja2, see:
 # http://jinja.pocoo.org/docs/
 #
 # We prefer readability over minified apps. BeautifulSoup
@@ -24,23 +48,19 @@
 #
 # You can run the script from the privly-applications directory:
 # `python build.py`
-#
-# This templating system is a starting point, but is 
-# not fully featured. You can currently add new
-# "new" applications and "show" applications by adding them
-# to the packages list below. If you add to the packages
-# list you should define PACKAGE_NAME/new.html.subtemplate
-# or PACKAGE_NAME/show.html.subtemplate to the corresponding
-# PACKAGE_NAME directory. For an example subtemplate,
-# look inside the PlainPost directory
 
 from jinja2 import Environment, FileSystemLoader
 from bs4 import BeautifulSoup as bs
+import os
+import json
 import re
+import argparse # Parsing arguments
 
-# Make the rendered HTML formatting readable
 def make_readable(html):
-  
+  """
+  Make the rendered HTML formatting readable
+  @param {string} html The HTML that we need to make readable.
+  """
   soup = bs(html)
   prettyHTML = soup.prettify().encode("utf8")
   
@@ -53,11 +73,12 @@ def make_readable(html):
 
 def render(outfile_path, subtemplate_path, subtemplate_dict):
   """
-  @param outfile String. The relative path to the file which we are rendering
+  Render the templates to html.
+  @param {string} outfile The relative path to the file which we are rendering
     to.
-  @param subtemplate_path String. The relative path to the file of the subtemplate
+  @param {string} subtemplate_path The relative path to the file of the subtemplate
     to be rendered.
-  @param subtemplate_dict Dictionary. The variables required by the subtemplate.
+  @param {dictionary} subtemplate_dict The variables required by the subtemplate.
   """
   f = open(outfile_path, 'w')
   subtemplate = env.get_template(subtemplate_path)
@@ -66,44 +87,105 @@ def render(outfile_path, subtemplate_path, subtemplate_dict):
   f.write(prettyHTML)
   f.close()
 
-if __name__ == "__main__":
+def is_build_target(template):
+  """
+  Determines whether the build target is currently active.
+  @param {dictionary} template The dictionary of the object to build.
+  """
 
+  is_targeted_platform = "platforms" not in template or\
+    args.platform in template["platforms"]
+  is_targeted_release_type = release_titles.index(args.release) <=\
+    release_titles.index(template["release_status"])
+
+  return is_targeted_platform and is_targeted_release_type
+
+def get_link_creation_apps():
+  """
+  Gets a list of the apps that will be included in the top navigation
+  for generating new links
+  """
+  creation_apps = []
+  for dirname, dirnames, filenames in os.walk('.'):
+    if "manifest.json" in filenames:
+      f = open(dirname + "/manifest.json", 'r')
+      template_list = json.load(f)
+      f.close()
+      for template in template_list:
+        if is_build_target(template):
+          if "nav" in template.keys() and template["nav"] == "new":
+            creation_apps.append(template["subtemplate_dict"]["name"])
+
+  # Hack to maintain current app order
+  creation_apps.sort()
+  return creation_apps
+
+release_titles = ["redirect", "experimental", "deprecated", "alpha", "beta", "release"]
+
+if __name__ == "__main__":
+  
+  # Change the current working directory to the directory of the build script
+  abspath = os.path.abspath(__file__)
+  dname = os.path.dirname(abspath)
+  os.chdir(dname)
+
+  # Parse Arguments
+  # Specify the potential build targets
+  platforms = ['web', 'chrome', 'firefox']
+  parser = argparse.ArgumentParser(description='Declare platform build target.')
+  parser.add_argument('-p', '--platform', metavar='p', type=str,
+                     help='The platform you are building for',
+                     required=False,
+                     default='web',
+                     choices=platforms)
+  parser.add_argument('-r', '--release', metavar='r', type=str,
+                     help="""Which apps to include in the navigation:
+                             experimental, deprecated, alpha, beta, release
+                             building 'experimental' will build all apps,
+                             whereas 'release' will only build apps marked
+                             for release""",
+                     required=False,
+                     default='deprecated',
+                     choices=release_titles)
+  args = parser.parse_args()
+  
   # Templates are all referenced relative to the current
   # working directory
   env = Environment(loader=FileSystemLoader('.'))
+  
+  # Listing of other apps so they can be added to the common nav
+  packages = {"new": get_link_creation_apps()}
+  
+  print("################################################")
+  print("Targeting the *{0}* platform".format(args.platform))
+  print("To build for another platform, add the option --platform=NAME_HERE")
+  print("Current platform options include {0}".format(platforms))
+  print("################################################")
 
-  # List the packages. They are grouped by different types:
-  # nav: These packages are included in the top level
-  #      navigation.
-  # new: These packages generate new privly-type links
-  # show: These packages show existing privly-type content
-  packages = {
-  
-    # Nav packages are specialized applications that may be rendered into the top
-    # level navigation of the packages.
-    "nav": ["Index", "Login"],
-    
-    # New packages are apps that can generate new Privly-type links.
-    "new": ["ZeroBin", "PlainPost", "SplitImage"],
-    
-    # Show packages are apps that can be injected into a host page.
-    "show": ["ZeroBin", "PlainPost", "SplitImage"]
-  }
-  
-  for package_type in packages:
-    for package in packages[package_type]:
-      file_string = package_type
-      
-      # The navigational pages render the new.html template
-      if file_string == "nav":
-        file_string = "new"
-        
-      outfile_path = package + "/" + file_string + ".html"
-      subtemplate_path = package + "/" + file_string + ".html.subtemplate"
-      subtemplate_dict = {"packages": packages, "name": package, 
-        "action": package_type}
-      render(outfile_path, subtemplate_path, subtemplate_dict)
-  
-  render("Help/new.html", "Help/new.html.subtemplate", {"packages": packages, 
-        "name": "Help", 
-        "action": "new"})
+  # Build the templates.
+  print("Building...")
+
+  # Find all the manifest files
+  for dirname, dirnames, filenames in os.walk('.'):
+    if "manifest.json" in filenames:
+      f = open(dirname + "/manifest.json", 'r')
+      template_list = json.load(f)
+      f.close()
+
+      for template in template_list:
+
+        # Don't build the app if a platform is specified and it is not the
+        # currently targeted platform
+        if not is_build_target(template):
+          continue
+
+        template["subtemplate_dict"].update({"args": args, "packages": packages})
+        print("{0}'s {1} action to {2}".format(
+          template["subtemplate_dict"]["name"],
+          template["subtemplate_dict"]["action"],
+          template["outfile_path"]))
+        render(template["outfile_path"], template["subtemplate_path"],
+               template["subtemplate_dict"])
+
+print("################################################")
+print("Build complete.  You can now view the generated applications in their folders.")
