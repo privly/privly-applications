@@ -50,6 +50,7 @@ var callbacks = {
     });
     registerForm.addEventListener('submit', function(e) {
       e.preventDefault();
+      $('#registerModal').modal('hide');
       callbacks.submitRegistration();
     });
 
