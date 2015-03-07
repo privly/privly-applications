@@ -40,15 +40,15 @@
       <ul class="nav navbar-nav">
         <li style="display:none;" class="{% if name == "History" %}active {% endif %}logged_in_nav">
           <a href="../History/new.html">
-            History
             <span class="glyphicon glyphicon-list-alt"></span>
+            History
           </a>
         </li>
         
         <li class="{% if name == "Login" %}active {% endif %}logged_out_nav">
           <a href="../Login/new.html" class="login_url">
-            Login
             <span class="glyphicon glyphicon-log-in"></span>
+            Login
           </a>
         </li>
 
@@ -59,8 +59,8 @@
         <li id="permissions_nav" class="dropdown active"
           style="display:none;">
           <a href="#" id="edit_nav" class="dropdown-toggle" data-toggle="dropdown">
-            {{name}}
             <b class="caret"></b>
+            {{name}}
           </a>
           <ul class="dropdown-menu">
             <li class="dropdown-header" style="display:none;" >
@@ -89,8 +89,8 @@
         
         <li class="{% if action == "new" %}active {% endif %}dropdown logged_in_nav" style="display:none;">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            New Link
             <b class="caret"></b>
+            New Link
           </a>
           <ul class="dropdown-menu">
             <li class="dropdown-header">Select Application</li>
@@ -114,8 +114,8 @@
         {% if args.platform != "web" %}
         <li class="{% if name == "Options" or name == "FirstRun" %}active {% endif %}dropdown logged_in_nav logged_out_nav">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-            Options
             <b class="caret"></b>
+            Options
           </a>
           <ul class="dropdown-menu">
             <li>
@@ -143,8 +143,8 @@
 
         <li style="display:none;" class="logged_in_nav">
           <a href="#" id="logout_link" class="logout_url">
-            Logout
             <span class="glyphicon glyphicon-log-out"></span>
+            Logout
           </a>
         </li>
       </ul>
