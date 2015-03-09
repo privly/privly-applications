@@ -86,8 +86,8 @@
             {% block form %}
               <div class="col-md-8">
                 <noscript>
-                  <h1>Your browser has scripting turned off. 
-                    This application requires scripting to function properly</h1>
+                  Your browser has scripting turned off. 
+                  This application requires scripting to function properly.
                 </noscript>
                 <h2>
                   <span class="glyphicon glyphicon-pencil"></span>

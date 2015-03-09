@@ -12,8 +12,8 @@
     </p>
     <h1>Sign In</h1>
     <noscript>
-      <h1>Your browser has scripting turned off. 
-        This application requires scripting to function properly</h1>
+      Your browser has scripting turned off. 
+      This application requires scripting to function properly.
     </noscript>
     <br />
     <div class="form-group">
