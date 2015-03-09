@@ -4,3 +4,15 @@
 *~
 test/node_modules/*
 test/coverage
+Help/new.html
+Help/content_server.html
+History/new.html
+Index/new.html
+Login/new.html
+Message/new.html
+Message/show.html
+Pages/ChromeFirstRun.html
+Pages/ChromeOptions.html
+PlainPost/new.html
+PlainPost/show.html
+ZeroBin/new.html
