@@ -83,8 +83,8 @@
                   <div id="cleartext">Privly {{name}} 
                     <img src="../shared/images/ajax-loader.gif" alt="loading"/>
                     <noscript>
-                      <h1>Your browser has scripting turned off. 
-                        This application requires scripting to function properly</h1>
+                      Your browser has scripting turned off. 
+                      This application requires scripting to function properly.
                     </noscript>
                   </div>
                 </div>
