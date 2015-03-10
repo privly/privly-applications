@@ -47,12 +47,12 @@ These parameters are added by the extension.
  * Link
 * Host Page
  * Link
-* [Injectable Application](Injectable Applications) - Posting
+* [Injectable Application](http://github.com/privly/privly-organization/wiki/Injectable-Applications) - Posting
  * Cleartext
  * Link
-* [Injectable Application](Injectable Applications) - Reading, non-permissioned
+* [Injectable Application](http://github.com/privly/privly-organization/wiki/Injectable-Applications) - Reading, non-permissioned
  * Link
-* [Injectable Application](Injectable Applications) - Reading, permissioned
+* [Injectable Application](http://github.com/privly/privly-organization/wiki/Injectable-Applications) - Reading, permissioned
  * Cleartext
  * Link
 * Extension
