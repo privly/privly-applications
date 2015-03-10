@@ -9,7 +9,6 @@
   <title>
    New Login
   </title>
-  <meta content="test/new.js" name="PrivlySpec"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
   <!-- Top Styles -->
   <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
@@ -156,7 +155,39 @@
     </div>
     <div id="form" style="display:none;">
      <div class="row">
-      <div class="col-md-6 form-group">
+      <div aria-hidden="true" aria-labelledby="registerModal" class="modal fade" id="registerModal" role="dialog">
+       <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+         <div class="modal-header">
+          <button class="close" data-dismiss="modal" type="button">
+           ×
+          </button>
+          <h1 class="modal-title">
+           Register
+          </h1>
+         </div>
+         <div class="modal-body">
+          <form action="#" id="registerForm">
+           <div class="form-group">
+            <label for="register_email">
+             Email
+            </label>
+            <br/>
+            <input id="register_email" name="user[email]" placeholder="Enter email" required="" size="30" type="email" value=""/>
+           </div>
+           <div class="form-group">
+            <button class="btn btn-primary" id="register">
+             Request invite on
+             <span class="content_server">
+             </span>
+            </button>
+           </div>
+          </form>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="col-md-12 form-group">
        <p id="loadingDiv">
         <img alt="loading" src="../shared/images/ajax-loader.gif"/>
        </p>
@@ -170,49 +201,33 @@
         </h1>
        </noscript>
        <br/>
-       <div class="form-group">
-        <label for="user_email">
-         Email
-        </label>
+       <form action="#" id="loginForm">
+        <div class="form-group">
+         <label for="user_email">
+          Email
+         </label>
+         <br/>
+         <input id="user_email" name="user[email]" placeholder="Enter email" required="" size="30" type="email" value=""/>
+        </div>
+        <div class="form-group">
+         <label for="user_password">
+          Password
+         </label>
+         <br/>
+         <input id="user_password" name="user[password]" placeholder="Enter Password" required="" size="30" type="password"/>
+        </div>
         <br/>
-        <input id="user_email" name="user[email]" placeholder="Enter email" size="30" type="email" value=""/>
-       </div>
-       <div class="form-group">
-        <label for="user_password">
-         Password
-        </label>
-        <br/>
-        <input id="user_password" name="user[password]" placeholder="Enter Password" size="30" type="password"/>
-       </div>
-       <br/>
-       <div class="form-group">
-        <button class="btn btn-primary" id="login">
-         Login to
-         <span class="content_server">
-         </span>
-        </button>
-       </div>
-      </div>
-      <div class="col-md-6 form-group">
-       <h1>
-        Register
-       </h1>
-       <br/>
-       <div class="form-group">
-        <label for="register_email">
-         Email
-        </label>
-        <br/>
-        <input id="register_email" name="user[email]" placeholder="Enter email" size="30" type="email" value=""/>
-       </div>
-       <br/>
-       <div class="form-group">
-        <button class="btn btn-primary" id="register">
-         Request invite on
-         <span class="content_server">
-         </span>
-        </button>
-       </div>
+        <div class="form-group">
+         <button class="btn btn-primary" id="login">
+          Login to
+          <span class="content_server">
+          </span>
+         </button>
+        </div>
+        <a data-target="#registerModal" data-toggle="modal" href="#">
+         Not signed up yet? Register here!
+        </a>
+       </form>
       </div>
      </div>
     </div>

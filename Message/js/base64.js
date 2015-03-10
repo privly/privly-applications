@@ -12,11 +12,11 @@ if (global.Base64) {return;}
 
 var b64chars 
     = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-var b64tab = function(bin){
+var b64tab = (function(bin){
     var t = {};
     for (var i = 0, l = bin.length; i < l; i++) {t[bin.charAt(i)] = i;}
     return t;
-}(b64chars);
+}(b64chars));
 
 var sub_toBase64 = function(m){
     var n = (m.charCodeAt(0) << 16)

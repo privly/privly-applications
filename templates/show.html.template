@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
     <!--
       This was likely rendered from the Privly-application templating system
@@ -83,8 +83,8 @@
                   <div id="cleartext">Privly {{name}} 
                     <img src="../shared/images/ajax-loader.gif" alt="loading"/>
                     <noscript>
-                      <h1>Your browser has scripting turned off. 
-                        This application requires scripting to function properly</h1>
+                      Your browser has scripting turned off. 
+                      This application requires scripting to function properly.
                     </noscript>
                   </div>
                 </div>

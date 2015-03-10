@@ -9,7 +9,7 @@ originals.
 
 ## NOT Audited for Privly's Use Case ##
 
-* [sjcl.js](https://github.com/bitwiseshiftleft/sjcl/releases/tag/1.0.0)
+* [sjcl.js](https://github.com/bitwiseshiftleft/sjcl/releases/tag/1.0.2)
 * [bootstrap](https://github.com/twbs/bootstrap/releases/download/v3.0.2/bootstrap-3.0.2-dist.zip)
 * [markdown](https://raw.github.com/evilstreak/markdown-js/v0.5.0/lib/markdown.js)
 * [jQuery](http://code.jquery.com/jquery-1.10.2.min.js)

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
     <!--
       This was likely rendered from the Privly-application templating system
@@ -60,16 +60,17 @@
             </p>
             <div id="copy_message" style="display:none;">
               <p class="flash notice">
-                Copy and paste the address found below to any website
-                you want to share this information through.
-              </p>
-              <p class="flash notice">
+                <span id="step1_message">
+                  <strong>Step 1.</strong>
+                  Copy and paste the address found below to any website
+                  you want to share this information through.
+                </span>
                 <span class="glyphicon glyphicon-link"></span>
                 <span class="privlyUrl" data-privly-exclude="true"></span>
               </p>
               <p class="flash notice open-app-button" style="display:none;">
-                <strong>Now copy/paste</strong>
-                the highlighted address anywhere you want to share it. You can also
+                <strong>Step 2.</strong>
+                Copy/paste the highlighted address anywhere you want to share it. You can also
                 <a id="local_address" href="" target="_blank" class="btn btn-default">
                   open the link
                 </a>
@@ -85,8 +86,8 @@
             {% block form %}
               <div class="col-md-8">
                 <noscript>
-                  <h1>Your browser has scripting turned off. 
-                    This application requires scripting to function properly</h1>
+                  Your browser has scripting turned off. 
+                  This application requires scripting to function properly.
                 </noscript>
                 <h2>
                   <span class="glyphicon glyphicon-pencil"></span>

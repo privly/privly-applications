@@ -24,7 +24,6 @@ class TestInjected < Test::Unit::TestCase
     if not @@privly_extension_active
       return
     end
-
     visit "http://twitter.com/privlytest"
     page.assert_selector("iframe[data-privly-display='true']", :count => 4)
   end
