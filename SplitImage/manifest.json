@@ -1,0 +1,15 @@
+[
+  {
+    "release_status": "experimental",
+    "nav": "new",
+    "subtemplate_path": "SplitImage/new.html.subtemplate",
+    "outfile_path": "SplitImage/new.html",
+    "subtemplate_dict": {"name": "SplitImage", "action": "new"}
+  },
+  {
+    "release_status": "experimental",
+    "subtemplate_path": "SplitImage/show.html.subtemplate",
+    "outfile_path": "SplitImage/show.html",
+    "subtemplate_dict": {"name": "SplitImage", "action": "show"}
+  }
+]
