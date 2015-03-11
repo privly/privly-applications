@@ -54,7 +54,11 @@ var privlyParameters = {
       } else {
         param2 = privlyParameters.parameterStringToHash(url.substr(paramIndex + 1));
       }
-      for (var attrname in param2) { parameters[attrname] = param2[attrname];}
+      for (var attrname in param2) {
+        if (param2.hasOwnProperty(attrname)) {
+          parameters[attrname] = param2[attrname];
+        }
+      }
     }
     return parameters;
   },
@@ -84,8 +88,8 @@ var privlyParameters = {
    * @return string
    */
   objectToParameterString: function(associativeArray) {
-    var parameterString = ""
-    for (key in associativeArray)
+    var parameterString = "";
+    for (var key in associativeArray)
     {
         if( parameterString === "" )
         {
