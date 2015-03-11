@@ -204,7 +204,7 @@ var privlyTooltip = {
           // Fill only the first three columns with the coresponding values from glyphArray[]
           // The rest of two columns are simetrical to the first two
           if(j <= 2) {
-            if(glyphArray[i * 3 + j] == "true") {
+            if(glyphArray[i * 3 + j] === "true") {
               td.setAttribute("class", "glyph_fill");
               td.setAttribute("style", "background-color:#"+glyphColor);
             } else {
