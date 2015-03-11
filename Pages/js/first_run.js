@@ -14,6 +14,7 @@ var callbacks = {
    * Submit the registration form and await the return of the registration.
    */
   submitRegistration: function() {
+    $("#registerModal").modal('hide');
     privlyNetworkService.sameOriginPostRequest(
       privlyNetworkService.contentServerDomain() + "/users/invitation",
       callbacks.checkRegistration,
@@ -35,17 +36,17 @@ var callbacks = {
    * Tell the user their registration was submitted.
    */
   pendingRegistration: function() {
-    $("#register_feedback").html("<strong>Thanks!</strong> You should receive an email soon!");
-    $("#register_feedback").show();
-    $("#registration-form").delay( 1500 ).animate({"margin-top": "-140px", }, 800);
+    $("#messages").html("<strong>Thanks!</strong> If your email isn't already in our " +
+      "database you should receive an email shortly.");
+    $("#messages").show();
   },
 
   /**
    * Tell the user their registration was rejected.
    */
   registrationFailure: function() {
-    $("#register_feedback").text("<strong>Error</strong> communicating with registration server.");
-    $("#register_feedback").show();
+    $("#messages").html("<strong>Error</strong> communicating with registration server.");
+    $("#messages").show();
   }
 
 }
@@ -62,15 +63,13 @@ function init() {
 
   $("#messages").hide();
   $("#form").show();
-  $("#registration-form").hide();
-  $("#content_server_btn").text(ls.getItem("posting_content_server_url").split("//")[1]);
+  $(".content_server").text(ls.getItem("posting_content_server_url").split("//")[1]);
 
-  document.querySelector("#registration").addEventListener('click', function(){
-    $("#registration-form").show();
+  $("#registerForm").on("submit", function(e) {
+    e.preventDefault();
+    callbacks.submitRegistration();
   });
-
-  document.querySelector("#register_btn").addEventListener('click', callbacks.submitRegistration);
-
+ 
   // Show a preview of the tooltip to the user
   var glyphHTML = privlyTooltip.glyphHTML();
   $("#tooltip").html(glyphHTML)
@@ -79,4 +78,10 @@ function init() {
 }
 
 // Initialize the application
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', function() {
+  // Don't start the script if it is running in a Headless
+  // browser
+  if( document.getElementById("logout_link") ) {
+    init();
+  }
+});
