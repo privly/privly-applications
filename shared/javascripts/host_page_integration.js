@@ -33,9 +33,23 @@ var privlyHostPage = {
         document.documentElement.appendChild(element);    
         element.dispatchEvent(evt);
         // Send the message "id,height" to the parent window as JSON object.
-        var resizeData = { 'frame_id':frameId, 'resize':height};
-        parent.postMessage(JSON.stringify(resizeData),"*");
+        var resizeMsg = { 'command':'resize', 'frameID':frameId, 'heightNew':height};
+        parent.postMessage(JSON.stringify(resizeMsg),"*");
         element.parentNode.removeChild(element);
+        // testing other cases...
+        // console.log("resized!");
+        // setTimeout(function(){
+        //     parent.postMessage(JSON.stringify({'command':'hide','frameID':frameId}),"*");
+        //     console.log("hidden");
+        // },5000);
+        // setTimeout(function(){
+        //     parent.postMessage(JSON.stringify({'command':'show','frameID':frameId,'heightNew':height}),"*");
+        //     console.log("shown again");
+        // },10000);
+        // setTimeout(function(){
+        //     parent.postMessage(JSON.stringify({'command':'remove','frameID':frameId}),"*");
+        //     console.log("removed bro");
+        // },15000);
     },
     
     /**
