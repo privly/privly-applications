@@ -39,6 +39,8 @@ runTest 'shared/javascripts/privly-web/new.js,PlainPost/js/new.js,PlainPost/test
 runTest 'shared/javascripts/privly-web/show.js,PlainPost/js/show.js,PlainPost/test/show.js'
 runTest 'shared/javascripts/privly-web/new.js,Message/js/base64.js,Message/js/rawdeflate.js,Message/js/rawinflate.js,Message/js/zerobin.js,Message/js/new.js,Message/test/new.js,Message/test/zerobin.js'
 runTest 'shared/javascripts/privly-web/show.js,Message/js/base64.js,Message/js/rawdeflate.js,Message/js/rawinflate.js,Message/js/zerobin.js,Message/js/show.js,Message/test/show.js,Message/test/zerobin.js'
+runTest 'shared/javascripts/privly-web/new.js,SplitImage/js/file_processing.js,SplitImage/js/new.js,SplitImage/test/new.js'
+runTest 'shared/javascripts/privly-web/show.js,Message/js/base64.js,Message/js/rawdeflate.js,Message/js/rawinflate.js,Message/js/zerobin.js,SplitImage/js/file_processing.js,SplitImage/js/show.js,SplitImage/test/show.js'
 
 if [ ! $ISFAIL -eq 0 ]
 then
