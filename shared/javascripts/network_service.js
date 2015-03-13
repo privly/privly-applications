@@ -446,6 +446,7 @@ var privlyNetworkService = {
     $(".logged_out_nav").show();
     $(".injected_hide").show();
     privlyNetworkService.mobileHide();
+    androidJsBridge.showLoginActivity();
   },
   
   /**
