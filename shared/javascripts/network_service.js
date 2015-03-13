@@ -438,18 +438,18 @@ var privlyNetworkService = {
  */
 showLoggedOutNav: function() {
 
-    if (privlyNetworkService.platformName() === "ANDROID") {
-        androidJsBridge.showLoginActivity();
-    } else {
-        // Don't show the nav at all if the content is injected.
-        if (typeof privlyHostPage !== "undefined" && privlyHostPage.isInjected()) {
-            return;
-        }
-        $(".logged_in_nav").hide();
-        $(".logged_out_nav").show();
-        $(".injected_hide").show();
-        privlyNetworkService.mobileHide();
+  if (privlyNetworkService.platformName() === "ANDROID") {
+    androidJsBridge.showLoginActivity();
+  } else {
+    // Don't show the nav at all if the content is injected.
+    if (typeof privlyHostPage !== "undefined" && privlyHostPage.isInjected()) {
+      return;
     }
+    $(".logged_in_nav").hide();
+    $(".logged_out_nav").show();
+    $(".injected_hide").show();
+    privlyNetworkService.mobileHide();
+  }
 },
   
   /**
