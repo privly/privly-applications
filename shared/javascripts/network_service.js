@@ -446,11 +446,10 @@ var privlyNetworkService = {
     $(".logged_out_nav").show();
     $(".injected_hide").show();
     privlyNetworkService.mobileHide();
-    var ua = navigator.userAgent.toLowerCase();
-    var isAndroid = ua.indexOf("android") > -1; 
-    if(isAndroid) 
+    var isAndroid=privlyNetworkService.platformName();
+    if(isAndroid=="ANDROID")
     {
-      androidJsBridge.showLoginActivity();
+       androidJsBridge.showLoginActivity();
     }
   },
   
