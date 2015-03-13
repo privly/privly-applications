@@ -437,16 +437,25 @@ var privlyNetworkService = {
    * Show/hide the appropriate navigation items for when the user is logged out.
    */
   showLoggedOutNav: function() {
-    
-    // Don't show the nav at all if the content is injected.
-    if(typeof privlyHostPage !== "undefined" && privlyHostPage.isInjected()) {
-      return;
-    }
-    $(".logged_in_nav").hide();
-    $(".logged_out_nav").show();
-    $(".injected_hide").show();
-    privlyNetworkService.mobileHide();
-  },
+ 
+ if(privlyNetworkService.platformName() === "ANDROID")
+ {
+   androidJsBridge.showLoginActivity();
+ }
+ else
+ {
+  // Don't show the nav at all if the content is injected.
+  if(typeof privlyHostPage !== "undefined" && privlyHostPage.isInjected()) {
+    return;
+  }
+  $(".logged_in_nav").hide();
+  $(".logged_out_nav").show();
+  $(".injected_hide").show();
+  privlyNetworkService.mobileHide();
+
+
+}
+},
   
   /**
    * Show/hide the appropriate navigation items for when the user is logged in.
