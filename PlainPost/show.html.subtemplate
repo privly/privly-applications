@@ -1,0 +1,15 @@
+{% extends "templates/show.html.template" %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+  <script type="text/javascript" src="../vendor/markdown.js"></script>
+  <script type="text/javascript" src="../shared/javascripts/privly-web/show.js"></script>
+  <script type="text/javascript" src="js/show.js"></script>
+  <meta name="PrivlyTopJS" content="../vendor/jquery.autosize.js" />
+{% endblock %}
+
+
+{# note: Uncomment this block to modify the main content area
+    {% block main %}  
+    {% endblock %}
+#}

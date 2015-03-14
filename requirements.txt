@@ -1,0 +1,10 @@
+# This is a list of required python packages for
+#  running build.py
+#
+# These packages can be installed by running:
+#
+#   pip install -r requirements.txt
+#
+Jinja2==2.7.3
+MarkupSafe==0.23
+beautifulsoup4==4.3.2

@@ -1,0 +1,98 @@
+{% extends "templates/new.html.template" %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+  <script type="text/javascript" src="js/new.js"></script>
+{% endblock %}
+
+{% block form %}
+  <div class="col-md-6 form-group">
+    <p id="loadingDiv">
+     <img alt="loading" src="../shared/images/ajax-loader.gif" />
+    </p>
+    <h1>Sign In</h1>
+    <noscript>
+      <h1>Your browser has scripting turned off. 
+        This application requires scripting to function properly</h1>
+    </noscript>
+    <br />
+    <div class="form-group">
+      <label for="user_email">Email</label>
+      <br />
+      <input id="user_email" name="user[email]" size="30" type="email" 
+        value="" placeholder="Enter email" />
+    </div>
+    <div class="form-group">
+      <label for="user_password">Password</label>
+      <br />
+      <input id="user_password" name="user[password]" size="30" 
+        type="password" placeholder="Enter Password" />
+    </div>
+
+    <br />
+    <div class="form-group">
+      <button id="login" class="btn btn-primary">Login to
+        <span class="content_server"></span>
+      </button>
+      
+    </div>
+  </div>
+  <div class="col-md-6 form-group">
+    <h1>Register</h1>
+    <br/>
+    <div class="form-group">
+      <label for="register_email">Email</label>
+      <br />
+      <input id="register_email" name="user[email]" size="30" type="email" 
+        value="" placeholder="Enter email" />
+    </div>
+    
+    <br/>
+    <div class="form-group">
+      <button id="register" class="btn btn-primary">Request invite on
+        <span class="content_server"></span>
+      </button>
+    </div>
+  </div>
+{% endblock %}
+
+{% block app_info %}
+  <hr />
+  <div class="col-md-3">
+    <h2>Sign in Issues</h2>
+    <a href="http://priv.ly/pages/servers.html" target="_blank">
+      Not your host? Change your content server!
+    </a>
+    <a class="login_issue" href="#" target="_blank"
+      data-path-sub="/users/password/new">Forgot your password?</a>
+    <br />
+    <a class="login_issue" href="#" target="_blank"
+      data-path-sub="/users/confirmation/new">Didn't receive confirmation instructions?</a>
+    <br />
+    <a class="login_issue" href="#" target="_blank"
+      data-path-sub="/users/unlock/new">Didn't receive unlock instructions?</a>
+  </div>
+  
+  <div class="col-md-6">
+    <h2>What is this Page?</h2>
+    <p>
+      This page logs you into the content server that hosts your content.
+      Your password will be sent to the remote server so make sure the button
+      has the proper address. If you don't like your current host you can find
+      a new one on <a href="http://priv.ly/pages/servers.html" target="_blank">
+        Priv.ly
+      </a>
+    </p>
+  </div>
+  
+  <div class="col-md-3">
+    <h2>Warning</h2>
+    <p>Your password will be sent to the current content server: 
+      <span class="content_server"></span>. If you don't know what
+      content server to send your data to you should read about
+      <a href="http://priv.ly/pages/servers.html"  target="_blank">
+        finding a host.
+      </a>
+    </p>
+  </div>
+{% endblock %}

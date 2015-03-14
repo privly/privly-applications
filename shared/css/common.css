@@ -1,5 +1,7 @@
 #post_content {padding: 5px 10px 0 10px}
 
+#refresh_link {cursor: pointer;}
+
 .injected_hide {display:none;}
 
 /*Universal Style Sheet, all pages include this one*/
@@ -13,9 +15,10 @@ button{
   cursor: pointer;
 }
 
-#status, #server_status{
+#status, #server_status, #button_status{
   color: #666666;
   font-family: 'Lobster';
+  padding-top: 5px;
 }
 
 fieldset{
@@ -350,4 +353,16 @@ pre code {
   color: inherit;
   background-color: transparent;
   border: 0;
+}
+textarea {
+  resize: none;
+  min-height: 6em;
+}
+.download-extension-img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: none;
+  opacity: 0.9;
+  filter: alpha(opacity=90);
 }

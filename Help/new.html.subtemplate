@@ -1,0 +1,117 @@
+{% extends "templates/new.html.template" %}
+
+{% block title %}<title>{{name}}</title>{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript" src="../vendor/jquery.min.js"></script>
+<script type="text/javascript" src="js/help.js"></script>
+{% endblock %}
+
+{% block form %}
+  <div class="col-lg-12">
+    <h1>Select Privly Application</h1>
+    <p>
+      This page summarizes the privacy of your Privly
+      application bundle. We group applications according to the privacy they give
+      your data. While applications may provide stronger privacy
+      than is stated here, the motivating principle grouping apps is
+      "users make mistakes." If you need to be an expert in an
+      application to use it effectively, then it doesn't deserve 
+      a strong classification.
+    </p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <p>
+      <strong><span class="glyphicon glyphicon-eye-close"></span> 
+      Honest but curious:</strong> Only the intended recipients can 
+      view the content if no parties break the law.
+    </p>
+    <div class="col-md-3">
+      <form action="../Message/new.html" style="display:inline;">
+          <button type="submit" class="btn btn-default">New Message</button>
+      </form>
+    </div>
+    <div class="col-md-9">
+      <ul>
+        <li>
+          Content server does not have access to decrypted text without
+          actively attacking users.
+        </li>
+        <li>
+          Online service provider does not have access to decrypted text without
+          violating the content server's terms of service.
+        </li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="col-md-6">
+    <p>
+      <strong>
+        <span class="glyphicon glyphicon-lock"></span> Trust No One:
+      </strong>
+      We are developing solutions 
+      that remove the need to trust any remote parties. More Apps are Coming!
+    </p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <p>
+      <strong>
+        <span class="glyphicon glyphicon-eye-open"></span> 
+        Experts Only:
+      </strong> 
+      Other applications built on Privly provide privacy only in special 
+      circumstances and should be viewed as "experts only."
+    </p>
+    <div class="col-md-3">
+      <form action="../PlainPost/new.html" style="display:inline;">
+          <button type="submit" class="btn btn-default">New PlainPost</button>
+      </form>
+    </div>
+    <div class="col-md-9">
+      <ul>
+        <li>
+           The PlainPost application provides privacy from "Honest but curious" 
+           online service providers, but not the content server. You should not
+           create a PlainPost unless you trust your content server.
+        </li>
+      </ul>
+    </div>
+  </div>
+{% endblock %}
+
+{% block app_info %}
+  <hr/>
+  <div class="col-md-6">
+    <h2>Getting Help</h2>
+    <p>The Priv.ly Project is an open source, community-driven
+      collection of software. Developers support users on 
+      <a href="http://www.privly.org/content/irc" target="_blank">chat</a> and 
+      on 
+      <a href="https://groups.google.com/forum/#!forum/privly" target="_blank">
+        email.
+      </a>
+    </p>
+  </div>
+  <div class="col-md-6">
+    <h2>Warnings</h2>
+    <ul>
+      <li>
+        Privly is still in Alpha, <strong>do not</strong> post private 
+        information until the system reaches a Beta release.
+      </li>
+      <li>
+        This page vastly simplifies privacy properties of different 
+        applications. For a more comprehensive treatment of the applications
+        you should read about them on the 
+        <a href="https://github.com/privly/privly-organization/wiki" target="_blank">wiki</a>.
+      </li>
+    </ul>
+  </div>
+{% endblock %}

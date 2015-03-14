@@ -4,18 +4,25 @@ This guide is intended to teach you the basics of developing a Privly injectable
 # Quick Start #
 
 If you are developing these applications, the easiest way to begin is to clone 
-the [Google Chrome Extension](https://github.com/privly/privly-chrome) and hack 
-on the privly-applications directory. That directory is the a copy of the 
-privly-applications repository. You can also setup a development environment for 
-the [Rails-based content server](https://github.com/privly/privly-chrome) if you 
-like, but that is not the focus of this guide.
+the [Google Chrome Extension](https://github.com/privly/privly-chrome) or 
+[Mozilla Firefox Extension](https://github.com/privly/privly-firefox) and hack 
+on the privly-applications directory. That directory has the privly-applications
+repository included as a git module. You can also setup a development
+environment for the 
+[Rails-based content server](https://github.com/privly/privly-web) if you 
+like, but it would be faster if you asked for a development account on dev.privly.org. 
 
-For basic experimentation, we recommend simply changing the code found in 
-PlainPost for your needs. Please note that PlainPost is intentionally left simple 
-to make hacking easier, but what functionality that is in place is critical to 
-integrating with various platforms.
+For experimentation, we recommend changing the code found in the
+PlainPost directory. Please note that PlainPost is intentionally left simple 
+to make hacking easier.
 
 For more information on how injectable apps are structured, please read below.
+
+# Templating #
+
+When developing Privly applications, you can either edit one of the existing 
+applications directly, or modify their .subtemplate files. If you use the
+templating system, you should look at the `build.py` script for details.
 
 # Directory Structure #
 
@@ -30,22 +37,22 @@ directory. The required directory structure is:
            css/
                common.css
                tooltip.css
-               injected/
-                        injected.css
-               top/
-                   bootstrap-responsive.min.css
-                   bootstrap.min.css
-                   top.css
-           images/
-                  ajax-loader.gif
+               injected/injected.css
+               top/top.css
+           images/ajax-loader.gif
            javascripts/
-                       html-sanitizer-minified.js
-                       jquery.min.js
                        parameters.js
                        host_page_integration.js
+                       extension_integration.js
                        network_service.js
                        tooltip.js
                        meta_loader.js
+    vendor/
+           jquery.min.js
+           markdown.js
+           jasmine/
+           jquery.dataTables.min.js
+           bootstrap/
     
     
 
@@ -61,13 +68,6 @@ Several JavaScripts are required to ease integration issues and are guaranteed t
 be present in the shared directory. Other scripts are optional and are provided 
 to make certain tasks easier.
 
-* `html-sanitizer-minified.js`: This is a library that ensures there are no 
-script tags in content returned from remote servers. Use with care: HTML 
-sanitization is a dangerous art and is prone to exploits.
-* `jquery.min.js`: Jquery gives better cross-browser support for a number of 
-operations. Try to live without it if you can, since it can create more overhead 
-for your application than is necessary. If you don't know what jquery is, then 
-you probably are going to have difficulty developing an application.
 * `parameters.js`: Grabs the parameters found on both the query string and the 
 anchor of the link.
 * `host_page_integration.js`: (required) Interfaces the application with the host 
@@ -86,9 +86,20 @@ for their posting to host pages.
 top level web page. The meta loader checks for special meta tags defining CSS for 
 specific contexts, which will be loaded dynamically. For more information, see 
 the JavaScript file's source.
+* `jquery.min.js`: Jquery gives better cross-browser support for a number of 
+operations. Try to live without it if you can, since it can create more overhead 
+for your application than is necessary. If you don't know what jquery is, then 
+you probably are going to have difficulty developing an application.
+* `markdown.js`: Converts markdown text to HTML. This is primarily used for
+previewing content typed in markdown.
+* `jasmine/`: Jasmine is a JavaScript testing library. See 
+[testing](https://github.com/privly/privly-organization/wiki/Testing).
+* `jquery.dataTables.min.js`: Datatables provides a table view rendered in JavaScript
+that is searchable.
+* `bootstrap/`: Bootstrap provides mobile-responsive layout.
 
 The shared CSS folder also has some recommended CSS for apps. The `top` and 
-`injected` folders contain stylsheets which should only be applied when the page 
+`injected` folders contain stylesheets which should only be applied when the page 
 is viewed as the top application or an injected application, respectably.
 
 # Connecting to Data Storage #
@@ -102,7 +113,7 @@ more complicated.
 
 * "Get" requests are universally permitted
 * All other request types should make an effort to verify that the content 
-server's data will not be mangled by interacting with you application. This can 
+server's data will not be mangled by interacting with your application. This can 
 be most easily accomplished by storing a string in JSON data that specifies the 
 list of supported applications.
 
@@ -136,7 +147,7 @@ support.
 
 Mobile applications use an authentication token (essentially an API secret token) 
 to gain access to the user's account. This is all handled by the 
-`network_service.js` file without you needing to worry about it. Keep in find 
+`network_service.js` file without you needing to worry about it. Keep in mind 
 that if you need an authentication scheme, you will need to support the 
 auth_token or implement the auth scheme inside the injectable application.
 

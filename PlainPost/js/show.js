@@ -1,332 +1,78 @@
 /**
- * @fileOverview
- * This JavaScript acts as the driver for the PlainPost injectable application.
- * It defines the behavior specifc to this application. For more information
- * about the PlainPost application, view the README.
+ * @fileOverview Privly Application specific code.
+ * This file modifies the privly-web adapter found
+ * in the shared directory.
  **/
 
 /**
- * @namespace
- *
- * State variables used accross all the callbacks.
- *
+ * Display rendered markdown as a preview of the post.
  */
-var state = {
-
-  /**
-  * The parameters found on the app's URL as parsed by the parameter script.
-  */
-  parameters: {},
-
-  /**
-  * The URL of the application when accessed via the remote server. This
-  * parameter is usually assigned by the extension since the original URL
-  * is replaced by one served from the extension.
-  */
-  webApplicationURL: "",
-
-  /**
-  * The URL of the data endpoint for this application.
-  */
-  jsonURL: ""
+function previewMarkdown() {
+  $( "#post_content" ).html(markdown.toHTML($( "#edit_text" ).val()));
+  $( "#update" ).attr("class", "btn btn-warning");
+  privlyHostPage.resizeToWrapper();
 }
-
 
 /**
- * The callbacks assign the state of the application.
+ * Application specific content type handler. This function
+ * processes the markdown that should have been returned by
+ * the server.
  *
- * This application can be placed into the following states:
- * 1. Pending Content: The app is currently requesting the content.
- *    Callback=pendingContent
- * 2. Pending Login: The user needs to login to the server storing the
- *    content. After login, they may have access.
- *    Callback=pendingLogin
- * 3. Content Returned: The server returned the content for display.
- *    Callback=contentReturned
- * 4. Destroy: The user clicked the "destroy" button.
- * 5. Destroyed: The server returned a response from the destroy command.
- * 6. Edit: The user clicked the "edit" button.
- * 7. Update: The user submitted the "edit" form.
- * 8. click: The user clicked the application. This is primarily used when
- *    the application is injected into the context of a host page.
- *    Callback=click
+ * @param {jqHR} response The response from the server for the associated
+ * data URL.
  */
-var callbacks = {
-
-  /**
-  * Initialize the whole application.
-  */
-  pendingContent: function() {
-
-    // Set the application and data URLs
-    var href = window.location.href;
-    state.webApplicationURL = privlyParameters.getApplicationUrl(href);
-    state.parameters = privlyParameters.getParameterHash(state.webApplicationURL);
-    if (state.parameters["privlyDataURL"] !== undefined) {
-     state.jsonURL = state.parameters["privlyDataURL"];
-    } else {
-     //deprecated
-     state.jsonURL = state.webApplicationURL.replace("format=iframe", "format=json");
-    }
-
-    // Register the click listener.
-    $("body").on("click", callbacks.click);
-
-    // Register the link and button listeners.
-    $("#destroy_link").click(callbacks.destroy);
-    $("#cancel_button").click(function(){$("#edit_form").slideUp()});
-    document.getElementById("update").addEventListener('click', callbacks.update);
-    $("#edit_link").click(callbacks.edit);
-
-    // Set the nav bar to the proper domain
-    privlyNetworkService.initializeNavigation();
-
-    if(privlyHostPage.isInjected()) {
-
-      // Creates a tooptip which indicates the content is not a 
-      // natural element of the page
-      privlyTooltip.tooltip();
-
-      // Send the height of the iframe everytime the window size changes.
-      // This usually results from the user resizing the window.
-      $(window).resize(function(){
-        privlyHostPage.resizeToWrapper();
-      });
-
-      // Display the domain of the content in the glyph
-      var dataDomain = privlyNetworkService.getProtocolAndDomain(state.jsonURL);
-      privlyTooltip.updateMessage(dataDomain + " PlainPost: Read Only");
-
-      // Load CSS to show the tooltip and other injected styling
-      loadInjectedCSS();
-
-    } else {
-
-      // Check whether the user is signed into their content server
-      privlyNetworkService.initPrivlyService(
-        privlyNetworkService.contentServerDomain(), 
-        privlyNetworkService.showLoggedInNav, 
-        function(){}, // otherwise assume they are logged out
-        function(){} // otherwise assume they are logged out
-      );
-
-      // Load CSS to show the nav and the rest of the non-injected page
-      loadTopCSS();
-   }
-   
-   // Ensure whitelist compliance of the data parameter when the content is
-   // injected
-   if( !privlyHostPage.isInjected() || 
-    privlyNetworkService.isWhitelistedDomain(state.jsonURL) ) {
-     // Make the cross origin request as if it were on the same origin.
-     // The "same origin" requirement is only possible on extension frameworks
-     privlyNetworkService.sameOriginGetRequest(state.jsonURL, 
-       callbacks.contentReturned);
-   } else {
-     $("#post_content").html("<p>Click to view this content.</p>");
-   }
-   
-  },
+function processResponseContent(response) {
   
-  /**
-  * The user may have access to the content if they login to the server
-  * hosting the content.
-  */
-  pendingLogin: function() {
-    $("#post_content").html("<p>You do not have access to this.</p>");
-    
-    // Tells the parent document how tall the iframe is so that
-    // the iframe height can be changed to its content's height
-    privlyHostPage.resizeToWrapper();
-  },
+  // Change the edit button back to the default style
+  // if it has been modified. This is usually for
+  // when the user has edited content and submitted
+  // the form.
+  $( "#update" ).attr("class", "btn btn-default");
   
-  /**
-  * Process the post's content returned from the remote server.
-  *
-  * @param {object} response The response from the remote server. In cases
-  * without error, the response body will be in response.response.
-  */
-  contentReturned: function(response) {
-    if( response.jqXHR.status === 200 ) {
-      
-      privlyNetworkService.permissions.canShow = true;
-      
-      var json = response.json;
-      var html = null;
-      
-      if( json !== null ) {
-        
-        // Assign the HTML from the JSON
-        if( json.rendered_markdown ) {
-          html = json.rendered_markdown;
-        }
-        
-        // Assign the permissions
-        if( json.permissions ) {
-          privlyNetworkService.permissions.canShare = (
-            json.permissions.canshare === true);
-          privlyNetworkService.permissions.canUpdate = (
-            json.permissions.canupdate === true);
-          privlyNetworkService.permissions.canDestroy = (
-            json.permissions.candestroy === true);
-        }
-      }
-      
-      if( privlyNetworkService.permissions.canUpdate || 
-        privlyNetworkService.permissions.canDestroy ) {
-          // Check whether the user is signed into their content server
-          privlyNetworkService.initPrivlyService(
-            state.jsonURL, 
-            function(){
-              // Initialize the form for updating the post
-              // if the user has permission.
-              if( privlyNetworkService.permissions.canUpdate) {
-                $("#edit_text").val(json.content);
-                $("#edit_link").show();
-                $("#no_permissions_nav").hide();
-                $("#permissions_nav").show();
-                
-                var dataDomain = privlyNetworkService.getProtocolAndDomain(state.jsonURL);
-                privlyTooltip.updateMessage(dataDomain + " PlainPost: Editable");
-              }
-
-              // Initialize the form for destroying the post
-              // if the user has permission.
-              if( privlyNetworkService.permissions.canDestroy) {
-                $("#destroy_link").show();
-                $("#no_permissions_nav").hide();
-                $("#permissions_nav").show();
-              }
-            }, 
-            function(){}, // otherwise assume no permissions
-            function(){} // otherwise assume no permissions
-          );
-      }
-      
-      if( json.burn_after_date ) {
-        var destroyedDate = new Date(json.burn_after_date);
-        $("#destroyed_around").text("Destroyed Around " + 
-          destroyedDate.toDateString() + ". ");
-      }
-      
-      // If the response did not include JSON, then we can simply display
-      // the returned HTML.
-      if( html === null ) {
-        html = response.jqXHR.responseText;
-      }
-      
-      // Google Caja clean the remote HTML of anything potentially harmful.
-      // All http URLs are allowed in hyperlinks.
-      function urlX(url) { if(/^https?:\/\//.test(url)) { return url }}
-      function idX(id) { return id }
-      var sanitizedHTML = html_sanitize(html, urlX, idX);
-      
-      // Put the content in the page
-      $("#post_content").html(sanitizedHTML);
-      
-      // Make all user-submitted links open a new window
-      $('#post_content a').attr("target", "_blank");
-      
-      // Tells the parent document how tall the iframe is so that
-      // the iframe height can be changed to its content's height
-      privlyHostPage.resizeToWrapper();
-      
-    } else if(response.jqXHR.status === 403) {
-      $("#post_content").html(
-        "<p>Your current user account does not have access to this. " + 
-        "It is also possible that the content was destroyed at the source.</p>");
-
-      // Tells the parent document how tall the iframe is so that
-      // the iframe height can be changed to its content's height
-      privlyHostPage.resizeToWrapper();
-    } else {
-      $("#post_content").html("<p>You do not have access to this.</p>");
-
-      // Tells the parent document how tall the iframe is so that
-      // the iframe height can be changed to its content's height
-      privlyHostPage.resizeToWrapper();
-    }
-  },
+  var json = response.json;
+  var serverMarkdown = null;
   
-  /**
-   * The destroy button was just pushed. Ask the remote server to destroy 
-   * the content associated with the post, then notify the user of the results
-   * in callbacks.destroyed.
-   */
-  destroy: function() {
-    $("#edit_form").slideUp("slow");
-    privlyNetworkService.sameOriginDeleteRequest(state.jsonURL, callbacks.destroyed, {});
-  },
-  
-  /**
-  * Process the content returned from the server on a destroy request.
-  *
-  * @param {object} response The response from the remote server.
-  */
-  destroyed: function(response) {
-    if( response.jqXHR.status === 200 ) {
-      
-      // Tell the user the content was probably destroyed
-      $("#post_content").html(
-        "<p>The remote server says it destroyed the content. " + 
-        "If the server cannot be trusted, then it may have coppies.</p>");
-      
-      // Hide the drop down menu
-      $("#no_permissions_nav").show();
-      $("#permissions_nav").hide();
-      
-      // Tells the parent document how tall the iframe is so that
-      // the iframe height can be changed to its content's height
-      privlyHostPage.resizeToWrapper();
-      
-    } else {
-      $("#post_content").html("<p>You do not have permission to destroy this.</p>");
-
-      // Tells the parent document how tall the iframe is so that
-      // the iframe height can be changed to its content's height
-      privlyHostPage.resizeToWrapper();
-    }
-  },
-  
-  /**
-   * Display the form for editing the post. This callback is not currently
-   * supported in injected mode.
-   */
-  edit: function() {
-    $("#edit_form").slideDown("slow");
-  },
-  
-  /**
-   * Update the remote server's content with the new value.
-   * This function should only be called if the remote server's
-   * initial response had the permission object, and the update
-   * flag was set to true. This prevents some CSRF issues.
-   */
-  update: function() {
-    privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
-      callbacks.contentReturned, 
-      {post: {content: $("#edit_text").val()}});
-      
-    // Close the editing form
-    $("#edit_form").slideUp("slow");
-  },
-  
-  /**
-  * This is an event listener for click events. When the applicaiton is injected
-  * into the context of a host page, the app will be opened in a new window.
-  *
-  * @param {event} evt The event triggered by the window being clicked.
-  *
-  */
-  click: function(evt) {
-   if(privlyHostPage.isInjected()) {
-     if(evt.target.nodeName !== "A" || evt.target.href === ""){
-       window.open(location.href, '_blank');
-     }
-   }
+  // Handle old, non-standard content
+  if( json === null ) {
+    serverMarkdown = response.content;
   }
- 
+  
+  // Assign the Markdown from the JSON
+  if( typeof json.content === "string" ) {
+    serverMarkdown = json.content;
+  } else {
+    serverMarkdown = "";
+  }
+
+  var markdownHTML = markdown.toHTML(serverMarkdown);
+  $("#edit_text").val(serverMarkdown);
+  $("#post_content").html(markdownHTML);
+
+  // Make all user-submitted links open a new window
+  $('#post_content a').attr("target", "_blank");
+
+  // Generate the previewed content
+  $("#edit_text").bind("keyup", previewMarkdown);
+
+  // Make all text areas auto resize to show all their contents
+  if ( ! privlyHostPage.isInjected() ) {
+    $('textarea').autosize();
+  }
+  privlyHostPage.resizeToWrapper();
 }
 
+// Make the Tooltip display this App's name.
+privlyTooltip.appName = "PlainPost";
+
+
 // Initialize the application
-document.addEventListener('DOMContentLoaded', callbacks.pendingContent);
+document.addEventListener('DOMContentLoaded',
+  function() {
+
+    // Don't start the script if it is running in a Headless
+    // browser
+    if( document.getElementById("logout_link") ) {
+      callbacks.pendingContent(processResponseContent);
+    }
+  }
+);

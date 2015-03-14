@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+
+    <!--
+      This was likely rendered from the Privly-application templating system
+      See: https://github.com/privly/privly-applications/pull/19
+     -->
+
+    {% block title %}<title> New {{ name }}</title>{% endblock %}
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    
+    <!-- Top Styles -->
+    <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen"/>
+    <link class="top" href="../shared/css/top/top.css" rel="stylesheet"/>
+    
+    <!-- Common Styles -->
+    <link href="../shared/css/common.css" media="screen" rel="stylesheet"
+     type="text/css"/>
+    <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet"
+     type="text/css"/>
+    
+    {% block css %}{% endblock %}
+    
+    <script type="text/javascript" src="../shared/javascripts/meta_loader.js">
+    </script>
+    <script type="text/javascript" src="../shared/javascripts/parameters.js">
+    </script>
+    <script type="text/javascript" src="../shared/javascripts/network_service.js">
+    </script>
+    <script type="text/javascript" src="../shared/javascripts/extension_integration.js">
+    </script>
+    <script type="text/javascript" src="../shared/javascripts/local_storage.js">
+    </script>
+     
+    {% block javascripts %}{% endblock %}
+     
+  </head>
+
+  <body data-privly-exclude="true">
+    
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+    
+    <!-- Wrap all page content here -->
+    <div id="wrap">
+      {% include "templates/partials/navigation.html.subtemplate" %}
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <p id="messages" class="flash notice">
+              Pending server check. The application is checking its connection 
+              with the remote server.
+            </p>
+            <p style="display:none;" class="flash notice" id="login_message">
+              You are not currently signed into your content server. Please
+              <a href="../Login/new.html" class="login_url btn btn-default">login</a>
+            </p>
+            <div id="copy_message" style="display:none;">
+              <p class="flash notice">
+                Copy and paste the address found below to any website
+                you want to share this information through.
+              </p>
+              <p class="flash notice">
+                <span class="glyphicon glyphicon-link"></span>
+                <span class="privlyUrl" data-privly-exclude="true"></span>
+              </p>
+              <p class="flash notice open-app-button" style="display:none;">
+                <strong>Now copy/paste</strong>
+                the highlighted address anywhere you want to share it. You can also
+                <a id="local_address" href="" target="_blank" class="btn btn-default">
+                  open the link
+                </a>
+                to view the content yourself.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        {% block pre_form %}{% endblock %}
+        <div id="form" style="display:none;">
+          <div class="row">
+            {% block form %}
+              <div class="col-md-8">
+                <noscript>
+                  <h1>Your browser has scripting turned off. 
+                    This application requires scripting to function properly</h1>
+                </noscript>
+                <h2>
+                  <span class="glyphicon glyphicon-pencil"></span>
+                  Create New {{ name }} Link
+                </h2>
+                <p id="loadingDiv"> <img src="../shared/images/ajax-loader.gif" alt="loading"/> </p>
+                <label for="content">Content you want to share</label>
+                <textarea id="content" class="form-control" rows="4" 
+                  title="Enter a message to Post to Privly here." 
+                  placeholder='Enter content here'></textarea>
+                <div id="destruction_select_block">
+                  <label for="seconds_until_burn">Time until content is destroyed</label>
+                  <select id="seconds_until_burn" name="seconds_until_burn" class="form-control">
+                    <option value="86400">1 Day</option>
+                    <option value="604800">7 Days</option>
+                    <option value="1209600">14 Days</option>
+                    <option value="2419200" selected>28 Days</option>
+                    <option value="">Infinite? - WARNING! Data in Alpha may still be destroyed.</option>
+                  </select>
+                </div>
+                <br/>
+                <button id="save" disabled class="btn btn-default">
+                  <span class="glyphicon glyphicon-cloud-upload"></span> Save
+                </button>
+              </div>
+              <div class="col-md-4">
+                <h2 id="preview_heading">Preview</h2>
+                <hr/>
+                <div id="preview"></div>
+              </div>
+            {% endblock %}
+          </div>
+        </div>
+      </div><!-- /.container -->
+      
+      
+      <div class="container">
+        <div class="row">
+          {% block app_info %}
+          {% endblock %}
+        </div><!-- /.row -->
+      </div><!-- /.container -->
+      
+    </div><!-- /.wrap -->
+    
+    <div id="footer">
+      <div class="container">
+        <p class="text-muted credit">
+
+          <a href="https://www.priv.ly/pages/donate.html" target="_blank">
+            <span class="glyphicon glyphicon-gift"></span>
+            Donate
+          </a>
+          to build a more private web.
+          You are viewing a
+          Privly<span style="vertical-align: super;font-size: xx-small">&reg;</span>
+          Application,
+          <a href="https://priv.ly/pages/about" target="_blank">learn more</a>
+          about Privly.
+          <a href="http://priv.ly" target="_blank" class="legal_nav">
+            Terms of Service
+          </a> and
+          <a href="http://priv.ly" target="_blank" class="legal_nav">DMCA</a>.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

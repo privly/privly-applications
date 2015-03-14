@@ -1,0 +1,16 @@
+{% extends "templates/new.html.template" %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="../vendor/jquery.min.js">
+  </script>
+  <script type="text/javascript" src="js/new.js">
+  </script>
+{% endblock %}
+
+{% block pre_form %}
+  <div class="row">
+    <div class="col-md-12">
+      <h1>This application is deprecated. Please view the <a href="../Message/new.html">History</a> application.</h1>
+    </div>
+  </div>
+{% endblock %}
