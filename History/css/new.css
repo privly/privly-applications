@@ -1,0 +1,146 @@
+/* Rotate the image that opens a new tab in the Preview column */
+td > a > img {
+  transform: rotate(90deg);
+}
+
+table.table-bordered tbody .first-history-cell {
+    padding-right: 0;
+    padding-bottom: 0;
+}
+
+/* CSS hack to hide textContent of td, but show its child <i>. This is here for sorting. */
+#posts td.hide-td-content {
+    text-indent: -99999px;
+    line-height: 0;
+}
+#posts td.hide-td-content > i {
+    text-indent: 0px;
+    line-height: 1;
+    display: block;
+}
+
+.open_link,
+.preview_link {
+    margin-right: 8px;
+    margin-bottom: 8px
+}
+#posts tr {
+    line-height: 20px;
+}
+#posts tr.even {
+    background-color: #EDE4D4;
+}
+#posts tr.even td.sorting_1 {
+    background-color: #E5DCCC;
+}
+#posts tr.odd {
+    background-color: #F4F0EC;
+}
+#posts tr.odd td.sorting_1 {
+    background-color: #ECE8E4;
+}
+#posts td > i {
+    white-space: normal
+}
+
+.dataTables_paginate {
+    text-align: left;
+}
+
+.paginate_disabled_previous, .paginate_disabled_next {
+    display: none;
+}
+
+.paginate_enabled_previous, .paginate_enabled_next {
+  margin-right: 20px  ;
+}
+
+
+table.table {
+  clear: both;
+  margin-bottom: 6px !important;
+  max-width: none !important;
+  background: white;
+}
+
+table.dataTable th:active {
+  outline: none;
+}
+
+table.dataTable tfoot > tr > th {
+	padding-left: 8px;
+	padding-right: 30px;
+}
+
+/* Header and footer styles */
+table.dataTable thead th,
+table.dataTable thead td {
+  padding: 5px 10px 5px 0px;
+  border-bottom: 1px solid #111111;
+}
+
+table.dataTable tfoot th,
+table.dataTable tfoot td {
+  padding: 8px 10px 5px 0px;
+  border-top: 1px solid #111111;
+}
+
+table.dataTable thead .sorting_asc,
+table.dataTable thead .sorting_desc,
+table.dataTable thead .sorting {
+  cursor: pointer;
+  *cursor: hand;
+}
+
+/* Highlight a row when hovered over */
+table.dataTable tbody tr:hover,
+table.dataTable tbody tr.odd:hover,
+table.dataTable tbody tr.even:hover {
+  background-color: #C4C4C4;
+}
+
+table.dataTable tbody tr:hover > .sorting_1,
+table.dataTable tbody tr.odd:hover > .sorting_1,
+table.dataTable tbody tr.even:hover > .sorting_1 {
+  background-color: #C4C4C4;
+}
+
+
+/* In the modal box historyPreview, move Previous and Next button a bit up, to align perfectly */
+#prev_preview{
+  position: relative;
+  bottom: 8px;      /* no need to make it percentage or relative. 8px works for all resolutions perfectly. Tested. */
+}
+
+#next_preview{
+  position: relative;
+  bottom: 8px;
+}
+
+/* So, the previous and next button don't stick up to it in the modal box/light box for history preview */
+button.close {
+    padding-left: 1%;
+}
+
+/* Responsive Styles */
+@media (max-width: 420px) {
+    table.table-bordered > thead > tr > th,
+    table.table-bordered > thead > tr > td,
+    table.table-bordered > tfoot > tr > th,
+    table.table-bordered > tfoot > tr > td {
+        border-left-width: 0;
+        padding-right: 15px;
+
+    }
+    table.table-bordered.dataTable thead > tr > th::after {
+        top: 1px;
+        right: 1px;
+    }
+
+    table .btn {
+        white-space: normal;
+    }
+    .preview_link {
+        padding: 6px;
+    }
+}

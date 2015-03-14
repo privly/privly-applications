@@ -1,149 +1,268 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Index</title>
-    <meta name="PrivlySpec" content="test/new.js">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Top Styles -->
-    <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-    <link class="top" href="../shared/css/top/top.css" rel="stylesheet">
-    
-    <!-- Common Styles -->
-    <link href="../shared/css/common.css" media="screen" rel="stylesheet"
-     type="text/css">
-    <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet"
-     type="text/css">
-    <link href="css/new.css" rel="stylesheet">
-    
-    <!-- Shared JavaScripts -->
-    <script type="text/javascript" src="../shared/javascripts/meta_loader.js">
-    </script>
-    <script type="text/javascript" src="../shared/javascripts/jquery.min.js">
-    </script>
-    <script type="text/javascript" src="../shared/javascripts/parameters.js">
-    </script>
-    <script type="text/javascript" src="../shared/javascripts/network_service.js">
-    </script>
-    <script type="text/javascript"
-     src="../shared/javascripts/extension_integration.js">
-    </script>
-    
-    <!-- Application Specific JavaScripts -->
-    <script type="text/javascript" src="../vendor/DataTables-1.9.4/media/js/jquery.dataTables.js">
-    </script>
-    <script type="text/javascript" src="js/new.js">
-    </script>
-
-  </head>
-
-  <body data-privly-exclude="true" privly-exclude="true">
-    
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
-    
-    <!-- Wrap all page content here -->
-    <div id="wrap">
-    
-      <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a href="" class="navbar-brand lobster home_domain" target="_blank">Privly</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav navbar-nav">
-              <li class="active">
-                <a href="../Index/new.html">Index</a>
-              </li>
-              <li style="display:none;" class="logged_in_nav">
-                <a href="../PlainPost/new.html">New PlainPost</a>
-              </li>
-              <li style="display:none;" class="logged_in_nav">
-                <a href="../ZeroBin/new.html">New ZeroBin</a>
-              </li>
-              <li style="display:none;" class="logged_in_nav">
-                <a href="#" target="_blank" class="account_url">Account</a>
-              </li>
-              <li style="display:none;" class="logged_in_nav">
-                <a href="#" id="logout_link" class="logout_url">Logout</a>
-              </li>
-              <li class="logged_out_nav">
-                <a href="#" target="_blank" class="login_url">Login</a>
-              </li>
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12">
-            <div id="iframe_col" style="display:none;">
-              <h1 id="privly_iframe_title"></h1>
-              <p id="privly_iframe_meta"></p>
-              <hr>
-              <div class="privly_iframe">
-              </div>
-              <hr>
-              <button id="message_link_button">Send Link to Host Page</button>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12" id="table_col">
-            <h1>Posts</h1>
-            <p id="messages">
-              Pending server check. The application is checking its connection with the remote server.
-            </p>
-            <p id="loadingDiv">
-              <img src="../shared/images/ajax-loader.gif" alt="loading..." />
-            </p>
-            <table class="display" id="posts" style="width:100%">
-              <thead>
-                <tr>
-                  <th>Preview</th>
-                  <th>Open</th>
-                  <th>Created At</th>
-                  <th>Burnt After</th>
-                  <th>Updated At</th>
-                  <th>Markdown</th>
-                </tr>
-              </thead>
-              <tbody id="table_body">
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th>Preview</th>
-                  <th>Open</th>
-                  <th>Created At</th>
-                  <th>Burnt After</th>
-                  <th>Updated At</th>
-                  <th>Markdown</th>
-                </tr>
-              </tfoot>
-            </table>
-          </div><!-- /.col-md-12 -->
-        </div><!-- /.row -->
-        <div class="row">
-          <div class="col-md-12">
-            <hr>
-            <h1>Warnings</h1>
-            <ul>
-              <li>Privly is still in Alpha, <strong>do not</strong> post private information until the system reaches a Beta release.</li>
-              <li>This post is <strong>temporary.</strong> All new content is destroyed within <strong>30 days</strong>.</li>
-            </ul>
-          </div>
-        </div><!-- /.row -->
-      </div><!-- /.container -->
-    </div><!-- /.wrap -->
-    
-    <div id="footer">
-      <div class="container">
-        <p class="text-muted credit">You are viewing a Privly<span style="vertical-align: super;font-size: xx-small">&reg;</span> Application, <a href="http://priv.ly" target="_blank">learn more</a> about Privly. <a href="http://priv.ly" target="_blank" class="legal_nav">Terms of Service</a> and <a href="http://priv.ly" target="_blank" class="legal_nav">DMCA</a>.</p>
-      </div>
+ <head>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <!--
+      This was likely rendered from the Privly-application templating system
+      See: https://github.com/privly/privly-applications/pull/19
+     -->
+  <title>
+   New Index
+  </title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <!-- Top Styles -->
+  <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
+  <link class="top" href="../shared/css/top/top.css" rel="stylesheet"/>
+  <!-- Common Styles -->
+  <link href="../shared/css/common.css" media="screen" rel="stylesheet" type="text/css"/>
+  <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet" type="text/css"/>
+  <script src="../shared/javascripts/meta_loader.js" type="text/javascript">
+  </script>
+  <script src="../shared/javascripts/parameters.js" type="text/javascript">
+  </script>
+  <script src="../shared/javascripts/network_service.js" type="text/javascript">
+  </script>
+  <script src="../shared/javascripts/extension_integration.js" type="text/javascript">
+  </script>
+  <script src="../shared/javascripts/local_storage.js" type="text/javascript">
+  </script>
+  <script src="../vendor/jquery.min.js" type="text/javascript">
+  </script>
+  <script src="js/new.js" type="text/javascript">
+  </script>
+ </head>
+ <body data-privly-exclude="true">
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="../vendor/bootstrap/js/bootstrap.min.js">
+  </script>
+  <!-- Wrap all page content here -->
+  <div id="wrap">
+   <div class="navbar navbar-inverse navbar-fixed-top injected_hide mobile_hide" role="navigation">
+    <div class="container">
+     <div class="navbar-header">
+      <button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse" type="button">
+       <span class="sr-only">
+        Toggle navigation
+       </span>
+       <span class="icon-bar">
+       </span>
+       <span class="icon-bar">
+       </span>
+       <span class="icon-bar">
+       </span>
+      </button>
+      <a class="navbar-brand lobster home_domain" href="../Help/content_server.html" title="This is your current content server">
+       Privly
+      </a>
+     </div>
+     <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">
+       <li class="logged_in_nav" style="display:none;">
+        <a href="../History/new.html">
+         History
+         <span class="glyphicon glyphicon-list-alt">
+         </span>
+        </a>
+       </li>
+       <li class="logged_out_nav">
+        <a class="login_url" href="../Login/new.html">
+         Login
+         <span class="glyphicon glyphicon-log-in">
+         </span>
+        </a>
+       </li>
+       <li class="dropdown logged_in_nav" style="display:none;">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+         New Link
+         <b class="caret">
+         </b>
+        </a>
+        <ul class="dropdown-menu">
+         <li class="dropdown-header">
+          Select Application
+         </li>
+         <li>
+          <a href="../Message/new.html">
+           <span class="glyphicon glyphicon-pencil">
+           </span>
+           New Message
+          </a>
+         </li>
+         <li>
+          <a href="../PlainPost/new.html">
+           <span class="glyphicon glyphicon-pencil">
+           </span>
+           New PlainPost
+          </a>
+         </li>
+         <li>
+          <a href="../Help/new.html">
+           <span class="glyphicon glyphicon-info-sign">
+           </span>
+           Help
+          </a>
+         </li>
+        </ul>
+       </li>
+       <li class="logged_in_nav" style="display:none;">
+        <a class="logout_url" href="#" id="logout_link">
+         Logout
+         <span class="glyphicon glyphicon-log-out">
+         </span>
+        </a>
+       </li>
+      </ul>
+     </div>
+     <!--/.nav-collapse -->
     </div>
-  </body>
+   </div>
+   <div class="container">
+    <div class="row">
+     <div class="col-lg-12">
+      <p class="flash notice" id="messages">
+       Pending server check. The application is checking its connection 
+              with the remote server.
+      </p>
+      <p class="flash notice" id="login_message" style="display:none;">
+       You are not currently signed into your content server. Please
+       <a class="login_url btn btn-default" href="../Login/new.html">
+        login
+       </a>
+      </p>
+      <div id="copy_message" style="display:none;">
+       <p class="flash notice">
+        Copy and paste the address found below to any website
+                you want to share this information through.
+       </p>
+       <p class="flash notice">
+        <span class="glyphicon glyphicon-link">
+        </span>
+        <span class="privlyUrl" data-privly-exclude="true">
+        </span>
+       </p>
+       <p class="flash notice open-app-button" style="display:none;">
+        <strong>
+         Now copy/paste
+        </strong>
+        the highlighted address anywhere you want to share it. You can also
+        <a class="btn btn-default" href="" id="local_address" target="_blank">
+         open the link
+        </a>
+        to view the content yourself.
+       </p>
+      </div>
+     </div>
+    </div>
+    <div class="row">
+     <div class="col-md-12">
+      <h1>
+       This application is deprecated. Please view the
+       <a href="../History/new.html">
+        History
+       </a>
+       application.
+      </h1>
+     </div>
+    </div>
+    <div id="form" style="display:none;">
+     <div class="row">
+      <div class="col-md-8">
+       <noscript>
+        <h1>
+         Your browser has scripting turned off. 
+                    This application requires scripting to function properly
+        </h1>
+       </noscript>
+       <h2>
+        <span class="glyphicon glyphicon-pencil">
+        </span>
+        Create New Index Link
+       </h2>
+       <p id="loadingDiv">
+        <img alt="loading" src="../shared/images/ajax-loader.gif"/>
+       </p>
+       <label for="content">
+        Content you want to share
+       </label>
+       <textarea class="form-control" id="content" placeholder="Enter content here" rows="4" title="Enter a message to Post to Privly here."></textarea>
+       <div id="destruction_select_block">
+        <label for="seconds_until_burn">
+         Time until content is destroyed
+        </label>
+        <select class="form-control" id="seconds_until_burn" name="seconds_until_burn">
+         <option value="86400">
+          1 Day
+         </option>
+         <option value="604800">
+          7 Days
+         </option>
+         <option value="1209600">
+          14 Days
+         </option>
+         <option selected="" value="2419200">
+          28 Days
+         </option>
+         <option value="">
+          Infinite? - WARNING! Data in Alpha may still be destroyed.
+         </option>
+        </select>
+       </div>
+       <br/>
+       <button class="btn btn-default" disabled="" id="save">
+        <span class="glyphicon glyphicon-cloud-upload">
+        </span>
+        Save
+       </button>
+      </div>
+      <div class="col-md-4">
+       <h2 id="preview_heading">
+        Preview
+       </h2>
+       <hr/>
+       <div id="preview">
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <!-- /.container -->
+   <div class="container">
+    <div class="row">
+    </div>
+    <!-- /.row -->
+   </div>
+   <!-- /.container -->
+  </div>
+  <!-- /.wrap -->
+  <div id="footer">
+   <div class="container">
+    <p class="text-muted credit">
+     <a href="https://www.priv.ly/pages/donate.html" target="_blank">
+      <span class="glyphicon glyphicon-gift">
+      </span>
+      Donate
+     </a>
+     to build a more private web.
+          You are viewing a
+          Privly
+     <span style="vertical-align: super;font-size: xx-small">
+      ®
+     </span>
+     Application,
+     <a href="https://priv.ly/pages/about" target="_blank">
+      learn more
+     </a>
+     about Privly.
+     <a class="legal_nav" href="http://priv.ly" target="_blank">
+      Terms of Service
+     </a>
+     and
+     <a class="legal_nav" href="http://priv.ly" target="_blank">
+      DMCA
+     </a>
+     .
+    </p>
+   </div>
+  </div>
+ </body>
 </html>

@@ -1,0 +1,8 @@
+[
+  {
+    "release_status": "redirect",
+    "subtemplate_path": "ZeroBin/new.html.subtemplate",
+    "outfile_path": "ZeroBin/new.html",
+    "subtemplate_dict": {"name": "ZeroBin", "action": "nav"}
+  }
+]

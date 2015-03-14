@@ -1,0 +1,20 @@
+{% extends "templates/show.html.template" %}
+
+
+{% block javascripts %}
+  <script type="text/javascript" src="../vendor/markdown.js"></script>
+  <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+  <script type="text/javascript" src="../vendor/sjcl.js"></script>
+  <script type="text/javascript" src="js/base64.js"></script>
+  <script type="text/javascript" src="js/rawdeflate.js"></script>
+  <script type="text/javascript" src="js/rawinflate.js"></script>
+  <script type="text/javascript" src="js/zerobin.js"></script>
+  <script type="text/javascript" src="../shared/javascripts/privly-web/show.js"></script>
+  <script type="text/javascript" src="js/show.js"></script>
+  <meta name="PrivlyTopJS" content="../vendor/jquery.autosize.js" />
+{% endblock %}
+
+{# note: Uncomment this block to modify the main content area
+    {% block main %}  
+    {% endblock %}
+#}

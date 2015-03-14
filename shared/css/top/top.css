@@ -26,18 +26,8 @@ body {
 
 /* Set the fixed height of the footer here */
 #footer {
-  height: 60px;
+  min-height: 60px;
   background-color: #222;
-}
-
-/* Lastly, apply responsive CSS fixes as necessary */
-@media (max-width: 767px) {
-  #footer {
-    margin-left: -20px;
-    margin-right: -20px;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
 }
 
 .container .credit {
@@ -46,4 +36,48 @@ body {
 
 .privlyUrl {
   word-wrap: break-word;
+}
+
+#side_block {
+  background:white;
+  border-radius:6px;
+  padding:13px;
+}
+#side_block h3 {
+  font-size:13px;
+  border-bottom:1px solid #242424;
+}
+
+#step1_message {
+    display: block;
+    border-bottom: 1px solid #e1e1e1;
+    width: 70%;
+    margin: 0 auto 5px;
+    padding-bottom: 3px;
+}
+
+.flash {
+    border: medium none;
+    margin: 0.5em auto;
+    padding: 0.2em 0.5em;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.notice {
+    background-color: #FFFFCC;
+}
+
+.alert {
+    background-color: #FF8787;
+}
+
+.break_all {
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto;
+  display: inline-block;
 }

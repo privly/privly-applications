@@ -1,0 +1,42 @@
+{% extends "templates/new.html.template" %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+  <script type="text/javascript" src="../vendor/jquery.autosize.js"></script>
+  <script type="text/javascript" src="../vendor/markdown.js"></script>
+  <script type="text/javascript" src="../shared/javascripts/privly-web/new.js"></script>
+  <script type="text/javascript" src="js/new.js"></script>
+{% endblock %}
+
+{# note: Uncomment this block to modify the main form
+    {% block form %}  
+    {% endblock %}
+#}
+
+{% block app_info %}
+  <hr/>
+  <div class="col-md-6">
+    <h2>What is a PlainPost?</h2>
+    <p>
+      PlainPosts are the simplest example of a 
+      <a href="http://www.privly.org/content/introducing-privly-applications"
+       target="_blank">privacy application</a> on Privly. They provide
+      no protection from wherever you are hosting your content because
+      it is <strong>not</strong> encrypted. You can use 
+      <a href="http://daringfireball.net/projects/markdown/basics">
+        Markdown</a>
+      to format your posts. You can
+      <a href="http://www.privly.org/content/introducing-privly-applications"
+       target="_blank">read more</a> about Privly Applications or about
+       <a href="https://github.com/privly/privly-organization/wiki/Posts"
+        target="_blank">PlainPosts</a> specifically.
+    </p>
+  </div>
+  <div class="col-md-6">
+    <h2>Warnings</h2>
+    <ul>
+      <li>Privly is still in Alpha, <strong>do not</strong> post private information until the system reaches a Beta release.</li>
+      <li>This post will be stored in cleartext, meaning it is not encrypted.</li>
+    </ul>
+  </div>
+{% endblock %}

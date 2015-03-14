@@ -1,14 +1,9 @@
 /** 
- * @fileOverview This file defines functions for loading testing specs,
+ * @fileOverview This file defines functions for loading
  * Javascripts, and CSS files.  The files are specified using a custom meta tag
- *
- * `PrivlySpec` defines testings specs
  *
  * `PrivlyTopCSS` defines CSS files that should be loaded when the application
  * is viewed as the top application on the page.
- *
- * Note on testing: Currently this file assumes that the only way
- * to run the tests is when manually executed from the javascript console.
  *
  **/
 
@@ -57,59 +52,61 @@ function getMetaValue(metaName){
 }
 
 /**
- * Loads test libraries, runs tests defined in spec file.
+ * Loads all the files defined in the named meta tag and load them.
+ * @param {string} meta The name of the meta tag.
+ * @param {string} type The Type of the meta tag, "JS" or "CSS" are supported.
+ * @return {boolean} A boolean value indicating whether
+ * the any files were loaded.
  */
-function runTests(){
-  var specToLoad = getMetaValue("PrivlySpec");
-  if (specToLoad === "none"){
-    return "Failed to load spec";
+function loadFilesFromMeta(meta, type) {
+  var filesToLoad = getMetaValue(meta);
+  if (filesToLoad === "none"){
+    return false;
   }
-  var testFiles= new Array();
-  testFiles[0] = "../vendor/jasmine/lib/jasmine-1.3.1/jasmine.js";
-  testFiles[1] = "../vendor/jasmine/src/jasmine.console_reporter.js";
-  testFiles[2] = specToLoad;
-  
-  // Ensures the testing scripts are loaded in the proper order
-  function timedFunction(filename) {
-    return function(){
-      loadJs(filename);
+  var files = filesToLoad.split(";");
+
+  for (var i = 0; i < files.length; i++){
+    if( type === "CSS" ) {
+      loadCSS(files[i]);
+    } else if( type === "JS" ) {
+      loadJs(files[i]);
     }
   }
-  
-  for (var i = 0; i < testFiles.length; i++){
-    setTimeout(timedFunction(testFiles[i]), 100 * i);
-  }
-  return "Libraries and spec file loaded. Now running tests.";
+  return true;
 }
 
 /**
  * Loads CSS files targeted for the top application.
+ * @return {boolean} A boolean value indicating whether
+ * any files were specified in meta tags.
  */
 function loadTopCSS(){
-  var cssToLoad = getMetaValue("PrivlyTopCSS");
-  if (cssToLoad === "none"){
-    return "no CSS defined";
-  }
-  var cssFiles = cssToLoad.split(";");
+  return loadFilesFromMeta("PrivlyTopCSS", "CSS");
+}
 
-  for (var i = 0; i < cssFiles.length; i++){
-    loadCSS(cssFiles[i]);
-  }
-  return "Top CSS files loaded.";
+/**
+ * Loads JS files targeted for the top application.
+ * @return {boolean} A boolean value indicating whether
+ * any files were specified in meta tags.
+ */
+function loadTopJS(){
+  return loadFilesFromMeta("PrivlyTopJS", "JS");
 }
 
 /**
  * Loads CSS files targeted for an injected application.
+ * @return {boolean} A boolean value indicating whether
+ * any files were specified in meta tags.
  */
 function loadInjectedCSS(){
-  var cssToLoad = getMetaValue("PrivlyInjectedCSS");
-  if (cssToLoad === "none"){
-    return "no Injected CSS defined";
-  }
-  var cssFiles = cssToLoad.split(";");
+  return loadFilesFromMeta("PrivlyInjectedCSS", "CSS");
+}
 
-  for (var i = 0; i < cssFiles.length; i++){
-    loadCSS(cssFiles[i]);
-  }
-  return "Top CSS files loaded.";
+/**
+ * Loads JS files targeted for the top application.
+ * @return {boolean} A boolean value indicating whether
+ * any files were specified in meta tags.
+ */
+function loadInjectedJS(){
+  return loadFilesFromMeta("PrivlyInjectedJS", "JS");
 }
