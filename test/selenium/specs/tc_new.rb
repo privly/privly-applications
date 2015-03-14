@@ -17,7 +17,8 @@ class TestNew < Test::Unit::TestCase
     @@privly_test_set.each do |to_test|
       if to_test[:manifest_dictionary]["action"] == "new" and
         not to_test[:manifest_dictionary]["name"] == "Help" and
-        not to_test[:manifest_dictionary]["name"] == "Login"
+        not to_test[:manifest_dictionary]["name"] == "Login" and
+        not to_test[:manifest_dictionary]["name"] == "SplitImage"
         page.driver.browser.get(to_test[:url]) # Re-load the page after we set the server
         fill_in 'content', :with =>  "Hello WebDriver!"
         click_on ('save')
@@ -32,7 +33,8 @@ class TestNew < Test::Unit::TestCase
     @@privly_test_set.each do |to_test|
       if not to_test[:manifest_dictionary]["action"] == "new" or
         to_test[:manifest_dictionary]["name"] == "Login" or
-        to_test[:manifest_dictionary]["name"] == "Help"
+        to_test[:manifest_dictionary]["name"] == "Help" or
+        to_test[:manifest_dictionary]["name"] == "SplitImage"
         next
       end
 
