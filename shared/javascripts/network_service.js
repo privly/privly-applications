@@ -437,29 +437,25 @@ var privlyNetworkService = {
    * Show/hide the appropriate navigation items for when the user is logged out.
    */
   showLoggedOutNav: function() {
-    
-    // Don't show the nav at all if the content is injected.
-    if(typeof privlyHostPage !== "undefined" && privlyHostPage.isInjected()) {
-      return;
+    if ( privlyNetworkService.platformName() === "ANDROID" ) {
+      androidJsBridge.showLoginActivity();
+      privlyNetworkService.mobileHide();
+    } else if( typeof privlyHostPage === "undefined" || ! privlyHostPage.isInjected() ) {
+      $(".logged_in_nav").hide();
+      $(".logged_out_nav").show();
+      $(".injected_hide").show();
     }
-    $(".logged_in_nav").hide();
-    $(".logged_out_nav").show();
-    $(".injected_hide").show();
-    privlyNetworkService.mobileHide();
   },
-  
+
   /**
    * Show/hide the appropriate navigation items for when the user is logged in.
    */
   showLoggedInNav: function() {
-    
-    // Don't show the nav at all if the content is injected.
-    if(typeof privlyHostPage !== "undefined" && privlyHostPage.isInjected()) {
-      return;
+    if( typeof privlyHostPage === "undefined" || ! privlyHostPage.isInjected() ) {
+      $(".logged_out_nav").hide();
+      $(".injected_hide").show();
+      $(".logged_in_nav").show();
+      privlyNetworkService.mobileHide();
     }
-    $(".logged_out_nav").hide();
-    $(".injected_hide").show();
-    $(".logged_in_nav").show();
-    privlyNetworkService.mobileHide();
   }
 };
