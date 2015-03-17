@@ -22,6 +22,7 @@ var callbacks = {
   pendingLogin: function() {
 
     // Save to local storage the app to redirect to after succesful log in
+    var ls = $.localStorage();
     ls.setItem("Login:redirect_to_app", window.location.href);
 
     // Set the nav bar to the proper domain
