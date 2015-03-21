@@ -32,24 +32,70 @@ var privlyHostPage = {
         element.setAttribute("frame_id", frameId);  
         document.documentElement.appendChild(element);    
         element.dispatchEvent(evt);
-        // Send the message "id,height" to the parent window as JSON object.
+        // Send the id and height to the parent window as JSON object with resize as the command.
         var resizeMsg = { 'command':'resize', 'frameID':frameId, 'heightNew':height};
         parent.postMessage(JSON.stringify(resizeMsg),"*");
         element.parentNode.removeChild(element);
-        // testing other cases...
-        // console.log("resized!");
-        // setTimeout(function(){
-        //     parent.postMessage(JSON.stringify({'command':'hide','frameID':frameId}),"*");
-        //     console.log("hidden");
-        // },5000);
-        // setTimeout(function(){
-        //     parent.postMessage(JSON.stringify({'command':'show','frameID':frameId,'heightNew':height}),"*");
-        //     console.log("shown again");
-        // },10000);
-        // setTimeout(function(){
-        //     parent.postMessage(JSON.stringify({'command':'remove','frameID':frameId}),"*");
-        //     console.log("removed bro");
-        // },15000);
+    },
+
+    /**
+     * Send the parent document the name of this iframe. This will
+     * allow the host page to hide the iframe and show the original link
+     * instead. 
+     *
+     */
+    hideWrapper: function(){
+        var evt = document.createEvent("Events");  
+        evt.initEvent("IframeRemoveEvent", true, false);
+        var element = document.createElement("privElement");
+        var frameId = window.name;
+        element.setAttribute("frame_id", frameId);  
+        document.documentElement.appendChild(element);    
+        element.dispatchEvent(evt);
+        // Send the id of iframe to the parent window as JSON object with hide as the command.
+        var hideMsg = {'command':'hide', 'frameID':frameId};
+        parent.postMessage(JSON.stringify(hideMsg), "*");
+        element.parentNode.removeChild(element);
+    },
+
+    /**
+     * Send the parent document the name of this iframe. This will
+     * allow the host page to show the iframe and hide the original link
+     * instead. 
+     *
+     */
+    showWrapper: function(){
+        var evt = document.createEvent("Events");  
+        evt.initEvent("IframeShowEvent", true, false);
+        var element = document.createElement("privElement");
+        var frameId = window.name;
+        element.setAttribute("frame_id", frameId);  
+        document.documentElement.appendChild(element);    
+        element.dispatchEvent(evt);
+        // Send the id of iframe to the parent window as JSON object with show as the command.
+        var showMsg = {'command':'show', 'frameID':frameId};
+        parent.postMessage(JSON.stringify(showMsg), "*");
+        element.parentNode.removeChild(element);
+    },
+
+    /**
+     * Send the parent document the name of this iframe. This will
+     * allow the host page to remove the iframe and show the original link
+     * instead. 
+     *
+     */
+    removeWrapper: function(){
+        var evt = document.createEvent("Events");  
+        evt.initEvent("IframeRemoveEvent", true, false);
+        var element = document.createElement("privElement");
+        var frameId = window.name;
+        element.setAttribute("frame_id", frameId);  
+        document.documentElement.appendChild(element);    
+        element.dispatchEvent(evt);
+        // Send the id of iframe to the parent window as JSON object with remove as the command.
+        var removeMsg = {'command':'remove', 'frameID':frameId};
+        parent.postMessage(JSON.stringify(removeMsg), "*");
+        element.parentNode.removeChild(element);
     },
     
     /**
