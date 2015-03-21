@@ -58,9 +58,7 @@ var privlyTooltip = {
 
       privlyTooltip.tooltipMessage = privlyTooltip.appName
         + ":\u00A0" // non-breaking space
-        + newMessage
-        + ", from "
-        + dataDomain;
+        + newMessage   + ", from "  + dataDomain;
 
       // Update the text node if it currently exists
       var textNodeDiv = document.getElementById("textNodeDiv");
@@ -79,10 +77,9 @@ var privlyTooltip = {
      */
     generateNewGlyph: function(){
       
-      var glyphString, glyphColor;
-      glyphColor = Math.floor(Math.random()*16777215).toString(16);
-      glyphString = ((Math.random() < 0.5) ? "false" : "true");
-      for(i = 0; i < 14; i++) {
+      var glyphColor = Math.floor(Math.random()*16777215).toString(16);
+      var glyphString = ((Math.random() < 0.5) ? "false" : "true");
+      for( var i = 0; i < 14; i++) {
         glyphString += "," + ((Math.random() < 0.5) ? "false" : "true");
       }
 
@@ -191,10 +188,10 @@ var privlyTooltip = {
 
       var tbody = document.createElement("tbody");
 
-      for(i = 0; i < 5; i++) {
+      for(var i = 0; i < 5; i++) {
         var tr = document.createElement("tr");
 
-        for(j = 0; j < 5; j++) {
+        for(var j = 0; j < 5; j++) {
           var td = document.createElement("td");
 
           // Add a non-breaking space
@@ -204,14 +201,14 @@ var privlyTooltip = {
           // Fill only the first three columns with the coresponding values from glyphArray[]
           // The rest of two columns are simetrical to the first two
           if(j <= 2) {
-            if(glyphArray[i * 3 + j] == "true") {
+            if(glyphArray[i * 3 + j] === "true") {
               td.setAttribute("class", "glyph_fill");
               td.setAttribute("style", "background-color:#"+glyphColor);
             } else {
               td.setAttribute("class", "glyph_empty");
             }
           } else {
-            if(glyphArray[i * 3 + (5 % (j + 1))] == "true") {
+            if(glyphArray[i * 3 + (5 % (j + 1))] === "true") {
               td.setAttribute("class", "glyph_fill");
               td.setAttribute("style", "background-color:#"+glyphColor);
             } else {
