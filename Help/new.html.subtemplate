@@ -66,8 +66,8 @@
         <span class="glyphicon glyphicon-eye-open"></span> 
         Indie Hosts Only:
       </strong> 
-      Other applications built on Privly provide privacy only in special 
-      circumstances and should be viewed as "experts only."
+      "These applications provide privacy if you host your own content server. 
+      If you don't know what that means, you should not use these apps."
     </p>
     <div class="col-md-3">
       <form action="../PlainPost/new.html" style="display:inline;">
