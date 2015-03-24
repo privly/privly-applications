@@ -411,7 +411,6 @@ function removeUrlInputs (event) {
   if(target.className.indexOf('remove_whitelist') >= 0) {
 
     var domainToRemove = target.getAttribute("data-value-to-remove");
-    //var CSVToRemove = target.getAttribute("data-value-to-remove");
 
     var currentCSV = ls.getItem("user_whitelist_csv");
     var currentValuesArr = currentCSV.split(",");
