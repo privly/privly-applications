@@ -80,22 +80,30 @@ function encryptBeforeUpdate(evt, callback) {
   state.isInlineEdit = false;
 }
 
-// Make the Tooltip display this App's name.
-privlyTooltip.appName = "SplitImage";
+function initializeApplication() {
+
+  // Make the Tooltip display this App's name.
+  privlyTooltip.appName = "SplitImage";
+
+  var dropZone = document.getElementById('drop_zone');
+  dropZone.addEventListener('dragover', handleDragOver, false);
+  dropZone.addEventListener('drop', handleFileSelect, false);
+  
+  // Start the app
+  callbacks.pendingContent(processResponseContent);
+
+  // Replace the update function so we never send the cleartext server side.
+  callbacks.update = encryptBeforeUpdate;
+}
 
 // Initialize the application
-document.addEventListener('DOMContentLoaded', 
-  function(){
-    
-    // Handle drag and drop on update
-    var dropZone = document.getElementById('drop_zone');
-    dropZone.addEventListener('dragover', handleDragOver, false);
-    dropZone.addEventListener('drop', handleFileSelect, false);
-    
-    // Start the app
-    callbacks.pendingContent(processResponseContent);
+document.addEventListener('DOMContentLoaded',
+  function() {
+
+    // Don't start the script if it is running in a Headless
+    // browser
+    if( document.getElementById("logout_link") ) {
+      initializeApplication();
+    }
   }
 );
-
-// Replace the update function so we never send the cleartext server side.
-callbacks.update = encryptBeforeUpdate;

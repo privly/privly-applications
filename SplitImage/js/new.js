@@ -58,10 +58,10 @@ function save(imageURL) {
  */
 function initializeApplication() {
   
-  // 
+  // Add event listerner on hidden input field
   document.getElementById('files').addEventListener('change', 
     handleFileSelect, false);
-  
+
   // Handle drag and drop
   var dropZone = document.getElementById('drop_zone');
   dropZone.addEventListener('dragover', handleDragOver, false);
@@ -78,4 +78,14 @@ function initializeApplication() {
   callbacks.pendingLogin();
 }
 
-document.addEventListener('DOMContentLoaded', initializeApplication);
+// Initialize the application
+document.addEventListener('DOMContentLoaded',
+  function() {
+
+    // Don't start the script if it is running in a Headless
+    // browser
+    if( document.getElementById("logout_link") ) {
+      initializeApplication();
+    }
+  }
+);
