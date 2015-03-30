@@ -97,31 +97,30 @@ function saveWhitelist() {
   var notEndInHyphenOrUnder = /[^\-_]$/g; 
   var notEndInHyphen = /[^\-]$/g;
 
-  var domain_regexp = "";  //stores regex to match validated domains
-  var valid_domains = [];  //stores validated domains
-  
+  var domain_regexp = "";  // stores regex to match validated domains
+
   //iterate over entered list, split by invalid chars
-  for (i = 0; i < domains.length; i++){ 
-    var parts = domains[i].split(".");
+  for (i = 0; i < inputs.length; i++) {
+    var parts = inputs[i].domain.split(".");
     var valid_parts_count = 0;
     
     //iterate over domains, split by .
-    for (var j = 0; j < parts.length; j++){ 
+    for (var j = 0; j < parts.length; j++) {
       switch (j){
       case parts.length-1: // validate TLD
-        if (parts[j].match(validateTLD)){ 
+        if (parts[j].match(validateTLD)) {
             valid_parts_count++;
         }
         break;
       case parts.length-2: // validate Domain
         if (parts[j].match(validateDomain) &&
-            parts[j].match(notEndInHyphen) ){ 
+            parts[j].match(notEndInHyphen)) {
           valid_parts_count++;
         }
         break;
       default: // validate Subdomain(s)
-        if (parts[j].match(validateSubdomain) && 
-            parts[j].match(notEndInHyphenOrUnder)){ 
+        if (parts[j].match(validateSubdomain) &&
+            parts[j].match(notEndInHyphenOrUnder)) {
           valid_parts_count++;
         }
         break;
