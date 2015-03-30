@@ -74,8 +74,6 @@
       <span class="glyphicon glyphicon-plus-sign"></span> Add more 
     </span>
 
-    <button id="save_whitelist" class="btn btn-primary btn-sm">Save</button>
-
     <br />
     <br />
 

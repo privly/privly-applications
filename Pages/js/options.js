@@ -291,9 +291,6 @@ function listeners(){
   // Glyph generation
   document.querySelector('#regenerate_glyph').addEventListener('click', regenerateGlyph);
 
-  // Options save button
-  document.querySelector('#save_whitelist').addEventListener('click', saveWhitelist);
-
   // content server menu listeners
   document.querySelector('#save_server').addEventListener('click', saveServer);
   document.querySelector('#content_server_url').addEventListener('change', saveServer);
