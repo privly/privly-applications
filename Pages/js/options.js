@@ -157,25 +157,27 @@ function saveWhitelist() {
  * Restores select box state to saved value from local storage.
  */
 function restoreWhitelist() {
-  
-  restoreServer();
-  
+
+  // Legacy CSV check
   var user_whitelist_csv = ls.getItem("user_whitelist_csv");
-  if (!user_whitelist_csv) {
-    return;
+  if (user_whitelist_csv) {
+    ls.setItem("user_whitelist_json", JSON.stringify(user_whitelist_csv.split(',')));
+    ls.removeItem("user_whitelist_csv");
   }
-  var user_whitelist = user_whitelist_csv.split(',');
-  for( var i = 0 ; i <= user_whitelist.length - 1 ; i++) {
+
+  var user_whitelist = ls.getItem("user_whitelist_json");
+  if (!user_whitelist)
+      return;
+  for (var i = 0 ; i <= user_whitelist.length - 1 ; i++) {
     addUrlInputs();
   }
   var inputs = document.getElementsByClassName("whitelist_url");
   var removals = document.getElementsByClassName("remove_whitelist");
-  
+
   // Replaces trailing whitespaces, if any
-  for(i=0; i< user_whitelist.length; i++) {
-    var csvDisplay = user_whitelist[i].replace(/ /g,'');
-    inputs[i].value = csvDisplay;
-    removals[i].setAttribute("data-value-to-remove", csvDisplay);
+  for (i=0; i< user_whitelist.length; i++) {
+    inputs[i].value = user_whitelist[i];
+    removals[i].setAttribute("data-value-to-remove", user_whitelist[i]);
   }
 }
 
@@ -289,17 +291,17 @@ function listeners(){
 
   // Glyph generation
   document.querySelector('#regenerate_glyph').addEventListener('click', regenerateGlyph);
-  
+
   // Options save button
   document.querySelector('#save_whitelist').addEventListener('click', saveWhitelist);
-    
+
   // content server menu listeners
   document.querySelector('#save_server').addEventListener('click', saveServer);
   document.querySelector('#content_server_url').addEventListener('change', saveServer);
   document.querySelector('#add_more_urls').addEventListener('click', addUrlInputs);
 
-  // Click on body used to tackle dynamically created inputs as well
-  document.querySelector('body').addEventListener('click', removeUrlInputs); 
+  // Click on body used to tackle dynamically created remove whitelist url buttons
+  document.querySelector('body').addEventListener('click', removeWhitelistUrl);
 }
 
 /**
@@ -410,30 +412,24 @@ function addUrlInputs () {
  * its parent will be removed.
  *
  */
-function removeUrlInputs (event) {
+function removeWhitelistUrl (event) {
 
   var target = event.target;
-  if(target.className.indexOf('remove_whitelist') >= 0) {
+  if (target.className.indexOf('remove_whitelist') >= 0) {
 
     var domainToRemove = target.getAttribute("data-value-to-remove");
-    var CSVToRemove = target.getAttribute("data-value-to-remove");
 
-    var currentCSV = ls.getItem("user_whitelist_csv");
-    var currentValuesArr = currentCSV.split(",");
-    currentValuesArr.forEach(function(elem, idx, arr){arr[idx] = elem.trim();});
+    var whitelist = ls.getItem("user_whitelist_json");
+    whitelist.splice(whitelist.indexOf(domainToRemove), 1);
 
-    var newCSV = "";
     var domainRegexp = "";
-    for( var i = 0 ; i < currentValuesArr.length ; i++ ) {
-      if ( currentValuesArr[i] !== domainToRemove ) {
-        domainRegexp += "|" + currentValuesArr[i] + "\\/";
-        if ( newCSV !== "" ) {
-          newCSV += ",";
-        }
-        newCSV += currentValuesArr;
-      }
+
+    for (var i = 0 ; i < whitelist.length ; i++) {
+      if (whitelist[i] !== domainToRemove)
+        domainRegexp += "|" + whitelist[i] + "\\/";
+
     }
-    ls.setItem("user_whitelist_csv", newCSV);
+    ls.setItem("user_whitelist_json", JSON.stringify(whitelist));
     ls.setItem("user_whitelist_regexp", domainRegexp);
     target.parentElement.remove();
   }
@@ -466,7 +462,8 @@ document.addEventListener('DOMContentLoaded',
     // browser
     if( document.getElementById("logout_link") ) {
       restoreCheckedSetting();
-      restoreWhitelist(); // Save updates to the white list
+      restoreWhitelist(); // Restore whitelist settings
+      restoreServer(); // Restore server settings
       listeners(); // Listen for UI events
       writeGlyph(); // Write the spoofing glyph to the page
     }
