@@ -66,22 +66,25 @@ function restoreCheckedSetting() {
  * Saves user's custom whitelist to local storage.
  */
 function saveWhitelist() {
-  var i;
-  var csv = "";
+  var domains = []; // stores valid domains
+  var inputs = [];
+  var invalid_domains = false;
+  var invalid_domain = document.getElementById('invalid_domain');
+  invalid_domain.className = ''; // hide the error message
   var url_inputs = document.getElementsByClassName('whitelist_url');
-  for(i = 0; i < url_inputs.length ; i++ ){
+  for(var i = 0; i < url_inputs.length ; i++ ){
     if(url_inputs[i].value.length >0) {
-      csv += url_inputs[i].value.replace(/.*?:\/\//g, "")+",";
+      inputs.push({
+          // remove any leading protocol and invalid characters
+          domain:  url_inputs[i].value.replace(/.*?:\/\//g, "")
+                                      .replace(/ /g, "")
+                                      .replace(/[^a-zA-Z0-9\-._]/g, ""),
+          input: url_inputs[i] // save input for later use
+      });
     }
   }
 
-  var user_whitelist_input = csv;
-  
-  // characters to split entered domains on
-  var invalid_chars = /[^a-zA-Z0-9\-._]/g; 
-  var domains = user_whitelist_input.split(invalid_chars); 
-
-  // Each subdomain can be from 1-63 characters and may contain alphanumeric 
+  // Each subdomain can be from 1-63 characters and may contain alphanumeric
   // characters, - and _ but may not begin or end with - or _
   // Each domain can be from 1-63 characters and may contain alphanumeric 
   // characters and - but may not begin or end with - Each top level domain may
@@ -127,23 +130,25 @@ function saveWhitelist() {
     
     //if all parts of domain are valid
     //append to regex for restricting domains of injected content
-    if (valid_parts_count === parts.length && parts.length > 1){
-      domain_regexp += ("|" + domains[i].toLowerCase().replace(/\./g, "\\.") + "\\\/");
-      valid_domains.push(domains[i].toLowerCase());
+    if (valid_parts_count === parts.length && parts.length > 1) {
+      domain_regexp += ("|" + inputs[i].domain.toLowerCase().replace(/\./g, "\\.") + "\\\/");
+      domains.push(inputs[i].domain.toLowerCase());
+    } else {
+      inputs[i].input.className += " invalid-domain";
+      invalid_domains = true;
     }
   }
-  var whitelist_csv = valid_domains.join(" , "); 
-  ls.setItem("user_whitelist_csv", whitelist_csv);
+  if (invalid_domains) {
+      invalid_domain.className = 'show';
+  }
+  ls.setItem("user_whitelist_json", JSON.stringify(domains));
   ls.setItem("user_whitelist_regexp", domain_regexp);
-  
+
   // Update status to let user know options were saved.
   var status = document.getElementById("status");
   status.innerHTML = "Options Saved.";
   setTimeout(function() {
     status.innerHTML = "";
-    
-    //forces refresh, erases invalid domains in text box
-    document.location.reload();
   }, 750);
 }
 
