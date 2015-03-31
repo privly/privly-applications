@@ -193,12 +193,18 @@ var privlyNetworkService = {
       
       // get the user defined whitelist and add in the default whitelist
       var whitelist = [];
-      
+
+      // Legacy CSV Check, convert to JSON if found
+      if (ls.getItem('user_whitelist_csv') !== undefined) {
+        ls.setItem('user_whitelist_json', 
+          JSON.stringify(ls.getItem('user_whitelist_csv').split(' , ')));
+        ls.removeItem('user_whitelist_csv')
+      }
+
       // There is no local storage API on Firefox XUL
       if ( privlyNetworkService.platformName() === "CHROME" &&
         ls.getItem("user_whitelist_csv") !== undefined ) {
-        whitelist = whitelist.concat(
-          ls.getItem("user_whitelist_csv").split(" , "));
+        whitelist = ls.getItem('user_whitelist_json');
       }
       whitelist.push("priv.ly");
       whitelist.push("dev.privly.org");
