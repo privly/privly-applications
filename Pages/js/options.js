@@ -144,7 +144,6 @@ function saveWhitelist() {
   for (i = 0; i < inputs.length; i++) {
     if (isValidDomain(inputs[i].domain)) {
       domain_regexp += ("|" + inputs[i].domain.toLowerCase().replace(/\./g, "\\.") + "\\\/");
-      inputs[i].input.className = "whitelist_url form-control";
       domains.push(inputs[i].domain);
     } else {
       inputs[i].input.className += " invalid-domain";
