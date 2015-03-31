@@ -65,7 +65,7 @@ function restoreCheckedSetting() {
 /** 
  * Validates a FQDN
  */
-function checkDomain(domain) {
+function isValidDomain(domain) {
   // Each subdomain can be from 1-63 characters and may contain alphanumeric
   // characters, - and _ but may not begin or end with - or _
   // Each domain can be from 1-63 characters and may contain alphanumeric 
@@ -142,7 +142,7 @@ function saveWhitelist() {
 
   //iterate over entered list, split by invalid chars
   for (i = 0; i < inputs.length; i++) {
-    if (checkDomain(inputs[i].domain)) {
+    if (isValidDomain(inputs[i].domain)) {
       domain_regexp += ("|" + inputs[i].domain.toLowerCase().replace(/\./g, "\\.") + "\\\/");
       inputs[i].input.className = "whitelist_url form-control";
       domains.push(inputs[i].domain);
