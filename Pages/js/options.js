@@ -73,12 +73,12 @@ function saveWhitelist() {
   invalid_domain.className = ''; // hide the error message
   var url_inputs = document.getElementsByClassName('whitelist_url');
   for(var i = 0; i < url_inputs.length ; i++ ){
-    if(url_inputs[i].value.length >0) {
+    url_inputs[i].className = "whitelist_url form-control"; // remove error class
+    if(url_inputs[i].value.length > 0) {
       inputs.push({
           // remove any leading protocol and invalid characters
-          domain:  url_inputs[i].value.replace(/.*?:\/\//g, "")
-                                      .replace(/ /g, "")
-                                      .replace(/[^a-zA-Z0-9\-._]/g, ""),
+          domain:  url_inputs[i].value.replace(/ /g, "")
+                                      .replace(/[^a-zA-Z0-9\-:._]/g, ""),
           input: url_inputs[i] // save input for later use
       });
     }
@@ -91,7 +91,8 @@ function saveWhitelist() {
   // be from 2 to 9 characters and may contain alpha characters
   var validateSubdomain = /^(?!\-|_)[\w\-]{1,63}/g; //subdomains
   var validateDomain = /^(?!\-)[a-zA-Z0-9\-?]{1,63}$/g; //domain
-  var validateTLD = /^[a-zA-Z]{2,9}$/g; //top level domain
+  var validateDomainAndPort = /^(?!\-)[a-zA-Z0-9\-?]{1,63}(?::\d+)?$/g; 
+  var validateTLD = /^[a-zA-Z]{2,9}(?::\d+)?$/g; //top level domain
   
   //needed because js regex does not have look-behind
   var notEndInHyphenOrUnder = /[^\-_]$/g; 
@@ -107,10 +108,14 @@ function saveWhitelist() {
     //iterate over domains, split by .
     for (var j = 0; j < parts.length; j++) {
       switch (j){
-      case parts.length-1: // validate TLD
-        if (parts[j].match(validateTLD)) {
+      case parts.length-1: // validate TLD or Domain if no TLD present
+        if (parts.length == 1) {
+          if (parts[j].match(validateDomainAndPort)) 
             valid_parts_count++;
-        }
+        } else {
+          if (parts[j].match(validateTLD))
+            valid_parts_count++;
+        } 
         break;
       case parts.length-2: // validate Domain
         if (parts[j].match(validateDomain) &&
@@ -126,12 +131,13 @@ function saveWhitelist() {
         break;
       }
     }
-    
+
     //if all parts of domain are valid
     //append to regex for restricting domains of injected content
-    if (valid_parts_count === parts.length && parts.length > 1) {
+    if (valid_parts_count === parts.length) {
       domain_regexp += ("|" + inputs[i].domain.toLowerCase().replace(/\./g, "\\.") + "\\\/");
       inputs[i].input.className = "whitelist_url form-control";
+      domains.push(inputs[i].domain);
     } else {
       inputs[i].input.className += " invalid-domain";
       invalid_domains = true;
