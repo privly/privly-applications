@@ -131,7 +131,7 @@ function saveWhitelist() {
     //append to regex for restricting domains of injected content
     if (valid_parts_count === parts.length && parts.length > 1) {
       domain_regexp += ("|" + inputs[i].domain.toLowerCase().replace(/\./g, "\\.") + "\\\/");
-      domains.push(inputs[i].domain.toLowerCase());
+      inputs[i].input.className = "whitelist_url form-control";
     } else {
       inputs[i].input.className += " invalid-domain";
       invalid_domains = true;
@@ -298,6 +298,8 @@ function listeners(){
 
   // Click on body used to tackle dynamically created remove whitelist url buttons
   document.querySelector('body').addEventListener('click', removeWhitelistUrl);
+
+  document.querySelector('body').addEventListener('focusout', onFocusOut);
 }
 
 /**
@@ -429,6 +431,13 @@ function removeWhitelistUrl (event) {
     ls.setItem("user_whitelist_regexp", domainRegexp);
     target.parentElement.remove();
   }
+}
+
+function onFocusOut (event) {
+  var target = event.target;
+  if (target.className.indexOf('whitelist_url') < 0) 
+    return;
+  saveWhitelist()
 }
 
 // Initialize the application
