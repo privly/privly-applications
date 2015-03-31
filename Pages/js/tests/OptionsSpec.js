@@ -77,6 +77,7 @@ describe ("Options Suite", function() {
     expect(isValidDomain('example.')).toBe(false);
     expect(isValidDomain('..example.com')).toBe(false);
     expect(isValidDomain('example..com')).toBe(false);
+    expect(isValidDomain('example.com.')).toBe(false);
     expect(isValidDomain(' example.com')).toBe(false);
     expect(isValidDomain('example.com ')).toBe(false);
     expect(isValidDomain('/path/but/not/domain/')).toBe(false);
