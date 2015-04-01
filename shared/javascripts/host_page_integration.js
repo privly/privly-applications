@@ -38,13 +38,13 @@ var privlyHostPage = {
         element.parentNode.removeChild(element);
     },
 
+
     /**
-     * Send the parent document the name of this iframe. This will
-     * allow the host page to hide the iframe and show the original link
-     * instead. 
+     * Helper function. Calls the right method according to the command so as to 
+     * show/hide/remove the wrapper. 
      *
      */
-    hideWrapper: function(){
+    modifyWrapper: function(command){
         var evt = document.createEvent("Events");  
         evt.initEvent("IframeRemoveEvent", true, false);
         var element = document.createElement("privElement");
@@ -52,6 +52,24 @@ var privlyHostPage = {
         element.setAttribute("frame_id", frameId);  
         document.documentElement.appendChild(element);    
         element.dispatchEvent(evt);
+        if(command === 'hide'){
+            privlyHostPage.hideWrapper(frameId,element);
+        }
+        else if(command === 'show'){
+            privlyHostPage.showWrapper(frameId,element);
+        }
+        else if(command === 'remove'){
+            privlyHostPage.removeWrapper(frameId,element);
+        }
+    },
+
+    /**
+     * Send the parent document the name of this iframe. This will
+     * allow the host page to hide the iframe and show the original link
+     * instead. 
+     *
+     */
+    hideWrapper: function(frameId, element){
         // Send the id of iframe to the parent window as JSON object with hide as the command.
         var hideMsg = {'command':'hide', 'frameID':frameId};
         parent.postMessage(JSON.stringify(hideMsg), "*");
@@ -64,14 +82,7 @@ var privlyHostPage = {
      * instead. 
      *
      */
-    showWrapper: function(){
-        var evt = document.createEvent("Events");  
-        evt.initEvent("IframeShowEvent", true, false);
-        var element = document.createElement("privElement");
-        var frameId = window.name;
-        element.setAttribute("frame_id", frameId);  
-        document.documentElement.appendChild(element);    
-        element.dispatchEvent(evt);
+    showWrapper: function(frameId,element){
         // Send the id of iframe to the parent window as JSON object with show as the command.
         var showMsg = {'command':'show', 'frameID':frameId};
         parent.postMessage(JSON.stringify(showMsg), "*");
@@ -84,14 +95,7 @@ var privlyHostPage = {
      * instead. 
      *
      */
-    removeWrapper: function(){
-        var evt = document.createEvent("Events");  
-        evt.initEvent("IframeRemoveEvent", true, false);
-        var element = document.createElement("privElement");
-        var frameId = window.name;
-        element.setAttribute("frame_id", frameId);  
-        document.documentElement.appendChild(element);    
-        element.dispatchEvent(evt);
+    removeWrapper: function(frameId,element){
         // Send the id of iframe to the parent window as JSON object with remove as the command.
         var removeMsg = {'command':'remove', 'frameID':frameId};
         parent.postMessage(JSON.stringify(removeMsg), "*");
