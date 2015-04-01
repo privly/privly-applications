@@ -19,6 +19,11 @@ describe ("Host Page Integration Test Suite", function() {
     var newHeight = 18; // add 18px just to accommodate the tooltip
 
     privlyHostPage.resizeToWrapper();
+
+    privlyHostPage.modifyWrapper('hide');
+    privlyHostPage.modifyWrapper('show');
+    privlyHostPage.modifyWrapper('remove');
+
     expect(true).toBe(true);
     done();
   });
