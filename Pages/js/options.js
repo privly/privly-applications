@@ -11,10 +11,10 @@
  *
  * Local Storage Bindings Used:
  *
- * - user_whitelist_csv: This is the string of text the user gives the extension
+ * - user_whitelist_json: This is an array of servers the user can provide
  *   to specify which servers they trust to automatically inject into the host
- *   page. This string is presented to the user every time they visit options,
- *   but the string used by the content script is user_whitelist_regexp
+ *   page. This array is presented to the user every time they visit options,
+ *   but the string used by the content script is user_whitelist_regexp.
  *
  * - user_whitelist_regexp: This string is formatted specifically so that 
  *   privly.js can update its whitelist regexp.
