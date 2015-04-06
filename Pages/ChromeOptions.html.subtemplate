@@ -68,12 +68,11 @@
         <span class="glyphicon glyphicon-remove remove_whitelist" ></span>
       </div>
     </div>
+    <div id="invalid_domain">You have invalid domains that were not saved</div>
     <div id="status"></div>
     <span id="add_more_urls">
       <span class="glyphicon glyphicon-plus-sign"></span> Add more 
     </span>
-
-    <button id="save_whitelist" class="btn btn-primary btn-sm">Save</button>
 
     <br />
     <br />

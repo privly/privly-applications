@@ -11,10 +11,10 @@
  *
  * Local Storage Bindings Used:
  *
- * - user_whitelist_csv: This is the string of text the user gives the extension
+ * - user_whitelist_json: This is an array of servers the user can provide
  *   to specify which servers they trust to automatically inject into the host
- *   page. This string is presented to the user every time they visit options,
- *   but the string used by the content script is user_whitelist_regexp
+ *   page. This array is presented to the user every time they visit options,
+ *   but the string used by the content script is user_whitelist_regexp.
  *
  * - user_whitelist_regexp: This string is formatted specifically so that 
  *   privly.js can update its whitelist regexp.
@@ -62,88 +62,105 @@ function restoreCheckedSetting() {
   btn.addEventListener('click', saveCheckedSetting);
 }
 
-/**
- * Saves user's custom whitelist to local storage.
+/** 
+ * Validates a FQDN
  */
-function saveWhitelist() {
-  var i;
-  var csv = "";
-  var url_inputs = document.getElementsByClassName('whitelist_url');
-  for(i = 0; i < url_inputs.length ; i++ ){
-    if(url_inputs[i].value.length >0) {
-      csv += url_inputs[i].value.replace(/.*?:\/\//g, "")+",";
-    }
-  }
-
-  var user_whitelist_input = csv;
-  
-  // characters to split entered domains on
-  var invalid_chars = /[^a-zA-Z0-9\-._]/g; 
-  var domains = user_whitelist_input.split(invalid_chars); 
-
-  // Each subdomain can be from 1-63 characters and may contain alphanumeric 
+function isValidDomain(domain) {
+  // Each subdomain can be from 1-63 characters and may contain alphanumeric
   // characters, - and _ but may not begin or end with - or _
   // Each domain can be from 1-63 characters and may contain alphanumeric 
   // characters and - but may not begin or end with - Each top level domain may
   // be from 2 to 9 characters and may contain alpha characters
   var validateSubdomain = /^(?!\-|_)[\w\-]{1,63}/g; //subdomains
   var validateDomain = /^(?!\-)[a-zA-Z0-9\-?]{1,63}$/g; //domain
-  var validateTLD = /^[a-zA-Z]{2,9}$/g; //top level domain
+  var validateDomainAndPort = /^(?!\-)[a-zA-Z0-9\-?]{1,63}(?::\d+)?$/g; 
+  var validateTLD = /^[a-zA-Z]{2,9}(?::\d+)?$/g; //top level domain
   
   //needed because js regex does not have look-behind
   var notEndInHyphenOrUnder = /[^\-_]$/g; 
   var notEndInHyphen = /[^\-]$/g;
 
-  var domain_regexp = "";  //stores regex to match validated domains
-  var valid_domains = [];  //stores validated domains
-  
-  //iterate over entered list, split by invalid chars
-  for (i = 0; i < domains.length; i++){ 
-    var parts = domains[i].split(".");
-    var valid_parts_count = 0;
+  var parts = domain.split(".");
+  var valid_parts_count = 0;
     
-    //iterate over domains, split by .
-    for (var j = 0; j < parts.length; j++){ 
-      switch (j){
-      case parts.length-1: // validate TLD
-        if (parts[j].match(validateTLD)){ 
-            valid_parts_count++;
-        }
-        break;
-      case parts.length-2: // validate Domain
-        if (parts[j].match(validateDomain) &&
-            parts[j].match(notEndInHyphen) ){ 
+  //iterate over domains, split by .
+  for (var j = 0; j < parts.length; j++) {
+    switch (j){
+    case parts.length-1: // validate TLD or Domain if no TLD present
+      if (parts.length == 1) {
+        if (parts[j].match(validateDomainAndPort)) 
           valid_parts_count++;
-        }
-        break;
-      default: // validate Subdomain(s)
-        if (parts[j].match(validateSubdomain) && 
-            parts[j].match(notEndInHyphenOrUnder)){ 
+      } else {
+        if (parts[j].match(validateTLD))
           valid_parts_count++;
-        }
-        break;
+      } 
+      break;
+    case parts.length-2: // validate Domain
+      if (parts[j].match(validateDomain) &&
+          parts[j].match(notEndInHyphen)) {
+        valid_parts_count++;
       }
-    }
-    
-    //if all parts of domain are valid
-    //append to regex for restricting domains of injected content
-    if (valid_parts_count === parts.length && parts.length > 1){
-      domain_regexp += ("|" + domains[i].toLowerCase().replace(/\./g, "\\.") + "\\\/");
-      valid_domains.push(domains[i].toLowerCase());
+      break;
+    default: // validate Subdomain(s)
+      if (parts[j].match(validateSubdomain) &&
+          parts[j].match(notEndInHyphenOrUnder)) {
+        valid_parts_count++;
+      }
+      break;
     }
   }
-  var whitelist_csv = valid_domains.join(" , "); 
-  ls.setItem("user_whitelist_csv", whitelist_csv);
+
+  //if all parts of domain are valid
+  //append to regex for restricting domains of injected content
+  return valid_parts_count === parts.length;
+}
+
+/**
+ * Saves user's custom whitelist to local storage.
+ */
+function saveWhitelist() {
+  var inputs = []; // Stores whitelist inputs and whitelisted values
+  var url_inputs = document.getElementsByClassName('whitelist_url');
+  for(var i = 0; i < url_inputs.length ; i++ ){
+    url_inputs[i].className = "whitelist_url form-control"; // remove error class
+    if(url_inputs[i].value.length > 0) {
+      inputs.push({
+          // remove any leading protocol and invalid characters
+          domain:  url_inputs[i].value.replace(/ /g, "")
+                                      .replace(/[^a-zA-Z0-9\-:._]/g, ""),
+          input: url_inputs[i] // save input for later use
+      });
+    }
+  }
+
+  var domains = []; // stores valid domains
+  var domain_regexp = "";  // stores regex to match validated domains
+
+  var invalid_domains = false;
+  var invalid_domain = document.getElementById('invalid_domain');
+  invalid_domain.className = ''; // hide the error message
+
+  //iterate over entered list, split by invalid chars
+  for (i = 0; i < inputs.length; i++) {
+    if (isValidDomain(inputs[i].domain)) {
+      domain_regexp += ("|" + inputs[i].domain.toLowerCase().replace(/\./g, "\\.") + "\\\/");
+      domains.push(inputs[i].domain);
+    } else {
+      inputs[i].input.className += " invalid-domain";
+      invalid_domains = true;
+    }
+  }
+  if (invalid_domains) {
+      invalid_domain.className = 'show';
+  }
+  ls.setItem("user_whitelist_json", JSON.stringify(domains));
   ls.setItem("user_whitelist_regexp", domain_regexp);
-  
+
   // Update status to let user know options were saved.
   var status = document.getElementById("status");
   status.innerHTML = "Options Saved.";
   setTimeout(function() {
     status.innerHTML = "";
-    
-    //forces refresh, erases invalid domains in text box
-    document.location.reload();
   }, 750);
 }
 
@@ -152,25 +169,27 @@ function saveWhitelist() {
  * Restores select box state to saved value from local storage.
  */
 function restoreWhitelist() {
-  
-  restoreServer();
-  
+
+  // Legacy CSV check
   var user_whitelist_csv = ls.getItem("user_whitelist_csv");
-  if (!user_whitelist_csv) {
-    return;
+  if (user_whitelist_csv) {
+    ls.setItem("user_whitelist_json", JSON.stringify(user_whitelist_csv.split(',')));
+    ls.removeItem("user_whitelist_csv");
   }
-  var user_whitelist = user_whitelist_csv.split(',');
-  for( var i = 0 ; i <= user_whitelist.length - 1 ; i++) {
+
+  var user_whitelist = ls.getItem("user_whitelist_json");
+  if (!user_whitelist)
+      return;
+  for (var i = 0 ; i <= user_whitelist.length - 1 ; i++) {
     addUrlInputs();
   }
   var inputs = document.getElementsByClassName("whitelist_url");
   var removals = document.getElementsByClassName("remove_whitelist");
-  
+
   // Replaces trailing whitespaces, if any
-  for(i=0; i< user_whitelist.length; i++) {
-    var csvDisplay = user_whitelist[i].replace(/ /g,'');
-    inputs[i].value = csvDisplay;
-    removals[i].setAttribute("data-value-to-remove", csvDisplay);
+  for (i=0; i< user_whitelist.length; i++) {
+    inputs[i].value = user_whitelist[i];
+    removals[i].setAttribute("data-value-to-remove", user_whitelist[i]);
   }
 }
 
@@ -284,17 +303,16 @@ function listeners(){
 
   // Glyph generation
   document.querySelector('#regenerate_glyph').addEventListener('click', regenerateGlyph);
-  
-  // Options save button
-  document.querySelector('#save_whitelist').addEventListener('click', saveWhitelist);
-    
+
   // content server menu listeners
   document.querySelector('#save_server').addEventListener('click', saveServer);
   document.querySelector('#content_server_url').addEventListener('change', saveServer);
   document.querySelector('#add_more_urls').addEventListener('click', addUrlInputs);
 
-  // Click on body used to tackle dynamically created inputs as well
-  document.querySelector('body').addEventListener('click', removeUrlInputs); 
+  // Click on body used to tackle dynamically created remove whitelist url buttons
+  document.querySelector('body').addEventListener('click', removeWhitelistUrl);
+
+  document.querySelector('body').addEventListener('focusout', onFocusOut);
 }
 
 /**
@@ -405,33 +423,34 @@ function addUrlInputs () {
  * its parent will be removed.
  *
  */
-function removeUrlInputs (event) {
+function removeWhitelistUrl (event) {
 
   var target = event.target;
-  if(target.className.indexOf('remove_whitelist') >= 0) {
+  if (target.className.indexOf('remove_whitelist') >= 0) {
 
     var domainToRemove = target.getAttribute("data-value-to-remove");
-    var CSVToRemove = target.getAttribute("data-value-to-remove");
 
-    var currentCSV = ls.getItem("user_whitelist_csv");
-    var currentValuesArr = currentCSV.split(",");
-    currentValuesArr.forEach(function(elem, idx, arr){arr[idx] = elem.trim();});
+    var whitelist = ls.getItem("user_whitelist_json");
+    whitelist.splice(whitelist.indexOf(domainToRemove), 1);
 
-    var newCSV = "";
     var domainRegexp = "";
-    for( var i = 0 ; i < currentValuesArr.length ; i++ ) {
-      if ( currentValuesArr[i] !== domainToRemove ) {
-        domainRegexp += "|" + currentValuesArr[i] + "\\/";
-        if ( newCSV !== "" ) {
-          newCSV += ",";
-        }
-        newCSV += currentValuesArr;
-      }
+
+    for (var i = 0 ; i < whitelist.length ; i++) {
+      if (whitelist[i] !== domainToRemove)
+        domainRegexp += "|" + whitelist[i] + "\\/";
+
     }
-    ls.setItem("user_whitelist_csv", newCSV);
+    ls.setItem("user_whitelist_json", JSON.stringify(whitelist));
     ls.setItem("user_whitelist_regexp", domainRegexp);
     target.parentElement.remove();
   }
+}
+
+function onFocusOut (event) {
+  var target = event.target;
+  if (target.className.indexOf('whitelist_url') < 0) 
+    return;
+  saveWhitelist()
 }
 
 // Initialize the application
@@ -461,7 +480,8 @@ document.addEventListener('DOMContentLoaded',
     // browser
     if( document.getElementById("logout_link") ) {
       restoreCheckedSetting();
-      restoreWhitelist(); // Save updates to the white list
+      restoreWhitelist(); // Restore whitelist settings
+      restoreServer(); // Restore server settings
       listeners(); // Listen for UI events
       writeGlyph(); // Write the spoofing glyph to the page
     }
