@@ -58,9 +58,7 @@ var privlyTooltip = {
 
       privlyTooltip.tooltipMessage = privlyTooltip.appName
         + ":\u00A0" // non-breaking space
-        + newMessage
-        + ", from "
-        + dataDomain;
+        + newMessage   + ", from "  + dataDomain;
 
       // Update the text node if it currently exists
       var textNodeDiv = document.getElementById("textNodeDiv");
@@ -79,10 +77,9 @@ var privlyTooltip = {
      */
     generateNewGlyph: function(){
       
-      var glyphString, glyphColor;
-      glyphColor = Math.floor(Math.random()*16777215).toString(16);
-      glyphString = ((Math.random() < 0.5) ? "false" : "true");
-      for(i = 0; i < 14; i++) {
+      var glyphColor = Math.floor(Math.random()*16777215).toString(16);
+      var glyphString = ((Math.random() < 0.5) ? "false" : "true");
+      for( var i = 0; i < 14; i++) {
         glyphString += "," + ((Math.random() < 0.5) ? "false" : "true");
       }
 
@@ -191,10 +188,10 @@ var privlyTooltip = {
 
       var tbody = document.createElement("tbody");
 
-      for(i = 0; i < 5; i++) {
+      for(var i = 0; i < 5; i++) {
         var tr = document.createElement("tr");
 
-        for(j = 0; j < 5; j++) {
+        for(var j = 0; j < 5; j++) {
           var td = document.createElement("td");
 
           // Add a non-breaking space
