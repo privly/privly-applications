@@ -203,7 +203,7 @@ var privlyNetworkService = {
 
       // There is no local storage API on Firefox XUL
       if ( privlyNetworkService.platformName() === "CHROME" &&
-        ls.getItem("user_whitelist_csv") !== undefined ) {
+        ls.getItem("user_whitelist_json") !== undefined ) {
         whitelist = ls.getItem('user_whitelist_json');
       }
       whitelist.push("priv.ly");

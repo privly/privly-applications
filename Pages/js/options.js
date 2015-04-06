@@ -144,7 +144,7 @@ function saveWhitelist() {
   for (i = 0; i < inputs.length; i++) {
     if (isValidDomain(inputs[i].domain)) {
       domain_regexp += ("|" + inputs[i].domain.toLowerCase().replace(/\./g, "\\.") + "\\\/");
-      domains.push(inputs[i].domain);
+      domains.push(inputs[i].domain.toLowerCase());
     } else {
       inputs[i].input.className += " invalid-domain";
       invalid_domains = true;
