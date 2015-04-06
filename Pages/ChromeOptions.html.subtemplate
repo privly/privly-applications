@@ -24,7 +24,6 @@
     <label for="disableBtn">Disable the Privly button that appears in the top-right corner of textarea's</label>
     <br />
     <br />
-    <button id="save_btnAppearance" class="btn btn-primary">Save</button>
     <div id="button_status"></div>        
   </section>
 
