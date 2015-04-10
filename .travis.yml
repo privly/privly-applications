@@ -26,6 +26,9 @@ env:
   - secure: CevDxddWV/R2vF66U94Id30vSkQ2I1DBY36bl2VPyY5OsBGhSFWaF0l5j6KIgBZyYrwQF2IT1I/hUPtLbTvHhPgaE5CcV1LHGxueWtaYEXfAfHSVy0ChhhilKdUOOyA7245yad6UHYQIwx7Kz/EKXXA/0hczEcUl/OH6ZxkGcws=
   #CODECLIMATE_REPO_TOKEN=**************************(privly/privly-applications)
   - secure: HAqHN7zeSbDR7BP0pn6qH6ODOwuMD7eIR9t4h1gHkRy6WAQBrhQb1+kTzkGbhfKB1mftxN/0ERTK6xv+iBj4QylqOOXChnuthuHMZiAuwPJncj8FYE4LHt2Eh48+HnzSQUgzjxv11hvkLz4utaj0J4fub2q/tWzoAXucA13UGQU=
+  - secure: O0Su8HvBR3/4hUu9aBqD+TyBqPnZWGwHmozlDR6NLLSwXZAIJ/7dNjmfaiJonaR6UX2oNTk91uL0yJgCZ8lfbDjqtcNTUTwfOfQawRG3RNow72G7fPRaN3CkWP8oJlF2vHzz6263C3TUEt+BGE/CAPAyF48tTHp8teo0foCTGr0=
+  - secure: bc4H1pGvOf+Hcd0RUMJjWPaxuFYL/KESa6MN6iM3+5Yw/Q8iEcLRfMB9zQXqt3TO7iZByUtgkjuxmogsDBDJRt0ucu9oTu45Xgg4T4xJLt7xo+kmYClW8R4pGQKENA5JL09mGGYt3tf9rzAMfkc/y6+hN4oaB9lNdt/+OUPOIS0=
+  - secure: kBmYslBhwcjIPJUNa8qmrMpuwqqNFraMWlZkumcgrCJX7wYpNti6Duxz9FaVcUl/Si4kDzVgLaYQ4SW/QXciJUXmd3j53ubu5kTCBejPmKlVHHQOJoJA2aAjZaYtE/iVJOvpqc8iMtYqNSPo+83Ub3VXw26rIxplj/eZsVECzlU=
 script:
 - cd test
 - "if [ ${TRAVIS_PULL_REQUEST} = 'false' ]; then ./run_each.sh karma.conf-ci.js; fi"
