@@ -37,5 +37,6 @@ describe ("Local Storage Test Suite", function() {
     expect(returned["bar"]).toBe("bazz");
     expect(returned).toEqual(obj);
   });
-  //Adding a random comment for testing TravisCI build
+  // Adding a random comment for testing TravisCI build
+  // Another random comment
 });
