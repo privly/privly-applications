@@ -16,12 +16,15 @@ Capybara.run_server = false
 
 # This is the common config for running tests from the
 # web scripting environment
-def common_configuration_for_web
+def common_configuration_for_web(args)
+
+  # Assign the privly-applications repository path
+  content_server = args[:content_server]
+  @@privly_applications_folder_path = content_server + "/apps/"
+
   Capybara.register_driver :web_browser do |app|
    Capybara::Selenium::Driver.new(app, :browser => @browser.to_sym)
   end
-  @@privly_applications_folder_path = "http://localhost:3000/apps/"
-  content_server = "http://localhost:3000"
   Capybara.default_driver = :web_browser
   Capybara.current_driver = :web_browser
 end
@@ -54,7 +57,12 @@ end
 
 # This is the common config for running tests from the
 # web scripting environment on SauceLabs
-def common_configuration_for_sauce_web
+def common_configuration_for_sauce_web(args)
+
+  # Assign the applications path
+  content_server = args[:content_server]
+  @@privly_applications_folder_path = content_server + "/apps/"
+
   Capybara.register_driver :sauce_web do |app|
    Capybara::Selenium::Driver.new(
      app,
@@ -111,25 +119,25 @@ def common_configuration_for_sauce
   end
 end
 
-def configure_for_firefox_web
-  common_configuration_for_web
+def configure_for_firefox_web(args)
+  common_configuration_for_web(args)
 end
 
-def configure_for_chrome_web
-  common_configuration_for_web
+def configure_for_chrome_web(args)
+  common_configuration_for_web(args)
 end
 
-def configure_for_sauce_firefox_web
+def configure_for_sauce_firefox_web(args)
   common_configuration_for_sauce
-  common_configuration_for_sauce_web
+  common_configuration_for_sauce_web(args)
 end
 
-def configure_for_sauce_chrome_web
+def configure_for_sauce_chrome_web(args)
   common_configuration_for_sauce
-  common_configuration_for_sauce_web
+  common_configuration_for_sauce_web(args)
 end
 
-def configure_for_sauce_firefox_extension
+def configure_for_sauce_firefox_extension(args)
   common_configuration_for_sauce
   common_configuration_for_firefox_extension
   @sauce_caps.firefox_profile = @profile
@@ -145,7 +153,7 @@ def configure_for_sauce_firefox_extension
   Capybara.default_driver = :sauce_firefox_extension
 end
 
-def configure_for_sauce_chrome_extension
+def configure_for_sauce_chrome_extension(args)
 
   common_configuration_for_sauce
 
@@ -176,7 +184,7 @@ def configure_for_sauce_chrome_extension
 
 end
 
-def configure_for_firefox_extension
+def configure_for_firefox_extension(args)
   common_configuration_for_firefox_extension
   Capybara.register_driver :firefox_extension do |app|
     Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => @profile)
@@ -185,7 +193,7 @@ def configure_for_firefox_extension
   Capybara.default_driver = :firefox_extension
 end
 
-def configure_for_chrome_extension
+def configure_for_chrome_extension(args)
   # This currently references the relative path to the URL
   caps = Selenium::WebDriver::Remote::Capabilities.chrome(
     "chromeOptions" => {

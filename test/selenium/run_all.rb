@@ -138,28 +138,28 @@ end
 # Configure for the current platform
 if platform == "sauce_firefox_web"
   sanity_check "privly-web"
-  configure_for_sauce_firefox_web
+  configure_for_sauce_firefox_web(args)
 elsif platform == "sauce_chrome_web"
   sanity_check "privly-web"
-  configure_for_sauce_chrome_web
+  configure_for_sauce_chrome_web(args)
 elsif platform == "firefox_web"
   sanity_check "privly-web"
-  configure_for_firefox_web
+  configure_for_firefox_web(args)
 elsif platform == "chrome_web"
   sanity_check "privly-web"
-  configure_for_chrome_web
+  configure_for_chrome_web(args)
 elsif platform == "firefox_extension"
   sanity_check "privly-firefox"
-  configure_for_firefox_extension
+  configure_for_firefox_extension(args)
 elsif platform == "sauce_firefox_extension"
   sanity_check "privly-firefox"
-  configure_for_sauce_firefox_extension
+  configure_for_sauce_firefox_extension(args)
 elsif platform == "chrome_extension"
   sanity_check "privly-chrome"
-  configure_for_chrome_extension
+  configure_for_chrome_extension(args)
 elsif platform == "sauce_chrome_extension"
   sanity_check "privly-chrome"
-  configure_for_sauce_chrome_extension
+  configure_for_sauce_chrome_extension(args)
 else
   puts "The platform you selected was not recognized or is not supported"
   puts "Note that Safari and Internet Explorer are integrated"
