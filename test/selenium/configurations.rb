@@ -42,10 +42,14 @@ end
 
 # This is the common config for running tests from the
 # Chrome scripting environment
-def common_configuration_for_chrome_extension
-  # Assign the path to find the applications in the extension
-  Capybara.app_host = "chrome-extension://gipdbddcenpbjpmjblgmogkeblhoaejd"
-  @@privly_applications_folder_path = Capybara.app_host + "/privly-applications/"
+def assign_chrome_extension_path
+
+  # The chrome URL can change periodically so this test grabs the
+  # URL from the first run page. It also fixes the path in the
+  # CRUD tests since this test doesn't run until all the
+  # initialization is complete
+  require_relative "tc_chrome_helper"
+  @@privly_applications_folder_path = ""
 end
 
 # This is the common config for running tests from the
@@ -144,7 +148,6 @@ end
 def configure_for_sauce_chrome_extension
 
   common_configuration_for_sauce
-  common_configure_for_chrome_extension
 
   # Package the extension
   system("../../../package/travis.sh")
@@ -168,6 +171,9 @@ def configure_for_sauce_chrome_extension
   end
   Capybara.current_driver = :sauce_chrome_extension
   Capybara.default_driver = :sauce_chrome_extension
+
+  assign_chrome_extension_path
+
 end
 
 def configure_for_firefox_extension
@@ -180,7 +186,6 @@ def configure_for_firefox_extension
 end
 
 def configure_for_chrome_extension
-  common_configuration_for_chrome_extension
   # This currently references the relative path to the URL
   caps = Selenium::WebDriver::Remote::Capabilities.chrome(
     "chromeOptions" => {
@@ -194,4 +199,7 @@ def configure_for_chrome_extension
   end
   Capybara.current_driver = :chrome_extension
   Capybara.default_driver = :chrome_extension
+
+  assign_chrome_extension_path
+
 end
