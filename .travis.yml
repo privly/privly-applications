@@ -29,7 +29,6 @@ env:
   #SAUCE_URL=http://jatindhankhar:********-****-****-****-************@ondemand.saucelabs.com/wd/hub
   - secure: sWkxx3v8RxChO0lZSYqNjkYvfg1Re6LwpDeBZIgw1qBBBg5UdCLJZitOAAqKsdoUpeVD0Hk9o6UdWfVnYAw81xArvHpl32VQgItY60UVhHVoszX5CQFo7bp0p59dPZbzx4XjJfZhM0btrHOUHpJkeoU6Ia9Z+gTiZ04uC+Jqi/s=
   #CODECLIMATE_REPO_TOKEN=**************************(smcgregor/privly-applications)
-  #CODECLIMATE_REPO_TOKEN=**************************(smcgregor/privly-applications)
   - secure: CevDxddWV/R2vF66U94Id30vSkQ2I1DBY36bl2VPyY5OsBGhSFWaF0l5j6KIgBZyYrwQF2IT1I/hUPtLbTvHhPgaE5CcV1LHGxueWtaYEXfAfHSVy0ChhhilKdUOOyA7245yad6UHYQIwx7Kz/EKXXA/0hczEcUl/OH6ZxkGcws=
   #CODECLIMATE_REPO_TOKEN=**************************(privly/privly-applications)
   - secure: HAqHN7zeSbDR7BP0pn6qH6ODOwuMD7eIR9t4h1gHkRy6WAQBrhQb1+kTzkGbhfKB1mftxN/0ERTK6xv+iBj4QylqOOXChnuthuHMZiAuwPJncj8FYE4LHt2Eh48+HnzSQUgzjxv11hvkLz4utaj0J4fub2q/tWzoAXucA13UGQU=
