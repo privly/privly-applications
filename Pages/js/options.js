@@ -83,10 +83,6 @@ function isValidDomain(domain) {
   var parts = domain.split(".");
   var valid_parts_count = 0;
 
-  if( parts.length < 2 ) {
-    return false;
-  }
-
   //iterate over domains, split by .
   for (var j = 0; j < parts.length; j++) {
     switch (j){
