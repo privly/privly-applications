@@ -1,7 +1,7 @@
 /**
  * @fileOverview This script defines a tooltip to indicate that the content is
  * not a natural element of the page.
- * 
+ *
  * Requirements: This script assumes the existence of the following CSS:
  *
  * body {
@@ -26,19 +26,19 @@
  *  margin-right: 5px;
  * }
  **/
- 
- 
+
+
 /**
  * @namespace
  * Wrapper for tooltip functions.
  */
 var privlyTooltip = {
-    
+
     /**
      * Message displayed by the tooltip.
      */
     tooltipMessage: "Read Only",
-    
+
     /**
      * The name of the application to show in the tooltip.
      */
@@ -49,16 +49,18 @@ var privlyTooltip = {
      *
      * @param {string} dataDomain The domain controlling the content.
      * @param {string} newMessage The message to change the tooltip to. A
-     * limited set of characters are accepted: 
+     * limited set of characters are accepted:
      * digits, word characters, underscores (\w) and whitespace (\s), periods,
      * and colons.
      *
      */
     updateMessage: function(dataDomain, newMessage){
 
-      privlyTooltip.tooltipMessage = privlyTooltip.appName
-        + ":\u00A0" // non-breaking space
-        + newMessage   + ", from "  + dataDomain;
+      privlyTooltip.tooltipMessage = privlyTooltip.appName +
+        ":\u00A0" +    // non-breaking space
+        newMessage +
+        ", from " +
+        dataDomain;
 
       // Update the text node if it currently exists
       var textNodeDiv = document.getElementById("textNodeDiv");
@@ -68,7 +70,7 @@ var privlyTooltip = {
         textNodeDiv.appendChild(tooltipTextNode);
       }
     },
-    
+
     /**
      * Generate new glyph values.
      *
@@ -76,7 +78,7 @@ var privlyTooltip = {
      * for anything other than the glyph.
      */
     generateNewGlyph: function(){
-      
+
       var glyphColor = Math.floor(Math.random()*16777215).toString(16);
       var glyphString = ((Math.random() < 0.5) ? "false" : "true");
       for( var i = 0; i < 14; i++) {
@@ -86,7 +88,7 @@ var privlyTooltip = {
       ls.setItem("glyph_cells", glyphString);
       ls.setItem("glyph_color", glyphColor);
     },
-    
+
     /**
      * Create and display the tooltip if the mouse is over the application.
      */
@@ -154,9 +156,9 @@ var privlyTooltip = {
             t.style.left = (e.clientX + yOffset) + "px";
           });
     },
-    
+
     /**
-     * Constructs the user's security glyph, which indicates whether the 
+     * Constructs the user's security glyph, which indicates whether the
      * injected content is trusted. The Glyph is assumed to be defined by the
      * extension before this script is run. It can be reset via the options
      * interface.
@@ -171,7 +173,7 @@ var privlyTooltip = {
      *
      */
     glyphHTML: function() {
-      
+
       // Get the glyph from storage
       var glyphString = ls.getItem("glyph_cells");
       var glyphArray = glyphString.split(",");
@@ -222,7 +224,7 @@ var privlyTooltip = {
       }
 
       table.appendChild(tbody);
-      
+
       return table;
     }
 };
