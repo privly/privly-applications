@@ -1,8 +1,8 @@
 {% extends "templates/base.html.template" %}
 {% block head %}
-    
+
     {% block title %}<title> New {{ name }}</title>{% endblock %}
-    
+
     <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
     <link class="top" href="../shared/css/top/top.css" rel="stylesheet"/>
     {% block css %}{% endblock %}
@@ -13,10 +13,10 @@
 {% endblock %}
 {% block body %}
   <body data-privly-exclude="true">
-    
+
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
-    
+
     <!-- Wrap all page content here -->
     <div id="wrap">
       {% include "templates/partials/navigation.html.subtemplate" %}
@@ -52,7 +52,7 @@
             </div>
           </div>
         </div>
-        
+
         {% block pre_form %}{% endblock %}
         <div id="form" style="display:none;">
           <div class="row">
@@ -95,17 +95,17 @@
           </div>
         </div>
       </div><!-- /.container -->
-      
-      
+
+
       <div class="container">
         <div class="row">
           {% block app_info %}
           {% endblock %}
         </div><!-- /.row -->
       </div><!-- /.container -->
-      
+
     </div><!-- /.wrap -->
-    
+
     <div id="footer">
       <div class="container">
         <p class="text-muted credit">
