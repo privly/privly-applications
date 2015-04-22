@@ -1,0 +1,53 @@
+{% extends "templates/base.html.template" %}
+
+{% block head %}
+  <link href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
+  <link href="css/new_embed.css" media="screen" rel="stylesheet" type="text/css"/>
+
+  <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+  <script type="text/javascript" src="../vendor/sjcl.js"></script>
+  <script type="text/javascript" src="js/base64.js"></script>
+  <script type="text/javascript" src="js/rawdeflate.js"></script>
+  <script type="text/javascript" src="js/rawinflate.js"></script>
+  <script type="text/javascript" src="js/zerobin.js"></script>
+  <script type="text/javascript" src="js/new_embed.js"></script>
+{% endblock %}
+
+{% block body %}
+
+<div class="login-check">
+  <div class="spinner">
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+  </div>
+  <h3>Checking connection...</h3>
+</div>
+
+<div class="login-required" style="display:none">
+  <h3>You are not logged in.</h3>
+  <p><a href="javascript:;" name="login">Login</a> / <a href="javascript:;" name="cancel">Cancel</a></p>
+</div>
+
+<div class="container message-posting-dialog" style="display:none">
+    <h2>New Privly Message</h2>
+    <div class="form-group">
+        <textarea class="form-control" rows="5"></textarea>
+    </div>
+    <div class="form-group">
+      <label for="seconds_until_burn">Time until content is destroyed</label>
+      <select id="seconds_until_burn" name="seconds_until_burn" class="form-control">
+        <option value="86400">1 Day</option>
+        <option value="604800">7 Days</option>
+        <option value="1209600">14 Days</option>
+        <option value="2419200" selected>28 Days</option>
+        <option value="">Infinite? - WARNING! Data in Alpha may still be destroyed.</option>
+      </select>
+    </div>
+    <div class="form-group">
+        <button type="button" class="btn btn-primary btn-submit" name="submit" style="display:none;">Submit</button><button type="button" class="btn btn-primary btn-done" name="done" style="display:none;">Done</button> <button type="button" class="btn btn-cancel" name="cancel">Cancel</button> <span class="saving-text" style="display:none">Saving...</span>
+    </div>
+</div>
+{% endblock %}

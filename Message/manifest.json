@@ -8,6 +8,18 @@
   },
   {
     "release_status": "alpha",
+    "subtemplate_path": "Message/new_embed.html.subtemplate",
+    "outfile_path": "Message/new_embed.html",
+    "subtemplate_dict": {"name": "Message", "action": "new_embed"}
+  },
+  {
+    "release_status": "alpha",
+    "subtemplate_path": "Message/new_embed_login_callback.html.subtemplate",
+    "outfile_path": "Message/new_embed_login_callback.html",
+    "subtemplate_dict": {"name": "Message", "action": "new_embed_login_callback"}
+  },
+  {
+    "release_status": "alpha",
     "subtemplate_path": "Message/show.html.subtemplate",
     "outfile_path": "Message/show.html",
     "subtemplate_dict": {"name": "Message", "action": "show"}
