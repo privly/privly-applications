@@ -108,7 +108,14 @@
   }
 
   function onHitEnter(event) {
-    updateLink();
+    updateLink(function() {
+      chrome.runtime.sendMessage({ask: 'posting/key_enter', keys: {
+        ctrl: event.ctrlKey,
+        alt: event.altKey,
+        shift: event.shiftKey,
+        meta: event.metaKey
+      }});
+    });
   }
 
   onHitEnter = debounce(onHitEnter, 300);
@@ -220,7 +227,8 @@
 
     $("[name='submit']").click(function() {
       updateLink(function() {
-        // submit form
+        chrome.runtime.sendMessage({ask: 'posting/submit'});
+        chrome.runtime.sendMessage({ask: 'posting/close_post'});
       });
     });
 
