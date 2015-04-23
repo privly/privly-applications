@@ -64,10 +64,10 @@
     <p>
       <strong>
         <span class="glyphicon glyphicon-eye-open"></span> 
-        Experts Only:
+        Indie Hosts Only:
       </strong> 
-      Other applications built on Privly provide privacy only in special 
-      circumstances and should be viewed as "experts only."
+      "These applications provide privacy if you host your own content server. 
+      If you don't know what that means, you should not use these apps."
     </p>
     <div class="col-md-3">
       <form action="../PlainPost/new.html" style="display:inline;">
@@ -92,7 +92,7 @@
     <h2>Getting Help</h2>
     <p>The Priv.ly Project is an open source, community-driven
       collection of software. Developers support users on 
-      <a href="http://www.privly.org/content/irc" target="_blank">chat</a> and 
+      <a href="https://www.privly.org/content/irc" target="_blank">chat</a> and 
       on 
       <a href="https://groups.google.com/forum/#!forum/privly" target="_blank">
         email.
