@@ -109,7 +109,7 @@
 
   function onHitEnter(event) {
     updateLink(function() {
-      chrome.runtime.sendMessage({ask: 'posting/key_enter', keys: {
+      chrome.runtime.sendMessage({ask: 'posting/on_keypress_enter', keys: {
         ctrl: event.ctrlKey,
         alt: event.altKey,
         shift: event.shiftKey,
@@ -148,22 +148,35 @@
       contentToPost);
   }
 
-  function insertLink(link) {
-    privlyLink = link;
-    chrome.runtime.sendMessage({ask: 'posting/insert_link', link: link});
-  }
-
   var loginCheckingCallback = {
     logined: function() {
       // retrive submit button information (show 'submit' or 'done')
       chrome.runtime.sendMessage({
-        ask: 'posting/ready'
+        ask: 'posting/get_form_info'
+      }, function(info) {
+        if (info.hasSubmitButton) {
+          $('.btn-submit').show();
+        } else {
+          $('.btn-done').show();
+        }
       });
 
       $('.login-check h3').text('Preparing your Privly link...');
 
       // create a link with empty content
-      createLink(insertLink);
+      createLink(function(link) {
+        privlyLink = link;
+        chrome.runtime.sendMessage({
+          ask: 'posting/insert_link',
+          link: link,
+          target: 'nodeframe'
+        }, function() {
+          // link has successfully inserted
+          $('.login-check').hide();
+          $('.message-posting-dialog').show();
+          $('textarea').focus();
+        });
+      });
     },
 
     notlogined: function() {
@@ -173,12 +186,6 @@
 
     error: function() {
       this.notlogined.call(this, arguments);
-    },
-
-    linkinserted: function() {
-      $('.login-check').hide();
-      $('.message-posting-dialog').show();
-      $('textarea').focus();
     }
   };
 
@@ -190,22 +197,6 @@
       loginCheckingCallback.error.bind(loginCheckingCallback)
     );
 
-    window.addEventListener('message', function(e) {
-      var message = e.data;
-      switch (e.data.type) {
-        case 'submitButton':
-          if (e.data.submit) {
-            $('.btn-submit').show();
-          } else {
-            $('.btn-done').show();
-          }
-          break;
-        case 'insertLinkDone':
-          loginCheckingCallback.linkinserted();
-          break;
-      }
-    });
-
     $("[name='login']").click(function() {
       chrome.runtime.sendMessage({
         ask: 'posting/popup_login',
@@ -216,19 +207,19 @@
     $("[name='cancel']").click(function() {
       // TODO truly destroy message when cancel
       // TODO revert inserted link?
-      chrome.runtime.sendMessage({ask: 'posting/close_post'});
+      chrome.runtime.sendMessage({ask: 'posting/close_post_dialog'});
     });
 
     $("[name='done']").click(function() {
       updateLink(function() {
-        chrome.runtime.sendMessage({ask: 'posting/close_post'});
+        chrome.runtime.sendMessage({ask: 'posting/close_post_dialog'});
       });
     });
 
     $("[name='submit']").click(function() {
       updateLink(function() {
         chrome.runtime.sendMessage({ask: 'posting/submit'});
-        chrome.runtime.sendMessage({ask: 'posting/close_post'});
+        chrome.runtime.sendMessage({ask: 'posting/close_post_dialog'});
       });
     });
 
