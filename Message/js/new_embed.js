@@ -71,6 +71,10 @@
     $('.message-posting-dialog button').removeAttr('disabled');
   }
 
+  function beginDelete() {
+    $('.message-posting-dialog button').attr('disabled', 'disabled');
+  }
+
   function updateLink(callback) {
     // abort existing update progress
     if (lastUpdateXHR) {
@@ -82,9 +86,7 @@
     beginUpdating();
 
     // get PUT URL
-    var state = {};
-    state.parameters = privlyParameters.getParameterHash(privlyLink);
-    state.jsonURL = state.parameters.privlyDataURL;
+    var dataURL =  privlyParameters.getParameterHash(privlyLink).privlyDataURL;
 
     // prepare payload
     var cipherdata = zeroCipher(privlyCipherKey, $("textarea").val());
@@ -98,13 +100,31 @@
 
     // send
     lastUpdateXHR = privlyNetworkService.sameOriginPutRequest(
-      state.jsonURL, 
+      dataURL, 
       function(response) {
         lastUpdateXHR = null;
         endUpdating();
         callback && callback();
       },
       contentToPost);
+  }
+
+  function deleteLink(callback) {
+    if (privlyLink == null) {
+      return;
+    }
+
+    beginDelete();
+
+    var dataURL = privlyParameters.getParameterHash(privlyLink).privlyDataURL;
+    
+    privlyNetworkService.sameOriginDeleteRequest(
+      dataURL,
+      function(response) {
+        if (response.jqXHR.status === 200) {
+          callback && callback();
+        }
+      }, {});
   }
 
   function onHitEnter(event) {
@@ -207,7 +227,9 @@
     $("[name='cancel']").click(function() {
       // TODO truly destroy message when cancel
       // TODO revert inserted link?
-      chrome.runtime.sendMessage({ask: 'posting/close_post_dialog'});
+      deleteLink(function() {
+        chrome.runtime.sendMessage({ask: 'posting/close_post_dialog'});
+      });
     });
 
     $("[name='done']").click(function() {
