@@ -129,7 +129,7 @@
         if (content === false || 
           (
             content.content.indexOf(privlyLink) === -1 && 
-            content.text && content.text.indexOf(privlyLink) === -1
+            (!content.text || content.text.indexOf(privlyLink) === -1)
           )
         ) {
           background.closeDialog();
