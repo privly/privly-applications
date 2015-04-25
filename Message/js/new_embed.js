@@ -61,18 +61,55 @@
     };
   };
 
-  function beginUpdating() {
-    $('.message-posting-dialog button').attr('disabled', 'disabled');
-    $('.saving-text').show();
+  /**
+   * APIs to send message to background script
+   * @type {Object}
+   */
+  var background = {
+    closeDialog: function() {
+      chrome.runtime.sendMessage({ask: 'posting/close_post_dialog'});
+    },
+    triggerSubmit: function() {
+      chrome.runtime.sendMessage({ask: 'posting/submit'});
+    },
+    getTargetContent: function(callback) {
+      chrome.runtime.sendMessage({ask: 'posting/get_target_content'}, callback);
+    },
+    emitEnterEvent: function(keys) {
+      chrome.runtime.sendMessage({ask: 'posting/on_keypress_enter', keys: keys});
+    },
+    getFormInfo: function(callback) {
+      chrome.runtime.sendMessage({ask: 'posting/get_form_info'}, callback);
+    },
+    insertLink: function(link, callback) {
+      chrome.runtime.sendMessage({
+        ask: 'posting/insert_link',
+        link: link
+      }, callback);
+    },
+    popupLoginDialog: function() {
+      chrome.runtime.sendMessage({
+        ask: 'posting/popup_login',
+        loginCallbackUrl: '../Message/new_embed_login_callback.html'
+      });
+    },
   }
 
-  function endUpdating() {
-    $('.saving-text').hide();
-    $('.message-posting-dialog button').removeAttr('disabled');
-  }
-
-  function beginDelete() {
-    $('.message-posting-dialog button').attr('disabled', 'disabled');
+  /**
+   * Start the observation of the removal of Privly URL in editableElement.
+   * If Privly URL is removed, we should close the Posting dialog.
+   */
+  function beginCloseObserve() {
+    if (beginCloseObserve.intervalId) {
+      return;
+    }
+    beginCloseObserve.intervalId = setInterval(function() {
+      background.getTargetContent(function(content) {
+        if (content === undefined || content.indexOf(privlyLink) === -1) {
+          background.closeDialog();
+        }
+      });
+    }, 1000);
   }
 
   function updateLink(callback) {
@@ -83,7 +120,8 @@
     }
 
     // doesn't allow user to manually trigger update
-    beginUpdating();
+    $('.message-posting-dialog button').attr('disabled', 'disabled');
+    $('.saving-text').show();
 
     // get PUT URL
     var dataURL =  privlyParameters.getParameterHash(privlyLink).privlyDataURL;
@@ -102,8 +140,10 @@
     lastUpdateXHR = privlyNetworkService.sameOriginPutRequest(
       dataURL, 
       function(response) {
+        // re-enable controls
+        $('.saving-text').hide();
+        $('.message-posting-dialog button').removeAttr('disabled');
         lastUpdateXHR = null;
-        endUpdating();
         callback && callback();
       },
       contentToPost);
@@ -114,7 +154,8 @@
       return;
     }
 
-    beginDelete();
+    // when deleting link, we no longer allow users to trigger update
+    $('.message-posting-dialog button').attr('disabled', 'disabled');
 
     var dataURL = privlyParameters.getParameterHash(privlyLink).privlyDataURL;
     
@@ -126,19 +167,6 @@
         }
       }, {});
   }
-
-  function onHitEnter(event) {
-    updateLink(function() {
-      chrome.runtime.sendMessage({ask: 'posting/on_keypress_enter', keys: {
-        ctrl: event.ctrlKey,
-        alt: event.altKey,
-        shift: event.shiftKey,
-        meta: event.metaKey
-      }});
-    });
-  }
-
-  onHitEnter = debounce(onHitEnter, 300);
 
   function createLink(callback) {
     // prepare payload
@@ -171,9 +199,7 @@
   var loginCheckingCallback = {
     logined: function() {
       // retrive submit button information (show 'submit' or 'done')
-      chrome.runtime.sendMessage({
-        ask: 'posting/get_form_info'
-      }, function(info) {
+      background.getFormInfo(function(info) {
         if (info.hasSubmitButton) {
           $('.btn-submit').show();
         } else {
@@ -186,15 +212,12 @@
       // create a link with empty content
       createLink(function(link) {
         privlyLink = link;
-        chrome.runtime.sendMessage({
-          ask: 'posting/insert_link',
-          link: link,
-          target: 'nodeframe'
-        }, function() {
+        background.insertLink(link, function() {
           // link has successfully inserted
           $('.login-check').hide();
           $('.message-posting-dialog').show();
           $('textarea').focus();
+          beginCloseObserve();
         });
       });
     },
@@ -218,38 +241,44 @@
     );
 
     $("[name='login']").click(function() {
-      chrome.runtime.sendMessage({
-        ask: 'posting/popup_login',
-        loginCallbackUrl: '../Message/new_embed_login_callback.html'
-      });
+      background.popupLoginDialog();
     });
 
     $("[name='cancel']").click(function() {
-      // TODO truly destroy message when cancel
       // TODO revert inserted link?
       deleteLink(function() {
-        chrome.runtime.sendMessage({ask: 'posting/close_post_dialog'});
+        background.closeDialog();
       });
     });
 
     $("[name='done']").click(function() {
       updateLink(function() {
-        chrome.runtime.sendMessage({ask: 'posting/close_post_dialog'});
+        background.closeDialog();
       });
     });
 
     $("[name='submit']").click(function() {
       updateLink(function() {
-        chrome.runtime.sendMessage({ask: 'posting/submit'});
-        chrome.runtime.sendMessage({ask: 'posting/close_post_dialog'});
+        background.triggerSubmit();
+        background.closeDialog();
       });
     });
 
-    $('textarea').keypress(function(ev) {
-      if (ev.which === 13) {
-        onHitEnter(ev);
+    $('textarea').keypress(function() {
+      var onHitEnter = debounce(function(event) {
+        updateLink(background.emitEnterEvent({
+          ctrl: event.ctrlKey,
+          alt: event.altKey,
+          shift: event.shiftKey,
+          meta: event.metaKey,
+        }));
+      }, 300);
+      return function(ev) {
+        if (ev.which === 13) {
+          onHitEnter(ev);
+        }
       }
-    });
+    }());
   }
 
   document.addEventListener('DOMContentLoaded', setup);
