@@ -93,7 +93,7 @@
     },
     emitEnterEvent: function(keys) {
       chrome.runtime.sendMessage({
-        ask: 'posting/on_keypress_enter',
+        ask: 'posting/on_keydown_enter',
         keys: keys
       });
     },
@@ -302,7 +302,7 @@
       });
     });
 
-    $('textarea').keypress(function() {
+    $('textarea').keydown(function() {
       var onHitEnter = debounce(function(event) {
         updateLink(background.emitEnterEvent({
           ctrl: event.ctrlKey,
