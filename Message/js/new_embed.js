@@ -126,7 +126,12 @@
     }
     beginCloseObserve.intervalId = setInterval(function() {
       background.getTargetContent(function(content) {
-        if (content === false || content.indexOf(privlyLink) === -1) {
+        if (content === false || 
+          (
+            content.content.indexOf(privlyLink) === -1 && 
+            content.text && content.text.indexOf(privlyLink) === -1
+          )
+        ) {
           background.closeDialog();
         }
       });
@@ -236,7 +241,7 @@
           background.closeDialog();
           return;
         }
-        contentBeforeInsertion = content;
+        contentBeforeInsertion = content.content;
 
         // 2. create a link with empty content
         createLink(function(link) {
