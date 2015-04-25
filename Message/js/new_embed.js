@@ -188,9 +188,7 @@
     privlyNetworkService.sameOriginDeleteRequest(
       dataURL,
       function(response) {
-        if (response.jqXHR.status === 200) {
-          callback && callback();
-        }
+        callback && callback();
       }, {});
   }
 
@@ -309,12 +307,14 @@
 
     $('textarea').keydown(function() {
       var onHitEnter = debounce(function(event) {
-        updateLink(background.emitEnterEvent({
-          ctrl: event.ctrlKey,
-          alt: event.altKey,
-          shift: event.shiftKey,
-          meta: event.metaKey,
-        }));
+        updateLink(function() {
+          background.emitEnterEvent({
+            ctrl: event.ctrlKey,
+            alt: event.altKey,
+            shift: event.shiftKey,
+            meta: event.metaKey,
+          });
+        });
       }, 300);
       return function(ev) {
         if (ev.which === 13) {
