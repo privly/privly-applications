@@ -4,6 +4,7 @@
   var privlyCipherKey = null;
 
   var lastUpdateXHR = null;
+  var contentBeforeInsertion = null;
 
   /**
    * Add the decryption key to the anchor of the URL.
@@ -67,19 +68,39 @@
    */
   var background = {
     closeDialog: function() {
-      chrome.runtime.sendMessage({ask: 'posting/close_post_dialog'});
+      chrome.runtime.sendMessage({
+        ask: 'posting/close_post_dialog'
+      });
+      chrome.runtime.sendMessage({
+        ask: 'posting/focus_target'
+      });
     },
     triggerSubmit: function() {
-      chrome.runtime.sendMessage({ask: 'posting/submit'});
+      chrome.runtime.sendMessage({
+        ask: 'posting/submit'
+      });
     },
     getTargetContent: function(callback) {
-      chrome.runtime.sendMessage({ask: 'posting/get_target_content'}, callback);
+      chrome.runtime.sendMessage({
+        ask: 'posting/get_target_content'
+      }, callback);
+    },
+    setTargetContent: function(content) {
+      chrome.runtime.sendMessage({
+        ask: 'posting/set_target_content',
+        content: content
+      });
     },
     emitEnterEvent: function(keys) {
-      chrome.runtime.sendMessage({ask: 'posting/on_keypress_enter', keys: keys});
+      chrome.runtime.sendMessage({
+        ask: 'posting/on_keypress_enter',
+        keys: keys
+      });
     },
     getFormInfo: function(callback) {
-      chrome.runtime.sendMessage({ask: 'posting/get_form_info'}, callback);
+      chrome.runtime.sendMessage({
+        ask: 'posting/get_form_info'
+      }, callback);
     },
     insertLink: function(link, callback) {
       chrome.runtime.sendMessage({
@@ -105,7 +126,7 @@
     }
     beginCloseObserve.intervalId = setInterval(function() {
       background.getTargetContent(function(content) {
-        if (content === undefined || content.indexOf(privlyLink) === -1) {
+        if (content === false || content.indexOf(privlyLink) === -1) {
           background.closeDialog();
         }
       });
@@ -209,17 +230,34 @@
 
       $('.login-check h3').text('Preparing your Privly link...');
 
-      // create a link with empty content
-      createLink(function(link) {
-        privlyLink = link;
-        background.insertLink(link, function() {
-          // link has successfully inserted
-          $('.login-check').hide();
-          $('.message-posting-dialog').show();
-          $('textarea').focus();
-          beginCloseObserve();
+      // 1. back up original content, in case of user cancel posting
+      background.getTargetContent(function(content) {
+        if (content === false) {
+          background.closeDialog();
+          return;
+        }
+        contentBeforeInsertion = content;
+
+        // 2. create a link with empty content
+        createLink(function(link) {
+          privlyLink = link;
+
+          // 3. insert link to the target
+          background.insertLink(link, function(success) {
+            if (!success) {
+              background.closeDialog();
+              return;
+            }
+            
+            // 4. link has successfully inserted: show posting form
+            $('.login-check').hide();
+            $('.message-posting-dialog').show();
+            $('textarea').focus();
+            beginCloseObserve();
+          });
         });
       });
+
     },
 
     notlogined: function() {
@@ -245,8 +283,8 @@
     });
 
     $("[name='cancel']").click(function() {
-      // TODO revert inserted link?
       deleteLink(function() {
+        background.setTargetContent(contentBeforeInsertion);
         background.closeDialog();
       });
     });
