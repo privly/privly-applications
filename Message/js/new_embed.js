@@ -222,7 +222,7 @@
       // retrive submit button information (show 'submit' or 'done')
       background.getFormInfo(function(info) {
         if (info.hasSubmitButton) {
-          $('.btn-submit').show();
+          $('.btn-submit').text(info.submitButtonText).show();
         } else {
           $('.btn-done').show();
         }
