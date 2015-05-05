@@ -267,15 +267,6 @@ function resizeIframePostedMessage(e) {
   }
 }
 
-/**
- * Sends the currently displayed URL to the extension or mobile framework
- * running the applicaiton so it can be submitted to a host page webform.
- */
-function postUrl() {
-  privlyExtension.firePrivlyURLEvent(
-    document.getElementById("ifrm0").getAttribute("data-canonical-href"));
-}
-
 // Initialize the application
 document.addEventListener('DOMContentLoaded',
   function() {
