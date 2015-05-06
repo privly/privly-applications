@@ -8,6 +8,9 @@ echo "This will run all the tests currently defined in run_each.sh"
 echo "You can also have tests run every time you save a file by defining the scripts you want to test with:"
 echo "export FILES_TO_TEST=YOUR_FILES_HERE"
 echo "Then you can issue 'karma start'"
+echo "Currently, the tests are run only in the Firefox browser"
+echo "To test on different browsers, you can do:"
+echo "export BROWSERS_TO_TEST=Chrome,Firefox,Safari"
 echo "!!!!!!"
 
 # Default to running the tests locally
@@ -26,7 +29,15 @@ runTest () {
   echo ""
   echo "running tests on shared libraries and $1"
   echo ""
-  export FILES_TO_TEST=$1 && karma start $KARMA --single-run
+  export FILES_TO_TEST=$1
+  # By default, run tests on the Firefox browser
+  # If the BROWSERS_TO_TEST environment variable is set, run the tests on different browsers
+  if [ "$BROWSERS_TO_TEST" == "" ]
+  then
+    karma start $KARMA --single-run
+  else
+    karma start $KARMA --single-run --browsers "$BROWSERS_TO_TEST"
+  fi
   ISFAIL=$(($ISFAIL|$?))
 }
 
