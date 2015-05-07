@@ -364,8 +364,8 @@
       background.getTargetContent(function (content) {
         if (
           content === false || (
-            content.content.indexOf(privlyLink) === -1 &&
-            (!content.text || content.text.indexOf(privlyLink) === -1)
+            content.indexOf(privlyLink) === -1 &&
+            content.replace(/&amp;/g, '&').indexOf(privlyLink) === -1
           )
         ) {
           background.closeDialog();
@@ -401,7 +401,7 @@
           background.closeDialog();
           return;
         }
-        contentBeforeInsertion = content.content;
+        contentBeforeInsertion = content;
 
         // 2. create a link with empty content
         privlyWeb.createLink(function () {
