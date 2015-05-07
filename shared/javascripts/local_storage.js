@@ -87,14 +87,18 @@ var ls = {
   }
 };
 
-// Determine whether localstorage can be used directly
-try { 
-  localStorage;
+try {
+  // check for jetpack runtime environment
+  exports.ls = ls;
 } catch(e) {
-  ls.localStorageDefined = false;
-  
-  // Assuming Xul firefox
-  ls.preferences = Components.classes["@mozilla.org/preferences-service;1"]
-                         .getService(Components.interfaces.nsIPrefService)
-                         .getBranch("extensions.privly.");
+  // Determine whether localstorage can be used directly
+  try {
+    localStorage;
+  } catch(e) {
+    ls.localStorageDefined = false;
+    // firefox 'chrome' environment
+    ls.preferences = Components.classes["@mozilla.org/preferences-service;1"].
+                       getService(Components.interfaces.nsIPrefService).
+                       getBranch("extensions.privly.");
+  }
 }
