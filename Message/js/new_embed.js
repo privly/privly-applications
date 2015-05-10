@@ -468,6 +468,10 @@ function attachEventHandlers() {
     });
   });
 
+  $('#seconds_until_burn').change(function () {
+    privlyWeb.updateLink();
+  });
+
   // add event listeners to forward ENTER key events
   $('textarea').keydown((function () {
     var onHitEnter = debounce(function (event) {
