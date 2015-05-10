@@ -439,6 +439,17 @@ var loginCheckingCallback = {
 };
 
 /**
+ * Reset variables. In testing mode, those values will be referenced cross
+ * test cases, so we should reset those variables.
+ */
+function resetGlobals() {
+  privlyLink = null;
+  privlyCipherKey = null;
+  lastUpdateXHR = null;
+  contentBeforeInsertion = null;
+}
+
+/**
  * Attach event handlers
  */
 function attachEventHandlers() {
@@ -496,13 +507,14 @@ function attachEventHandlers() {
  * The start up function
  */
 function setup() {
+  resetGlobals();
+  attachEventHandlers();
   privlyNetworkService.initPrivlyService(
     privlyNetworkService.contentServerDomain(),
     loginCheckingCallback.logined.bind(loginCheckingCallback),
     loginCheckingCallback.notlogined.bind(loginCheckingCallback),
     loginCheckingCallback.error.bind(loginCheckingCallback)
   );
-  attachEventHandlers();
 }
 
 document.addEventListener('DOMContentLoaded', setup);
