@@ -66,9 +66,9 @@ function processURL(response, randomkey) {
   }
   var url = response.jqXHR.getResponseHeader("X-Privly-Url");
   if (url.indexOf("#") > 0) {
-    url = url.replace("#", "#privlyLinkKey=" + randomkey);
+    url = url.replace("#", "#privlyLinkKey=" + encodeURIComponent(randomkey));
   } else {
-    url = url + "#privlyLinkKey=" + randomkey;
+    url = url + "#privlyLinkKey=" + encodeURIComponent(randomkey);
   }
 
   // Save the URL to localStorage if we are not in the HOSTED platform
