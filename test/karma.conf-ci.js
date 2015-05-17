@@ -1,4 +1,5 @@
 var fs = require('fs');
+var path = require('path');
 
 module.exports = function(config) {
 
@@ -7,7 +8,7 @@ module.exports = function(config) {
 
   // Use ENV vars on Travis and sauce.json locally to get credentials
   if (!process.env.SAUCE_USERNAME) {
-    if (!fs.existsSync('sauce.json')) {
+    if (!fs.existsSync(path.join(__dirname, 'sauce.json'))) {
       console.log('Create a sauce.json with your credentials based on the sauce-sample.json file.');
       process.exit(1);
     } else {
@@ -30,7 +31,6 @@ module.exports = function(config) {
   // Javascripts.
   var filesToTest = [];
   if (basePath === __dirname) {
-    basePath = '..';
     filesToTest = [
 
       // HTML files to use as a fixtures
@@ -51,6 +51,8 @@ module.exports = function(config) {
       // Test the shared libraries
       'shared/test/*.js'];
   }
+
+  basePath = path.join(basePath, '..');
 
   var filesToExcludeFromTest = [];
   if (process.env.FILES_TO_TEST) {

@@ -1,5 +1,6 @@
 // Karma configuration
 // Generated on Thu Mar 13 2014 14:12:04 GMT-0700 (PDT)
+var path = require('path');
 
 module.exports = function(config) {
 
@@ -12,7 +13,6 @@ module.exports = function(config) {
   // Javascripts.
   var filesToTest = [];
   if (basePath === __dirname) {
-    basePath = '..';
     filesToTest = [
 
       // HTML files to use as a fixtures
@@ -33,6 +33,8 @@ module.exports = function(config) {
       // Test the shared libraries
       'shared/test/*.js'];
   }
+
+  basePath = path.join(basePath, '..');
 
   var filesToExcludeFromTest = [];
   if (process.env.FILES_TO_TEST) {
