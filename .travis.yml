@@ -34,6 +34,7 @@ env:
   - secure: HAqHN7zeSbDR7BP0pn6qH6ODOwuMD7eIR9t4h1gHkRy6WAQBrhQb1+kTzkGbhfKB1mftxN/0ERTK6xv+iBj4QylqOOXChnuthuHMZiAuwPJncj8FYE4LHt2Eh48+HnzSQUgzjxv11hvkLz4utaj0J4fub2q/tWzoAXucA13UGQU=
 script:
 - cd test
+- export BROWSERS_TO_TEST=Chrome,Firefox,Safari # test all the browsers
 - "if [ ${TRAVIS_PULL_REQUEST} = 'false' ]; then ./run_each.sh karma.conf-ci.js; fi"
 - "cd .."
 # Move the lcov.info file to the root
