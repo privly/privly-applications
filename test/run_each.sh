@@ -30,13 +30,23 @@ runTest () {
   echo "running tests on shared libraries and $1"
   echo ""
   export FILES_TO_TEST=$1
+
   # By default, run tests on the Firefox browser
-  # If the BROWSERS_TO_TEST environment variable is set, run the tests on different browsers
+  # If the BROWSERS_TO_TEST environment variable is set,
+  # run the tests on the specified browsers
   if [ "$BROWSERS_TO_TEST" == "" ]
   then
     karma start $KARMA --single-run
   else
-    karma start $KARMA --single-run --browsers "$BROWSERS_TO_TEST"
+
+    # Since the `--browsers` option will circumvent the custom launchers
+    # of the CI we need to specify it a different way
+    if [ "$KARMA" == "karma.conf-ci.js" ]
+    then
+      karma start $KARMA --single-run --sauce-browsers="$BROWSERS_TO_TEST"
+    else
+      karma start $KARMA --single-run --browsers "$BROWSERS_TO_TEST"
+    fi
   fi
   ISFAIL=$(($ISFAIL|$?))
 }

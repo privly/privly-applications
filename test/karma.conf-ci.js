@@ -84,14 +84,21 @@ module.exports = function(config) {
       var sauceBrowsers = value.split('=')[1];
       sauceBrowsers = sauceBrowsers.split(',');
       sauceBrowsers.forEach(function (browser) {
-        if (browser == 'chrome') {
+        if (browser == 'Chrome') {
           customLaunchers['sl_chrome'] = sl_chrome;
         }
-        else if (browser == 'firefox') {
+        else if (browser == 'Firefox') {
           customLaunchers['sl_firefox'] = sl_firefox;
         }
-        else if (browser == 'safari') {
+        else if (browser == 'Safari') {
           customLaunchers['sl_safari'] = sl_safari;
+        }
+        else {
+          console.error("You specified an unsupported browser:", browser);
+          console.log("Browser options are Firefox, Chrome, and Safari");
+          console.log("Example:");
+          console.log("`karma start karma.conf-ci.js --sauce-browsers=Firefox,Chrome,Safari`");
+          process.exit(9);
         }
       });
     }
