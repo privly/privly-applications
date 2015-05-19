@@ -26,7 +26,7 @@ var ls = {
     if ( ls.localStorageDefined ) {
       localStorage.setItem(key, value);
     } else {
-      ls.storage[key] = value;
+      ls.simpleStorage[key] = value;
     }
 
     return value;
@@ -55,10 +55,10 @@ var ls = {
     } else {
       try {
         try { // try to parse stored value as JSON
-          var value = JSON.parse(ls.storage[key]);
+          var value = JSON.parse(ls.simpleStorage[key]);
           return value;
         } catch(e){
-          return ls.storage[key];
+          return ls.simpleStorage[key];
         }
       } catch(e) {
         console.warn("Local Storage key was not in storage");
@@ -78,7 +78,7 @@ var ls = {
       return localStorage.removeItem(key);
     } else {
       try {
-        delete ls.storage[key];
+        delete ls.simpleStorage[key];
       } catch(e) {
         console.warn("Local Storage key was not in storage when it was removed");
       }
@@ -87,21 +87,19 @@ var ls = {
   }
 };
 
-var isCommonJS = typeof window === "undefined" && typeof exports === "object";
-
-if (isCommonJS) {
+try {
   exports.ls = ls;
-} else {
+} catch(e) {
   // Determine whether localstorage can be used directly
   try {
     localStorage;
   } catch(e) {
-    // Firefox simple storage 
+    // Firefox Jetpack simple-storage 
     ls.localStorageDefined = false;
-    const PrivlyXPCOM = Components.classes["@privly/jetpack;1"].
-                          getService(Components.interfaces.nsISupports).
-                          wrappedJSObject;
-    var ss = PrivlyXPCOM.getSimpleStorage();
-    ls.storage = ss.storage;
+    const ss = Components.classes["@privly/jetpack;1"].
+                getService(Components.interfaces.nsISupports).
+                wrappedJSObject.
+                getSimpleStorage();
+    ls.simpleStorage = ss.storage;
   }
 }
