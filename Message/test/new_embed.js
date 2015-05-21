@@ -387,4 +387,12 @@ describe("Embed Posting Application", function () {
     expect(chromeSentMessages['posting/set_target_content'].content).toEqual(originalContent);
   });
 
+  it("should call background.setTargetContent to reset the content of the editable element when user clicks cancel", function () {
+    mockValues.chrome.runtime.sendMessage['posting/get_target_content'] = '';
+    loginCheckingCallback.logined();
+    $('.btn-cancel').click();
+    expect(background.setTargetContent).toHaveBeenCalled();
+    expect(chromeSentMessages['posting/set_target_content'].content).toEqual('');
+  });
+
 });

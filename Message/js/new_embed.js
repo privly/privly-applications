@@ -355,7 +355,7 @@ var privlyWeb = {
  * we should close the embed-posting dialog.
  */
 function beginCloseObserve() {
-  if (beginCloseObserve.intervalId) {
+  if (beginCloseObserve.intervalId !== undefined) {
     return;
   }
   beginCloseObserve.intervalId = setInterval(function () {
@@ -459,7 +459,7 @@ function attachEventHandlers() {
 
   $('[name="cancel"]').click(function () {
     privlyWeb.deleteLink(function () {
-      if (contentBeforeInsertion) {
+      if (contentBeforeInsertion !== null) {
         background.setTargetContent(contentBeforeInsertion);
       }
       background.closeDialog();
