@@ -42,7 +42,6 @@ class TestOptions < Test::Unit::TestCase
     page.driver.browser.get(@options_url)
     elements = page.all(:css, '.whitelist_url')
     elements[0].set 'Dev.Privly.Org.phish.org'
-    click_button 'save_whitelist'
     page.driver.browser.get("http://test.privly.org/test_pages/nonwhitelist.html")
     assert page.has_xpath?('//iframe')
 

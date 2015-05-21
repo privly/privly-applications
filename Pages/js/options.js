@@ -82,7 +82,7 @@ function isValidDomain(domain) {
 
   var parts = domain.split(".");
   var valid_parts_count = 0;
-    
+
   //iterate over domains, split by .
   for (var j = 0; j < parts.length; j++) {
     switch (j){
@@ -151,17 +151,18 @@ function saveWhitelist() {
     }
   }
   if (invalid_domains) {
-      invalid_domain.className = 'show';
-  }
-  ls.setItem("user_whitelist_json", JSON.stringify(domains));
-  ls.setItem("user_whitelist_regexp", domain_regexp);
+    invalid_domain.className = 'show';
+  } else {
+    ls.setItem("user_whitelist_json", JSON.stringify(domains));
+    ls.setItem("user_whitelist_regexp", domain_regexp);
 
-  // Update status to let user know options were saved.
-  var status = document.getElementById("status");
-  status.innerHTML = "Options Saved.";
-  setTimeout(function() {
-    status.innerHTML = "";
-  }, 750);
+    // Update status to let user know options were saved.
+    var status = document.getElementById("status");
+    status.innerHTML = "Options Saved.";
+    setTimeout(function() {
+      status.innerHTML = "";
+    }, 1000);
+  }
 }
 
 
@@ -312,7 +313,7 @@ function listeners(){
   // Click on body used to tackle dynamically created remove whitelist url buttons
   document.querySelector('body').addEventListener('click', removeWhitelistUrl);
 
-  document.querySelector('body').addEventListener('focusout', onFocusOut);
+  document.querySelector('body').addEventListener('input', inputEvent);
 }
 
 /**
@@ -446,11 +447,15 @@ function removeWhitelistUrl (event) {
   }
 }
 
-function onFocusOut (event) {
-  var target = event.target;
-  if (target.className.indexOf('whitelist_url') < 0) 
-    return;
-  saveWhitelist()
+/**
+ * Saves the whitelist if the whitelist changed.
+ * @param {event} ev The input event.
+ */
+function inputEvent (ev) {
+  var target = ev.target;
+  if (target.classList.contains('whitelist_url')) {
+    saveWhitelist();
+  }
 }
 
 // Initialize the application
