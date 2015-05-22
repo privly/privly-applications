@@ -214,11 +214,17 @@ var callbacks = {
       // The "same origin" requirement is only possible on extension frameworks
       privlyNetworkService.sameOriginGetRequest(state.jsonURL,
         function(response){callbacks.contentReturned(response, callback);});
-    } else {
+    } else if( privlyHostPage.isInjected() ) {
       $("#post_content").html("<p>Click to view this content.</p>");
+      if(callbacks.functionExists(callback)) {
+        callback();
+      }
+    } else {
+      callbacks.showDownloadMessage();
+      if(callbacks.functionExists(callback)) {
+        callback();
+      }
     }
-
-    callbacks.showDownloadMessage();
   },
   
   /**
@@ -454,6 +460,10 @@ var callbacks = {
     // Close the editing form
     $("#edit_form").hide();
     state.isInlineEdit = false;
+
+    if(callbacks.functionExists(callback)) {
+      callback();
+    }
   },
   
   /**
