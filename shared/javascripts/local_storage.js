@@ -88,18 +88,25 @@ var ls = {
 };
 
 try {
-  exports.ls = ls;
+  localStorage;
 } catch(e) {
-  // Determine whether localstorage can be used directly
-  try {
-    localStorage;
-  } catch(e) {
-    // Firefox Jetpack simple-storage 
+  /**
+   * Firefox: Jetpack simple-storage
+   * Two Cases in which this file is run/used -- 
+   * 1. Loaded as a CommonJS module(reused as a Local Storage shim 
+   *    in lib/local_storage.js).
+   * 2. Privileged JS code run in a chrome page. for eg:- ChromeFirstRun page. 
+   */ 
+  if (typeof module !== 'undefined' && module.exports) {
+    // Case 1
+    module.exports.ls = ls;   
+  } else {
+    // Case 2
     ls.localStorageDefined = false;
     const ss = Components.classes["@privly/jetpack;1"].
-                getService(Components.interfaces.nsISupports).
-                wrappedJSObject.
-                getSimpleStorage();
+                 getService(Components.interfaces.nsISupports).
+                 wrappedJSObject.
+                 getSimpleStorage();
     ls.simpleStorage = ss.storage;
   }
 }
