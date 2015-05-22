@@ -366,10 +366,11 @@ function beginCloseObserve() {
           content.replace(/&amp;/g, '&').indexOf(privlyLink) === -1
         )
       ) {
+        clearInterval(beginCloseObserve.intervalId);
         background.closeDialog();
       }
     });
-  }, 1000);
+  }, 300);
 }
 
 /**
