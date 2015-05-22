@@ -26,7 +26,7 @@ var ls = {
     if ( ls.localStorageDefined ) {
       localStorage.setItem(key, value);
     } else {
-      ls.preferences.setCharPref(key, value);
+      ls.simpleStorage[key] = value;
     }
 
     return value;
@@ -55,10 +55,10 @@ var ls = {
     } else {
       try {
         try { // try to parse stored value as JSON
-          var value = JSON.parse(ls.preferences.getCharPref(key));
+          var value = JSON.parse(ls.simpleStorage[key]);
           return value;
         } catch(e){
-          return ls.preferences.getCharPref(key);
+          return ls.simpleStorage[key];
         }
       } catch(e) {
         console.warn("Local Storage key was not in storage");
@@ -78,7 +78,7 @@ var ls = {
       return localStorage.removeItem(key);
     } else {
       try {
-        ls.preferences.clearUserPref(key);
+        delete ls.simpleStorage[key];
       } catch(e) {
         console.warn("Local Storage key was not in storage when it was removed");
       }
@@ -87,14 +87,26 @@ var ls = {
   }
 };
 
-// Determine whether localstorage can be used directly
-try { 
+try {
   localStorage;
 } catch(e) {
-  ls.localStorageDefined = false;
-  
-  // Assuming Xul firefox
-  ls.preferences = Components.classes["@mozilla.org/preferences-service;1"]
-                         .getService(Components.interfaces.nsIPrefService)
-                         .getBranch("extensions.privly.");
+  /**
+   * Firefox: Jetpack simple-storage
+   * Two Cases in which this file is run/used -- 
+   * 1. Loaded as a CommonJS module(reused as a Local Storage shim 
+   *    in lib/local_storage.js).
+   * 2. Privileged JS code run in a chrome page. for eg:- ChromeFirstRun page. 
+   */ 
+  if (typeof module !== 'undefined' && module.exports) {
+    // Case 1
+    module.exports.ls = ls;   
+  } else {
+    // Case 2
+    ls.localStorageDefined = false;
+    const ss = Components.classes["@privly/jetpack;1"].
+                 getService(Components.interfaces.nsISupports).
+                 wrappedJSObject.
+                 getSimpleStorage();
+    ls.simpleStorage = ss.storage;
+  }
 }
