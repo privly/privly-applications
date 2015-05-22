@@ -4,28 +4,55 @@
  **/
  
 describe ("PlainPost Show Suite", function() {
-  
-  // Get an HTML document defined by the pre-processor.
-  // This is a rough hack because HTML2JS seems to assign the
-  // key to the absolute URL, which is not reliable on
-  // continuous integration.
+
+  // Create the expected DOM
   beforeEach(function() {
-    var keys = Object.keys(__html__);
-    var selectKey;
-    keys.forEach(function(key) {
-      if( key.indexOf("PlainPost/show.html") >= 0 ) {
-        selectKey = key;
-      }
+    var domIDs = [
+      "logout_link",
+      "home_domain",
+      "content",
+      "save",
+      "update"
+    ];
+    domIDs.forEach(function(id){
+      var newElement = $('<a/>', {
+        id: id,
+        "class": id
+      });
+      $(document.body).append(newElement);
     });
-    document.body.innerHTML = __html__[selectKey];
   });
 
   afterEach(function() {
     document.body.innerHTML = "";
   });
 
-  it("runs tests", function() {
-    expect(true).toBe(true);
+  it("initializes properly", function() {
+
+    // Save the callbacks for restoration at the end of the test
+    var oldSameOriginGetRequest = privlyNetworkService.initPrivlyService;
+    privlyNetworkService.sameOriginGetRequest = function(){
+      return {response: ""};
+    };
+
+    callbacks.pendingContent(processResponseContent);
+
+    var domain = privlyNetworkService.contentServerDomain();
+
+    if( privlyNetworkService.platformName() !== "HOSTED" ) {
+
+      // if the app is not hosted, the user should first be directed to the
+      // content_server page of the app bundle.
+      expect($(".home_domain").attr("href")).toBe('../Help/content_server.html');
+    } else {
+
+      // if the application is hosted, the URL should connect to the domain's root
+      expect($(".home_domain").attr("href")).toBe("http://" + window.location.href.split("/")[2]);
+    }
+    expect(domain.split("/")[2]).toBe($(".home_domain").text());
+
+    // Restore the get request function
+    privlyNetworkService.sameOriginGetRequest = oldSameOriginGetRequest;
   });
 
 });

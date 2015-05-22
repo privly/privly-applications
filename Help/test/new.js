@@ -5,40 +5,47 @@
 
 describe ("Help New Suite", function() {
 
-  // Load the fixtures from html2js
-  var keys = Object.keys(__html__);
-  var selectKey;
-  keys.forEach(function(key) {
-    if( key.indexOf("Help/new.html") >= 0 ) {
-      selectKey = key;
-    }
+  // Create the expected DOM
+  beforeEach(function() {
+    var domIDs = [
+      "current_content_server",
+      "remote_content_server",
+      "messages",
+      "login_message",
+      "refresh_link",
+      "form"
+    ];
+    domIDs.forEach(function(id){
+      var newElement = $('<a/>', {
+        id: id,
+      });
+      $(document.body).append(newElement);
+    });
   });
 
-  // Get an HTML document defined by the pre-processor.
-  // This is a rough hack because HTML2JS seems to assign the
-  // key to the absolute URL, which is not reliable on
-  // continuous integration.
-  beforeEach(function() {
-    document.body.innerHTML = __html__[selectKey];
+  // Remove the expected DOM
+  afterEach(function() {
+    document.body.innerHTML = "";
   });
 
   it("initializes properly", function() {
-    
-    // Should initialize the navigation
+
+    // Save the callbacks for restoration at the end of the test
+    var oldInit = privlyNetworkService.initPrivlyService;
+    var oldInitNav = privlyNetworkService.initializeNavigation;
+    privlyNetworkService.initPrivlyService = function(){};
+    privlyNetworkService.initializeNavigation = function(){};
+
+    // Call the test
     callbacks.pendingLogin();
-    var domain = privlyNetworkService.contentServerDomain();
 
-    if( privlyNetworkService.platformName() !== "HOSTED" ) {
+    expect(ls.getItem("Login:redirect_to_app")).toBe(window.location.href);
+    expect($("#current_content_server").text()).toBe("localhost:9876");
+    expect($("#remote_content_server").attr("href")).toBe("http://localhost:9876");
 
-      // if the app is not hosted, the user should first be directed to the
-      // content_server page of the app bundle.
-      expect($(".home_domain").attr("href")).toBe('../Help/content_server.html');
-    } else {
-
-      // if the application is hosted, the URL should connect to the domain's root
-      expect($(".home_domain").attr("href")).toBe("http://" + window.location.href.split("/")[2]);
-    }
-    expect(domain.split("/")[2]).toBe($(".home_domain").text());
+    // Restore the callback for the other tests
+    privlyNetworkService.initPrivlyService = oldInit;
+    privlyNetworkService.initializeNavigation = oldInitNav;
   });
-  
+
 });

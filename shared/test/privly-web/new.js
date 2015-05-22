@@ -6,20 +6,17 @@
  **/
 
 describe ("Privly-web new.js API Test Suite", function() {
-  
-  // Get an HTML document defined by the pre-processor.
-  // This is a rough hack because HTML2JS seems to assign the
-  // key to the absolute URL, which is not reliable on
-  // continuous integration.
+
   beforeEach(function() {
-    var keys = Object.keys(__html__);
-    var selectKey;
-    keys.forEach(function(key) {
-      if( key.indexOf("Message/new.html") >= 0 ) {
-        selectKey = key;
-      }
+    var domIDs = [
+      "logout_link"
+    ];
+    domIDs.forEach(function(id){
+      var newElement = $('<a/>', {
+        id: id,
+      });
+      $(document.body).append(newElement);
     });
-    document.body.innerHTML = __html__[selectKey];
   });
 
   afterEach(function() {
