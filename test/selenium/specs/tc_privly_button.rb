@@ -1,5 +1,5 @@
 # Test Privly button
-class TestNew < Test::Unit::TestCase
+class TestPrivlyButton < Test::Unit::TestCase
 
   include Capybara::DSL # Provides for Webdriving
 
@@ -7,10 +7,9 @@ class TestNew < Test::Unit::TestCase
     if not @@privly_extension_active
       return
     end
+    # enable Privly button
     @options_url = @@privly_applications_folder_path + '/Pages/ChromeOptions.html'
     page.driver.browser.get(@options_url)
-
-    # enable Privly button
     page.uncheck('disableBtn')
     page.click_button('save_btnAppearance')
   end
@@ -27,7 +26,7 @@ class TestNew < Test::Unit::TestCase
     editable_scope.each do |scope|
       editable_elements = scope.all(:css, '[data-test-click]')
       editable_elements.each do |element|
-        element.click()
+        element.click
         assert scope.has_selector?('[class*="privlyButton"]', :visible => true, :count => 1)
       end
     end
@@ -37,9 +36,8 @@ class TestNew < Test::Unit::TestCase
       within_frame iframe do
         editable_elements = all(:css, '[data-test-click]')
         editable_elements.each do |element|
-          element.click()
-          assert has_selector?('[class*="privlyButton"]', :visible => true, :count => 1)
-          sleep 1
+          element.click
+          assert page.has_selector?('[class*="privlyButton"]', :visible => true, :count => 1)
         end
       end
     end
