@@ -3,29 +3,33 @@
 
 module.exports = function(config) {
 
+  // Configure the basePath to be the current working directory
+  var basePath = process.cwd();
+
   // List the files that you want to always test here.
   // The .travis.yml file can also pass in other files
   // by exporting an environment variable containing a list of
   // Javascripts.
-  var filesToTest = [
+  var filesToTest = [];
+  if (basePath === __dirname) {
+    basePath = '..';
+    filesToTest = [
 
-    // HTML files to use as a fixtures
-    '*/*.html',
+      // Force jquery to load first since it is a dependency
+      'vendor/jquery.min.js',
 
-    // Force jquery to load first since it is a dependency
-    'vendor/jquery.min.js',
+      // Load all the vendor libraries
+      'vendor/*.js',
+      'vendor/datatables/jquery.dataTables.min.js',
+      'vendor/datatables/dataTables.bootstrap.min.js',
+      'vendor/bootstrap/js/*.js',
 
-    // Load all the vendor libraries
-    'vendor/*.js',
-    'vendor/datatables/jquery.dataTables.min.js',
-    'vendor/datatables/dataTables.bootstrap.min.js',
-    'vendor/bootstrap/js/*.js',
+      // Load all the shared libraries at the top level
+      'shared/javascripts/*.js',
 
-    // Load all the shared libraries at the top level
-    'shared/javascripts/*.js',
-
-    // Test the shared libraries
-    'shared/test/*.js'];
+      // Test the shared libraries
+      'shared/test/*.js'];
+  }
 
   var filesToExcludeFromTest = [];
   if (process.env.FILES_TO_TEST) {
@@ -38,19 +42,16 @@ module.exports = function(config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '..',
+    basePath: basePath,
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine'],
 
-    // Provide the HTML document as a fixture
+    // Provide coverage information for the shared libraries
     preprocessors: {
-          '*/*.html': ['html2js'],
-
-          // Load all the shared libraries at the top level
-          'shared/javascripts/*.js': 'coverage'
-        },
+      'shared/javascripts/*.js': 'coverage'
+    },
 
     // list of files / patterns to load in the browser
     files: filesToTest,
@@ -94,7 +95,7 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['Chrome', 'Firefox'],
+    browsers: ['Firefox'],
 
 
     // Continuous Integration mode

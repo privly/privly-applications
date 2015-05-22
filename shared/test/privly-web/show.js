@@ -8,7 +8,17 @@
 describe ("Privly-web show.js API Test Suite", function() {
 
   beforeEach(function() {
-    document.body.innerHTML = __html__['show.html'];
+    var domIDs = [
+      "update",
+      "privlyHeightWrapper",
+      "logout_link"
+    ];
+    domIDs.forEach(function(id){
+      var newElement = $('<a/>', {
+        id: id,
+      });
+      $(document.body).append(newElement);
+    });
   });
 
   afterEach(function() {
@@ -20,7 +30,8 @@ describe ("Privly-web show.js API Test Suite", function() {
    * expects.
    */
   var mockEvent = {
-    stopPropagation: function() {}
+    stopPropagation: function() {},
+    target: {nodeName: "A", href: "SHAM"}
   }
   
   /**
@@ -30,71 +41,60 @@ describe ("Privly-web show.js API Test Suite", function() {
     jqXHR: {status: 200},
     json: {content: "hello world"}
   }
-  
-  
+
+
   it("does not result in an error (pendingContent)", function(done) {
     callbacks.pendingContent(done);
   });
-  
+
   it("does not result in an error (pendingLogin)", function(done) {
     callbacks.pendingLogin(done);
   });
-  
+
   it("does not result in an error (contentReturned)", function(done) {
     callbacks.contentReturned( mockServerResponse, done);
   });
-  
-  
+
   it("does not result in an error (destroy)", function(done) {
-    
-    // The destroy request is not currently testable
-    return;
-    
     callbacks.destroy(done);
   });
-  
-  
+
   it("does not result in an error (destroyed)", function(done) {
     callbacks.destroyed(mockServerResponse, done);
   });
-  
+
   it("does not result in an error (edit)", function(done) {
       callbacks.edit(done);
   });
-  
+
   it("does not result in an error (update)", function(done) {
-    
-    // The update request is not currently testable
-    return;
-    
     callbacks.update(
         mockEvent,
         done);
   });
-  
+
   it("does not result in an error (cancel)", function(done) {
       callbacks.cancel(
         mockEvent,
         done);
   });
-  
+
   it("does not result in an error (click)", function(done) {
     callbacks.click(
       mockEvent,
       done);
   });
-  
+
   it("does not result in an error (singleClick)", function(done) {
     callbacks.singleClick(
       mockEvent,
       done);
   });
-  
+
   it("does not result in an error (doubleClick)", function(done) {
-      callbacks.doubleClick(
-        done);
+    callbacks.doubleClick(done);
   });
-  
+
   it("can differentiate a function from not a function", function() {
     function sham(not_defined) {
       expect(callbacks.functionExists(not_defined)).toBe(false);
@@ -105,5 +105,5 @@ describe ("Privly-web show.js API Test Suite", function() {
     expect(callbacks.functionExists(1)).toBe(false);
     sham();
   });
-  
+
 });

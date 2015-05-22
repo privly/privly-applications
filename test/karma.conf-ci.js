@@ -2,6 +2,9 @@ var fs = require('fs');
 
 module.exports = function(config) {
 
+  // Configure the basePath to be the current working directory
+  var basePath = process.cwd();
+
   // Use ENV vars on Travis and sauce.json locally to get credentials
   if (!process.env.SAUCE_USERNAME) {
     if (!fs.existsSync('sauce.json')) {
@@ -25,25 +28,26 @@ module.exports = function(config) {
   // The .travis.yml file can also pass in other files
   // by exporting an environment variable containing a list of
   // Javascripts.
-  var filesToTest = [
+  var filesToTest = [];
+  if (basePath === __dirname) {
+    basePath = '..';
+    filesToTest = [
 
-    // HTML files to use as a fixtures
-    '*/*.html',
+       // Force jquery to load first since it is a dependency
+      'vendor/jquery.min.js',
 
-    // Force jquery to load first since it is a dependency
-    'vendor/jquery.min.js',
+      // Load all the vendor libraries
+      'vendor/*.js',
+      'vendor/datatables/jquery.dataTables.min.js',
+      'vendor/datatables/dataTables.bootstrap.min.js',
+      'vendor/bootstrap/js/*.js',
 
-    // Load all the vendor libraries
-    'vendor/*.js',
-    'vendor/datatables/jquery.dataTables.min.js',
-    'vendor/datatables/dataTables.bootstrap.min.js',
-    'vendor/bootstrap/js/*.js',
+      // Load all the shared libraries at the top level
+      'shared/javascripts/*.js',
 
-    // Load all the shared libraries at the top level
-    'shared/javascripts/*.js',
-
-    // Test the shared libraries
-    'shared/test/*.js'];
+      // Test the shared libraries
+      'shared/test/*.js'];
+  }
 
   var filesToExcludeFromTest = [];
   if (process.env.FILES_TO_TEST) {
@@ -53,41 +57,71 @@ module.exports = function(config) {
     filesToExcludeFromTest = filesToExcludeFromTest.concat(process.env.FILES_TO_EXCLUDE_FROM_TEST.split(","));
   }
 
-  // Browsers to run on Sauce Labs
-  var customLaunchers = {
-    'sl_chrome': {
-      base: 'SauceLabs',
-      browserName: 'chrome',
-      platform: 'Windows 7',
-      version: 'dev'
-    },
-    'sl_firefox': {
-      base: 'SauceLabs',
-      browserName: 'firefox',
-      version: 'dev'
-    },
-    'sl_safari': {
-      base: 'SauceLabs',
-      browserName: 'safari'
+  // Define the different types of browsers
+  var sl_chrome = {
+    base: 'SauceLabs',
+    browserName: 'chrome',
+    platform: 'Windows 7',
+    version: 'dev'
+  }
+  var sl_firefox = {
+    base: 'SauceLabs',
+    browserName: 'firefox',
+    version: 'dev'
+  }
+  var sl_safari = {
+    base: 'SauceLabs',
+    browserName: 'safari'
+  }
+
+  // Browsers to run on Sauce Labs based on command line argument
+  var customLaunchers = {};
+  process.argv.forEach(function (value, index, array) {
+    if (value.indexOf('--sauce-browsers=') == 0) {
+      var sauceBrowsers = value.split('=')[1];
+      sauceBrowsers = sauceBrowsers.split(',');
+      sauceBrowsers.forEach(function (browser) {
+        if (browser == 'Chrome') {
+          customLaunchers['sl_chrome'] = sl_chrome;
+        }
+        else if (browser == 'Firefox') {
+          customLaunchers['sl_firefox'] = sl_firefox;
+        }
+        else if (browser == 'Safari') {
+          customLaunchers['sl_safari'] = sl_safari;
+        }
+        else {
+          console.error("You specified an unsupported browser:", browser);
+          console.log("Browser options are Firefox, Chrome, and Safari");
+          console.log("Example:");
+          console.log("`karma start karma.conf-ci.js --sauce-browsers=Firefox,Chrome,Safari`");
+          process.exit(9);
+        }
+      });
     }
-  };
+  });
+
+  // If no command line argument has been passed for specific browsers, run
+  // the tests on all the available browsers
+  if (Object.keys(customLaunchers).length == 0) {
+    customLaunchers['sl_chrome'] = sl_chrome;
+    customLaunchers['sl_firefox'] = sl_firefox;
+    customLaunchers['sl_safari'] = sl_safari;
+  }
 
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '..',
+    basePath: basePath,
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine'],
 
-    // Provide the HTML document as a fixture
+    // Provide coverage information for the shared libraries
     preprocessors: {
-          '*/*.html': ['html2js'],
-
-          // Load all the shared libraries at the top level
-          'shared/javascripts/*.js': 'coverage'
-        },
+      'shared/javascripts/*.js': 'coverage'
+    },
 
     // list of files / patterns to load in the browser
     files: filesToTest,
