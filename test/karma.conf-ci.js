@@ -27,9 +27,6 @@ module.exports = function(config) {
   // Javascripts.
   var filesToTest = [
 
-    // HTML files to use as a fixtures
-    '*/*.html',
-
     // Force jquery to load first since it is a dependency
     'vendor/jquery.min.js',
 
@@ -77,13 +74,10 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine'],
 
-    // Provide the HTML document as a fixture
+    // Provide coverage information for the shared libraries
     preprocessors: {
-          '*/*.html': ['html2js'],
-
-          // Load all the shared libraries at the top level
-          'shared/javascripts/*.js': 'coverage'
-        },
+      'shared/javascripts/*.js': 'coverage'
+    },
 
     // list of files / patterns to load in the browser
     files: filesToTest,
