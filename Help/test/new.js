@@ -13,7 +13,8 @@ describe ("Help New Suite", function() {
       "messages",
       "login_message",
       "refresh_link",
-      "form"
+      "form",
+      "logout_link"
     ];
     domIDs.forEach(function(id){
       var newElement = $('<a/>', {
@@ -34,7 +35,6 @@ describe ("Help New Suite", function() {
     var oldInit = privlyNetworkService.initPrivlyService;
     var oldInitNav = privlyNetworkService.initializeNavigation;
     privlyNetworkService.initPrivlyService = function(){};
-    privlyNetworkService.initializeNavigation = function(){};
 
     // Call the test
     callbacks.pendingLogin();
