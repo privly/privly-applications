@@ -41,7 +41,7 @@ describe ("Help New Suite", function() {
 
     expect(ls.getItem("Login:redirect_to_app")).toBe(window.location.href);
     expect($("#current_content_server").text()).toBe("localhost:9876");
-    expect($("#remote_content_server").attr("href")).toBe("http://localhost:9876")
+    expect($("#remote_content_server").attr("href")).toBe("http://localhost:9876");
 
     // Restore the callback for the other tests
     privlyNetworkService.initPrivlyService = oldInit;
