@@ -510,6 +510,9 @@ function attachEventHandlers() {
 function setup() {
   resetGlobals();
   attachEventHandlers();
+
+  $('.glyph').append(privlyTooltip.glyphHTML());
+
   privlyNetworkService.initPrivlyService(
     privlyNetworkService.contentServerDomain(),
     loginCheckingCallback.logined.bind(loginCheckingCallback),

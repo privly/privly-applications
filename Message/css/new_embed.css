@@ -9,6 +9,31 @@ body {
   justify-content: center;
 }
 
+.dialog-header {
+  margin: 20px 0;
+}
+
+.dialog-header::after {
+  clear: both;
+}
+
+.glyph {
+  float: left;
+  margin-right: 20px;
+}
+
+.dialog-header h2 {
+  line-height: 30px;
+  margin: 0;
+  padding: 0;
+}
+
+.glyph_table {
+  border-collapse: collapse;  
+  line-height: 4px;
+  cursor: default;
+}
+
 .login-check {
   color: #FFF;
 }
