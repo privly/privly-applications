@@ -226,5 +226,60 @@ var privlyTooltip = {
       table.appendChild(tbody);
 
       return table;
+    },
+
+    /**
+     * Constructs the user's security glyph, which indicates whether the
+     * injected content is trusted. The Glyph is assumed to be defined by the
+     * extension before this script is run. It can be reset via the options
+     * interface.
+     *
+     * Unlike glyphHTML, this function returns an ImageData object.
+     *
+     * @param {int} size The width and height of the image
+     * @return {ImageData}
+     */
+    glyphImage: function(size) {
+
+      if (size === undefined) {
+        size = 30;
+      }
+
+      // Get the glyph from storage
+      var glyphString = ls.getItem("glyph_cells");
+      var glyphArray = glyphString.split(",");
+      var glyphColor = ls.getItem("glyph_color");
+
+      var cellSize = Math.floor(size / 5);
+      var realSize = cellSize * 5;
+      var offset = Math.floor((size - realSize) / 2);
+
+      var canvas = document.createElement("canvas");
+      var ctx = canvas.getContext("2d");
+
+      // draw background
+      ctx.fillStyle = "#FFF";
+      ctx.fillRect(0, 0, size, size);
+
+      // draw pattern
+      ctx.fillStyle = "#" + glyphColor;
+
+      for(var i = 0; i < 5; i++) {
+        for(var j = 0; j < 5; j++) {
+          // Fill only the first three columns with the coresponding values from glyphArray[]
+          // The rest of two columns are simetrical to the first two
+          if(j <= 2) {
+            if(glyphArray[i * 3 + j] === "true") {
+              ctx.fillRect(offset + j * cellSize, offset + i * cellSize, cellSize, cellSize);
+            }
+          } else {
+            if(glyphArray[i * 3 + (5 % (j + 1))] === "true") {
+              ctx.fillRect(offset + j * cellSize, offset + i * cellSize, cellSize, cellSize);
+            }
+          }
+        }
+      }
+
+      return ctx.getImageData(0, 0, size, size);
     }
 };
