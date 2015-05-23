@@ -1,35 +1,29 @@
 // Karma configuration
 // Generated on Thu Mar 13 2014 14:12:04 GMT-0700 (PDT)
-
 module.exports = function(config) {
 
-  // Configure the basePath to be the current working directory
-  var basePath = process.cwd();
+  // If the script is not being executed from the testing directory
+  if(process.cwd() !== __dirname) {
+    console.warn(
+      "\n!!!\nYou are running this script from outside the test directory. " +
+      "If you do not have the required node modules on your NODE_PATH, " +
+      "you will not be able to run these tests.\n!!!\n");
+    console.warn(
+      "You may need to issue something like: " +
+      "`export NODE_PATH=/PATH/TO/privly-applications/test/node_modules");
+  }
+
+  // Force the script to execute from its directory
+  process.chdir(__dirname);
+
+  // All files will be referenced relative to the privly-applications folder
+  var basePath = "..";
 
   // List the files that you want to always test here.
   // The .travis.yml file can also pass in other files
   // by exporting an environment variable containing a list of
-  // Javascripts.
+  // Javascript file paths.
   var filesToTest = [];
-  if (basePath === __dirname) {
-    basePath = '..';
-    filesToTest = [
-
-      // Force jquery to load first since it is a dependency
-      'vendor/jquery.min.js',
-
-      // Load all the vendor libraries
-      'vendor/*.js',
-      'vendor/datatables/jquery.dataTables.min.js',
-      'vendor/datatables/dataTables.bootstrap.min.js',
-      'vendor/bootstrap/js/*.js',
-
-      // Load all the shared libraries at the top level
-      'shared/javascripts/*.js',
-
-      // Test the shared libraries
-      'shared/test/*.js'];
-  }
 
   var filesToExcludeFromTest = [];
   if (process.env.FILES_TO_TEST) {
