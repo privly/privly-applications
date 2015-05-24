@@ -16,7 +16,6 @@ For more information on what Privly is,
 [![Build Status](https://travis-ci.org/privly/privly-applications.svg)](https://travis-ci.org/privly/privly-applications)
 [![Dependency Status](https://gemnasium.com/privly/privly-applications.png?travis)](https://gemnasium.com/privly/privly-applications)
 [![Code Climate](https://codeclimate.com/github/privly/privly-applications/badges/gpa.svg)](https://codeclimate.com/github/privly/privly-applications)
-[![Test Coverage](https://codeclimate.com/github/privly/privly-applications/badges/coverage.svg)](https://codeclimate.com/github/privly/privly-applications)
 
 This repository is oriented to cross-platform development of Privly 
 Applications, which are web applications viewed within the context of other web 

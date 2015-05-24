@@ -10,12 +10,18 @@
   "author": "Sauce Labs",
   "license": "Apache V2",
   "devDependencies": {
+    "coveralls": "^2.11.2",
     "karma": "^0.12.31",
     "karma-chrome-launcher": "^0.1.7",
+    "karma-coverage": "~0.2",
+    "karma-coveralls": "^1.0.1",
     "karma-firefox-launcher": "^0.1.4",
     "karma-jasmine": "^0.3.5",
     "karma-safari-launcher": "^0.1.1",
     "karma-sauce-launcher": "^0.2.10",
-    "karma-coverage": "~0.2"
+    "lcov-result-merger": "^1.0.2"
+  },
+  "dependencies": {
+    "uuid": "^2.0.1"
   }
 }
