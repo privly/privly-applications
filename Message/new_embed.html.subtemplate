@@ -32,7 +32,7 @@
   <p><a href="javascript:;" name="login">Login</a> / <a href="javascript:;" name="cancel">Cancel</a></p>
 </div>
 
-<div class="container message-posting-dialog" style="display:none">
+<div class="container message-posting-dialog" style="display:none" data-left="0.5" data-top="0.5">
     <div class="dialog-header">
       <div class="glyph"></div>
       <h2>New Privly Message</h2>

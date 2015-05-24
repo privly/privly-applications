@@ -1,5 +1,6 @@
 body, html {
   height: 100%;
+  overflow: hidden;
 }
 
 body {
@@ -110,4 +111,9 @@ body {
     box-shadow: 0px 17px 50px rgba(0, 0, 0, 0.5);
     padding: 20px;
     width: 500px;
+    position: absolute;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }

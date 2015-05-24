@@ -16,7 +16,8 @@
  * 
  */
 
-/*global chrome:false, ls:true, privlyNetworkService:false, privlyParameters:false, sjcl:false, zeroCipher:false */
+/*global chrome:false, ls:true, window:false */
+/*global privlyNetworkService:false, privlyTooltip:false, privlyParameters:false, sjcl:false, zeroCipher:false */
 
 /**
  * The Privly URL that is created to insert to the editable element.
@@ -414,7 +415,7 @@ var loginCheckingCallback = {
 
           // 4. link has successfully inserted: show posting form
           $('.login-check').hide();
-          $('.message-posting-dialog').show();
+          $('.message-posting-dialog').trigger('reposition').show();
           $('textarea').focus();
           beginCloseObserve();
         });
@@ -454,6 +455,52 @@ function resetGlobals() {
  * Attach event handlers
  */
 function attachEventHandlers() {
+  // when resizing window, we re-calculate the dialog position based on percentage value
+  var $dialog = $('.message-posting-dialog');
+  $(window).resize(debounce(function () {
+    $dialog.trigger('reposition');
+  }, 200));
+
+  $dialog.on('reposition', function () {
+    var offsetLeft = Math.floor($(window).width() * parseFloat($dialog[0].getAttribute('data-left')) - $dialog.outerWidth() / 2);
+    var offsetTop = Math.floor($(window).height() * parseFloat($dialog[0].getAttribute('data-top')) - $dialog.outerHeight() / 2);
+    $dialog[0].style.left = offsetLeft + 'px'
+    $dialog[0].style.top = offsetTop + 'px'
+  });
+
+  // Drag window
+  // we set mousemove event listener on document element, to prevent
+  // losing target when moving to fast
+  $dialog.on('mousedown', function (ev) {
+    if (ev.target.nodeName === 'TEXTAREA' || ev.target.nodeName === 'BUTTON' || ev.target.nodeName === 'SELECT') {
+      return;
+    }
+    $dialog[0].style.willChange = 'left, top';
+    // record start position
+    var mouseStartX = ev.screenX,
+        mouseStartY = ev.screenY,
+        dialogX = $dialog.position().left,
+        dialogY = $dialog.position().top;
+    // bind event listener
+    $(document).on('mousemove.drag', function (ev) {
+      if (ev.which === 1) {
+        var offsetLeft = dialogX + (ev.screenX - mouseStartX);
+        var offsetTop = dialogY + (ev.screenY - mouseStartY);
+        $dialog[0].style.left = offsetLeft + 'px'
+        $dialog[0].style.top = offsetTop + 'px'
+      }
+    });
+  });
+  $('.message-posting-dialog').on('mouseup', function (ev) {
+    $dialog[0].style.willChange = 'auto';
+    // update dialog percentage value, for re-calculating
+    // the position when user resizing window
+    $dialog[0].setAttribute('data-left', ($dialog.position().left + $dialog.outerWidth() / 2) / $(window).width());
+    $dialog[0].setAttribute('data-top', ($dialog.position().top + $dialog.outerHeight() / 2) / $(window).height());
+    // clear event listener
+    $(document).off('mousemove.drag');
+  });
+
   $('[name="login"]').click(function () {
     background.popupLoginDialog();
   });
