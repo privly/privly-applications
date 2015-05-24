@@ -36,13 +36,11 @@ script:
 - cd test
 - export BROWSERS_TO_TEST=Chrome,Firefox,Safari # test all the browsers
 - "if [ ${TRAVIS_PULL_REQUEST} = 'false' ]; then ./run_each.sh karma.conf-ci.js; fi"
-- "cd .."
-# Move the lcov.info file to the root
-- "find . -name lcov.info -exec mv {} . \\;"
+- "./node_modules/.bin/lcov-result-merger 'coverage/*.lcov' 'coverage/combined.lcov'"
 # Send the file to CodeClimate
-- "if [ \"$CODECLIMATE_REPO_TOKEN\" ]; then codeclimate <  lcov.info; fi"
+- "cd .."
+- "cat ./test/coverage/combined.lcov | ./test/node_modules/coveralls/bin/coveralls.js"
 before_script:
 - "cd test/ && npm install -g karma-cli && npm install && cd .."
-- npm install -g codeclimate-test-reporter
 addons:
   sauce_connect: true
