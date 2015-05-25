@@ -20,11 +20,12 @@ describe ("Tooltip Test Suite", function() {
   
   it("can generate a new glyph", function() {
     privlyTooltip.generateNewGlyph();
-    var glyphString = ls.getItem("glyph_cells");
-    expect(glyphString).toBeDefined();
-    expect(ls.getItem("glyph_color")).toBeDefined();
-    var glyphArray = glyphString.split(",");
-    expect(glyphArray.length).toBe(15);
+    var glyph = Privly.Options.getGlyph();
+    expect(glyph).toBeDefined();
+    expect(typeof glyph).toBe('object');
+    expect(glyph.color).toBeDefined();
+    expect(glyph.cells).toBeDefined();
+    expect(glyph.cells.length).toBe(15);
   });
   
 });

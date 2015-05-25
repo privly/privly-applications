@@ -8,15 +8,10 @@ describe ("Options Suite", function() {
   beforeEach(function() {
 
     // Initialize the content server
-    ls.setItem("posting_content_server_url", "https://dev.privly.org");
+    Privly.Options.setServerUrl('https://dev.privly.org');
 
     // Initialize the spoofing glyph
-    ls.setItem("glyph_color", Math.floor(Math.random()*16777215).toString(16));
-    var glyph_cells = ((Math.random() < 0.5) ? "false" : "true");
-    for(i = 0; i < 14; i++) {
-      glyph_cells += "," + ((Math.random() < 0.5) ? "false" : "true");
-    }
-    ls.setItem("glyph_cells", glyph_cells);
+    Privly.Glyph.generateGlyph();
 
     // Expected DOM
     var e = $("<div id='glyph_div'></div>");
@@ -29,14 +24,16 @@ describe ("Options Suite", function() {
   });
 
   it("tests generation of new glyph", function() {
-    var oldColor = ls.getItem("glyph_color");
-    var oldGlyph = ls.getItem("glyph_cells");
+    // TODO: move to Privly.Options test
+    var oldGlyph = Privly.Options.getGlyph();
     regenerateGlyph();
-    expect(oldColor).not.toEqual(ls.getItem("glyph_color"));
-    expect(oldGlyph).not.toEqual(ls.getItem("glyph_cells"));
+    var newGlyph = Privly.Options.getGlyph();
+    expect(oldGlyph.color).not.toEqual(newGlyph.color);
+    expect(oldGlyph.cells).not.toEqual(newGlyph.cells);
   });
 
   it("tests domain validation", function() {
+    // TODO: move to Privly.Options test
     // Valid domains that should pass
     expect(isValidDomain('localhost')).toBe(true);
     expect(isValidDomain('localhost:3000')).toBe(true);
