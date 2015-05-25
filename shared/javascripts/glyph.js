@@ -42,9 +42,10 @@ if (Privly === undefined) {
   };
 
 
-  // Set event listeners to execute initGlyph() function when
-  // the extension got installed.
-  if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onInstalled && chrome.runtime.onInstalled.addListener) {
+  // If this script is running as a background script
+  if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getBackgroundPage) {
+    // Set event listeners to execute initGlyph() function when
+    // the extension got installed.
     chrome.runtime.onInstalled.addListener(function () {
       Privly.Glyph.initGlyph();
     });

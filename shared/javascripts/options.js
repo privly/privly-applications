@@ -69,9 +69,10 @@ if (Privly === undefined) {
    * @param  {[type]} optionValue The new value of the option
    */
   function optionChanged(optionName, optionValue) {
-    if (typeof chrome !== 'undefined') {
+    // Broadcast messages only if we are under extension environment
+    if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.id) {
       // Send message to the background scripts
-      if (chrome.runtime && chrome.runtime.sendMessage) {
+      if (chrome.runtime.sendMessage) {
         chrome.runtime.sendMessage({
           // TODO: ask -> action
           ask: 'options/changed',
@@ -149,28 +150,25 @@ if (Privly === undefined) {
   };
 
 
-  if (typeof chrome !== 'undefined' && chrome.runtime) {
+  // If this script is running as a background script
+  if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getBackgroundPage) {
     // Set event listeners to execute upgrade() function when
     // the extension got installed.
-    if (chrome.runtime.onInstalled && chrome.runtime.onInstalled.addListener) {
-      chrome.runtime.onInstalled.addListener(function () {
-        Privly.Options.upgrade();
-      });
-    }
+    chrome.runtime.onInstalled.addListener(function () {
+      Privly.Options.upgrade();
+    });
 
     // Listen incoming messages to provide option interfaces
     // for content scripts
-    if (chrome.runtime.onMessage && chrome.runtime.onMessage.addListener) {
-      chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-        if (request.ask.indexOf('options/') === 0) {
-          var method = request.ask.split('/')[1];
-          if (Privly.Options[method] !== undefined) {
-            var returnValue = Privly.Options[method].apply(Privly.Options, request.params);
-            sendResponse(returnValue);
-          }
+    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+      if (request.ask.indexOf('options/') === 0) {
+        var method = request.ask.split('/')[1];
+        if (Privly.Options[method] !== undefined) {
+          var returnValue = Privly.Options[method].apply(Privly.Options, request.params);
+          sendResponse(returnValue);
         }
-      });
-    }
+      }
+    });
   }
 
 
