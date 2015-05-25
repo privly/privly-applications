@@ -1,6 +1,19 @@
 /**
- * @fileOverview This file provides an interface to read and write
+ * @fileOverview This file provides an fundamental interface to read and write
+ * Privly extension options. In extension environment, it should be loaded into
+ * every privly-application webpage and background pages.
+ *
+ * As a fundamental interface, it provides Privly.Options.* to read and write
  * Privly extension options.
+ * 
+ * As a background script, it listens onInstall events to upgrade old option values
+ * when user installs the extension and listens incoming Chrome messages to provide
+ * interface to read and write extension options for content scripts and other pages.
+ *
+ * Chrome background sample incoming message:
+ *   {ask: 'options/setPrivlyButtonEnabled', params: [true]}
+ *   will call: Privly.Options.setPrivlyButtonEnabled(true)
+ *   return values are sent via message response.
  *
  * For more information about the whitelist, read:
  * https://github.com/privly/privly-organization/wiki/whitelist
@@ -56,12 +69,28 @@ if (Privly === undefined) {
    * @param  {[type]} optionValue The new value of the option
    */
   function optionChanged(optionName, optionValue) {
-    if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
-      chrome.runtime.sendMessage({
-        ask: 'option/changed',
-        option: optionName,
-        newValue: optionValue
-      });
+    if (typeof chrome !== 'undefined') {
+      // Send message to the background scripts
+      if (chrome.runtime && chrome.runtime.sendMessage) {
+        chrome.runtime.sendMessage({
+          // TODO: ask -> action
+          ask: 'options/changed',
+          option: optionName,
+          newValue: optionValue
+        });
+      }
+      // Send message to all content scripts
+      if (chrome.tabs && chrome.tabs.query && chrome.tabs.sendMessage) {
+        chrome.tabs.query({}, function (tabs) {
+          tabs.forEach(function (tab) {
+            chrome.tabs.sendMessage(tab.id, {
+              action: 'options/changed',
+              option: optionName,
+              newValue: optionValue
+            });
+          });
+        });
+      }
     }
   }
 
@@ -120,12 +149,28 @@ if (Privly === undefined) {
   };
 
 
-  // Set event listeners to execute upgrade() function when
-  // the extension got installed.
-  if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onInstalled && chrome.runtime.onInstalled.addListener) {
-    chrome.runtime.onInstalled.addListener(function () {
-      Privly.Options.upgrade();
-    });
+  if (typeof chrome !== 'undefined' && chrome.runtime) {
+    // Set event listeners to execute upgrade() function when
+    // the extension got installed.
+    if (chrome.runtime.onInstalled && chrome.runtime.onInstalled.addListener) {
+      chrome.runtime.onInstalled.addListener(function () {
+        Privly.Options.upgrade();
+      });
+    }
+
+    // Listen incoming messages to provide option interfaces
+    // for content scripts
+    if (chrome.runtime.onMessage && chrome.runtime.onMessage.addListener) {
+      chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+        if (request.ask.indexOf('options/') === 0) {
+          var method = request.ask.split('/')[1];
+          if (Privly.Options[method] !== undefined) {
+            var returnValue = Privly.Options[method].apply(Privly.Options, request.params);
+            sendResponse(returnValue);
+          }
+        }
+      });
+    }
   }
 
 
