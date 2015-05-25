@@ -33,15 +33,16 @@
  *     cells {[Boolean]} The bitmap of the glyp cell.
  * 
  */
-/*global chrome, window:true */
+/*global chrome */
 /*global Privly:true, ls */
 
-(function () {
+// If Privly namespace is not initialized, initialize it
+var Privly;
+if (Privly === undefined) {
+  Privly = {};
+}
 
-  // If Privly namespace is not initialized, initialize it
-  if (window.Privly === undefined) {
-    window.Privly = {};
-  }
+(function () {
 
   // If this file is already loaded, don't do it again
   if (Privly.Options !== undefined) {
@@ -55,11 +56,13 @@
    * @param  {[type]} optionValue The new value of the option
    */
   function optionChanged(optionName, optionValue) {
-    chrome.runtime.sendMessage({
-      ask: 'option/changed',
-      option: optionName,
-      newValue: optionValue
-    });
+    if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
+      chrome.runtime.sendMessage({
+        ask: 'option/changed',
+        option: optionName,
+        newValue: optionValue
+      });
+    }
   }
 
   /**
@@ -119,7 +122,7 @@
 
   // Set event listeners to execute upgrade() function when
   // the extension got installed.
-  if (chrome && chrome.runtime && chrome.runtime.onInstalled && chrome.runtime.onInstalled.addListener) {
+  if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onInstalled && chrome.runtime.onInstalled.addListener) {
     chrome.runtime.onInstalled.addListener(function () {
       Privly.Options.upgrade();
     });

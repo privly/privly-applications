@@ -1,14 +1,16 @@
 /**
  * @fileOverview This file provides user glyph related functionalities and interfaces.
  */
-/*global window, chrome */
-/*global Privly */
-(function () {
+/*global chrome */
+/*global Privly:true */
 
-  // If Privly namespace is not initialized, initialize it
-  if (window.Privly === undefined) {
-    window.Privly = {};
-  }
+// If Privly namespace is not initialized, initialize it
+var Privly;
+if (Privly === undefined) {
+  Privly = {};
+}
+
+(function () {
 
   // If this file is already loaded, don't do it again
   if (Privly.Glyph !== undefined) {
@@ -19,12 +21,16 @@
   /**
    * Get glyph color and cells
    */
-  Privly.Glyph.getGlyph = Privly.Options.getGlyph;
+  Privly.Glyph.getGlyph = function () {
+    return Privly.Options.getGlyph();
+  };
 
   /**
    * Set glyph color and cells
    */
-  Privly.Glyph.setGlyph = Privly.Options.setGlyph;
+  Privly.Glyph.setGlyph = function (glyph) {
+    return Privly.Options.setGlyph(glyph);
+  };
 
   /**
    * Initialize a new glyph image if not exist
@@ -38,7 +44,7 @@
 
   // Set event listeners to execute initGlyph() function when
   // the extension got installed.
-  if (chrome && chrome.runtime && chrome.runtime.onInstalled && chrome.runtime.onInstalled.addListener) {
+  if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onInstalled && chrome.runtime.onInstalled.addListener) {
     chrome.runtime.onInstalled.addListener(function () {
       Privly.Glyph.initGlyph();
     });

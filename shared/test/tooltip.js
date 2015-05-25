@@ -18,14 +18,4 @@ describe ("Tooltip Test Suite", function() {
     expect(true).toBe(true);
   });
   
-  it("can generate a new glyph", function() {
-    privlyTooltip.generateNewGlyph();
-    var glyph = Privly.Options.getGlyph();
-    expect(glyph).toBeDefined();
-    expect(typeof glyph).toBe('object');
-    expect(glyph.color).toBeDefined();
-    expect(glyph.cells).toBeDefined();
-    expect(glyph.cells.length).toBe(15);
-  });
-  
 });
