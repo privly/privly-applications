@@ -42,27 +42,17 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine'],
 
-    // Provide coverage information for the shared libraries
-    preprocessors: {
-      'shared/javascripts/*.js': 'coverage'
-    },
-
     // list of files / patterns to load in the browser
     files: filesToTest,
 
     // files to exclude from testing
     exclude: filesToExcludeFromTest,
 
-    // test results reporter to use
-    // possible values: 'dots', 'progress'
+    // test result reporters to use
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress', 'coverage'],
-
-    coverageReporter: {
-      type : 'lcov',
-      dir : 'test/coverage/',
-      file : 'coverage.txt'
-    },
+    reporters: [
+      'progress'
+    ],
 
     // web server port
     port: 9876,
