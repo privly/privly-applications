@@ -88,8 +88,8 @@ def common_configuration_for_sauce
     # https://docs.saucelabs.com/reference/platforms-configurator
     if @browser == "firefox"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.firefox
-      config['version'] = "dev"
-      @sauce_caps.version = "dev"
+      config['version'] = "37.0"
+      @sauce_caps.version = "37.0"
     elsif @browser == "chrome"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.chrome
       config['version'] = "dev"
