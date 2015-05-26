@@ -5,13 +5,81 @@
  
 describe ("Login Suite", function() {
 
+  // Create the expected DOM
   beforeEach(function() {
-    var loginBtn = document.createElement("BUTTON");
-    loginBtn.setAttribute("id", "login");
-    document.body.appendChild(loginBtn);
+    var domIDs = [
+      "home_domain",
+      "login",
+      "logout_link",
+      "loginForm",
+      "registerForm",
+      "content_server",
+      "messages",
+      "form"
+    ];
+    domIDs.forEach(function(id){
+      var newElement = $('<a/>', {
+        id: id,
+        "class": id
+      });
+      $(document.body).append(newElement);
+    });
   });
 
-  it("tests submitCredentials", function() {    
+  afterEach(function() {
+    document.body.innerHTML = "";
+  });
+
+  it("tests pendingLogin", function() {
+    callbacks.pendingLogin();
+    expect($(".content_server").text()).toBe(privlyNetworkService.contentServerDomain());
+  });
+
+  it("tests not logged in", function() {
+    callbacks.notLoggedIn();
+    expect($("#messages").is(':visible')).toBe(false);
+
+    // Fails on Chrome and Safari
+    // expect($("#form").is(':visible')).toBe(true);
+  });
+
+  it("tests loginError", function() {
+    var elem = $("#messages");
+    var originalText = elem.text();
+    callbacks.loginError();
+    var newText = elem.text();
+    expect(originalText).not.toBe(newText);
+    expect(elem.is(':visible')).toBe(true);
+  });
+
+  it("tests registrationFailure", function() {
+    var elem = $("#messages");
+    var originalText = elem.text();
+    callbacks.registrationFailure();
+    var newText = elem.text();
+    expect(originalText).not.toBe(newText);
+    expect(elem.is(':visible')).toBe(true);
+  });
+
+  it("tests registrationFailure", function() {
+    var elem = $("#messages");
+    var originalText = elem.text();
+    callbacks.registrationFailure();
+    var newText = elem.text();
+    expect(originalText).not.toBe(newText);
+    expect(elem.is(':visible')).toBe(true);
+  });
+
+  it("tests pendingRegistration", function() {
+    var elem = $("#messages");
+    var originalText = elem.text();
+    callbacks.pendingRegistration();
+    var newText = elem.text();
+    expect(originalText).not.toBe(newText);
+    expect(elem.is(':visible')).toBe(true);
+  });
+
+  it("tests submitCredentials", function() {
     spyOn(privlyNetworkService, "sameOriginPostRequest").and.callFake(function(url, callback, data) {});
     callbacks.submitCredentials();
     expect($("#login").prop("disabled")).toBe(true);
