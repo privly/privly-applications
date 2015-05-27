@@ -96,7 +96,7 @@ function processResponseContent(response) {
  * need to pass in a callback in this case.
  */
 function encryptBeforeUpdate(evt, callback) {
-  var cipherdata = zeroCipher(state.key + "=", $("#edit_text")[0].value);
+  var cipherdata = zeroCipher(state.key, $("#edit_text")[0].value);
   privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
     function(response){
       callbacks.contentReturned(response, processResponseContent);
