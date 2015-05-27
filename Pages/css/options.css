@@ -27,9 +27,23 @@ label {
   _top:0.2em; 
 }
 
-input { 
-  display: inline; 
-  margin-left: 0.5em; 
+input {
+  display: inline;
+  margin-left: 0.5em;
+}
+
+.invalid-domain {
+    border: 1px solid red;
+}
+
+#invalid_domain {
+    display: none;
+    color: red;
+    padding: 3px 0;
+}
+
+#invalid_domain.show {
+    display: block;
 }
 
 .whitelist_url{

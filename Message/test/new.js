@@ -5,19 +5,21 @@
  
 describe ("Message New Suite", function() {
 
-  // Get an HTML document defined by the pre-processor.
-  // This is a rough hack because HTML2JS seems to assign the
-  // key to the absolute URL, which is not reliable on
-  // continuous integration.
+  // Create the expected DOM
   beforeEach(function() {
-    var keys = Object.keys(__html__);
-    var selectKey;
-    keys.forEach(function(key) {
-      if( key.indexOf("Message/new.html") >= 0 ) {
-        selectKey = key;
-      }
+    var domIDs = [
+      "logout_link",
+      "home_domain",
+      "content",
+      "save"
+    ];
+    domIDs.forEach(function(id){
+      var newElement = $('<a/>', {
+        id: id,
+        "class": id
+      });
+      $(document.body).append(newElement);
     });
-    document.body.innerHTML = __html__[selectKey];
   });
 
   afterEach(function() {

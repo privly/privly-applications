@@ -1,7 +1,7 @@
-This threat model focuses on the threats to both the user reading the content, and the user who posted the original link. For a complete picture of the system's threats, you should also see the [Plain Post Posting Threat Model](Plain Post Posting Threat Model).
+This threat model focuses on the threats to both the user reading the content, and the user who posted the original link. For a complete picture of the system's threats, you should also see the [Plain Post Posting Threat Model](Plain-Posts-Posting-Threat-Model.md).
 
 ## Application Name and Description
-Privly is a browser-based application facilitating the injection of private content on any website. The client is loaded locally as a browser extension and plugin (available for Google Chrome and Mozilla Firefox) and communicates to a content server over HTTPS. Privly potentially supports many different cryptographic protocols. This document focuses on Privly's [Plain Post](Posts) [injectable application](Injectable-Applications). Other injectable applications have stronger security objectives.
+Privly is a browser-based application facilitating the injection of private content on any website. The client is loaded locally as a browser extension and plugin (available for Google Chrome and Mozilla Firefox) and communicates to a content server over HTTPS. Privly potentially supports many different cryptographic protocols. This document focuses on Privly's [Plain Post](Posts.md) [injectable application](https://github.com/privly/privly-organization/wiki/Injectable-Applications). Other injectable applications have stronger security objectives.
 
 ## Authors
 * Sean McGregor, Privly Lead Developer.  
@@ -131,7 +131,7 @@ Each category has a minimum score of 0 and a maximum score of 10. The final DREA
 **Threat Description**: Users with little technical knowledge may be fooled by a phishing website or plugin posing as legitimate content of the host page.
 
 * **Damage**: A user could be deceived into taking actions inconsistent with their own interests. **Score: 7**  
-* **Reproducibility**: Users would have to change several default settings and run an unofficial injectable application in their [whitelist](Whitelist). A tooltip labels Privly content as being injected into the web page. **Score: 1**  
+* **Reproducibility**: Users would have to change several default settings and run an unofficial injectable application in their [whitelist](https://github.com/privly/privly-organization/wiki/Whitelist). A tooltip labels Privly content as being injected into the web page. **Score: 1**  
 * **Exploitability**: Exploitability depends on the user, not the effort of the adversary. This threat can be mitigated by effective user education and communication. **Score: 2**  
 * **Affected Users**: Users are affected individually only if they change many default settings. **Score: 1**  
 * **Discoverability**: Adversaries could place malicious links on a variety of high-traffic message boards to find users who could be targeted by this exploit. **Score: 7**  
@@ -213,7 +213,7 @@ Each category has a minimum score of 0 and a maximum score of 10. The final DREA
 **Threat Description**: Links shared on specific host pages could be used to track the host pages viewed by a user if the link is automatically injected.
 
 * **Damage**: Tracking damages user privacy by broadcasting their browsing habits, but it does not compromise their content. **Score: 3**  
-* **Reproducibility**: If the content server is default [whitelisted](Whitelist), then it could track all Privly users across all websites. **Score: 10**  
+* **Reproducibility**: If the content server is default [whitelisted](https://github.com/privly/privly-organization/wiki/Whitelist), then it could track all Privly users across all websites. **Score: 10**  
 * **Exploitability**: All default whitelisted servers are required to not track their users. **Score: 2**  
 * **Affected Users**: Individual users are affected only if they change default settings or a default whitelisted server is compromised. **Score: 2**  
 * **Discoverability**: Content servers would need to distribute links on the sites the user visits. **Score: 3**  
@@ -258,7 +258,7 @@ Same as Point (B).
 
 ### See Also
 
-[Plain Posts Reading Threat Model](Plain Posts Reading Threat Model)
+[Plain Posts Reading Threat Model](Plain-Posts-Reading-Threat-Model.md)
 
 ## 5. Vulnerabilities
 *No vulnerabilities have been formally identified. Please contribute to this section!*

@@ -59,23 +59,23 @@
       <ul class="nav navbar-nav">
        <li class="logged_in_nav" style="display:none;">
         <a href="../History/new.html">
-         History
          <span class="glyphicon glyphicon-list-alt">
          </span>
+         History
         </a>
        </li>
        <li class="active logged_out_nav">
         <a class="login_url" href="../Login/new.html">
-         Login
          <span class="glyphicon glyphicon-log-in">
          </span>
+         Login
         </a>
        </li>
        <li class="active dropdown logged_in_nav" style="display:none;">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-         New Link
          <b class="caret">
          </b>
+         New Link
         </a>
         <ul class="dropdown-menu">
          <li class="dropdown-header">
@@ -106,9 +106,9 @@
        </li>
        <li class="dropdown logged_in_nav logged_out_nav">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-         Options
          <b class="caret">
          </b>
+         Options
         </a>
         <ul class="dropdown-menu">
          <li>
@@ -136,9 +136,9 @@
        </li>
        <li class="logged_in_nav" style="display:none;">
         <a class="logout_url" href="#" id="logout_link">
-         Logout
          <span class="glyphicon glyphicon-log-out">
          </span>
+         Logout
         </a>
        </li>
       </ul>
@@ -161,10 +161,13 @@
       </p>
       <div id="copy_message" style="display:none;">
        <p class="flash notice">
-        Copy and paste the address found below to any website
-                you want to share this information through.
-       </p>
-       <p class="flash notice">
+        <span id="step1_message">
+         <strong>
+          Step 1.
+         </strong>
+         Copy and paste the address found below to any website
+                  you want to share this information through.
+        </span>
         <span class="glyphicon glyphicon-link">
         </span>
         <span class="privlyUrl" data-privly-exclude="true">
@@ -172,9 +175,9 @@
        </p>
        <p class="flash notice open-app-button" style="display:none;">
         <strong>
-         Now copy/paste
+         Step 2.
         </strong>
-        the highlighted address anywhere you want to share it. You can also
+        Copy/paste the highlighted address anywhere you want to share it. You can also
         <a class="btn btn-default" href="" id="local_address" target="_blank">
          open the link
         </a>
@@ -185,7 +188,39 @@
     </div>
     <div id="form" style="display:none;">
      <div class="row">
-      <div class="col-md-6 form-group">
+      <div aria-hidden="true" aria-labelledby="registerModal" class="modal fade" id="registerModal" role="dialog">
+       <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+         <div class="modal-header">
+          <button class="close" data-dismiss="modal" type="button">
+           ×
+          </button>
+          <h1 class="modal-title">
+           Register
+          </h1>
+         </div>
+         <div class="modal-body">
+          <form action="#" id="registerForm">
+           <div class="form-group">
+            <label for="register_email">
+             Email
+            </label>
+            <br/>
+            <input id="register_email" name="user[email]" placeholder="Enter email" required="" size="30" type="email" value=""/>
+           </div>
+           <div class="form-group">
+            <button class="btn btn-primary" id="register">
+             Request invite on
+             <span class="content_server">
+             </span>
+            </button>
+           </div>
+          </form>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="col-md-12 form-group">
        <p id="loadingDiv">
         <img alt="loading" src="../shared/images/ajax-loader.gif"/>
        </p>
@@ -193,55 +228,37 @@
         Sign In
        </h1>
        <noscript>
-        <h1>
-         Your browser has scripting turned off. 
-        This application requires scripting to function properly
-        </h1>
+        Your browser has scripting turned off. 
+      This application requires scripting to function properly.
        </noscript>
        <br/>
-       <div class="form-group">
-        <label for="user_email">
-         Email
-        </label>
+       <form action="#" id="loginForm">
+        <div class="form-group">
+         <label for="user_email">
+          Email
+         </label>
+         <br/>
+         <input id="user_email" name="user[email]" placeholder="Enter email" required="" size="30" type="email" value=""/>
+        </div>
+        <div class="form-group">
+         <label for="user_password">
+          Password
+         </label>
+         <br/>
+         <input id="user_password" name="user[password]" placeholder="Enter Password" required="" size="30" type="password"/>
+        </div>
         <br/>
-        <input id="user_email" name="user[email]" placeholder="Enter email" size="30" type="email" value=""/>
-       </div>
-       <div class="form-group">
-        <label for="user_password">
-         Password
-        </label>
-        <br/>
-        <input id="user_password" name="user[password]" placeholder="Enter Password" size="30" type="password"/>
-       </div>
-       <br/>
-       <div class="form-group">
-        <button class="btn btn-primary" id="login">
-         Login to
-         <span class="content_server">
-         </span>
-        </button>
-       </div>
-      </div>
-      <div class="col-md-6 form-group">
-       <h1>
-        Register
-       </h1>
-       <br/>
-       <div class="form-group">
-        <label for="register_email">
-         Email
-        </label>
-        <br/>
-        <input id="register_email" name="user[email]" placeholder="Enter email" size="30" type="email" value=""/>
-       </div>
-       <br/>
-       <div class="form-group">
-        <button class="btn btn-primary" id="register">
-         Request invite on
-         <span class="content_server">
-         </span>
-        </button>
-       </div>
+        <div class="form-group">
+         <button class="btn btn-primary" id="login">
+          Login to
+          <span class="content_server">
+          </span>
+         </button>
+        </div>
+        <a data-target="#registerModal" data-toggle="modal" href="#">
+         Not signed up yet? Register here!
+        </a>
+       </form>
       </div>
      </div>
     </div>

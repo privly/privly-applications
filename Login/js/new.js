@@ -41,21 +41,19 @@ var callbacks = {
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
     
-    // Monitor the login button
-    document.querySelector('#login').addEventListener('click', callbacks.submitCredentials);
-    document.querySelector('#register').addEventListener('click', callbacks.submitRegistration);
-    $("#user_password").keyup(function (e) {
-        if (e.keyCode === 13) {
-            callbacks.submitCredentials();
-        }
+    var loginForm = document.getElementById("loginForm");
+    var registerForm = document.getElementById("registerForm");
+
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      callbacks.submitCredentials();
+    });
+    registerForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      $('#registerModal').modal('hide');
+      callbacks.submitRegistration();
     });
 
-    $('#register_email').keyup(function (e) {
-        if (e.keyCode === 13) {
-            callbacks.submitRegistration();
-        }
-    });
-    
     // Add listeners to show loading animation while making ajax requests
     $(document).ajaxStart(function() {
       $('#loadingDiv').show(); 
@@ -85,7 +83,7 @@ var callbacks = {
    * Submit the posting form and await the return of the post.
    */
   submitCredentials: function() {
-    $("#save").prop('disabled', true);
+    $("#login").prop('disabled', true);
     privlyNetworkService.sameOriginPostRequest(
       privlyNetworkService.contentServerDomain() + "/users/sign_in", 
       callbacks.checkCredentials,
@@ -98,6 +96,7 @@ var callbacks = {
    * Submit the registration form and await the return of the registration.
    */
   submitRegistration: function() {
+    $("#register").prop('disabled', true);
     privlyNetworkService.sameOriginPostRequest(
       privlyNetworkService.contentServerDomain() + "/users/invitation", 
       callbacks.checkRegistration,
@@ -108,7 +107,7 @@ var callbacks = {
    * Check to see if the user's credentials were accepted by the server.
    */
   checkCredentials: function(response) {
-    
+    $("#login").prop('disabled', false);
     if ( response.json.success === true ) {
       callbacks.pendingPost();
     } else {
@@ -120,7 +119,8 @@ var callbacks = {
    * Check to see if the user's registration was accepted by the server.
    */
   checkRegistration: function(response) {
-     if ( response.json.success === true ) {
+    $("#register").prop('disabled', false); 
+    if ( response.json.success === true ) {
       callbacks.pendingRegistration();
     } else {
       callbacks.registrationFailure();

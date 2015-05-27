@@ -26,7 +26,7 @@ body {
 
 /* Set the fixed height of the footer here */
 #footer {
-  height: 60px;
+  min-height: 60px;
   background-color: #222;
 }
 
@@ -48,11 +48,20 @@ body {
   border-bottom:1px solid #242424;
 }
 
+#step1_message {
+    display: block;
+    border-bottom: 1px solid #e1e1e1;
+    width: 70%;
+    margin: 0 auto 5px;
+    padding-bottom: 3px;
+}
+
 .flash {
     border: medium none;
     margin: 0.5em auto;
     padding: 0.2em 0.5em;
     text-align: center;
+    border-radius: 5px;
 }
 
 .notice {
