@@ -36,9 +36,8 @@ module AuthHelper
     fill_in 'user_password', :with => password
     domain = page.evaluate_script('privlyNetworkService.contentServerDomain()');
     click_on ('Login to ' + domain)
-    Timeout.timeout(Capybara.default_wait_time) do
-      loop until page.evaluate_script('jQuery.active').zero?
-    end
+    wait = Selenium::WebDriver::Wait.new(:timeout => 3)
+    wait.until { page.evaluate_script('jQuery.active').zero? }
   end
 
   # Click he logout link on the current page then wait for the
