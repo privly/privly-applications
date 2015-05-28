@@ -227,7 +227,7 @@ if (Privly === undefined) {
    * @param  {String}  domain Domain to validate
    * @return {Boolean}
    */
-  Privly.Options.isWhitelistDomainValid = function (domain) {
+  Privly.Options.isDomainValid = function (domain) {
     // Each subdomain can be from 1-63 characters and may contain alphanumeric
     // characters, - and _ but may not begin or end with - or _
     // Each domain can be from 1-63 characters and may contain alphanumeric 
@@ -313,7 +313,7 @@ if (Privly === undefined) {
     var domains = whitelist.map(function (domain) {
       domain = domain.toLowerCase();
       regexp += '|' + domain.replace(/\./g, '\\.') + '\\\/';
-      if (!Privly.Options.isWhitelistDomainValid(domain)) {
+      if (!Privly.Options.isDomainValid(domain)) {
         throw new Error('invalid domain: ' + domain);
       }
       return domain;

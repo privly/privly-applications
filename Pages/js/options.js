@@ -67,7 +67,7 @@ function saveWhitelist() {
   invalid_domain.className = ''; // hide the error message
 
   for (var i = 0; i < domains.length; ++i) {
-    if (!Privly.Options.isWhitelistDomainValid(domains[i])) {
+    if (!Privly.Options.isDomainValid(domains[i])) {
       input_fields[i].className += " invalid-domain";
       invalid_domains = true;
     }
