@@ -36,7 +36,7 @@ if (Privly === undefined) {
    * Initialize a new glyph image if not exist
    */
   Privly.Glyph.initGlyph = function () {
-    if (Privly.Glyph.getGlyph() === undefined) {
+    if (Privly.Glyph.getGlyph() === null) {
       Privly.Glyph.generateGlyph();
     }
   };
@@ -80,7 +80,7 @@ if (Privly === undefined) {
   Privly.Glyph.getGlyphDOM = function () {
     // Generate a new glyph if not exist
     var glyph = Privly.Options.getGlyph();
-    if (glyph === undefined) {
+    if (glyph === null) {
       glyph = Privly.Glyph.generateGlyph();
     }
 

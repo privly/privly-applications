@@ -12,7 +12,7 @@ describe ("Glyph Test Suite", function() {
     var oldGlyph = Privly.Options.getGlyph();
     Privly.Glyph.generateGlyph();
     var newGlyph = Privly.Options.getGlyph();
-    expect(newGlyph).toBeDefined();
+    expect(newGlyph).not.toBeNull();
     expect(typeof newGlyph).toBe('object');
     expect(newGlyph.color).toBeDefined();
     expect(newGlyph.cells).toBeDefined();
