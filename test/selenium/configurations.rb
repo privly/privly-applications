@@ -127,6 +127,13 @@ def configure_for_chrome_web(args)
   common_configuration_for_web(args)
 end
 
+def configure_for_safari_web(args)
+  common_configuration_for_web(args)
+  # Do not block pop-up windows in Safari
+  # https://macmule.com/2012/07/31/disabling-safari-5-1-xs-6-xs-pop-up-blocker-from-terminal-2/
+  `defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptCanOpenWindowsAutomatically -bool true`
+end
+
 def configure_for_sauce_firefox_web(args)
   common_configuration_for_sauce
   common_configuration_for_sauce_web(args)
