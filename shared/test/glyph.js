@@ -1,13 +1,12 @@
 /**
- * @fileOverview tests.js Gives testing code for the tooltip
- * that is displayed on injected content.
- *
+ * @fileOverview Privly.glyph test case.
  * This spec is managed by the Jasmine testing library.
  **/
- 
-describe ("Glyph Test Suite", function() {
-  
-  it("can generate a new glyph", function() {
+/*global describe, it, expect */
+/*global Privly */
+describe('Privly.glyph', function () {
+
+  it('generateGlyph() can generate a new glyph', function () {
     Privly.glyph.generateGlyph();
     var oldGlyph = Privly.options.getGlyph();
     Privly.glyph.generateGlyph();
@@ -21,10 +20,10 @@ describe ("Glyph Test Suite", function() {
     expect(oldGlyph.cells).not.toEqual(newGlyph.cells);
   });
 
-  it("can generate glyph DOM", function() {
+  it('getGlyphDOM() can generate glyph DOM', function () {
     var table = Privly.glyph.getGlyphDOM();
     expect(table.nodeName).toBe('TABLE');
     expect(table.querySelectorAll('td').length).toEqual(25);
   });
-  
+
 });

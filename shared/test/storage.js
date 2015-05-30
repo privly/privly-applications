@@ -1,7 +1,5 @@
 /**
- * @fileOverview tests.js Gives testing code for the tooltip
- * that is displayed on injected content.
- *
+ * @fileOverview Privly.storage test case.
  * This spec is managed by the Jasmine testing library.
  **/
 /*global describe, it, expect */
