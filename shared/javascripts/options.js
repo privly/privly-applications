@@ -196,7 +196,7 @@ if (Privly === undefined) {
       throw new Error('invalid argument');
     }
     Privly.storage.set('options/privlyButton', enabled);
-    optionChanged('options/privlyButton', enabled);
+    optionChanged('options/isPrivlyButtonEnabled', enabled);
     return true;
   };
 
@@ -221,7 +221,7 @@ if (Privly === undefined) {
       throw new Error('invalid argument');
     }
     Privly.storage.set('options/injection', enabled);
-    optionChanged('options/injection', enabled);
+    optionChanged('options/isInjectionEnabled', enabled);
     return true;
   };
 
@@ -330,9 +330,9 @@ if (Privly === undefined) {
     });
 
     Privly.storage.set('options/whitelist/domains', domains);
-    optionChanged('options/whitelist/domains', domains);
+    optionChanged('options/getWhitelistDomains', domains);
     Privly.storage.set('options/whitelist/regexp', regexp);
-    optionChanged('options/whitelist/regexp', regexp);
+    optionChanged('options/getWhitelistRegExp', regexp);
     return true;
   };
 
@@ -357,7 +357,7 @@ if (Privly === undefined) {
       throw new Error('invalid argument');
     }
     Privly.storage.set('options/contentServer/url', url);
-    optionChanged('options/contentServer/url', url);
+    optionChanged('options/getServerUrl', url);
     return true;
   };
 
@@ -390,7 +390,7 @@ if (Privly === undefined) {
       cells: glyph.cells
     };
     Privly.storage.set('options/glyph', obj);
-    optionChanged('options/glyph', obj);
+    optionChanged('options/getGlyph', obj);
     return true;
   };
 
