@@ -51,12 +51,20 @@ if (Privly === undefined) {
     });
   }
 
+  /**
+   * Generate a not-too-dark and not-too-bright color component.
+   * Range: 0x50 ~ 0xA0
+   * @return {String} The color component in hex
+   */
+  function getRandomColorComponent() {
+    return (Math.floor(Math.random() * (0xA0 - 0x50)) + 0x50).toString(16);
+  }
 
   /**
    * Re-generate a new glyph and store it
    */
   Privly.glyph.generateGlyph = function () {
-    var glyphColor = Math.floor(Math.random() * 0xFFFFFF).toString(16);
+    var glyphColor = getRandomColorComponent() + getRandomColorComponent() + getRandomColorComponent();
     var glyphCells = [];
     var i;
     for (i = 0; i < 15; i++) {
