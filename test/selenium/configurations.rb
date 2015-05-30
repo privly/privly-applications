@@ -88,8 +88,8 @@ def common_configuration_for_sauce
     # https://docs.saucelabs.com/reference/platforms-configurator
     if @browser == "firefox"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.firefox
-      config['version'] = "dev"
-      @sauce_caps.version = "dev"
+      config['version'] = "37.0"
+      @sauce_caps.version = "37.0"
     elsif @browser == "chrome"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.chrome
       config['version'] = "dev"
@@ -125,6 +125,13 @@ end
 
 def configure_for_chrome_web(args)
   common_configuration_for_web(args)
+end
+
+def configure_for_safari_web(args)
+  common_configuration_for_web(args)
+  # Do not block pop-up windows in Safari
+  # https://macmule.com/2012/07/31/disabling-safari-5-1-xs-6-xs-pop-up-blocker-from-terminal-2/
+  `defaults write com.apple.Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptCanOpenWindowsAutomatically -bool true`
 end
 
 def configure_for_sauce_firefox_web(args)

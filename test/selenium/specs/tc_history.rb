@@ -12,7 +12,8 @@ class TestHistory < Test::Unit::TestCase
     login(@@privly_test_set[0][:content_server])
 
     #Create a message to test with
-    click_on ('New Message')
+    click_on ('New Link')
+    click_link ('New Message')
     fill_in 'content', :with =>  "Hello WebDriver!"
     click_on ('save')
   end

@@ -10,6 +10,7 @@ class TestNew < Test::Unit::TestCase
   def setup
     page.driver.browser.get(@@privly_test_set[0][:url])
     login(@@privly_test_set[0][:content_server])
+    page.driver.browser.manage.timeouts.implicit_wait = 3
   end
 
   # Test post creation for each application that presents a "new" action.
@@ -66,7 +67,7 @@ class TestNew < Test::Unit::TestCase
         find_button("Update").click
 
         # Refresh
-        page.driver.browser.get(page.evaluate_script("window.location.href"))
+        page.driver.browser.navigate.refresh
 
         # Make sure the refreshed page has the new content
         assert page.has_text?('Updated!')

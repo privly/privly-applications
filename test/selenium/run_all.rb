@@ -17,7 +17,7 @@ args = {}
 optsHelp = ""
 OptionParser.new do |opts|
   opts.banner = "Usage: ruby run_all.rb [options]"
-  opts.on('-p', '--platform PLATFORM', 'The target platform (firefox_web, firefox_extension, chrome_web, chrome_extension, sauce_chrome_web, sauce_firefox_web, sauce_firefox_extension, sauce_chrome_extension)') { |v| args[:platform] = v }
+  opts.on('-p', '--platform PLATFORM', 'The target platform (firefox_web, firefox_extension, chrome_web, chrome_extension, safari_web, sauce_chrome_web, sauce_firefox_web, sauce_firefox_extension, sauce_chrome_extension)') { |v| args[:platform] = v }
   opts.on('-r', '--release-status RELEASE', 'The target release stage (experimental, deprecated, alpha, beta, release)') { |v| args[:release_status] = v }
   opts.on('-c', '--content-server SERVER', 'The content server (http://localhost:3000)') { |v| args[:content_server] = v }
   optsHelp = opts.help
@@ -100,8 +100,10 @@ end
 #                     This requires a webserver to run on localhost:3000
 #  sauce_chrome_extension: run Chrome on saucelabs with an extension.
 #  chrome_web: run Chrome locally without an extension.
-#               This requires a webserver to run on localhost:3000
+#              This requires a webserver to run on localhost:3000
 #  chrome_extension: run Chrome locally with an extension.
+#  safari_web: run Safari locally without an extension.
+#              This requires a webserver to run on localhost:3000
 if args[:platform]
   platform = args[:platform]
 end
@@ -148,6 +150,9 @@ elsif platform == "firefox_web"
 elsif platform == "chrome_web"
   sanity_check "privly-web"
   configure_for_chrome_web(args)
+elsif platform == "safari_web"
+  sanity_check "privly-web"
+  configure_for_safari_web(args)
 elsif platform == "firefox_extension"
   sanity_check "privly-firefox"
   configure_for_firefox_extension(args)
