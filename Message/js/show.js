@@ -19,14 +19,14 @@ function previewMarkdown() {
  * @return {boolean} Indicates whether the key was resolved from history.
  */
 function resolveKeyFromHistory() {
-  var urls = Privly.Storage.get("Message:URLs");
+  var urls = Privly.storage.get("Message:URLs");
 
   // Deprecated
-  var oldUrls = Privly.Storage.get("ZeroBin:URLs");
+  var oldUrls = Privly.storage.get("ZeroBin:URLs");
   if ( oldUrls !== null ) {
     urls = urls.concat(oldUrls);
-    Privly.Storage.set("Message:URLs", urls);
-    Privly.Storage.remove("ZeroBin:URLs");
+    Privly.storage.set("Message:URLs", urls);
+    Privly.storage.remove("ZeroBin:URLs");
   }
 
   if ( urls !== null ) {

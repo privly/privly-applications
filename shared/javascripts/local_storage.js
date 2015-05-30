@@ -1,5 +1,5 @@
 /**
- * @deprecated Use Privly.Storage
+ * @deprecated Use Privly.storage
  * 
  * @namespace A shim to support cross browser Local Storage. This
  * shim mimics the localStorage API, but it will use alternate

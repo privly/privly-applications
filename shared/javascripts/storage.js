@@ -23,10 +23,10 @@ if (Privly === undefined) {
 (function () {
 
   // If this file is already loaded, don't do it again
-  if (Privly.Storage !== undefined) {
+  if (Privly.storage !== undefined) {
     return;
   }
-  Privly.Storage = {};
+  Privly.storage = {};
 
   /**
    * Set an item to the storage.
@@ -35,7 +35,7 @@ if (Privly === undefined) {
    * @param {String} key
    * @param {Any} value
    */
-  Privly.Storage.set = function (key, value) {
+  Privly.storage.set = function (key, value) {
     ls.setItem(key, JSON.stringify(value));
   };
 
@@ -46,7 +46,7 @@ if (Privly === undefined) {
    * @param  {String} key
    * @return {Any}
    */
-  Privly.Storage.get = function (key) {
+  Privly.storage.get = function (key) {
     var json = ls.getItem(key);
     if (json === undefined || json === null) {
       // key does not exist
@@ -61,7 +61,7 @@ if (Privly === undefined) {
    * 
    * @param  {String} key
    */
-  Privly.Storage.remove = function (key) {
+  Privly.storage.remove = function (key) {
     ls.removeItem(key);
   };
 

@@ -177,7 +177,7 @@ if (Privly === undefined) {
    * @return {Boolean}
    */
   Privly.Options.isPrivlyButtonEnabled = function () {
-    var v = Privly.Storage.get('options/privlyButton');
+    var v = Privly.storage.get('options/privlyButton');
     if (v === null) {
       v = false;
     }
@@ -192,7 +192,7 @@ if (Privly === undefined) {
     if (typeof enabled !== 'boolean') {
       throw new Error('invalid argument');
     }
-    Privly.Storage.set('options/privlyButton', enabled);
+    Privly.storage.set('options/privlyButton', enabled);
     optionChanged('options/privlyButton', enabled);
     return true;
   };
@@ -202,7 +202,7 @@ if (Privly === undefined) {
    * @return {Boolean}
    */
   Privly.Options.isInjectionEnabled = function () {
-    var v = Privly.Storage.get('options/injection');
+    var v = Privly.storage.get('options/injection');
     if (v === null) {
       v = true;
     }
@@ -217,7 +217,7 @@ if (Privly === undefined) {
     if (typeof enabled !== 'boolean') {
       throw new Error('invalid argument');
     }
-    Privly.Storage.set('options/injection', enabled);
+    Privly.storage.set('options/injection', enabled);
     optionChanged('options/injection', enabled);
     return true;
   };
@@ -285,7 +285,7 @@ if (Privly === undefined) {
    * @return {[String]} Array of whitelists
    */
   Privly.Options.getWhitelistDomains = function () {
-    var v = Privly.Storage.get('options/whitelist/domains');
+    var v = Privly.storage.get('options/whitelist/domains');
     if (v === null) {
       v = [];
     }
@@ -297,7 +297,7 @@ if (Privly === undefined) {
    * @return {[String]} Array of whitelists
    */
   Privly.Options.getWhitelistRegExp = function () {
-    var v = Privly.Storage.get('options/whitelist/regexp');
+    var v = Privly.storage.get('options/whitelist/regexp');
     if (v === null) {
       v = '';
     }
@@ -319,9 +319,9 @@ if (Privly === undefined) {
       return domain;
     });
 
-    Privly.Storage.set('options/whitelist/domains', domains);
+    Privly.storage.set('options/whitelist/domains', domains);
     optionChanged('options/whitelist/domains', domains);
-    Privly.Storage.set('options/whitelist/regexp', regexp);
+    Privly.storage.set('options/whitelist/regexp', regexp);
     optionChanged('options/whitelist/regexp', regexp);
     return true;
   };
@@ -331,7 +331,7 @@ if (Privly === undefined) {
    * @return {String}
    */
   Privly.Options.getServerUrl = function () {
-    var v = Privly.Storage.get('options/contentServer/url');
+    var v = Privly.storage.get('options/contentServer/url');
     if (v === null) {
       v = 'https://privlyalpha.org';
     }
@@ -346,7 +346,7 @@ if (Privly === undefined) {
     if (typeof url !== 'string') {
       throw new Error('invalid argument');
     }
-    Privly.Storage.set('options/contentServer/url', url);
+    Privly.storage.set('options/contentServer/url', url);
     optionChanged('options/contentServer/url', url);
     return true;
   };
@@ -358,7 +358,7 @@ if (Privly === undefined) {
    *   {[Boolean]} cells
    */
   Privly.Options.getGlyph = function () {
-    return Privly.Storage.get('options/glyph');
+    return Privly.storage.get('options/glyph');
   };
 
   /**
@@ -378,7 +378,7 @@ if (Privly === undefined) {
       color: glyph.color,
       cells: glyph.cells
     };
-    Privly.Storage.set('options/glyph', obj);
+    Privly.storage.set('options/glyph', obj);
     optionChanged('options/glyph', obj);
     return true;
   };
