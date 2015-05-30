@@ -3,7 +3,7 @@
  * Privly extension options. In extension environment, it should be loaded into
  * every privly-application webpage and background pages.
  *
- * As a fundamental interface, it provides Privly.Options.* to read and write
+ * As a fundamental interface, it provides Privly.options.* to read and write
  * Privly extension options.
  * 
  * As a background script, it listens onInstall events to upgrade old option values
@@ -12,7 +12,7 @@
  *
  * Chrome background sample incoming message:
  *   {ask: 'options/setPrivlyButtonEnabled', params: [true]}
- *   will call: Privly.Options.setPrivlyButtonEnabled(true)
+ *   will call: Privly.options.setPrivlyButtonEnabled(true)
  *   return values are sent via message response.
  *
  * For more information about the whitelist, read:
@@ -58,10 +58,10 @@ if (Privly === undefined) {
 (function () {
 
   // If this file is already loaded, don't do it again
-  if (Privly.Options !== undefined) {
+  if (Privly.options !== undefined) {
     return;
   }
-  Privly.Options = {};
+  Privly.options = {};
 
   /**
    * Broadcast option changed message
@@ -99,12 +99,12 @@ if (Privly === undefined) {
    * Update old option names to newer ones.
    * Will be called when user updates the extension.
    */
-  Privly.Options.upgrade = function () {
+  Privly.options.upgrade = function () {
     // Privly posting button
     var disableButton = ls.getItem('Options:DissableButton');
     if (disableButton !== undefined) {
       try {
-        Privly.Options.setPrivlyButtonEnabled((disableButton !== true));
+        Privly.options.setPrivlyButtonEnabled((disableButton !== true));
         ls.removeItem('Options:DissableButton');
       } catch (ignore) {}
     }
@@ -112,7 +112,7 @@ if (Privly === undefined) {
     var userWhitelistCSV = ls.getItem('user_whitelist_csv');
     if (userWhitelistCSV !== undefined) {
       try {
-        Privly.Options.setWhitelist(userWhitelistCSV.split(','));
+        Privly.options.setWhitelist(userWhitelistCSV.split(','));
         ls.removeItem('user_whitelist_csv');
       } catch (ignore) {}
     }
@@ -120,7 +120,7 @@ if (Privly === undefined) {
     var userWhitelistJSON = ls.getItem('user_whitelist_json');
     if (userWhitelistJSON !== undefined) {
       try {
-        Privly.Options.setWhitelist(JSON.parse(userWhitelistJSON));
+        Privly.options.setWhitelist(JSON.parse(userWhitelistJSON));
         ls.removeItem('user_whitelist_json');
       } catch (ignore) {}
     }
@@ -128,7 +128,7 @@ if (Privly === undefined) {
     var postingContentServerUrl = ls.getItem('posting_content_server_url');
     if (postingContentServerUrl !== undefined) {
       try {
-        Privly.Options.setServerUrl(postingContentServerUrl);
+        Privly.options.setServerUrl(postingContentServerUrl);
         ls.removeItem('posting_content_server_url');
       } catch (ignore) {}
     }
@@ -137,7 +137,7 @@ if (Privly === undefined) {
     var glyphCell = ls.getItem('glyph_cell');
     if (glyphColor !== undefined && glyphCell !== undefined) {
       try {
-        Privly.Options.setGlyph({
+        Privly.options.setGlyph({
           color: glyphColor,
           cells: glyphCell.split(',').map(function (fill) {
             return (fill === 'true');
@@ -155,7 +155,7 @@ if (Privly === undefined) {
     // Set event listeners to execute upgrade() function when
     // the extension got installed.
     chrome.runtime.onInstalled.addListener(function () {
-      Privly.Options.upgrade();
+      Privly.options.upgrade();
     });
 
     // Listen incoming messages to provide option interfaces
@@ -163,8 +163,8 @@ if (Privly === undefined) {
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       if (request.ask.indexOf('options/') === 0) {
         var method = request.ask.split('/')[1];
-        if (Privly.Options[method] !== undefined) {
-          var returnValue = Privly.Options[method].apply(Privly.Options, request.params);
+        if (Privly.options[method] !== undefined) {
+          var returnValue = Privly.options[method].apply(Privly.options, request.params);
           sendResponse(returnValue);
         }
       }
@@ -176,7 +176,7 @@ if (Privly === undefined) {
    * Whether Privly posting button is enabled
    * @return {Boolean}
    */
-  Privly.Options.isPrivlyButtonEnabled = function () {
+  Privly.options.isPrivlyButtonEnabled = function () {
     var v = Privly.storage.get('options/privlyButton');
     if (v === null) {
       v = false;
@@ -188,7 +188,7 @@ if (Privly === undefined) {
    * Enable or disable the Privly posting button
    * @param {Boolean} enabled
    */
-  Privly.Options.setPrivlyButtonEnabled = function (enabled) {
+  Privly.options.setPrivlyButtonEnabled = function (enabled) {
     if (typeof enabled !== 'boolean') {
       throw new Error('invalid argument');
     }
@@ -201,7 +201,7 @@ if (Privly === undefined) {
    * Whether content injection is enabled
    * @return {Boolean}
    */
-  Privly.Options.isInjectionEnabled = function () {
+  Privly.options.isInjectionEnabled = function () {
     var v = Privly.storage.get('options/injection');
     if (v === null) {
       v = true;
@@ -213,7 +213,7 @@ if (Privly === undefined) {
    * Enable or diable content injection
    * @param {Boolean} enabled
    */
-  Privly.Options.setInjectionEnabled = function (enabled) {
+  Privly.options.setInjectionEnabled = function (enabled) {
     if (typeof enabled !== 'boolean') {
       throw new Error('invalid argument');
     }
@@ -227,7 +227,7 @@ if (Privly === undefined) {
    * @param  {String}  domain Domain to validate
    * @return {Boolean}
    */
-  Privly.Options.isDomainValid = function (domain) {
+  Privly.options.isDomainValid = function (domain) {
     // Each subdomain can be from 1-63 characters and may contain alphanumeric
     // characters, - and _ but may not begin or end with - or _
     // Each domain can be from 1-63 characters and may contain alphanumeric 
@@ -284,7 +284,7 @@ if (Privly === undefined) {
    * Get user whitelist as JSON
    * @return {[String]} Array of whitelists
    */
-  Privly.Options.getWhitelistDomains = function () {
+  Privly.options.getWhitelistDomains = function () {
     var v = Privly.storage.get('options/whitelist/domains');
     if (v === null) {
       v = [];
@@ -296,7 +296,7 @@ if (Privly === undefined) {
    * Get user whitelist as RegExp
    * @return {[String]} Array of whitelists
    */
-  Privly.Options.getWhitelistRegExp = function () {
+  Privly.options.getWhitelistRegExp = function () {
     var v = Privly.storage.get('options/whitelist/regexp');
     if (v === null) {
       v = '';
@@ -308,12 +308,12 @@ if (Privly === undefined) {
    * Update or set user whitelist
    * @param {String} whitelist
    */
-  Privly.Options.setWhitelist = function (whitelist) {
+  Privly.options.setWhitelist = function (whitelist) {
     var regexp = ''; // stores regex to match validated domains
     var domains = whitelist.map(function (domain) {
       domain = domain.toLowerCase();
       regexp += '|' + domain.replace(/\./g, '\\.') + '\\\/';
-      if (!Privly.Options.isDomainValid(domain)) {
+      if (!Privly.options.isDomainValid(domain)) {
         throw new Error('invalid domain: ' + domain);
       }
       return domain;
@@ -330,7 +330,7 @@ if (Privly === undefined) {
    * Get content server Url
    * @return {String}
    */
-  Privly.Options.getServerUrl = function () {
+  Privly.options.getServerUrl = function () {
     var v = Privly.storage.get('options/contentServer/url');
     if (v === null) {
       v = 'https://privlyalpha.org';
@@ -342,7 +342,7 @@ if (Privly === undefined) {
    * Set content server Url
    * @param {String} url
    */
-  Privly.Options.setServerUrl = function (url) {
+  Privly.options.setServerUrl = function (url) {
     if (typeof url !== 'string') {
       throw new Error('invalid argument');
     }
@@ -357,7 +357,7 @@ if (Privly === undefined) {
    *   {String} color
    *   {[Boolean]} cells
    */
-  Privly.Options.getGlyph = function () {
+  Privly.options.getGlyph = function () {
     return Privly.storage.get('options/glyph');
   };
 
@@ -367,7 +367,7 @@ if (Privly === undefined) {
    *   {String} color
    *   {[Boolean]} cells
    */
-  Privly.Options.setGlyph = function (glyph) {
+  Privly.options.setGlyph = function (glyph) {
     if (typeof glyph !== 'object' || glyph === null) {
       throw new Error('invalid argument');
     }

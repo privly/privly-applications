@@ -9,9 +9,9 @@ describe ("Glyph Test Suite", function() {
   
   it("can generate a new glyph", function() {
     Privly.Glyph.generateGlyph();
-    var oldGlyph = Privly.Options.getGlyph();
+    var oldGlyph = Privly.options.getGlyph();
     Privly.Glyph.generateGlyph();
-    var newGlyph = Privly.Options.getGlyph();
+    var newGlyph = Privly.options.getGlyph();
     expect(newGlyph).not.toBeNull();
     expect(typeof newGlyph).toBe('object');
     expect(newGlyph.color).toBeDefined();

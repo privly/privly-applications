@@ -22,14 +22,14 @@ if (Privly === undefined) {
    * Get glyph color and cells
    */
   Privly.Glyph.getGlyph = function () {
-    return Privly.Options.getGlyph();
+    return Privly.options.getGlyph();
   };
 
   /**
    * Set glyph color and cells
    */
   Privly.Glyph.setGlyph = function (glyph) {
-    return Privly.Options.setGlyph(glyph);
+    return Privly.options.setGlyph(glyph);
   };
 
   /**
@@ -66,7 +66,7 @@ if (Privly === undefined) {
       color: glyphColor,
       cells: glyphCells
     };
-    Privly.Options.setGlyph(newGlyph);
+    Privly.options.setGlyph(newGlyph);
     return newGlyph;
   };
 
@@ -79,7 +79,7 @@ if (Privly === undefined) {
    */
   Privly.Glyph.getGlyphDOM = function () {
     // Generate a new glyph if not exist
-    var glyph = Privly.Options.getGlyph();
+    var glyph = Privly.options.getGlyph();
     if (glyph === null) {
       glyph = Privly.Glyph.generateGlyph();
     }

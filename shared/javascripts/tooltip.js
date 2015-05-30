@@ -87,7 +87,7 @@ var privlyTooltip = {
     tooltip: function(){
 
       // Create a new glyph if needed
-      if (Privly.Options.getGlyph() === null) {
+      if (Privly.options.getGlyph() === null) {
         privlyTooltip.generateNewGlyph();
       }
 

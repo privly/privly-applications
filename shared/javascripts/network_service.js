@@ -192,7 +192,7 @@ var privlyNetworkService = {
       privlyNetworkService.platformName() === "FIREFOX") {
       
       // get the user defined whitelist and add in the default whitelist
-      var whitelist = Privly.Options.getWhitelistDomains();
+      var whitelist = Privly.options.getWhitelistDomains();
       
       whitelist.push("priv.ly");
       whitelist.push("dev.privly.org");
@@ -236,7 +236,7 @@ var privlyNetworkService = {
     } else if (platformName === "CHROME" ||
                platformName === "FIREFOX" ||
                platformName === "IOS") {
-      return Privly.Options.getServerUrl();
+      return Privly.options.getServerUrl();
     } else if (platformName === "ANDROID") {
       return androidJsBridge.fetchDomainName();
     } else {

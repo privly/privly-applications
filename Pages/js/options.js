@@ -23,7 +23,7 @@ function saveCheckedSetting() {
   status.innerHTML = "";
 
   var checkedState = document.querySelector("#disableBtn").checked;
-  Privly.Options.setPrivlyButtonEnabled(!checkedState);
+  Privly.options.setPrivlyButtonEnabled(!checkedState);
 
   status.innerHTML = "Setting Saved."; 
   setTimeout(function() {
@@ -38,7 +38,7 @@ function restoreCheckedSetting() {
   var btn = document.getElementById("disableBtn");
   if ( btn === null ) {return;} // Don't run on Firefox
 
-  btn.checked = !Privly.Options.isPrivlyButtonEnabled();
+  btn.checked = !Privly.options.isPrivlyButtonEnabled();
 
   // Save the current setting for the Privly button appearance
   btn.addEventListener('click', saveCheckedSetting);
@@ -67,7 +67,7 @@ function saveWhitelist() {
   invalid_domain.className = ''; // hide the error message
 
   for (var i = 0; i < domains.length; ++i) {
-    if (!Privly.Options.isDomainValid(domains[i])) {
+    if (!Privly.options.isDomainValid(domains[i])) {
       input_fields[i].className += " invalid-domain";
       invalid_domains = true;
     }
@@ -76,7 +76,7 @@ function saveWhitelist() {
   if (invalid_domains) {
     invalid_domain.className = 'show';
   } else {
-    Privly.Options.setWhitelist(domains);
+    Privly.options.setWhitelist(domains);
     var status = document.getElementById("status");
     status.innerHTML = "Options Saved.";
     setTimeout(function() {
@@ -90,7 +90,7 @@ function saveWhitelist() {
  * Restores select box state to saved value from local storage.
  */
 function restoreWhitelist() {
-  var user_whitelist = Privly.Options.getWhitelistDomains();
+  var user_whitelist = Privly.options.getWhitelistDomains();
   for (var i = 0 ; i <= user_whitelist.length - 1 ; i++) {
     addUrlInputs();
   }
@@ -110,7 +110,7 @@ function restoreWhitelist() {
  */
 function restoreServer(){
   
-  var posting_content_server_url = Privly.Options.getServerUrl();
+  var posting_content_server_url = Privly.options.getServerUrl();
   var server_input = document.getElementById("content_server_url");
 
    // check content type and restore
@@ -192,7 +192,7 @@ function saveServer(event){
       } else if( server_selected === "local" ) {
         input = "http://localhost:3000";
       }
-      Privly.Options.setServerUrl(input);
+      Privly.options.setServerUrl(input);
       status.innerHTML = "Content Server Saved.";
       break;
       
