@@ -120,7 +120,7 @@ if (Privly === undefined) {
     var userWhitelistJSON = ls.getItem('user_whitelist_json');
     if (userWhitelistJSON !== undefined) {
       try {
-        Privly.options.setWhitelist(JSON.parse(userWhitelistJSON));
+        Privly.options.setWhitelist(userWhitelistJSON);
         ls.removeItem('user_whitelist_json');
       } catch (ignore) {}
     }
@@ -136,6 +136,9 @@ if (Privly === undefined) {
     var glyphColor = ls.getItem('glyph_color');
     var glyphCell = ls.getItem('glyph_cell');
     if (glyphColor !== undefined && glyphCell !== undefined) {
+      // ls.setItem(..., "001122") would become number 1122 when calling ls.getItem(...)
+      glyphColor = String(glyphColor);
+      glyphColor = '000000'.substr(0, 6 - glyphColor.length) + glyphColor;
       try {
         Privly.options.setGlyph({
           color: glyphColor,
@@ -309,12 +312,19 @@ if (Privly === undefined) {
    * @param {String} whitelist
    */
   Privly.options.setWhitelist = function (whitelist) {
+    // typeof null === 'object'
+    if (typeof whitelist !== 'object' || whitelist === null || whitelist.constructor !== Array) {
+      throw new Error('invalid argument');
+    }
     var regexp = ''; // stores regex to match validated domains
     var domains = whitelist.map(function (domain) {
+      if (typeof domain !== 'string') {
+        throw new Error('invalid argument');
+      }
       domain = domain.toLowerCase();
       regexp += '|' + domain.replace(/\./g, '\\.') + '\\\/';
       if (!Privly.options.isDomainValid(domain)) {
-        throw new Error('invalid domain: ' + domain);
+        throw new Error('invalid domain');
       }
       return domain;
     });
@@ -368,10 +378,11 @@ if (Privly === undefined) {
    *   {[Boolean]} cells
    */
   Privly.options.setGlyph = function (glyph) {
+    // typeof null === 'object'
     if (typeof glyph !== 'object' || glyph === null) {
       throw new Error('invalid argument');
     }
-    if (glyph.color === undefined || glyph.cells === undefined) {
+    if (typeof glyph.color !== 'string' || typeof glyph.cells !== 'object' || glyph.cells === null || glyph.cells.constructor !== Array) {
       throw new Error('invalid argument');
     }
     var obj = {
