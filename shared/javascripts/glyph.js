@@ -13,31 +13,31 @@ if (Privly === undefined) {
 (function () {
 
   // If this file is already loaded, don't do it again
-  if (Privly.Glyph !== undefined) {
+  if (Privly.glyph !== undefined) {
     return;
   }
-  Privly.Glyph = {};
+  Privly.glyph = {};
 
   /**
    * Get glyph color and cells
    */
-  Privly.Glyph.getGlyph = function () {
+  Privly.glyph.getGlyph = function () {
     return Privly.options.getGlyph();
   };
 
   /**
    * Set glyph color and cells
    */
-  Privly.Glyph.setGlyph = function (glyph) {
+  Privly.glyph.setGlyph = function (glyph) {
     return Privly.options.setGlyph(glyph);
   };
 
   /**
    * Initialize a new glyph image if not exist
    */
-  Privly.Glyph.initGlyph = function () {
-    if (Privly.Glyph.getGlyph() === null) {
-      Privly.Glyph.generateGlyph();
+  Privly.glyph.initGlyph = function () {
+    if (Privly.glyph.getGlyph() === null) {
+      Privly.glyph.generateGlyph();
     }
   };
 
@@ -47,7 +47,7 @@ if (Privly === undefined) {
     // Set event listeners to execute initGlyph() function when
     // the extension got installed.
     chrome.runtime.onInstalled.addListener(function () {
-      Privly.Glyph.initGlyph();
+      Privly.glyph.initGlyph();
     });
   }
 
@@ -55,7 +55,7 @@ if (Privly === undefined) {
   /**
    * Re-generate a new glyph and store it
    */
-  Privly.Glyph.generateGlyph = function () {
+  Privly.glyph.generateGlyph = function () {
     var glyphColor = Math.floor(Math.random() * 0xFFFFFF).toString(16);
     var glyphCells = [];
     var i;
@@ -77,11 +77,11 @@ if (Privly === undefined) {
    * @return {Node} A table element containing the glyph.
    *
    */
-  Privly.Glyph.getGlyphDOM = function () {
+  Privly.glyph.getGlyphDOM = function () {
     // Generate a new glyph if not exist
     var glyph = Privly.options.getGlyph();
     if (glyph === null) {
-      glyph = Privly.Glyph.generateGlyph();
+      glyph = Privly.glyph.generateGlyph();
     }
 
     // Construct the 5x5 table that will represent the glyph.

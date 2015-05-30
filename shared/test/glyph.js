@@ -8,9 +8,9 @@
 describe ("Glyph Test Suite", function() {
   
   it("can generate a new glyph", function() {
-    Privly.Glyph.generateGlyph();
+    Privly.glyph.generateGlyph();
     var oldGlyph = Privly.options.getGlyph();
-    Privly.Glyph.generateGlyph();
+    Privly.glyph.generateGlyph();
     var newGlyph = Privly.options.getGlyph();
     expect(newGlyph).not.toBeNull();
     expect(typeof newGlyph).toBe('object');
@@ -22,7 +22,7 @@ describe ("Glyph Test Suite", function() {
   });
 
   it("can generate glyph DOM", function() {
-    var table = Privly.Glyph.getGlyphDOM();
+    var table = Privly.glyph.getGlyphDOM();
     expect(table.nodeName).toBe('TABLE');
     expect(table.querySelectorAll('td').length).toEqual(25);
   });

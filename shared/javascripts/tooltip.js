@@ -78,7 +78,7 @@ var privlyTooltip = {
      * for anything other than the glyph.
      */
     generateNewGlyph: function(){
-      Privly.Glyph.generateGlyph();
+      Privly.glyph.generateGlyph();
     },
 
     /**
@@ -92,7 +92,7 @@ var privlyTooltip = {
       }
 
       // Generate the glyph HTML and assign the color
-      var glyph = Privly.Glyph.getGlyphDOM();
+      var glyph = Privly.glyph.getGlyphDOM();
 
       // Create the tooltip element
       var tooltipMessageElement = document.createElement("div");

@@ -233,7 +233,7 @@ function regenerateGlyph() {
     div.removeChild(div.lastChild);
   }
 
-  Privly.Glyph.generateGlyph();
+  Privly.glyph.generateGlyph();
   writeGlyph();
 
 }
@@ -244,7 +244,7 @@ function regenerateGlyph() {
  * The row is written as a table and assigned to the div element glyph_table.
  */
 function writeGlyph() {
-  var table = Privly.Glyph.getGlyphDOM();
+  var table = Privly.glyph.getGlyphDOM();
   document.getElementById("glyph_div").appendChild(table);
 }
 
