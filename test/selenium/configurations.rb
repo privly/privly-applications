@@ -94,6 +94,10 @@ def common_configuration_for_sauce
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.chrome
       config['version'] = "dev"
       @sauce_caps.version = "dev"
+    elsif @browser == "safari"
+      @sauce_caps = Selenium::WebDriver::Remote::Capabilities.safari
+      config['version'] = "5.1"
+      @sauce_caps.version = "5.1"
     end
 
     @sauce_caps.platform = "Windows 7"
@@ -140,6 +144,11 @@ def configure_for_sauce_firefox_web(args)
 end
 
 def configure_for_sauce_chrome_web(args)
+  common_configuration_for_sauce
+  common_configuration_for_sauce_web(args)
+end
+
+def configure_for_sauce_safari_web(args)
   common_configuration_for_sauce
   common_configuration_for_sauce_web(args)
 end
