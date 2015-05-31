@@ -51,7 +51,7 @@
       </select>
     </div>
     <div class="form-group">
-        <button type="button" class="btn btn-primary btn-submit" name="submit" style="display:none;">Submit</button><button type="button" class="btn btn-done" name="done" style="display:none;">Done</button> <button type="button" class="btn btn-cancel" name="cancel">Cancel</button> <span class="saving-text" style="display:none">Saving...</span>
+        <button type="button" class="btn btn-primary" name="submit" style="display:none;">Submit</button><button type="button" class="btn" name="done" style="display:none;">Done</button> <button type="button" class="btn" name="cancel">Cancel</button> <span class="saving-text" style="display:none">Saving...</span>
     </div>
 </div>
 {% endblock %}

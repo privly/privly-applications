@@ -387,9 +387,9 @@ var loginCheckingCallback = {
     // retrive submit button information (show 'submit' or 'done')
     background.getFormInfo(function (info) {
       if (info.hasSubmitButton) {
-        $('[name="submit"]').text(info.submitButtonText).show();
+        $('button[name="submit"]').text(info.submitButtonText).show();
       } else {
-        $('[name="done"]').show();
+        $('button[name="done"]').show();
       }
     });
 

@@ -34,14 +34,15 @@ describe("Embed Posting Application", function () {
    * @see privly-application/pull/238
    */
   beforeEach(function () {
-    var keys = Object.keys(__html__);
-    var selectKey;
-    keys.forEach(function (key) {
-      if (key.indexOf("Message/new_embed.html") >= 0) {
-        selectKey = key;
-      }
-    });
-    document.body.innerHTML = __html__[selectKey];
+    var $login = $('<div>').addClass('login-required').hide().appendTo(document.body);
+    $('<a>').attr('name', 'login').appendTo($login);
+    $('<a>').attr('name', 'cancel').appendTo($login);
+    var $dialog = $('<div>').addClass('message-posting-dialog').hide().appendTo(document.body);
+    $('<button>').attr('name', 'done').hide().appendTo($dialog);
+    $('<button>').attr('name', 'submit').hide().appendTo($dialog);
+    $('<button>').attr('name', 'cancel').appendTo($dialog);
+    $('<select>').attr('id', 'seconds_until_burn').appendTo($dialog);
+    $('<textarea>').appendTo($dialog);
 
     // Reset default values for each test case.
     mockValues = {
@@ -292,7 +293,7 @@ describe("Embed Posting Application", function () {
   it("should show posting message form when the user is logined", function () {
     loginCheckingCallback.logined();
     expect($('textarea').is(':visible')).toBe(true);
-    expect($('.btn-cancel').is(':visible')).toBe(true);
+    expect($('button[name="cancel"]').is(':visible')).toBe(true);
   });
 
   it("should show the done button when there isn't any submit button", function () {
@@ -300,8 +301,8 @@ describe("Embed Posting Application", function () {
       hasSubmitButton: false
     };
     loginCheckingCallback.logined();
-    expect($('[name="submit"]').is(':visible')).toBe(false);
-    expect($('[name="done"]').is(':visible')).toBe(true);
+    expect($('button[name="submit"]').is(':visible')).toBe(false);
+    expect($('button[name="done"]').is(':visible')).toBe(true);
   });
 
   it("should show the submit button with proper text when there is a submit button", function () {
@@ -310,9 +311,9 @@ describe("Embed Posting Application", function () {
       submitButtonText: '[SUBMIT]'
     };
     loginCheckingCallback.logined();
-    expect($('[name="submit"]').is(':visible')).toBe(true);
-    expect($('[name="submit"]').text()).toBe('[SUBMIT]');
-    expect($('[name="done"]').is(':visible')).toBe(false);
+    expect($('button[name="submit"]').is(':visible')).toBe(true);
+    expect($('button[name="submit"]').text()).toBe('[SUBMIT]');
+    expect($('button[name="done"]').is(':visible')).toBe(false);
   });
 
   it("should treat submit button text as plaintext", function () {
@@ -321,7 +322,7 @@ describe("Embed Posting Application", function () {
       submitButtonText: '<b>Hello</b>'
     };
     loginCheckingCallback.logined();
-    expect($('[name="submit"]').text()).toBe('<b>Hello</b>');
+    expect($('button[name="submit"]').text()).toBe('<b>Hello</b>');
   });
 
   it("should call background.closeDialog when it cannot get the content of editable element", function () {
@@ -369,20 +370,20 @@ describe("Embed Posting Application", function () {
 
   it("should call privlyWeb.deleteLink when user clicks cancel", function () {
     loginCheckingCallback.logined();
-    $('[name="cancel"]').click();
+    $('button[name="cancel"]').click();
     expect(privlyWeb.deleteLink).toHaveBeenCalled();
   });
 
   it("should not send request to destroy the link when user is not logined", function () {
     loginCheckingCallback.notlogined();
-    $('[name="cancel"]').click();
+    $('a[name="cancel"]').click();
     expect(privlyNetworkService.sameOriginDeleteRequest).not.toHaveBeenCalled();
   });
 
   it("should call background.setTargetContent to reset the content of the editable element when user clicks cancel", function () {
     var originalContent = mockValues.chrome.runtime.sendMessage['posting/get_target_content'];
     loginCheckingCallback.logined();
-    $('.btn-cancel').click();
+    $('button[name="cancel"]').click();
     expect(background.setTargetContent).toHaveBeenCalled();
     expect(chromeSentMessages['posting/set_target_content'].content).toEqual(originalContent);
   });
@@ -390,7 +391,7 @@ describe("Embed Posting Application", function () {
   it("should call background.setTargetContent to reset the content of the editable element when user clicks cancel", function () {
     mockValues.chrome.runtime.sendMessage['posting/get_target_content'] = '';
     loginCheckingCallback.logined();
-    $('.btn-cancel').click();
+    $('button[name="cancel"]').click();
     expect(background.setTargetContent).toHaveBeenCalled();
     expect(chromeSentMessages['posting/set_target_content'].content).toEqual('');
   });
