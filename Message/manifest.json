@@ -8,15 +8,10 @@
   },
   {
     "release_status": "alpha",
-    "subtemplate_path": "Message/new_embed.html.subtemplate",
-    "outfile_path": "Message/new_embed.html",
-    "subtemplate_dict": {"name": "Message", "action": "new_embed"}
-  },
-  {
-    "release_status": "alpha",
-    "subtemplate_path": "Message/new_embed_login_callback.html.subtemplate",
-    "outfile_path": "Message/new_embed_login_callback.html",
-    "subtemplate_dict": {"name": "Message", "action": "new_embed_login_callback"}
+    "platforms": ["chrome", "firefox"],
+    "subtemplate_path": "Message/embeded.html.subtemplate",
+    "outfile_path": "Message/embeded.html",
+    "subtemplate_dict": {"name": "Message", "action": "embeded"}
   },
   {
     "release_status": "alpha",

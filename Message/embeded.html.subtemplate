@@ -1,0 +1,12 @@
+{% extends "templates/embeded.html.template" %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="../vendor/sjcl.js"></script>
+  <script type="text/javascript" src="js/base64.js"></script>
+  <script type="text/javascript" src="js/rawdeflate.js"></script>
+  <script type="text/javascript" src="js/rawinflate.js"></script>
+  <script type="text/javascript" src="js/zerobin.js"></script>
+  <script type="text/javascript" src="../shared/javascripts/privly-web/embeded.js"></script>
+  <script type="text/javascript" src="js/message.js"></script>
+  <script type="text/javascript" src="js/embeded.js"></script>
+{% endblock %}

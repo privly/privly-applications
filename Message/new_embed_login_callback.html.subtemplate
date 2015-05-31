@@ -1,5 +1,0 @@
-{% extends "templates/base.html.template" %}
-
-{% block head %}
-  <script type="text/javascript" src="js/new_embed_login_callback.js"></script>
-{% endblock %}
