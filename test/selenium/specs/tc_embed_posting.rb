@@ -22,7 +22,6 @@ class TestEmbedPosting < Test::Unit::TestCase
     @options_url = @@privly_applications_folder_path + '/Pages/ChromeOptions.html'
     page.driver.browser.get(@options_url)
     page.uncheck('disableBtn')
-    page.click_button('save_btnAppearance')
   end
 
   def click_privly_button_of(element)
@@ -50,15 +49,15 @@ class TestEmbedPosting < Test::Unit::TestCase
         # check embed-posting dialog at the top frame
         # switch to top frame, check whether embed-posting frame is created
         page.driver.browser.switch_to.default_content
-        assert has_selector?('[src*="new_embed"]')
+        assert has_selector?('[src*="embeded.html"]')
 
         # switch to embed-posting frame, click Cancel
-        page.driver.browser.switch_to.frame(find(:css, '[src*="new_embed"]').native)
+        page.driver.browser.switch_to.frame(find(:css, '[src*="embeded.html"]').native)
         find(:css, '[name="cancel"]').click
         
         # switch to top frame, check whether embed-posting frame is destroyed
         page.driver.browser.switch_to.default_content
-        assert_no_selector('[src*="new_embed"]')
+        assert_no_selector('[src*="embeded.html"]')
         
         # switch back to the original frame
         @_frame_handles.each { |fh| page.driver.browser.switch_to.frame(fh) }
@@ -86,23 +85,23 @@ class TestEmbedPosting < Test::Unit::TestCase
 
     def expect_submit_button(element, submit_caption)
       click_privly_button_of element
-      within_frame find(:css, '[src*="new_embed"]') do
+      within_frame find(:css, '[src*="embeded.html"]') do
         assert has_selector?('[name="submit"]', visible: true)
         assert has_selector?('[name="done"]', visible: false)
         assert find(:css, '[name="submit"]').has_content?(submit_caption)
         find(:css, '[name="cancel"]').click
       end
-      assert_no_selector('[src*="new_embed"]')
+      assert_no_selector('[src*="embeded.html"]')
     end
 
     def expect_done_button(element)
       click_privly_button_of element
-      within_frame find(:css, '[src*="new_embed"]') do
+      within_frame find(:css, '[src*="embeded.html"]') do
         assert has_selector?('[name="submit"]', visible: false)
         assert has_selector?('[name="done"]', visible: true)
         find(:css, '[name="cancel"]').click
       end
-      assert_no_selector('[src*="new_embed"]')
+      assert_no_selector('[src*="embeded.html"]')
     end
 
     page.driver.browser.get('http://test.privly.org/test_pages/embedposting_proxy.html')
@@ -121,11 +120,11 @@ class TestEmbedPosting < Test::Unit::TestCase
 
     def expect_closed_when(element, keys)
       click_privly_button_of element
-      assert has_selector?('[src*="new_embed"]')
-      within_frame find(:css, '[src*="new_embed"]') do
+      assert has_selector?('[src*="embeded.html"]')
+      within_frame find(:css, '[src*="embeded.html"]') do
         find(:css, 'textarea').native.send_keys keys
       end
-      assert_no_selector('[src*="new_embed"]')
+      assert_no_selector('[src*="embeded.html"]')
     end
 
     if RbConfig::CONFIG['host_os'].match /darwin|mac os/
@@ -153,13 +152,13 @@ class TestEmbedPosting < Test::Unit::TestCase
 
     def expect_not_closed(element)
       click_privly_button_of element
-      assert has_selector?('[src*="new_embed"]')
+      assert has_selector?('[src*="embeded.html"]')
       sleep 2 # wait 1 second
-      assert has_selector?('[src*="new_embed"]')
-      within_frame find(:css, '[src*="new_embed"]') do
+      assert has_selector?('[src*="embeded.html"]')
+      within_frame find(:css, '[src*="embeded.html"]') do
         find(:css, '[name="cancel"]').click
       end
-      assert_no_selector('[src*="new_embed"]')
+      assert_no_selector('[src*="embeded.html"]')
     end
 
     page.driver.browser.get('http://test.privly.org/test_pages/embedposting_proxy.html')
