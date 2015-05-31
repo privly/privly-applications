@@ -26,7 +26,7 @@ var ls = {
     if ( ls.localStorageDefined ) {
       localStorage.setItem(key, value);
     } else {
-      ls.simpleStorage[key] = value;
+      ls.preferences.setCharPref(key, value);
     }
 
     return value;
@@ -55,10 +55,10 @@ var ls = {
     } else {
       try {
         try { // try to parse stored value as JSON
-          var value = JSON.parse(ls.simpleStorage[key]);
+          var value = JSON.parse(ls.preferences.getCharPref(key));
           return value;
         } catch(e){
-          return ls.simpleStorage[key];
+          return ls.preferences.getCharPref(key);
         }
       } catch(e) {
         console.warn("Local Storage key was not in storage");
@@ -78,7 +78,7 @@ var ls = {
       return localStorage.removeItem(key);
     } else {
       try {
-        delete ls.simpleStorage[key];
+        ls.preferences.clearUserPref(key);
       } catch(e) {
         console.warn("Local Storage key was not in storage when it was removed");
       }
@@ -103,10 +103,9 @@ try {
   } else {
     // Case 2
     ls.localStorageDefined = false;
-    const ss = Components.classes["@privly/jetpack;1"].
-                 getService(Components.interfaces.nsISupports).
-                 wrappedJSObject.
-                 getSimpleStorage();
-    ls.simpleStorage = ss.storage;
+    // Preferences Storage
+    ls.preferences = Components.classes["@mozilla.org/preferences-service;1"].
+                       getService(Components.interfaces.nsIPrefService).
+                       getBranch("extensions.privly.");
   }
 }
