@@ -58,43 +58,43 @@ describe ("Message Show Suite", function() {
   it("recovers key from localStorage", function() {
 
     // Save old values
-    var oldURLs = ls.getItem("Message:URLs");
+    var oldURLs = Privly.storage.get("Message:URLs");
     var oldAppAddress = state.webApplicationURL;
 
     // Run test
     state.webApplicationURL = "https://priv.ly/test/show?fu=bar";
-    ls.setItem("Message:URLs", [state.webApplicationURL + "#privlyLinkKey=testKey"]);
+    Privly.storage.set("Message:URLs", [state.webApplicationURL + "#privlyLinkKey=testKey"]);
     expect(resolveKeyFromHistory()).toBe(true);
 
     // Try something more confusing
-    ls.setItem("Message:URLs", ["AAA", "AAA",
+    Privly.storage.set("Message:URLs", ["AAA", "AAA",
      state.webApplicationURL + "#privlyLinkKey=testKey"]);
     expect(resolveKeyFromHistory()).toBe(true);
 
     // Cleanup
-    ls.setItem("Message:URLs", oldURLs);
+    Privly.storage.set("Message:URLs", oldURLs);
     state.webApplicationURL = oldAppAddress;
   });
 
   it("does not recover key from localStorage", function() {
 
     // Save old values
-    var oldURLs = ls.getItem("Message:URLs");
+    var oldURLs = Privly.storage.get("Message:URLs");
     var oldAppAddress = state.webApplicationURL;
 
     // Run test
     state.webApplicationURL = "https://priv.ly/test/show?fu=bar";
-    ls.setItem("Message:URLs", "#privlyLinkKey=testKey");
+    Privly.storage.set("Message:URLs", "#privlyLinkKey=testKey");
     expect(resolveKeyFromHistory()).toBe(false);
 
     // Try something more confusing
     state.webApplicationURL = "https://test.com/fu/bar?fubar=hello_world";
-    ls.setItem("Message:URLs", "||" +
+    Privly.storage.set("Message:URLs", "||" +
      "https://faketest.com/fu/bar?fubar=hello_world#privlyLinkKey=testKey");
     expect(resolveKeyFromHistory()).toBe(false);
 
     // Cleanup
-    ls.setItem("Message:URLs", oldURLs);
+    Privly.storage.set("Message:URLs", oldURLs);
     state.webApplicationURL = oldAppAddress;
   });
 });

@@ -1,5 +1,5 @@
 /*global sjcl, zeroCipher */
-/*global privlyNetworkService, ls */
+/*global Promise, privlyNetworkService */
 
 // If Privly namespace is not initialized, initialize it
 var Privly;
@@ -77,12 +77,12 @@ if (Privly.app === undefined) {
     if (privlyNetworkService.platformName() === 'HOSTED') {
       return;
     }
-    var urls = ls.getItem("Message:URLs");
-    if (urls === undefined) {
+    var urls = Privly.storage.get("Message:URLs");
+    if (urls === null) {
       urls = [];
     }
     urls.push(url);
-    ls.setItem("Message:URLs", urls);
+    Privly.storage.set("Message:URLs", urls);
   };
 
   /**
@@ -94,8 +94,8 @@ if (Privly.app === undefined) {
     if (privlyNetworkService.platformName() === 'HOSTED') {
       return;
     }
-    var urls = ls.getItem("Message:URLs");
-    if (urls === undefined) {
+    var urls = Privly.storage.get("Message:URLs");
+    if (urls === null) {
       return;
     }
     var i;
@@ -104,7 +104,7 @@ if (Privly.app === undefined) {
         urls.splice(i, 1);
       }
     }
-    ls.setItem("Message:URLs", urls);
+    Privly.storage.set("Message:URLs", urls);
   };
 
   Privly.app.Message = MessageApp;
