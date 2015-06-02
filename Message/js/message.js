@@ -37,17 +37,17 @@ if (Privly.app === undefined) {
    *
    * @override
    * @param  {String} raw User input content
-   * @return {Object}
+   * @return {Promise<Object>}
    *           {String} content
    *           {String} structured_content
    *           {Boolean} isPublic
    */
   MessageApp.prototype.getRequestContent = function (raw) {
-    return {
+    return Promise.resolve({
       content: '',
       structured_content: zeroCipher(this.randomkey, raw),
       isPublic: true
-    };
+    });
   };
 
   /**
@@ -55,7 +55,7 @@ if (Privly.app === undefined) {
    *
    * @override
    * @param  {String} url
-   * @return {String} The processed url
+   * @return {Promise<String>} The processed url
    */
   MessageApp.prototype.postprocessLink = function (url) {
     // append random key
@@ -64,7 +64,7 @@ if (Privly.app === undefined) {
     } else {
       url = url + "#privlyLinkKey=" + encodeURIComponent(this.randomkey);
     }
-    return url;
+    return Promise.resolve(url);
   };
 
   /**

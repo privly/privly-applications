@@ -32,17 +32,17 @@ if (Privly.app === undefined) {
    *
    * @override
    * @param  {String} raw User input content
-   * @return {Object}
+   * @return {Promise<Object>}
    *           {String} content
    *           {String} structured_content
    *           {Boolean} isPublic
    */
   PlainpostApp.prototype.getRequestContent = function (raw) {
-    return {
+    return Promise.resolve({
       content: raw,
       structured_content: '',
       isPublic: true
-    };
+    });
   };
 
   Privly.app.Plainpost = PlainpostApp;

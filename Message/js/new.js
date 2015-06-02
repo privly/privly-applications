@@ -24,9 +24,10 @@ function previewMarkdown() {
  */
 function processURL(response) {
   var url = response.jqXHR.getResponseHeader("X-Privly-Url");
-  url = message.postprocessLink(url);
-  message.storeUrl(url);
-  return url;
+  return message.postprocessLink(url).then(function (url) {
+    message.storeUrl(url);
+    return url;
+  });
 }
 
 /**
@@ -36,17 +37,20 @@ function processURL(response) {
  */
 function save() {
   message = new Privly.app.Message();
-  var content = message.getRequestContent($("#content")[0].value);
-
-  callbacks.postCompleted = function(response) {
-    oldPostCompletedCallback(response, processURL(response));
-  };
-
-  // Submit the ciphertext to the server
-  callbacks.postSubmit(content.structured_content, 
-    "Message",
-    $( "#seconds_until_burn" ).val(), 
-    "");
+  message
+    .getRequestContent($("#content")[0].value)
+    .then(function (content) {
+      callbacks.postCompleted = function(response) {
+        processURL(response).then(function (url) {
+          oldPostCompletedCallback(response, url);
+        });
+      };
+      // Submit the ciphertext to the server
+      callbacks.postSubmit(content.structured_content, 
+        "Message",
+        $( "#seconds_until_burn" ).val(), 
+        "");
+    });
 }
 
 /**

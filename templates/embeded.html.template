@@ -5,6 +5,7 @@
   {% block css %}{% endblock %}
 
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+  <script type="text/javascript" src="../vendor/es6-promise.js"></script>
   <script type="text/javascript" src="../shared/javascripts/event_emitter.js"></script>
   <script type="text/javascript" src="../shared/javascripts/tooltip.js"></script>
   <script type="text/javascript" src="../shared/javascripts/privly-web/embeded.js"></script>

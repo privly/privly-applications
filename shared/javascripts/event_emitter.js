@@ -5,6 +5,7 @@
  */
 
 // If Privly namespace is not initialized, initialize it
+/*global Promise */
 var Privly;
 if (Privly === undefined) {
   Privly = {};
@@ -79,6 +80,27 @@ if (Privly === undefined) {
       if (ret !== undefined) {
         return ret;
       }
+    }
+  };
+
+  /**
+   * Trigger an event and returns a resolved Promise
+   * if non of the event listeners returns a Promise.
+   *
+   * Requires Promise loaded.
+   * 
+   * @param  {String} ev Event name
+   * @return {Promise<Any>}
+   */
+  Privly.EventEmitter.prototype.emitAsync = function () {
+    var retValue = this.emit.apply(this, arguments);
+    if (typeof retValue === 'object' && retValue !== null && retValue.then !== undefined) {
+      // event listeners returns a Promise: use the Promise as a return value
+      return retValue;
+    } else {
+      // non return values from event listeners,
+      // or event listeners returns a non-Promise value: returns a resolved Promise
+      return Promise.resolve(retValue);
     }
   };
 
