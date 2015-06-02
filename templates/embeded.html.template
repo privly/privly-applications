@@ -5,7 +5,7 @@
   {% block css %}{% endblock %}
 
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
-  <script type="text/javascript" src="../vendor/EventEmitter.js"></script>
+  <script type="text/javascript" src="../shared/javascripts/event_emitter.js"></script>
   <script type="text/javascript" src="../shared/javascripts/tooltip.js"></script>
   <script type="text/javascript" src="../shared/javascripts/privly-web/embeded.js"></script>
   {% block javascripts %}{% endblock %}

@@ -160,7 +160,7 @@ if (Privly.adapter === undefined) {
   };
 
   // Inhreit EventEmitter
-  EmbededAdapter.prototype = Object.create(EventEmitter.prototype);
+  Privly.EventEmitter.inherit(EmbededAdapter);
 
   /**
    * Close this embed posting dialog (destroy iframe) and
@@ -338,7 +338,7 @@ if (Privly.adapter === undefined) {
         var reqUrl = privlyParameters.getParameterHash(url).privlyDataURL;
         self.privlyUrl = url;
         self.requestUrl = reqUrl;
-        self.emitEvent('afterCreateLink', [url, reqUrl]);
+        self.emit('afterCreateLink', url, reqUrl);
         callback && callback(true);
       },
       contentToPost
@@ -389,7 +389,7 @@ if (Privly.adapter === undefined) {
         $('.saving-text').hide();
         $('.embeded-form button').removeAttr('disabled');
         self.lastUpdateXHR = null;
-        self.emitEvent('afterUpdateLink', [url, reqUrl]);
+        self.emit('afterUpdateLink', url, reqUrl);
         callback && callback(true);
       },
       contentToPost
@@ -419,7 +419,7 @@ if (Privly.adapter === undefined) {
     privlyNetworkService.sameOriginDeleteRequest(
       reqUrl,
       function (response) {
-        self.emitEvent('afterDeleteLink', [url, reqUrl]);
+        self.emit('afterDeleteLink', url, reqUrl);
         callback && callback(true);
       },
       contentToPost
