@@ -85,6 +85,9 @@ this from the privly-applications directory of the privly-firefox extension.
 **chrome_extension:** run Chrome locally with an extension. You should only run
 this from the privly-applications directory of the privly-chrome extension.
 
+**safari_extension:** run Safari locally with an extension. You should only run
+this from the privly-applications directory of the privly-safari extension.
+
 You can run each of these from the `privly-applications/test/selenium` directory with
 `ruby run_all.rb -p INSERT_PLATFORM_HERE -r experimental -c http://localhost:3000`.
 The corresponding browser will be opened and the specs included by `run_all.rb` will be run.
@@ -137,7 +140,7 @@ From the privly-applications directory, run: `ruby run_all.rb -p sauce_chrome_ex
 This will launch Safari on Windows. It will navigate the
 webserver you have running on localhost so make sure that is where the applicaion files are that you want to test.
 
-From the privly-applications directory, run: `ruby run_all.rb -p sauce_chrome_web -c http://localhost:3000 -r experimental`
+From the privly-applications directory, run: `ruby run_all.rb -p sauce_safari_web -c http://localhost:3000 -r experimental`
 
 ## TravisCI
 

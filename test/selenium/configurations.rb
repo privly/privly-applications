@@ -227,3 +227,12 @@ def configure_for_chrome_extension(args)
   assign_chrome_extension_path
 
 end
+
+def configure_for_safari_extension(args)
+  Capybara.register_driver :safari_extension do |app|
+    Capybara::Selenium::Driver.new(app, :browser => :safari)
+  end
+  @@privly_applications_folder_path = ""
+  Capybara.current_driver = :safari_extension
+  Capybara.default_driver = :safari_extension
+end

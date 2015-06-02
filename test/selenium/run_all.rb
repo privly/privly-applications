@@ -17,7 +17,7 @@ args = {}
 optsHelp = ""
 OptionParser.new do |opts|
   opts.banner = "Usage: ruby run_all.rb [options]"
-  opts.on('-p', '--platform PLATFORM', 'The target platform (firefox_web, firefox_extension, chrome_web, chrome_extension, safari_web, sauce_chrome_web, sauce_firefox_web, sauce_safari_web, sauce_firefox_extension, sauce_chrome_extension)') { |v| args[:platform] = v }
+  opts.on('-p', '--platform PLATFORM', 'The target platform (firefox_web, firefox_extension, chrome_web, chrome_extension, safari_web, safari_extension, sauce_chrome_web, sauce_firefox_web, sauce_safari_web, sauce_firefox_extension, sauce_chrome_extension)') { |v| args[:platform] = v }
   opts.on('-r', '--release-status RELEASE', 'The target release stage (experimental, deprecated, alpha, beta, release)') { |v| args[:release_status] = v }
   opts.on('-c', '--content-server SERVER', 'The content server (http://localhost:3000)') { |v| args[:content_server] = v }
   optsHelp = opts.help
@@ -106,6 +106,7 @@ end
 #                    This requires a webserver to run on localhost:3000
 #  safari_web: run Safari locally without an extension.
 #              This requires a webserver to run on localhost:3000
+#  safari_extension: run Safari locally with an extension.
 if args[:platform]
   platform = args[:platform]
 end
@@ -170,6 +171,9 @@ elsif platform == "chrome_extension"
 elsif platform == "sauce_chrome_extension"
   sanity_check "privly-chrome"
   configure_for_sauce_chrome_extension(args)
+elsif platform == "safari_extension"
+  sanity_check "privly-safari"
+  configure_for_safari_extension(args)
 else
   puts "The platform you selected was not recognized or is not supported"
   puts "Note that Safari and Internet Explorer are integrated"
