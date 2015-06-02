@@ -167,8 +167,7 @@ var callbacks = {
   pendingPost: function() {
     if (window.location.search.indexOf('?') === 0 &&
         // we doesn't allow redirecting to other domain
-        window.location.search.replace(/\\/g, '/').indexOf('//') === -1 &&   
-        window.location.search.indexOf('Login') === -1) {
+        window.location.search.replace(/\\/g, '/').indexOf('//') === -1) {
       window.location = window.location.search.substr(1);
     } else if (ls.getItem("Login:redirect_to_app") !== undefined &&
                ls.getItem("Login:redirect_to_app").indexOf("Login") < 0) {
