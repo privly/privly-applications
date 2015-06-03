@@ -653,7 +653,7 @@ if (Privly.adapter === undefined) {
     self.initialized = true;
 
     // show glyph icon
-    $('.glyph').append(privlyTooltip.glyphHTML());
+    $('.glyph').append(Privly.glyph.getGlyphDOM());
 
     // when resizing window, we re-calculate the dialog position based on percentage value
     var $dialog = $('.embeded-form');

@@ -23,8 +23,7 @@ function init() {
   $("#form").show();
 
   // Show a preview of the tooltip to the user
-  var glyphHTML = privlyTooltip.glyphHTML();
-  $("#tooltip").html(glyphHTML)
+  $("#tooltip").append(Privly.glyph.getGlyphDOM())
                .show()
                .append("<br/><br/><p>This is your Privly Glyph</p>");
 }
