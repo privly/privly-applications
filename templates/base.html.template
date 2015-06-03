@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <!--
+      This was likely rendered from the Privly-application templating system
+      See: https://github.com/privly/privly-applications/pull/19
+     -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    
+    <link href="../shared/css/common.css" media="screen" rel="stylesheet" type="text/css"/>
+    
+    <script type="text/javascript" src="../vendor/es6-promise.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/meta_loader.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/parameters.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/network_service.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/local_storage.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/storage.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/options.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/glyph.js"></script>
+
+    {% block head %}{% endblock %}
+  </head>
+  {% block body %}{% endblock %}
+</html>

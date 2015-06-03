@@ -2,7 +2,6 @@
 
 {% block javascripts %}
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
-  <script type="text/javascript" src="../shared/javascripts/tooltip.js"></script>
   <script type="text/javascript" src="js/first_run.js"></script>
 {% endblock %}
 

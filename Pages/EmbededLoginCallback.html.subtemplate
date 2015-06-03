@@ -1,0 +1,5 @@
+{% extends "templates/base.html.template" %}
+
+{% block head %}
+  <script type="text/javascript" src="js/embeded_callback.js"></script>
+{% endblock %}

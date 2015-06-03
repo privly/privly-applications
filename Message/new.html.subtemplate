@@ -10,6 +10,7 @@
   <script type="text/javascript" src="js/rawinflate.js"></script>
   <script type="text/javascript" src="js/zerobin.js"></script>
   <script type="text/javascript" src="../shared/javascripts/privly-web/new.js"></script>
+  <script type="text/javascript" src="js/message.js"></script>
   <script type="text/javascript" src="js/new.js"></script>
 {% endblock %}
 

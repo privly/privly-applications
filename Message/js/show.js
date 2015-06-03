@@ -19,17 +19,17 @@ function previewMarkdown() {
  * @return {boolean} Indicates whether the key was resolved from history.
  */
 function resolveKeyFromHistory() {
-  var urls = ls.getItem("Message:URLs");
+  var urls = Privly.storage.get("Message:URLs");
 
   // Deprecated
-  var oldUrls = ls.getItem("ZeroBin:URLs");
-  if ( oldUrls !== undefined ) {
+  var oldUrls = Privly.storage.get("ZeroBin:URLs");
+  if ( oldUrls !== null ) {
     urls = urls.concat(oldUrls);
-    ls.setItem("Message:URLs", urls);
-    ls.removeItem("ZeroBin:URLs");
+    Privly.storage.set("Message:URLs", urls);
+    Privly.storage.remove("ZeroBin:URLs");
   }
 
-  if ( urls !== undefined ) {
+  if ( urls !== null ) {
     for( var i = 0; i < urls.length; i++ ) {
       var index = urls[i].indexOf(state.webApplicationURL);
       if ( index === 0 ) {

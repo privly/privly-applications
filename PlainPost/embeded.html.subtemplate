@@ -1,0 +1,7 @@
+{% extends "templates/embeded.html.template" %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="../shared/javascripts/privly-web/embeded.js"></script>
+  <script type="text/javascript" src="js/plainpost.js"></script>
+  <script type="text/javascript" src="js/embeded.js"></script>
+{% endblock %}
