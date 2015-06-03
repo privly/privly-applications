@@ -25,6 +25,7 @@
     <script type="text/javascript" src="../shared/javascripts/meta_loader.js"></script>
     <script type="text/javascript" src="../shared/javascripts/local_storage.js"></script>
     <script type="text/javascript" src="../shared/javascripts/storage.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/context_messenger.js"></script>
     <script type="text/javascript" src="../shared/javascripts/options.js"></script>
     <script type="text/javascript" src="../shared/javascripts/glyph.js"></script>
     <script type="text/javascript" src="../shared/javascripts/parameters.js"></script>
