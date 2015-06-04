@@ -146,15 +146,16 @@ if (Privly === undefined) {
 
   // Listen incoming messages to provide option interfaces
   // for content scripts
-  function optionsChange(request) {
+  function requestOptionInterface(request, sendResponse) {
     if (request.ask && request.ask.indexOf('options/') === 0) {
       var method = request.ask.split('/')[1];
       if (Privly.options[method] !== undefined) {
         var returnValue = Privly.options[method].apply(Privly.options, request.params);
+        sendResponse(returnValue);
       }
     }
   }
-  Privly.message.addListener(optionsChange);
+  Privly.message.addListener(requestOptionInterface);
 
   /**
    * Whether Privly posting button is enabled

@@ -7,24 +7,16 @@
  * `Privly.message.addListener` and when you want to send a message to a
  * particular context you should use `Privly.message.messageTopPrivlyApplications`,
  * `Privly.message.messageContentScripts`, and `Privly.message.messageExtension`.
- *
- * Please note that these messages are broadcast to all Privly content scripts and
- * non-injected Privly applications. To identify return messages several of the
- * messages define `originalRequest` as the request that was sent to the extension.
- * In the future we may add some sort of cross-platform sendResponse functionality
- * similar to that found on Chrome, but this is not currently easy.
- *
  **/
 
- /*global chrome */
- /*global Privly:true, ls */
+/*global chrome */
+/*global Privly:true, window, navigator, androidJsBridge */
 
- // If Privly namespace is not initialized, initialize it
- var Privly;
- if (Privly === undefined) {
-   Privly = {};
- }
-
+// If Privly namespace is not initialized, initialize it
+var Privly;
+if (Privly === undefined) {
+  Privly = {};
+}
 
 (function () {
 
@@ -33,210 +25,474 @@
     return;
   }
   Privly.message = {};
+  Privly.message.adapter = {};
+
+  /**
+   * A unique id for this context.
+   * It will be used to identify the response.
+   * 
+   * @type {String}
+   */
+  Privly.message.contextId = Date.now().toString(16) + '.' + Math.floor(Math.random() * 0xFFFFFFFF).toString(16);
+
+  /**
+   * The base platform adapter, used for inheritance.
+   * It will always throw not implemented error, 
+   * therefore those functions in derived class
+   * will throw not implemented error as well if
+   * it is not overridden.
+   */
+  var BaseAdapter = function () {};
+
+  /**
+   * Implementations should returns true if the
+   * platform adapter is suitable for the current
+   * platform.
+   * 
+   * @return {Boolean}
+   */
+  BaseAdapter.isPlatformMatched = function () {
+    return false;
+  };
+
+  /**
+   * Factory method to create a new instance for
+   * the adapter.
+   * 
+   * @return {BaseAdapter}
+   */
+  BaseAdapter.getInstance = function () {
+    return new BaseAdapter();
+  };
+
+  /**
+   * Get the platform name
+   * @return {String}
+   */
+  BaseAdapter.prototype.getPlatformName = function () {
+    throw new Error('Not implemented');
+  };
+
+  /**
+   * Get the scripting context the script is running within.
+   *
+   * @return {String} the name of the scripting context. Options include:
+   * 'CONTENT_SCRIPT': A script added to every host page.
+   * 'BACKGROUND_SCRIPT': The browser extension's script.
+   * 'PRIVLY_APPLICATION': The privly application
+   */
+  BaseAdapter.prototype.getContextName = function () {
+    throw new Error('Not implemented');
+  };
+
+  /**
+   * Underlayer function to send message to a desired context.
+   * 
+   * @param  {String} to Destination, available options:
+   * 'CONTENT_SCRIPT', 'BACKGROUND_SCRIPT', 'PRIVLY_APPLICATION'
+   * @param  {Object} payload
+   */
+  BaseAdapter.prototype.sendMessageTo = function (to, payload) {
+    console.warn('not implemented');
+  };
+
+  /**
+   * Underlayer function to receive message
+   * 
+   * @param {Function<payload>} callback
+   */
+  BaseAdapter.prototype.setListener = function (callback) {
+    console.warn('not implemented');
+  };
+
+  Privly.message.adapter.BaseAdapter = BaseAdapter;
+
+
+
+
+  /**
+   * The adapter for Chrome
+   * 
+   * @augments BaseAdapter
+   */
+  var ChromeAdapter = function () {};
+  ChromeAdapter.prototype = Object.create(BaseAdapter.prototype);
+
+  /** @inheritdoc */
+  ChromeAdapter.isPlatformMatched = function () {
+    return (typeof chrome !== 'undefined' && typeof chrome.extension !== 'undefined');
+  };
+
+  /** @inheritdoc */
+  ChromeAdapter.getInstance = function () {
+    return new ChromeAdapter();
+  };
+
+  /** @inheritdoc */
+  ChromeAdapter.prototype.getPlatformName = function () {
+    return 'CHROME';
+  };
+
+  /** @inheritdoc */
+  ChromeAdapter.prototype.getContextName = function () {
+    if (window.document.getElementById('is-background-script') !== null) {
+      return 'BACKGROUND_SCRIPT';
+    } else if (window.location.href.indexOf(window.location.origin + '/privly-applications') === 0) {
+      return 'PRIVLY_APPLICATION';
+    } else {
+      return 'CONTENT_SCRIPT';
+    }
+  };
+
+  /** @inheritdoc */
+  ChromeAdapter.prototype.sendMessageTo = function (to, payload) {
+    if (to === 'BACKGROUND_SCRIPT') {
+      chrome.extension.sendMessage(payload);
+      return;
+    }
+    if (to === 'CONTENT_SCRIPT') {
+      // Send message to all content scripts
+      chrome.tabs.query({}, function (tabs) {
+        tabs.forEach(function (tab) {
+          // Don't message Privly Applications
+          if (tab.url.indexOf('chrome') !== 0) {
+            chrome.tabs.sendMessage(tab.id, payload);
+          }
+        });
+      });
+      return;
+    }
+    if (to === 'PRIVLY_APPLICATION') {
+      // Send message to all content scripts
+      chrome.tabs.query({}, function (tabs) {
+        tabs.forEach(function (tab) {
+          // Only send the message to privly applications.
+          // Extension cannot inject content script into
+          // another extension, so if the tab can handle
+          // our message, it must be the Privly application.
+          if (tab.url.indexOf('chrome-extension://') === 0) {
+            chrome.tabs.sendMessage(tab.id, payload);
+          }
+        });
+      });
+      return;
+    }
+  };
+
+  /** @inheritdoc */
+  ChromeAdapter.prototype.setListener = function (callback) {
+    chrome.runtime.onMessage.addListener(function (payload) {
+      // for Chrome, we needn't check origin since it is always from a trust origin
+      callback(payload);
+    });
+  };
+
+  Privly.message.adapter.Chrome = ChromeAdapter;
+
+
+
+
+  /**
+   * The adapter for Firefox
+   *
+   * @augments BaseAdapter
+   */
+  var FirefoxAdapter = function () {};
+  FirefoxAdapter.prototype = Object.create(BaseAdapter.prototype);
+
+  /** @inheritdoc */
+  FirefoxAdapter.isPlatformMatched = function () {
+    return (typeof chrome === 'undefined' && window.location.href.indexOf('chrome://') === 0);
+  };
+
+  /** @inheritdoc */
+  FirefoxAdapter.getInstance = function () {
+    return new FirefoxAdapter();
+  };
+
+  /** @inheritdoc */
+  FirefoxAdapter.prototype.getPlatformName = function () {
+    return 'FIREFOX';
+  };
+  Privly.message.adapter.Firefox = FirefoxAdapter;
+
+
+
+
+  /**
+   * The adapter for Safari
+   *
+   * @augments BaseAdapter
+   */
+  var SafariAdapter = function () {};
+  SafariAdapter.prototype = Object.create(BaseAdapter.prototype);
+
+  /** @inheritdoc */
+  SafariAdapter.isPlatformMatched = function () {
+    console.warn('not implemented');
+    return false;
+  };
+
+  /** @inheritdoc */
+  SafariAdapter.getInstance = function () {
+    return new SafariAdapter();
+  };
+
+  /** @inheritdoc */
+  SafariAdapter.prototype.getPlatformName = function () {
+    return 'SAFARI';
+  };
+  Privly.message.adapter.Safari = SafariAdapter;
+
+
+
+
+  /**
+   * The adapter for iOS
+   *
+   * @augments BaseAdapter
+   */
+  var IOSAdapter = function () {};
+  IOSAdapter.prototype = Object.create(BaseAdapter.prototype);
+
+  /** @inheritdoc */
+  IOSAdapter.isPlatformMatched = function () {
+    return (
+      (navigator.userAgent.indexOf('iPhone') >= 0 || navigator.userAgent.indexOf('iPad') >= 0)
+      && navigator.userAgent.indexOf('Safari') === -1
+    );
+  };
+
+  /** @inheritdoc */
+  IOSAdapter.getInstance = function () {
+    return new IOSAdapter();
+  };
+
+  /** @inheritdoc */
+  IOSAdapter.prototype.getPlatformName = function () {
+    return 'IOS';
+  };
+
+  /** @inheritdoc */
+  IOSAdapter.prototype.getContextName = function () {
+    return 'PRIVLY_APPLICATION';
+  };
+
+  /** @inheritdoc */
+  IOSAdapter.prototype.sendMessageTo = function (to, data) {
+    if (to === 'BACKGROUND_SCRIPT') {
+      // TODO: the data here encapsuled some other infomation
+      // iOS client side should handle this
+      var iOSurl = 'js-frame:' + JSON.stringify(data);
+      var iframe = document.createElement('IFRAME');
+      iframe.setAttribute('src', iOSurl);
+      iframe.setAttribute('height', '1px');
+      iframe.setAttribute('width', '1px');
+      document.documentElement.appendChild(iframe);
+      iframe.parentNode.removeChild(iframe);
+      iframe = null;
+      return;
+    }
+    if (to === 'PRIVLY_APPLICATION') {
+      throw new Error('Not implemented');
+      return;
+    }
+  };
+  Privly.message.adapter.IOS = IOSAdapter;
+
+
+
+
+  /**
+   * The adapter for Android
+   *
+   * @augments BaseAdapter
+   */
+  var AndroidAdapter = function () {};
+  AndroidAdapter.prototype = Object.create(BaseAdapter.prototype);
+
+  /** @inheritdoc */
+  AndroidAdapter.isPlatformMatched = function () {
+    return (typeof androidJsBridge !== 'undefined');
+  };
+
+  /** @inheritdoc */
+  AndroidAdapter.getInstance = function () {
+    return new AndroidAdapter();
+  };
+
+  /** @inheritdoc */
+  AndroidAdapter.prototype.getPlatformName = function () {
+    return 'ANDROID';
+  };
+
+  /** @inheritdoc */
+  AndroidAdapter.prototype.getContextName = function () {
+    return 'PRIVLY_APPLICATION';
+  };
+
+  /** @inheritdoc */
+  AndroidAdapter.prototype.sendMessageTo = function (to, data) {
+    if (to === 'BACKGROUND_SCRIPT') {
+      // TODO: the data here encapsuled some other infomation
+      // Android client side should handle this
+      androidJsBridge.receiveNewPrivlyURL(data);
+      return;
+    }
+    if (to === 'PRIVLY_APPLICATION') {
+      throw new Error('Not implemented');
+      return;
+    }
+  };
+  Privly.message.adapter.Android = AndroidAdapter;
+
+
+
+
+  /**
+   * The adapter for hosted environment
+   *
+   * @augments BaseAdapter
+   */
+  var HostedAdapter = function () {};
+  HostedAdapter.prototype = Object.create(BaseAdapter.prototype);
+
+  /** @inheritdoc */
+  HostedAdapter.isPlatformMatched = function () {
+    return true;
+  };
+
+  /** @inheritdoc */
+  HostedAdapter.getInstance = function () {
+    return new HostedAdapter();
+  };
+
+  /** @inheritdoc */
+  HostedAdapter.prototype.getPlatformName = function () {
+    return 'HOSTED';
+  };
+
+  /** @inheritdoc */
+  HostedAdapter.prototype.getContextName = function () {
+    return 'PRIVLY_APPLICATION';
+  };
+
+  /** @inheritdoc */
+  HostedAdapter.prototype.sendMessageTo = function (to, data) {
+    if (to === 'BACKGROUND_SCRIPT') {
+      // Don't send these messages in the hosted environment since the
+      // extension is not there.
+      return;
+    }
+    if (to === 'CONTENT_SCRIPT') {
+      // Don't send these messages in the hosted environment since the
+      // content scripts are not there.
+      return;
+    }
+    if (to === 'PRIVLY_APPLICATION') {
+      throw new Error('Not implemented');
+      return;
+    }
+  };
+  Privly.message.adapter.Hosted = HostedAdapter;
+
+
+
 
   /**
    * Determines which platform the script is runing on. This helps determine
-   * which request function should be used. The current values are "CHROME"
-   * for the Google Chrome extension, and "HOSTED" for all other architectures.
+   * which request function should be used. The current values are 'CHROME'
+   * for the Google Chrome extension, and 'HOSTED' for all other architectures.
    * HOSTED functions use standard same-origin AJAX requests.
    *
-   * @return {string} the name of the platform.
+   * @return {Adapter}
    */
-  function getPlatformName(){
-    if (navigator.userAgent.indexOf("iPhone") >= 0 ||
-      navigator.userAgent.indexOf("iPad") >= 0) {
-      if( navigator.userAgent.indexOf("Safari") >= 0 ) { return "HOSTED"; }
-        return "IOS";
-    } else if(typeof androidJsBridge !== "undefined") {
-      return "ANDROID";
-    }  else if (typeof chrome !== "undefined" && typeof chrome.extension !== "undefined") {
-      return "CHROME";
-    } else if(window.location.href.indexOf("chrome://") === 0) {
-      return "FIREFOX";
-    } else {
-      return "HOSTED";
-    }
-  }
-
-  /**
-   * Reference the constant platform name here.
-   */
-  Privly.message.currentPlatform = getPlatformName();
-
-  /**
-   * Determines which scripting context the script is running within.
-   *
-   * @return {string} the name of the scripting context. Options include:
-   * "CONTENT_SCRIPT": A script added to every host page.
-   * "BACKGROUND_SCRIPT": The browser extension's script.
-   * "PRIVLY_APPLICATION": The privly application
-   */
-  function getPlatformContext() {
-    if ( Privly.message.currentPlatform === "CHROME" ) {
-      if( window.document.getElementById("is-background-script") !== null ) {
-        return "BACKGROUND_SCRIPT";
-      } else if(
-        window.location.href.indexOf(
-          window.location.origin + "/privly-applications") === 0) {
-        return "PRIVLY_APPLICATION";
-      } else {
-        return "CONTENT_SCRIPT";
+  function getPlatformAdapter() {
+    // Hosted adapter should be always placed at the last position because it
+    // is a fallback.
+    var adapters = [IOSAdapter, AndroidAdapter, ChromeAdapter, FirefoxAdapter];
+    var i;
+    for (i = 0; i < adapters.length; ++i) {
+      if (adapters[i].isPlatformMatched()) {
+        return adapters[i];
       }
-    } else if( Privly.message.currentPlatform === "FIREFOX" ) {
-      // jetpack todo
-      console.warn("todo: This has not been implemented for Jetpack yet");
-    } else if( Privly.message.currentPlatform === "SAFARI" ) {
-      // safari todo
-      console.warn("todo: This has not been implemented for safari yet");
-    } else if( Privly.message.currentPlatform === "HOSTED" ) {
-      return "PRIVLY_APPLICATION";
-    } else if( Privly.message.currentPlatform === "ANDROID" ) {
-      return "PRIVLY_APPLICATION";
-    } else if( Privly.message.currentPlatform === "IOS" ) {
-      return "PRIVLY_APPLICATION";
     }
+    return HostedAdapter;
   }
 
   /**
-   * Reference the constant platform context name here.
+   * Reference the appropriate platform adapter.
    */
-  Privly.message.currentContext = getPlatformContext();
+  Privly.message.currentAdapter = getPlatformAdapter().getInstance();
 
   /**
-   * Determines whether a function is defined.
-   *
-   * @param {function} fn Potentially a function.
-   * @return {boolean} True if the parameter is a function, else false
+   * A counter for uniquely mark every message in this context.
+   * It is auto increment counter. We also need contextId to uniquely
+   * mark the message across contexts.
+   * 
+   * @type {Number}
    */
-  function functionExists(fn) {
-    if (typeof fn === "function") {
-      return true;
+  Privly.message._messageIdCounter = 0;
+
+  /**
+   * Store every response callbacks here.
+   * The key is the unique message id.
+   * 
+   * @type {Object}
+   */
+  Privly.message._responseCallbacks = {};
+
+  /**
+   * Send message to a context.
+   * @param  {String} to
+   * @param  {Any} data
+   * @param  {Function<data>} responseCallback
+   */
+  Privly.message.sendMessageTo = function (to, data, responseCallback) {
+    // generate a unique id for this message
+    var msgId = Privly.message.contextId + '.' + (++Privly.message._messageIdCounter).toString(16) + '.' + Date.now().toString(16);
+
+    Privly.message.currentAdapter.sendMessageTo(to, {
+      body: data,
+      type: 'MESSAGE',
+      from: Privly.message.currentAdapter.getContextName(),
+      id: msgId
+    });
+
+    if (typeof responseCallback === 'function') {
+      Privly.message._responseCallbacks[msgId] = responseCallback;
     }
-    return false;
-  }
+  };
 
   /**
    * Send data to the extension or mobile device. The message will be sent
    * according to the messaging pathway required by the current platform.
    *
-   * @param {json} message The value of the message being sent to the extension.
+   * @param {Any} data The value of the message being sent to the extension.
    *
    */
-  Privly.message.messageExtension = function (message) {
-
-    // Don't send these messages in the hosted environment since the
-    // extension is not there.
-    if( Privly.message.currentPlatform === "HOSTED" ) {
-      return;
-    }
-
-    // Platform specific messaging
-    var platform = Privly.message.currentPlatform;
-    if ( platform === "CHROME") {
-      chrome.extension.sendMessage(
-        message,
-        Privly.message.receiveMessage);
-    } else if(platform === "FIREFOX") {
-      // todo, message the jetpack extension
-      console.warn("todo: This has not been implemented for Jetpack yet");
-    } else if(platform === "SAFARI") {
-      // todo, message the Safari extension
-      console.warn("todo: This has not been implemented for Safari yet");
-    } else if(message.privlyUrl &&
-              platform === "IOS") {
-      var iOSurl = "js-frame:" + data;
-      var iframe = document.createElement("IFRAME");
-      iframe.setAttribute("src", iOSurl);
-      iframe.setAttribute("height", "1px");
-      iframe.setAttribute("width", "1px");
-      document.documentElement.appendChild(iframe);
-      iframe.parentNode.removeChild(iframe);
-      iframe = null;
-    } else if(message.privlyUrl &&
-              platform === "ANDROID") {
-      androidJsBridge.receiveNewPrivlyURL(data);
-    }
+  Privly.message.messageExtension = function (data, responseCallback) {
+    Privly.message.sendMessageTo('BACKGROUND_SCRIPT', data, responseCallback);
   };
 
   /**
    * Send data to all the content scripts. The message will be sent
    * according to the messaging pathway required by the current platform.
    *
-   * @param {json} data The value of the message being sent to the extension.
+   * @param {Any} data The value of the message being sent to the content script.
    */
-  Privly.message.messageContentScripts = function (data) {
-
-    // Don't send these messages in the hosted environment since the
-    // content scripts are not there.
-    if( Privly.message.currentPlatform === "HOSTED" ) {
-      return;
-    }
-
-    var platform = Privly.message.currentPlatform;
-    if( platform === "CHROME" ) {
-
-      // Send message to all content scripts
-      chrome.tabs.query({}, function (tabs) {
-        tabs.forEach(function (tab) {
-
-          // Don't message Privly Applications
-          if ( tab.url.indexOf("chrome") !== 0 ) {
-            chrome.tabs.sendMessage(tab.id, data);
-          }
-        });
-      });
-    } else if( platform === "FIREFOX" ) {
-      // jetpack todo
-      console.warn("todo: This has not been implemented for Jetpack yet");
-    } else if( platform === "SAFARI" ) {
-      // safari todo
-      console.warn("todo: This has not been implemented for Safari yet");
-    }
+  Privly.message.messageContentScripts = function (data, responseCallback) {
+    Privly.message.sendMessageTo('CONTENT_SCRIPT', data, responseCallback);
   };
 
   /**
    * Message all Privly Applications that are not injected into an iframe.
-   * @param {object} data the data to message to all the Privly Applications.
+   * 
+   * @param {Any} data the data to message to all the Privly Applications.
    */
-  Privly.message.messageTopPrivlyApplications = function (data) {
-
-    // Platform specific messaging
-    var platform = Privly.message.currentPlatform;
-    if( platform === "CHROME" ) {
-
-      // Send message to all content scripts
-      chrome.tabs.query({}, function (tabs) {
-        tabs.forEach(function (tab) {
-
-          // Only send the message to privly applications
-          if ( tab.url.indexOf("chrome-extension://") === 0 ) {
-            chrome.tabs.sendMessage(tab.id, data);
-          }
-        });
-      });
-    } else if( platform === "FIREFOX" ) {
-      // todo jetpack
-      console.warn("todo: this has not been implemented on Jetpack yet");
-    } else if( platform === "SAFARI" ) {
-      // todo Safari
-      console.warn("todo: this has not been implemented on Safari yet");
-    } else {
-      console.warn("todo: this has not been implemented on this platform");
-    }
-  }
-
-  /**
-   * Checks the window object to see if it is from a trusted origin,
-   * which is a URL from an extension context.
-   */
-  Privly.message.isTrustedOrigin = function(win) {
-    var href = win.location.href;
-    var trusted =  href.indexOf("chrome://") === 0 ||
-      href.indexOf("chrome-extension://") === 0 ||
-      href.indexOf("safari-extension://") === 0;
-    return trusted;
+  Privly.message.messageTopPrivlyApplications = function (data, responseCallback) {
+    Privly.message.sendMessageTo('PRIVLY_APPLICATION', data, responseCallback);
   };
-
 
   /**
    * A hash of functions that are called upon receipt of a message.
@@ -247,77 +503,73 @@
   Privly.message.listeners = [];
 
   /**
-    * Adds a listener to the message listener list.
-    * @param {function} listener accepts an object
-    * containing
-    *
-    */
-   Privly.message.addListener = function(listener) {
-     Privly.message.listeners.push(listener);
-   };
+   * Adds a listener to the message listener list.
+   * 
+   * @param {Function<data, sendResponse>} listener accepts an object
+   * containing the message
+   */
+  Privly.message.addListener = function (listener) {
+    if (Privly.message.listeners.indexOf(listener) === -1) {
+      Privly.message.listeners.push(listener);
+    }
+  };
 
   /**
-   * This function handles all messages sent to the app using the postMessage
-   * interface. In order to verify that the sender of the message should be
-   * trusted, this function has platform-specific checks on the sender's
-   * origin before dispatching it to the appropriate handler.
-   *
-   * @param {event} ev The message event containing:
-   *    {data: JSON, source: WINDOW, response_to: OBJECT }
-   *    Where the `data` is the message JSON, the `source` is the window object sending
-   *    the message, and `response_to` is a copy of the message that resulted in this
-   *    response. If the `response_to` object is
+   * Remove a listener from the message listener list.
+   * 
+   * @param  {Function<data, sendResponse>} listener
    */
-  Privly.message.receiveMessage = function(ev) {
-    if( ! Privly.message.isTrustedOrigin(ev.source) ) {
-      console.warn("An untrusted message was rejected.");
+  Privly.message.removeListener = function (listener) {
+    var index = Privly.message.listeners.indexOf(listener);
+    if (index > -1) {
+      Privly.message.listeners.splice(index, 1);
+    }
+  };
+
+  // Add message listener. this message listener will
+  // handle all raw messages received and forward to the
+  // user specified listeners or a response callback function.
+  Privly.message.currentAdapter.setListener(function (payload) {
+    var fn, i;
+
+    // receives a message
+    if (payload.type === 'MESSAGE') {
+
+      var sendResponse = function (data) {
+        Privly.message.currentAdapter.sendMessageTo(payload.from, {
+          body: data,
+          type: 'RESPONSE',
+          id: payload.id
+        });
+      };
+
+      // A list of functions to remove after all the listener have completed
+      var removeList = [], removeListener;
+      for (i = 0; i < Privly.message.listeners.length; i++) {
+        fn = Privly.message.listeners[i];
+        removeListener = fn(payload.body, sendResponse);
+        if (removeListener === true) {
+          removeList.push(fn);
+        }
+      }
+
+      // Remove all the functions that returned `true`.
+      for (i = 0; i < removeList.length; i++) {
+        Privly.message.removeListener(removeList[i]);
+      }
+
       return;
     }
 
-    // A list of functions to remove after all the listener have completed
-    var removeList = [];
-    for( var i = 0; i < Privly.message.listeners.length; i++ ) {
-      var fn = Privly.message.listeners[i];
-      if( fn(ev.data) ) {
-        removeList.push(fn);
+    // receives a response message
+    if (payload.type === 'RESPONSE') {
+      if (Privly.message._responseCallbacks.hasOwnProperty(payload.id)) {
+        Privly.message._responseCallbacks[payload.id](payload.body);
+        // remove the response callback
+        delete Privly.message._responseCallbacks[payload.id];
       }
+      return;
     }
+  });
 
-    // Remove all the functions that returned `true`.
-    for( i = 0; i < removeList.length; i++ ) {
-      var removeIndex = Privly.message.listeners.indexOf(removeList[i]);
-      Privly.message.listeners.splice(removeIndex, 1);
-    }
-  };
 }());
-
-/**
- * Listen to messages on the platform and munge the message into a consistent format.
- */
-if(Privly.message.currentPlatform === "CHROME") {
-  chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-
-      // Manually assign the source because only trust origins trigger this event.
-      var message = {
-        source: {location: {href: "chrome://"}},
-        data: request
-      };
-      Privly.message.receiveMessage(message);
-    });
-} else if( Privly.message.currentPlatform === "FIREFOX" ) {
-  // todo jetpack
-  console.warn("todo: This has not been implemented for Jetpack yet");
-} else if( Privly.message.currentPlatform === "SAFARI" ) {
-  // todo safari
-  console.warn("todo: This has not been implemented for Safari yet");
-} else if( Privly.message.currentPlatform === "HOSTED" ) {
-  // pass, there is no messaging in the hosted environment
-} else if( Privly.message.currentPlatform === "IOS" ) {
-  // pass, mobile doesn't receive messages
-} else if( Privly.message.currentPlatform === "ANDROID" ) {
-  // pass, mobile doesn't receive messages
-} else {
-  console.error(
-    "You attempted to initialize messaging on an unrecognized platform");
-}
