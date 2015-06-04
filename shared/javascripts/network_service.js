@@ -81,12 +81,7 @@ var privlyNetworkService = {
   },
   
   /**
-   * Determines which platform the script is runing on. This helps determine
-   * which request function should be used. The current values are "CHROME"
-   * for the Google Chrome extension, and "HOSTED" for all other architectures.
-   * HOSTED functions use standard same-origin AJAX requests.
-   *
-   * @return {string} the name of the platform.
+   * Deprecated. Use Privly.message.currentPlatform instead.
    */
   platformName: function() {
     if (navigator.userAgent.indexOf("iPhone") >= 0 || 
