@@ -127,8 +127,6 @@ var callbacks = {
 
     // Listen for a message containing the initial content for the form
     Privly.message.addListener(function(message){
-      console.log(window.location.href + " ");
-      console.log(message);
       if (! message.originalRequest ||
           message.originalRequest.ask !== "initialContent") {
         return false; // Don't remove this listener
