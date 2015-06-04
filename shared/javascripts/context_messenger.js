@@ -130,12 +130,6 @@
       return;
     }
 
-    // Don't send these messages to the extension context from the
-    // extension context.
-    if( Privly.message.currentContext === "BACKGROUND_SCRIPT" ) {
-      return;
-    }
-
     // Platform specific messaging
     var platform = Privly.message.currentPlatform;
     if ( platform === "CHROME") {
