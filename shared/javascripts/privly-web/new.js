@@ -73,10 +73,7 @@ var callbacks = {
 
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
-    
-    // Initialize message pathway to the extension.
-    messaging.initialize();
-    
+
     // Add listeners to show loading animation while making ajax requests
     $(document).ajaxStart(function() {
       $('#loadingDiv').show(); 
@@ -127,7 +124,18 @@ var callbacks = {
   pendingPost: function(callback) {
     
     privlyNetworkService.showLoggedInNav();
-    
+
+    // Listen for a message containing the initial content for the form
+    Privly.message.addListener(function(message){
+      if (! message.originalRequest ||
+          message.originalRequest.ask !== "initialContent") {
+        return false; // Don't remove this listener
+      }
+      $("#content")[0].value = message.initialContent;
+      return true; // Remove this listener
+    });
+    Privly.message.messageExtension( {"ask": "initialContent"} );
+
     // Monitor the submit button
     $("#save").prop('disabled', false);
     $("#messages").toggle();
@@ -210,7 +218,7 @@ var callbacks = {
     $("#save").prop('disabled', false);
     
     if(response.jqXHR.status === 201 && url !== undefined && url !== "") {
-      privlyExtension.firePrivlyURLEvent(url);
+      Privly.message.messageExtension({privlyUrl: url});
 
       $("#copy_message").show();
 
@@ -258,46 +266,5 @@ var callbacks = {
       return true;
     }
     return false;
-  }
-}
-
-/**
- * Message handlers for integration with extension frameworks.
- */
-var messaging = {
-  
-  /**
-   * Attach the message listeners to the interface between the extension
-   * and the injectable application.
-   */
-  initialize: function() {
-      privlyExtension.initialContent = messaging.initialContent;
-      privlyExtension.messageSecret = messaging.messageSecret;
-      
-      // Initialize message pathway to the extension.
-      privlyExtension.firePrivlyMessageSecretEvent();
-  },
-  
-  /**
-   * Listener for the initial content that should be dropped into the form.
-   * This may be sent by a browser extension.
-   *
-   * @param {json} data A json document containing the initial content for
-   * the form.
-   */
-  initialContent: function(data) {
-    $("#content")[0].value = data.initialContent;
-  },
-
-  /**
-   * Request the initial content from the extension. This callback is executed
-   * after the extension successfully messages the secret message back to the
-   * application.
-   *
-   * @param {json} data A json document that is ignored by this function.
-   *
-   */
-  messageSecret: function(data) {
-    privlyExtension.messageExtension("initialContent", "");
   }
 }

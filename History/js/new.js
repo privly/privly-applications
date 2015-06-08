@@ -5,24 +5,6 @@
 /* global historyModal:true */
 
 /**
- * Message handlers for integration with extension framworks.
- */
-var messaging = {
-  
-  /**
-   * Attach the message listeners to the interface between the extension
-   * and the injectable application.
-   */
-  initialize: function() {
-    privlyExtension.initialContent = function(){};
-    privlyExtension.messageSecret = function(){};
-      
-    // Initialize message pathway to the extension.
-    privlyExtension.firePrivlyMessageSecretEvent();
-  }
-};
-
-/**
  * The callbacks assign the state of the application.
  *
  * This application can be placed into the following states:
@@ -49,9 +31,6 @@ var callbacks = {
     
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
-    
-    // Initialize message pathway to the extension.
-    messaging.initialize();
     
     // Watch for the preview iframe's messages so it can be resized
     window.addEventListener('message', resizeIframePostedMessage, false);
@@ -272,8 +251,8 @@ function resizeIframePostedMessage(e) {
  * running the applicaiton so it can be submitted to a host page webform.
  */
 function postUrl() {
-  privlyExtension.firePrivlyURLEvent(
-    document.getElementById("ifrm0").getAttribute("data-canonical-href"));
+  var url = document.getElementById("ifrm0").getAttribute("data-canonical-href");
+  Privly.message.messageExtension({privlyUrl: url});
 }
 
 // Initialize the application

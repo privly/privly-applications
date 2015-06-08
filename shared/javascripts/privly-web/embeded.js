@@ -15,7 +15,7 @@
  **/
 
 /*global chrome */
-/*global window, Privly:true, privlyNetworkService, privlyParameters, privlyTooltip, Promise */
+/*global window, Privly:true, privlyNetworkService, privlyParameters, Promise */
 
 // If Privly namespace is not initialized, initialize it
 var Privly;

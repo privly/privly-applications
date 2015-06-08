@@ -69,30 +69,13 @@ if (Privly === undefined) {
    * @param  {[type]} optionValue The new value of the option
    */
   function optionChanged(optionName, optionValue) {
-    // Broadcast messages only if we are under extension environment
-    if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.id) {
-      // Send message to the background scripts
-      if (chrome.runtime.sendMessage) {
-        chrome.runtime.sendMessage({
-          // TODO: ask -> action
-          ask: 'options/changed',
-          option: optionName,
-          newValue: optionValue
-        });
-      }
-      // Send message to all content scripts
-      if (chrome.tabs && chrome.tabs.query && chrome.tabs.sendMessage) {
-        chrome.tabs.query({}, function (tabs) {
-          tabs.forEach(function (tab) {
-            chrome.tabs.sendMessage(tab.id, {
-              action: 'options/changed',
-              option: optionName,
-              newValue: optionValue
-            });
-          });
-        });
-      }
-    }
+    var message = {
+      action: 'options/changed',
+      option: optionName,
+      newValue: optionValue
+    };
+    Privly.message.messageExtension(message);
+    Privly.message.messageContentScripts(message);
   }
 
   /**
@@ -152,7 +135,6 @@ if (Privly === undefined) {
     }
   };
 
-
   // If this script is running as a background script
   if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getBackgroundPage) {
     // Set event listeners to execute upgrade() function when
@@ -160,20 +142,20 @@ if (Privly === undefined) {
     chrome.runtime.onInstalled.addListener(function () {
       Privly.options.upgrade();
     });
-
-    // Listen incoming messages to provide option interfaces
-    // for content scripts
-    chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-      if (request.ask.indexOf('options/') === 0) {
-        var method = request.ask.split('/')[1];
-        if (Privly.options[method] !== undefined) {
-          var returnValue = Privly.options[method].apply(Privly.options, request.params);
-          sendResponse(returnValue);
-        }
-      }
-    });
   }
 
+  // Listen incoming messages to provide option interfaces
+  // for content scripts
+  function requestOptionInterface(request, sendResponse) {
+    if (request.ask && request.ask.indexOf('options/') === 0) {
+      var method = request.ask.split('/')[1];
+      if (Privly.options[method] !== undefined) {
+        var returnValue = Privly.options[method].apply(Privly.options, request.params);
+        sendResponse(returnValue);
+      }
+    }
+  }
+  Privly.message.addListener(requestOptionInterface);
 
   /**
    * Whether Privly posting button is enabled
@@ -393,6 +375,4 @@ if (Privly === undefined) {
     optionChanged('options/getGlyph', obj);
     return true;
   };
-
-
 }());
