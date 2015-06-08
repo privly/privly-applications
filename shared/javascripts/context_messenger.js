@@ -7,6 +7,99 @@
  * `Privly.message.addListener` and when you want to send a message to a
  * particular context you should use `Privly.message.messageTopPrivlyApplications`,
  * `Privly.message.messageContentScripts`, and `Privly.message.messageExtension`.
+ *
+ * Currently this context messenger can only work in Chrome.
+ * Android platform detection and messaging functionality has been added, however
+ * Android client side code has not yet been modified to adapt the new protocol.
+ * So it doesn't work in Android for the time being.
+ *
+ * If you want to make this library adapt to a new platform:
+ *
+ *    You need to write a class, which is called a platform adapter.
+ *    Your class should inherit BaseAdapter (Privly.message.adapter.Base)
+ *    and provides isPlatformMatched() and getInstance() static method.
+ *
+ *    You also need to implement the following interface:
+ *    - getPlatformName()
+ *        Returns the platform name
+ *
+ *    - getContextName()
+ *        Must return one of the three values:
+ *        BACKGROUND_SCRIPT, PRIVLY_APPLICATION, CONTENT_SCRIPT
+ *
+ *        You should always adapt the name to three of these by
+ *        their roles, even when the name cannot correctly
+ *        represent the functionality.
+ *
+ *    - sendMessageTo(to, data)
+ *        The `to` parameter is one of three values:
+ *        BACKGROUND_SCRIPT, PRIVLY_APPLICATION, CONTENT_SCRIPT
+ *
+ *        You need to correctly handle send message requests based on
+ *        the `to` parameter.
+ *
+ *        The `data` parameter is always an object and is always
+ *        JSON serializable. You need to serialize it if your platform
+ *        message pathway doesn't support passing an object directly.
+ *
+ *    - setListener(callback)
+ *        Write platform specific code to listen incoming messages if
+ *        there are. You should call callback(data) after you receiving
+ *        and unserializing incoming messages in your platform. The
+ *        data parameter you passed to callback function should be
+ *        an object.
+ *
+ *    You can check out ChromeAdapter (Privly.message.adapter.Chrome)
+ *    to see the sample implementation.
+ *
+ *
+ * If you want to use this library to send and receive message:
+ *
+ *    Send message to the background script (or the extension on Android platform):
+ *
+ *        Privly.message.messageExtension(data, responseCallback)
+ *
+ *    Send message to all content scripts:
+ *
+ *        Privly.message.messageContentScripts(data, responseCallback)
+ *
+ *    Send message to all opening Privly application page:
+ *
+ *        Privly.message.messageTopPrivlyApplications(data, responseCallback)
+ *
+ *    The three interfaces above accept two parameters: data, responseCallback.
+ *    You can use any data type in the data parameter. The underlayer
+ *    compatibility adapters can transparently serialize and unserialize it for you
+ *    when sending messages and receiving messages using our interface.
+ *
+ *    If you would receive a response later after sending the message, you can
+ *    specify a callback function in responseCallback parameter.
+ *
+ *    Notice, please DON'T specify responseCallback if you won't receive responses.
+ *    Otherwise this will case memory leak!
+ *
+ *
+ *    Receive messages sent to the current context:
+ *
+ *        Privly.message.addListener(callback)
+ *
+ *    Your callback function will be called when there is an incoming message which is
+ *    sent to the current context.
+ *
+ *    The signature of your callback function is: function(data, sendResponse)
+ *
+ *    The `data` parameter is the data of the message.
+ *    The `sendResponse` parameter is a callable function. You could use sendResponse(data)
+ *    to send response back to the sender.
+ *
+ *    You could return `true` in your message listener function. If you returns `true`,
+ *    your message listener will be removed automatically.
+ *
+ *    You can manually remove a message listener to prevent it from receiving further
+ *    messages:
+ *
+ *        Privly.message.removeListener(fn)
+ * 
  **/
 
 /*global chrome */
@@ -105,7 +198,7 @@ if (Privly === undefined) {
     console.warn('not implemented');
   };
 
-  Privly.message.adapter.BaseAdapter = BaseAdapter;
+  Privly.message.adapter.Base = BaseAdapter;
 
 
 
@@ -443,8 +536,13 @@ if (Privly === undefined) {
   Privly.message._responseCallbacks = {};
 
   /**
-   * Send message to a context.
-   * @param  {String} to
+   * Send message to a context. It is not recommended to use
+   * this function. You can use wrapper functions instead:
+   * `messageExtension`, `messageContentScripts`,
+   * `messageTopPrivlyApplications`.
+   * 
+   * @param  {String} to available options:
+   * 'CONTENT_SCRIPT', 'BACKGROUND_SCRIPT', 'PRIVLY_APPLICATION'
    * @param  {Any} data
    * @param  {Function<data>} responseCallback
    */

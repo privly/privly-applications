@@ -1,5 +1,34 @@
 /**
  * @fileOverview This file provides user glyph related functionalities and interfaces.
+ *
+ * To get the current user glyph:
+ *
+ *    Privly.glyph.getGlyph()
+ *
+ *    User glyph will be returned as a return value, which is an object containing
+ *    `color` property and `cells` property. If the user does not have a glyph, the
+ *    function will return null.
+ *
+ * To set a glyph:
+ *
+ *    Privly.glyph.setGlyph(glyph)
+ *
+ *    For developers, normally you needn't call this function.
+ *
+ * To get the glyph DOM element of the current user:
+ *
+ *    Privly.glyph.getGlyphDOM()
+ *
+ *    A `table` node will be returned. If you want to show
+ *    it correctly, you also need some style rules. See tooltip.js
+ *    for details.
+ *
+ * To regenerate a new glyph for the current user:
+ *
+ *    Privly.glyph.generateGlyph()
+ *
+ *    The new glyph will be returned.
+ * 
  */
 /*global chrome */
 /*global Privly:true */
