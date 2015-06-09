@@ -183,4 +183,8 @@ end
 initialize_CRUD_tests(args)
 
 # Run all the tests
-require_relative "specs/ts_all_specs"
+if platform == "safari_extension"
+  require_relative "specs/tc_safari"
+else
+  require_relative "specs/ts_all_specs"
+end
