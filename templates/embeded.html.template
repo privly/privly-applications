@@ -1,6 +1,5 @@
 {% extends "templates/base.html.template" %}
 {% block head %}
-  <link href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
   <link href="../shared/css/embeded/embeded.css" media="screen" rel="stylesheet" type="text/css"/>
   {% block css %}{% endblock %}
 
@@ -12,48 +11,9 @@
 
 {% block body %}
 <body data-privly-exclude="true">
-  {% block login_check %}
-  <div class="login-check">
-    <div class="spinner">
-      <div class="rect1"></div>
-      <div class="rect2"></div>
-      <div class="rect3"></div>
-      <div class="rect4"></div>
-      <div class="rect5"></div>
-    </div>
-    <h3>Checking connection...</h3>
-  </div>
-  {% endblock %}
-
-  {% block login_required %}
-  <div class="login-required" style="display:none">
-    <h3>You are not logged in.</h3>
-    <p><a href="javascript:;" name="login">Login</a> / <a href="javascript:;" name="cancel">Cancel</a></p>
-  </div>
-  {% endblock %}
-
   {% block embeded_form %}
-  <div class="container embeded-form" style="display:none" data-left="0.5" data-top="0.5">
-    <div class="dialog-header">
-      <div class="glyph"></div>
-      <h2>New Privly {{ name }}</h2>
-    </div>
-    <div class="form-group">
-      {% block input %}<textarea class="form-control" rows="5"></textarea>{% endblock %}
-    </div>
-    <div class="form-group">
-      <label for="seconds_until_burn">Time until content is destroyed</label>
-      <select id="seconds_until_burn" name="seconds_until_burn" class="form-control">
-        <option value="86400">1 Day</option>
-        <option value="604800">7 Days</option>
-        <option value="1209600">14 Days</option>
-        <option value="2419200" selected>28 Days</option>
-        <option value="">Infinite? - WARNING! Data in Alpha may still be destroyed.</option>
-      </select>
-    </div>
-    <div class="form-group">
-        <button type="button" class="btn btn-primary" name="submit" style="display:none;">Submit</button><button type="button" class="btn" name="done" style="display:none;">Done</button> <button type="button" class="btn" name="cancel">Cancel</button> <span class="saving-text" style="display:none">Saving...</span>
-    </div>
+  <div class="embeded-form">
+    {% block input %}<textarea id="input"></textarea>{% endblock %}
   </div>
   {% endblock %}
 </div>

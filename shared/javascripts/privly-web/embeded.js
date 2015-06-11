@@ -1,19 +1,3 @@
-/**
- * @fileOverview This is a general adapter for interfacing with the Privly-web
- * server: github.com/privly/privly-web
- *
- * Its purpose is to allow all privly-web derived applications to interface
- * with privly-web through a consistent adapter, thereby speeding updates
- * and easing the generation of a large number of applications.
- *
- * It manages the general flow of an application that interfaces with the 
- * privly-web server but it is intended to be extended as necessary by
- * individual privly-applications. For example, see new.js in the PlainPost
- * Privly Application.
- *
- * This adapter provides embeded posting feature for Privly applications.
- **/
-
 /*global chrome */
 /*global window, Privly:true, privlyNetworkService, privlyParameters, Promise */
 
@@ -107,15 +91,6 @@ if (Privly.adapter === undefined) {
     this.lastUpdateXHR = null;
 
     /**
-     * Store the content of the editable element before inserting Privly URL.
-     * When user cancels the posting process, the content will be reverted
-     * based on this variable.
-     * 
-     * @type {String}
-     */
-    this.userContentBeforeInsertion = null;
-
-    /**
      * The content clear observer is just a interval timer. This property
      * stores its intervalId for later use.
      * 
@@ -146,6 +121,17 @@ if (Privly.adapter === undefined) {
      */
     this.started = false;
 
+    this.sourceContextId = '';
+    this.sourceResourceId = '';
+    this.selfAppId = '';
+
+    if (window.location.search.indexOf('?') === 0) {
+      var query = privlyParameters.parameterStringToHash(window.location.search.substr(1));
+      this.sourceContextId = query.contextid;
+      this.sourceResourceId = query.resid;
+      this.selfAppId = query.appid;
+    }
+
     /**
      * Privly Application specified options.
      * 
@@ -163,43 +149,38 @@ if (Privly.adapter === undefined) {
   Privly.EventEmitter.inherit(EmbededAdapter);
 
   /**
-   * Promise wrapper for chrome.runtime.sendMessage
+   * Promise wrapper for sending message to the background script
    * 
    * @return {Promise}
    */
-  function runtimeSendMessage(message, hasResponse) {
+  EmbededAdapter.prototype.messageExtension = function (message, hasResponse) {
+    var messageToSend = JSON.parse(JSON.stringify(message));
+    // specify which context to be received
+    messageToSend.targetContextId = this.sourceContextId;
+    messageToSend.targetResourceId = this.sourceResourceId;
     if (hasResponse !== true) {
-      chrome.runtime.sendMessage(message);
+      Privly.message.messageExtension(messageToSend);
       return Promise.resolve();
     }
     return new Promise(function (resolve) {
-      chrome.runtime.sendMessage(message, function (response) {
+      Privly.message.messageExtension(messageToSend, function (response) {
         resolve(response);
       });
     });
-  }
+  };
 
-  /**
-   * Close this embed posting dialog (destroy iframe) and
-   * return focus to the editable element.
-   *
-   * @return  {Promise}
-   */
-  EmbededAdapter.prototype.closeDialog = function () {
-    return runtimeSendMessage({
-      ask: 'embeded/closePostDialog'
+
+  EmbededAdapter.prototype.msgStartLoading = function () {
+    return this.messageExtension({
+      action: 'embeded/contentScript/loading',
+      state: true
     });
   };
 
-  /**
-   * Trigger clicking submit button of the form of the
-   * editable element if available.
-   *
-   * @return  {Promise}
-   */
-  EmbededAdapter.prototype.triggerSubmit = function () {
-    return runtimeSendMessage({
-      ask: 'embeded/submit'
+  EmbededAdapter.prototype.msgStopLoading = function () {
+    return this.messageExtension({
+      action: 'embeded/contentScript/loading',
+      state: false
     });
   };
 
@@ -212,26 +193,39 @@ if (Privly.adapter === undefined) {
    * 
    * @return  {Promise}
    */
-  EmbededAdapter.prototype.getTargetContent = function () {
-    return runtimeSendMessage({
-      ask: 'embeded/getTargetContent'
+  EmbededAdapter.prototype.msgGetTargetContent = function () {
+    return this.messageExtension({
+      action: 'embeded/contentScript/getTargetContent'
+    }, true); 
+  };
+
+  EmbededAdapter.prototype.msgGetTargetText = function () {
+    return this.messageExtension({
+      action: 'embeded/contentScript/getTargetText'
     }, true);
   };
 
-  /**
-   * Set the content of the editable element.
-   * Used to revert content of the editable element
-   * when user cancels embed posting process.
-   * 
-   * @param {String} content value (textarea) or innerHTML (contentEditable)
-   * @return  {Promise}
-   */
-  EmbededAdapter.prototype.setTargetContent = function (content) {
-    return runtimeSendMessage({
-      ask: 'embeded/setTargetContent',
-      content: content
+  EmbededAdapter.prototype.msgSetTargetText = function (text) {
+    return this.messageExtension({
+      action: 'embeded/contentScript/setTargetText',
+      text: text
     });
   };
+
+
+  /**
+   * Insert Privly URL to the editable element.
+   * 
+   * @param  {String} link The link to insert
+   * @return  {Promise}
+   */
+  EmbededAdapter.prototype.insertLink = function (link) {
+    return this.messageExtension({
+      action: 'embeded/contentScript/insertLink',
+      link: link
+    }, true);
+  };
+
 
   /**
    * Dispatch ENTER key events on the editable element
@@ -244,36 +238,11 @@ if (Privly.adapter === undefined) {
    *           {Boolean} meta
    * @return  {Promise}
    */
-  EmbededAdapter.prototype.emitEnterEvent = function (keys) {
-    return runtimeSendMessage({
-      ask: 'embeded/emitEnterEvent',
+  EmbededAdapter.prototype.msgEmitEnterEvent = function (keys) {
+    return this.messageExtension({
+      action: 'embeded/contentScript/emitEnterEvent',
       keys: keys
     });
-  };
-
-  /**
-   * Get form information. Currently only the caption
-   * of the submit button is retrived.
-   * 
-   * @return  {Promise}
-   */
-  EmbededAdapter.prototype.getFormInfo = function () {
-    return runtimeSendMessage({
-      ask: 'embeded/getFormInfo'
-    }, true);
-  };
-
-  /**
-   * Insert Privly URL to the editable element.
-   * 
-   * @param  {String} link The link to insert
-   * @return  {Promise}
-   */
-  EmbededAdapter.prototype.insertLink = function (link) {
-    return runtimeSendMessage({
-      ask: 'embeded/insertLink',
-      link: link
-    }, true);
   };
 
   /**
@@ -281,10 +250,22 @@ if (Privly.adapter === undefined) {
    *
    * @return  {Promise}
    */
-  EmbededAdapter.prototype.popupLoginDialog = function () {
-    return runtimeSendMessage({
-      ask: 'embeded/popupLogin',
+  EmbededAdapter.prototype.msgPopupLoginDialog = function () {
+    return this.messageExtension({
+      action: 'embeded/background/popupLogin',
       loginCallbackUrl: '../Pages/EmbededLoginCallback.html'
+    });
+  };
+
+  EmbededAdapter.prototype.msgAppClosed = function () {
+    return this.messageExtension({
+      action: 'embeded/contentScript/appClosed'
+    });
+  };
+
+  EmbededAdapter.prototype.msgAppStarted = function () {
+    return this.messageExtension({
+      action: 'embeded/contentScript/appStarted'
     });
   };
 
@@ -345,38 +326,41 @@ if (Privly.adapter === undefined) {
   EmbededAdapter.prototype.createLink = function () {
     var self = this;
 
-    return self.getRequestContent('').then(function (reqContent) {
-      var contentToPost = {
-        "post": {
-          "content": reqContent.content,
-          "structured_content": reqContent.structured_content,
-          "public": reqContent.isPublic,
-          "privly_application": self.application.name,
-          "seconds_until_burn": self.options.initialTTL
-        },
-        "format": "json"
-      };
-
-      return new Promise(function (resolve) {
-        privlyNetworkService.sameOriginPostRequest(
-          privlyNetworkService.contentServerDomain() + '/posts',
-          function (response) {
-            var url = response.jqXHR.getResponseHeader('X-Privly-Url');
-            self
-              .postprocessLink(url)
-              .then(function (url) {
-                var reqUrl = privlyParameters.getParameterHash(url).privlyDataURL;
-                self.privlyUrl = url;
-                self.requestUrl = reqUrl;
-                return self.emitAsync('afterCreateLink', url, reqUrl);
-              })
-              .then(resolve);
+    return self.getRequestContent('')
+      .then(function (reqContent) {
+        var contentToPost = {
+          "post": {
+            "content": reqContent.content,
+            "structured_content": reqContent.structured_content,
+            "public": reqContent.isPublic,
+            "privly_application": self.application.name,
+            "seconds_until_burn": self.options.initialTTL
           },
-          contentToPost
-        );
+          "format": "json"
+        };
+
+        return new Promise(function (resolve) {
+          privlyNetworkService.sameOriginPostRequest(
+            privlyNetworkService.contentServerDomain() + '/posts',
+            function (response) {
+              var url = response.jqXHR.getResponseHeader('X-Privly-Url');
+              self
+                .postprocessLink(url)
+                .then(function (url) {
+                  var reqUrl = privlyParameters.getParameterHash(url).privlyDataURL;
+                  self.privlyUrl = url;
+                  self.requestUrl = reqUrl;
+                  return self.emitAsync('afterCreateLink', url, reqUrl);
+                })
+                .then(resolve);
+            },
+            contentToPost
+          );
+        });
       });
-    });
   };
+
+  // TODO: update when losing focus
 
   /**
    * Update the content of the Privly URL provided by this.privlyUrl
@@ -397,36 +381,38 @@ if (Privly.adapter === undefined) {
       self.lastUpdateXHR = null;
     }
 
-    // doesn't allow user to manually trigger update
-    $('.embeded-form button').attr('disabled', 'disabled');
-    $('.embeded-form .saving-text').show();
-
-    return self.getRequestContent($('textarea').val()).then(function (reqContent) {
-      var url = self.privlyUrl;
-      var reqUrl = self.requestUrl;
-      var contentToPost = {
-        "post": {
-          "content": reqContent.content,
-          "structured_content": reqContent.structured_content,
-          "seconds_until_burn": $('#seconds_until_burn').val()
-        },
-        "format": "json"
-      };
-
-      return new Promise(function (resolve) {
-        self.lastUpdateXHR = privlyNetworkService.sameOriginPutRequest(
-          reqUrl,
-          function () {
-            // re-enable controls
-            $('.saving-text').hide();
-            $('.embeded-form button').removeAttr('disabled');
-            self.lastUpdateXHR = null;
-            self.emitAsync('afterUpdateLink', url, reqUrl).then(resolve);
+    // should we show update icon?
+    //return self.msgStartLoading()
+      //.then(function () {
+        return self.getRequestContent($('textarea').val())//;
+      //})
+      .then(function (reqContent) {
+        var url = self.privlyUrl;
+        var reqUrl = self.requestUrl;
+        var contentToPost = {
+          "post": {
+            "content": reqContent.content,
+            "structured_content": reqContent.structured_content,
+            "seconds_until_burn": $('#seconds_until_burn').val()
           },
-          contentToPost
-        );
-      });
-    });
+          "format": "json"
+        };
+
+        return new Promise(function (resolve) {
+          self.lastUpdateXHR = privlyNetworkService.sameOriginPutRequest(
+            reqUrl,
+            function () {
+              // re-enable controls
+              $('.saving-text').hide();
+              $('.embeded-form button').removeAttr('disabled');
+              self.lastUpdateXHR = null;
+              self.emitAsync('afterUpdateLink', url, reqUrl).then(resolve);
+            },
+            contentToPost
+          );
+        });
+      })
+      .then(self.msgStopLoading.bind(self));
   };
 
   /**
@@ -448,15 +434,19 @@ if (Privly.adapter === undefined) {
     var reqUrl = self.requestUrl;
     var contentToPost = {};
 
-    return new Promise(function (resolve) {
-      privlyNetworkService.sameOriginDeleteRequest(
-        reqUrl,
-        function () {
-          self.emitAsync('afterDeleteLink', url, reqUrl).then(resolve);
-        },
-        contentToPost
-      );
-    });
+    return self.msgStartLoading()
+      .then(function () {
+        return new Promise(function (resolve) {
+          privlyNetworkService.sameOriginDeleteRequest(
+            reqUrl,
+            function () {
+              self.emitAsync('afterDeleteLink', url, reqUrl).then(resolve);
+            },
+            contentToPost
+          );
+        });
+      })
+      .then(self.msgStopLoading.bind(self));
   };
 
   /**
@@ -472,18 +462,19 @@ if (Privly.adapter === undefined) {
     }
 
     self.clearObserver = setInterval(function () {
-      self.getTargetContent(function (content) {
-        if (
-          content === false || (
-            content.indexOf(self.privlyUrl) === -1 &&
-            content.replace(/&amp;/g, '&').indexOf(self.privlyUrl) === -1
-          )
-        ) {
-          clearInterval(self.clearObserver);
-          self.clearObserver = null;
-          self.closeDialog();
-        }
-      });
+      self.msgGetTargetContent()
+        .then(function (content) {
+          if (
+            content === false || (
+              content.indexOf(self.privlyUrl) === -1 &&
+              content.replace(/&amp;/g, '&').indexOf(self.privlyUrl) === -1
+            )
+          ) {
+            clearInterval(self.clearObserver);
+            self.clearObserver = null;
+            self.msgAppClosed();
+          }
+        });
     }, self.options.observeInterval);
   };
 
@@ -492,52 +483,34 @@ if (Privly.adapter === undefined) {
    *
    * @return {Promise}
    */
-  EmbededAdapter.prototype.switchToForm = function () {
+  EmbededAdapter.prototype.onConnectionCheckSucceeded = function () {
     var self = this;
     return self
-      .emitAsync('beforeSwitchToForm')
-      .then(function () {
-        $('.login-check h3').text('Preparing your Privly link...');
+      .emitAsync('connectionCheckSucceeded')
+      // TODO: fix this
+      //.then(self.msgGetTargetText.bind(self))
+      .then(function (text) {
+        $('textarea').val(text);
       })
-      .then(self.getFormInfo.bind(self))
-      .then(function (info) {
-        if (info.hasSubmitButton) {
-          $('button[name="submit"]').text(info.submitButtonText).show();
-        } else {
-          $('button[name="done"]').show();
-        }
-      })
-      // back up original content, in case of user cancels posting
-      .then(self.getTargetContent.bind(self))
-      .then(function (content) {
-        if (content === false) {
-          return Promise.reject();
-        }
-        self.userContentBeforeInsertion = content;
-      })
-      // create a link with empty content
       .then(self.createLink.bind(self))
-      // insert link to the target
       .then(function () {
-        self.insertLink(self.privlyUrl);
+        // TODO: fix this
+        /*return */self.insertLink(self.privlyUrl);
       })
       .then(function (insertionSuccess) {
         if (insertionSuccess === false) {
           return Promise.reject();
         }
       })
-      // link has successfully inserted: show posting form
+      .then(self.msgStopLoading.bind(self))
+      .then(self.msgAppStarted.bind(self))
       .then(function () {
-        $('.login-check').hide();
-        $('.embeded-form').trigger('reposition').show();
-        $('textarea').focus();
         self.beginContentClearObserver();
       })
-      // on failure: close the dialog
       .then(null, function () {
         return self
           .deleteLink()
-          .then(self.closeDialog.bind(this))
+          .then(self.msgAppClosed.bind(this))
           .then(Promise.reject);
       });
   };
@@ -547,97 +520,75 @@ if (Privly.adapter === undefined) {
    * 
    * @return {Promise}
    */
-  EmbededAdapter.prototype.switchToLogin = function () {
+  EmbededAdapter.prototype.onConnectionCheckFailed = function () {
     var self = this;
     return self
-      .emitAsync('beforeSwitchToLogin')
+      .emitAsync('connectionCheckFailed')
+      .then(self.msgStopLoading.bind(self))
+      .then(self.msgPopupLoginDialog.bind(self))
+      .then(self.msgAppClosed.bind(self));
+  };
+
+  /**
+   * Textarea keypress event handler
+   * 
+   * @return {Promise}
+   */
+  EmbededAdapter.prototype.onHitKey = function (ev) {
+    var self = this;
+    return self
+      .updateLink()
       .then(function () {
-        $('.login-check').hide();
-        $('.login-required').show();
+        if (ev.keyCode === 13) {
+          return self.msgEmitEnterEvent({
+            ctrl: ev.ctrlKey,
+            alt: ev.altKey,
+            shift: ev.shiftKey,
+            meta: ev.metaKey,
+          });
+        }
       });
   };
 
-  /**
-   * Login hyperlink click event handler
-   * 
-   * @return {Promise}
-   */
-  EmbededAdapter.prototype.onLoginClick = function () {
+  EmbededAdapter.prototype.onMessageReceived = function (message) {
     var self = this;
-    return self
-      .popupLoginDialog();
+    switch (message.action) {
+    case 'embeded/app/userClose':
+      self.onUserClose();
+      break;
+    case 'embeded/app/updateStyles':
+      self.updateStyle(message.styles);
+      break;
+    case 'embeded/app/stateChanged':
+      self.onStateChanged(message.state);
+      break;
+    }
   };
 
-  /**
-   * Cancel hyperlink/button click event handler
-   * 
-   * @return {Promise}
-   */
-  EmbededAdapter.prototype.onCancelClick = function () {
+  EmbededAdapter.prototype.updateStyle = function (styles) {
+    var inputElement = $('textarea')[0];
+    var styleName;
+    for (styleName in styles) {
+      inputElement.style[styleName] = styles[styleName];
+    }
+  };
+
+  EmbededAdapter.prototype.onStateChanged = function (state) {
+    switch (state) {
+    case 'OPEN':
+      $('textarea').focus();
+      break;
+    }
+  };
+
+  EmbededAdapter.prototype.onUserClose = function () {
     var self = this;
     return self
       .deleteLink()
       .then(function () {
-        if (self.userContentBeforeInsertion !== null) {
-          self.setTargetContent(self.userContentBeforeInsertion);
-        }
+        return self.msgSetTargetText($('textarea').val());
       })
-      .then(self.closeDialog.bind(self));
-  };
-
-  /**
-   * Done button click event handler
-   * 
-   * @return {Promise}
-   */
-  EmbededAdapter.prototype.onDoneClick = function () {
-    var self = this;
-    return self
-      .updateLink()
-      .then(self.closeDialog.bind(self));
-  };
-
-  /**
-   * Submit button click event handler
-   * 
-   * @return {Promise}
-   */
-  EmbededAdapter.prototype.onSubmitClick = function () {
-    var self = this;
-    return self
-      .updateLink()
-      .then(self.triggerSubmit.bind(self))
-      .then(self.closeDialog.bind(self));
-  };
-
-  /**
-   * Seconds_util_burn select change event handler
-   * 
-   * @return {Promise}
-   */
-  EmbededAdapter.prototype.onTTLChange = function () {
-    var self = this;
-    return self
-      .updateLink();
-  };
-
-  /**
-   * Textarea ENTER keypress event handler
-   * 
-   * @return {Promise}
-   */
-  EmbededAdapter.prototype.onEnterHit = function (ev) {
-    var self = this;
-    return self
-      .updateLink()
-      .then(function () {
-        return self.emitEnterEvent({
-          ctrl: ev.ctrlKey,
-          alt: ev.altKey,
-          shift: ev.shiftKey,
-          meta: ev.metaKey,
-        });
-      });
+      .then(self.msgAppClosed.bind(self));
   };
 
   /**
@@ -652,85 +603,21 @@ if (Privly.adapter === undefined) {
     }
     self.initialized = true;
 
-    // show glyph icon
-    $('.glyph').append(Privly.glyph.getGlyphDOM());
-
-    // when resizing window, we re-calculate the dialog position based on percentage value
-    var $dialog = $('.embeded-form');
-    $(window).resize(debounce(function () {
-      $dialog.trigger('reposition');
-    }, 200));
-
-    $dialog.on('reposition', function () {
-      var offsetLeft = Math.floor($(window).width() * parseFloat($dialog[0].getAttribute('data-left')) - $dialog.outerWidth() / 2);
-      var offsetTop = Math.floor($(window).height() * parseFloat($dialog[0].getAttribute('data-top')) - $dialog.outerHeight() / 2);
-      $dialog[0].style.left = offsetLeft + 'px';
-      $dialog[0].style.top = offsetTop + 'px';
-    });
-
-    // Drag window
-    // we set mousemove event listener on document element, to prevent
-    // losing target when moving to fast
-    $dialog.on('mousedown', function (ev) {
-      if (ev.target.nodeName === 'TEXTAREA' || ev.target.nodeName === 'BUTTON' || ev.target.nodeName === 'SELECT') {
-        return;
-      }
-      $dialog[0].style.willChange = 'left, top';
-      // record start position
-      var
-        mouseStartX = ev.screenX,
-        mouseStartY = ev.screenY,
-        dialogX = $dialog.position().left,
-        dialogY = $dialog.position().top;
-      // bind event listener
-      $(document).on('mousemove.drag', function (ev) {
-        if (ev.which === 1) {
-          var offsetLeft = dialogX + (ev.screenX - mouseStartX);
-          var offsetTop = dialogY + (ev.screenY - mouseStartY);
-          $dialog[0].style.left = offsetLeft + 'px';
-          $dialog[0].style.top = offsetTop + 'px';
-        }
-      });
-    });
-    $dialog.on('mouseup', function () {
-      $dialog[0].style.willChange = 'auto';
-      // update dialog percentage value, for re-calculating
-      // the position when user resizing window
-      $dialog[0].setAttribute('data-left', ($dialog.position().left + $dialog.outerWidth() / 2) / $(window).width());
-      $dialog[0].setAttribute('data-top', ($dialog.position().top + $dialog.outerHeight() / 2) / $(window).height());
-      // clear event listener
-      $(document).off('mousemove.drag');
-    });
-
-    $('[name="login"]').click(function () {
-      self.onLoginClick();
-    });
-
-    $('[name="cancel"]').click(function () {
-      self.onCancelClick();
-    });
-
-    $('[name="done"]').click(function () {
-      self.onDoneClick();
-    });
-
-    $('[name="submit"]').click(function () {
-      self.onSubmitClick();
-    });
-
-    $('#seconds_until_burn').change(function () {
-      self.onTTLChange();
-    });
-
     // add event listeners to forward ENTER key events
     $('textarea').keydown((function () {
-      var debouncedListener = debounce(self.onEnterHit.bind(self), 300);
+      var debouncedListener = debounce(self.onHitKey.bind(self), 300);
       return function (ev) {
-        if (ev.which === 13) {
-          debouncedListener(ev);
-        }
+        debouncedListener(ev);
       };
     }()));
+
+    // receive incoming messages
+    Privly.message.addListener(function (message) {
+      if (message.targetAppId !== self.selfAppId) {
+        return;
+      }
+      self.onMessageReceived(message);
+    });
   };
 
   /**
@@ -745,11 +632,14 @@ if (Privly.adapter === undefined) {
     if (!self.initialized) {
       self.init();
     }
+
+    self.msgStartLoading();
+
     privlyNetworkService.initPrivlyService(
       privlyNetworkService.contentServerDomain(),
-      self.switchToForm.bind(self),
-      self.switchToLogin.bind(self),
-      self.switchToLogin.bind(self)
+      self.onConnectionCheckSucceeded.bind(self),
+      self.onConnectionCheckFailed.bind(self),
+      self.onConnectionCheckFailed.bind(self)
     );
   };
 
