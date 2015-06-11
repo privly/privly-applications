@@ -5,7 +5,7 @@
  * include this script on each of the platforms (Chrome, Firefox, etc).
  * When you want to receive a message, you should register the listener with
  * `Privly.message.addListener` and when you want to send a message to a
- * particular context you should use `Privly.message.messageTopPrivlyApplications`,
+ * particular context you should use `Privly.message.messagePrivlyApplications`,
  * `Privly.message.messageContentScripts`, and `Privly.message.messageExtension`.
  *
  * Currently this context messenger can only work in Chrome.
@@ -63,9 +63,9 @@
  *
  *        Privly.message.messageContentScripts(data, responseCallback)
  *
- *    Send message to all opening Privly application page:
+ *    Send message to all Privly application page:
  *
- *        Privly.message.messageTopPrivlyApplications(data, responseCallback)
+ *        Privly.message.messagePrivlyApplications(data, responseCallback)
  *
  *    The three interfaces above accept two parameters: data, responseCallback.
  *    You can use any data type in the data parameter. The underlayer
@@ -259,13 +259,7 @@ if (Privly === undefined) {
       // Send message to all content scripts
       chrome.tabs.query({}, function (tabs) {
         tabs.forEach(function (tab) {
-          // Only send the message to privly applications.
-          // Extension cannot inject content script into
-          // another extension, so if the tab can handle
-          // our message, it must be the Privly application.
-          if (tab.url.indexOf('chrome-extension://') === 0) {
-            chrome.tabs.sendMessage(tab.id, payload);
-          }
+          chrome.tabs.sendMessage(tab.id, payload);
         });
       });
       return;
@@ -539,7 +533,7 @@ if (Privly === undefined) {
    * Send message to a context. It is not recommended to use
    * this function. You can use wrapper functions instead:
    * `messageExtension`, `messageContentScripts`,
-   * `messageTopPrivlyApplications`.
+   * `messagePrivlyApplications`.
    * 
    * @param  {String} to available options:
    * 'CONTENT_SCRIPT', 'BACKGROUND_SCRIPT', 'PRIVLY_APPLICATION'
@@ -588,7 +582,7 @@ if (Privly === undefined) {
    * 
    * @param {Any} data the data to message to all the Privly Applications.
    */
-  Privly.message.messageTopPrivlyApplications = function (data, responseCallback) {
+  Privly.message.messagePrivlyApplications = function (data, responseCallback) {
     Privly.message.sendMessageTo('PRIVLY_APPLICATION', data, responseCallback);
   };
 
