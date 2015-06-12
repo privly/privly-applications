@@ -28,6 +28,10 @@
   content: 'data: ';
 }
 
+.response-target::before {
+  content: 'target data: ';
+}
+
 .response-item::before {
   display: inline-block;
   width: 100px;

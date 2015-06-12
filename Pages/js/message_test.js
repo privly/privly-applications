@@ -5,6 +5,7 @@ $(document).ready(function () {
     ['action', 'timestamp', 'platform', 'context', 'location', 'data'].forEach(function (field) {
       $('<div class="response-' + field + ' response-item"></div>').text(pong[field]).appendTo($container);
     });
+    $('<div class="response-target response-item"></div>').text(pong.action + '/' + pong.context + '/' + pong.data + '/' + pong.location).appendTo($container);
     $container.appendTo('#response');
   }
 
