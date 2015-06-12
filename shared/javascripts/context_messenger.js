@@ -717,7 +717,7 @@ if (Privly === undefined) {
   //    data: the same as magic data in ping
   // }
   // 
-  // for `pingAsync`, response will be sent after one second.
+  // for `pingAsync`, response will be sent asynchronously.
   // 
   try {
     Privly.message.addListener(function (message, sendResponse) {
@@ -735,7 +735,7 @@ if (Privly === undefined) {
         } else if (message.action === 'pingAsync') {
           setTimeout(function () {
             sendResponse(responseBody);
-          }, 1000);
+          }, 1);
           return true; // keep response channel open since we will send an async response
         }
       }
