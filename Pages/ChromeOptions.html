@@ -6,29 +6,30 @@
       This was likely rendered from the Privly-application templating system
       See: https://github.com/privly/privly-applications/pull/19
      -->
-  <title>
-   New Options
-  </title>
-  <meta content="../shared/test/parameters.js,../shared/test/extension_integration.js,
-            ../shared/test/network_service.js,./js/tests/OptionsSpec.js" name="PrivlySpec"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <!-- Top Styles -->
-  <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
-  <link class="top" href="../shared/css/top/top.css" rel="stylesheet"/>
-  <!-- Common Styles -->
   <link href="../shared/css/common.css" media="screen" rel="stylesheet" type="text/css"/>
-  <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet" type="text/css"/>
-  <link href="css/options.css" media="screen" rel="stylesheet" type="text/css"/>
   <script src="../shared/javascripts/meta_loader.js" type="text/javascript">
   </script>
   <script src="../shared/javascripts/parameters.js" type="text/javascript">
   </script>
   <script src="../shared/javascripts/network_service.js" type="text/javascript">
   </script>
-  <script src="../shared/javascripts/extension_integration.js" type="text/javascript">
+  <script src="../shared/javascripts/context_messenger.js" type="text/javascript">
   </script>
   <script src="../shared/javascripts/local_storage.js" type="text/javascript">
   </script>
+  <script src="../shared/javascripts/storage.js" type="text/javascript">
+  </script>
+  <script src="../shared/javascripts/options.js" type="text/javascript">
+  </script>
+  <script src="../shared/javascripts/glyph.js" type="text/javascript">
+  </script>
+  <title>
+   New Options
+  </title>
+  <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
+  <link class="top" href="../shared/css/top/top.css" rel="stylesheet"/>
+  <link href="css/options.css" media="screen" rel="stylesheet" type="text/css"/>
   <script src="../vendor/jquery.min.js" type="text/javascript">
   </script>
   <script src="js/options.js" type="text/javascript">
@@ -62,23 +63,23 @@
       <ul class="nav navbar-nav">
        <li class="logged_in_nav" style="display:none;">
         <a href="../History/new.html">
-         History
          <span class="glyphicon glyphicon-list-alt">
          </span>
+         History
         </a>
        </li>
        <li class="logged_out_nav">
         <a class="login_url" href="../Login/new.html">
-         Login
          <span class="glyphicon glyphicon-log-in">
          </span>
+         Login
         </a>
        </li>
        <li class="dropdown logged_in_nav" style="display:none;">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-         New Link
          <b class="caret">
          </b>
+         New Link
         </a>
         <ul class="dropdown-menu">
          <li class="dropdown-header">
@@ -109,9 +110,9 @@
        </li>
        <li class="active dropdown logged_in_nav logged_out_nav">
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-         Options
          <b class="caret">
          </b>
+         Options
         </a>
         <ul class="dropdown-menu">
          <li>
@@ -139,9 +140,9 @@
        </li>
        <li class="logged_in_nav" style="display:none;">
         <a class="logout_url" href="#" id="logout_link">
-         Logout
          <span class="glyphicon glyphicon-log-out">
          </span>
+         Logout
         </a>
        </li>
       </ul>
@@ -164,10 +165,13 @@
       </p>
       <div id="copy_message" style="display:none;">
        <p class="flash notice">
-        Copy and paste the address found below to any website
-                you want to share this information through.
-       </p>
-       <p class="flash notice">
+        <span id="step1_message">
+         <strong>
+          Step 1.
+         </strong>
+         Copy and paste the address found below to any website
+                  you want to share this information through.
+        </span>
         <span class="glyphicon glyphicon-link">
         </span>
         <span class="privlyUrl" data-privly-exclude="true">
@@ -175,9 +179,9 @@
        </p>
        <p class="flash notice open-app-button" style="display:none;">
         <strong>
-         Now copy/paste
+         Step 2.
         </strong>
-        the highlighted address anywhere you want to share it. You can also
+        Copy/paste the highlighted address anywhere you want to share it. You can also
         <a class="btn btn-default" href="" id="local_address" target="_blank">
          open the link
         </a>
@@ -198,12 +202,11 @@
         </h2>
         <br/>
         <input id="disableBtn" type="checkbox"/>
-        Disable the Privly button that appears in the top-right corner of textarea's
+        <label for="disableBtn">
+         Disable the Privly button that appears in the top-right corner of textarea's
+        </label>
         <br/>
         <br/>
-        <button class="btn btn-primary" id="save_btnAppearance">
-         Save
-        </button>
         <div id="button_status">
         </div>
        </section>
@@ -251,6 +254,9 @@
           </span>
          </div>
         </div>
+        <div id="invalid_domain">
+         Domains are not saved until all are valid
+        </div>
         <div id="status">
         </div>
         <span id="add_more_urls">
@@ -258,9 +264,6 @@
          </span>
          Add more
         </span>
-        <button class="btn btn-primary btn-sm" id="save_whitelist">
-         Save
-        </button>
         <br/>
         <br/>
        </section>
