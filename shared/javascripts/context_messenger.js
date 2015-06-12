@@ -698,4 +698,49 @@ if (Privly === undefined) {
     }
   });
 
+  // Setup a built-in ping-pong listener, mainly for testing and debuging purpose.
+  // Any ping message send to this context will receive a pong response.
+  // 
+  // Ping:
+  // {
+  //    action: 'ping' / 'pingAsync',
+  //    data: any magic data
+  // }
+  // 
+  // Should receive response:
+  // {
+  //    action: 'pong',
+  //    timestamp: timestamp that receive message,
+  //    platform: self platform name,
+  //    context: self context name,
+  //    location: window location,
+  //    data: the same as magic data in ping
+  // }
+  // 
+  // for `pingAsync`, response will be sent after one second.
+  // 
+  try {
+    Privly.message.addListener(function (message, sendResponse) {
+      if (message !== null && typeof message === 'object' && (message.action === 'ping' || message.action === 'pingAsync')) {
+        var responseBody = {
+          action: message.action === 'ping' ? 'pong' : 'pongAsync',
+          timestamp: Date.now(),
+          platform: Privly.message.currentAdapter.getPlatformName(),
+          context: Privly.message.currentAdapter.getContextName(),
+          location: location.href,
+          data: message.data
+        };
+        if (message.action === 'ping') {
+          sendResponse(responseBody);
+        } else if (message.action === 'pingAsync') {
+          setTimeout(function () {
+            sendResponse(responseBody);
+          }, 1000);
+          return true; // keep response channel open since we will send an async response
+        }
+      }
+    });
+  } catch (ignore) {
+  }
+
 }());
