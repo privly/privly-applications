@@ -17,7 +17,9 @@ class TestShow < Test::Unit::TestCase
     page.assert_selector("iframe[id='ifrm0']", :count => 1)
     page.assert_selector("iframe[src='" + Capybara.app_host + "/privly-applications/PlainPost/show.html?privlyOriginalURL=https%3A%2F%2Fpriv.ly%2Fposts%2F2%3FprivlyApp%3DPlainPost%23privlyInject1']")
     page.assert_selector("iframe[id='test_iframe']", :count => 1)
-    page.assert_selector("iframe[srcdoc='it works']", :count => 1)
+    page.driver.browser.switch_to.frame "test_iframe"
+    assert page.has_text?("it works")
+    page.driver.browser.switch_to.default_content
 
   end
 
