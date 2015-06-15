@@ -324,8 +324,7 @@ if (Privly === undefined) {
 
   /** @inheritdoc */
   SafariAdapter.isPlatformMatched = function () {
-    console.warn('not implemented');
-    return false;
+    return (typeof safari !== 'undefined' && typeof safari.extension !== 'undefined');
   };
 
   /** @inheritdoc */
@@ -336,6 +335,46 @@ if (Privly === undefined) {
   /** @inheritdoc */
   SafariAdapter.prototype.getPlatformName = function () {
     return 'SAFARI';
+  };
+
+  /** @inheritdoc */
+  SafariAdapter.prototype.getContextName = function () {
+    if (window.document.getElementById('is-background-script') !== null) {
+      return 'BACKGROUND_SCRIPT';
+    } else if (window.location.href.indexOf(window.location.origin + '/privly-applications') === 0) {
+      return 'PRIVLY_APPLICATION';
+    } else {
+      return 'CONTENT_SCRIPT';
+    }
+  };
+
+  /** @inheritdoc */
+  SafariAdapter.prototype.sendMessageTo = function (to, payload) {
+    if (to === 'BACKGROUND_SCRIPT') {
+      safari.self.tab.dispatchMessage(payload);
+      return;
+    }
+    if (to === 'CONTENT_SCRIPT') {
+      // Send message to all content scripts
+      safari.application.activeBrowserWindow.tabs.forEach(function (tab) {
+        // Don't message Privly Applications
+        if (tab.url.indexOf('safari-extension') !== 0) {
+          tab.page.dispatchMessage(payload);
+        }
+      });
+      return;
+    }
+    if (to === 'PRIVLY_APPLICATION') {
+      // Send message to all content scripts
+      safari.application.activeBrowserWindow.tabs.forEach(function (tab) {
+        tab.page.dispatchMessage(payload);
+      });
+      return;
+    }
+  };
+
+  /** @inheritdoc */
+  SafariAdapter.prototype.setListener = function (callback) {
   };
   Privly.message.adapter.Safari = SafariAdapter;
 
@@ -505,7 +544,7 @@ if (Privly === undefined) {
   function getPlatformAdapter() {
     // Hosted adapter should be always placed at the last position because it
     // is a fallback.
-    var adapters = [IOSAdapter, AndroidAdapter, ChromeAdapter, FirefoxAdapter];
+    var adapters = [IOSAdapter, AndroidAdapter, ChromeAdapter, FirefoxAdapter, SafariAdapter];
     var i;
     for (i = 0; i < adapters.length; ++i) {
       if (adapters[i].isPlatformMatched()) {
