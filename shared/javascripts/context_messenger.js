@@ -375,6 +375,16 @@ if (Privly === undefined) {
 
   /** @inheritdoc */
   SafariAdapter.prototype.setListener = function (callback) {
+    if (this.getContextName() === 'BACKGROUND_SCRIPT') {
+      safari.application.addEventListener("message", function(payload) {
+        callback(payload);
+      }, true);
+    }
+    if (this.getContextName() === 'CONTENT_SCRIPT') {
+      safari.self.addEventListener("message", function(payload) {
+        callback(payload);
+      }, true);
+    }
   };
   Privly.message.adapter.Safari = SafariAdapter;
 
