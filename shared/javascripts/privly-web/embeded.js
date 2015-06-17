@@ -153,20 +153,12 @@ if (Privly.adapter === undefined) {
    * 
    * @return {Promise}
    */
-  EmbededAdapter.prototype.messageExtension = function (message, hasResponse) {
+  EmbededAdapter.prototype.messageExtension = function (message) {
     var messageToSend = JSON.parse(JSON.stringify(message));
     // specify which context to be received
     messageToSend.targetContextId = this.sourceContextId;
     messageToSend.targetResourceId = this.sourceResourceId;
-    if (hasResponse !== true) {
-      Privly.message.messageExtension(messageToSend);
-      return Promise.resolve();
-    }
-    return new Promise(function (resolve) {
-      Privly.message.messageExtension(messageToSend, function (response) {
-        resolve(response);
-      });
-    });
+    return Privly.message.messageExtension(messageToSend);
   };
 
 
@@ -196,13 +188,13 @@ if (Privly.adapter === undefined) {
   EmbededAdapter.prototype.msgGetTargetContent = function () {
     return this.messageExtension({
       action: 'embeded/contentScript/getTargetContent'
-    }, true); 
+    });
   };
 
   EmbededAdapter.prototype.msgGetTargetText = function () {
     return this.messageExtension({
       action: 'embeded/contentScript/getTargetText'
-    }, true);
+    });
   };
 
   EmbededAdapter.prototype.msgSetTargetText = function (text) {
@@ -223,7 +215,7 @@ if (Privly.adapter === undefined) {
     return this.messageExtension({
       action: 'embeded/contentScript/insertLink',
       link: link
-    }, true);
+    });
   };
 
 
@@ -326,7 +318,8 @@ if (Privly.adapter === undefined) {
   EmbededAdapter.prototype.createLink = function () {
     var self = this;
 
-    return self.getRequestContent('')
+    return self
+      .getRequestContent($('textarea').val())
       .then(function (reqContent) {
         var contentToPost = {
           "post": {
@@ -381,11 +374,9 @@ if (Privly.adapter === undefined) {
       self.lastUpdateXHR = null;
     }
 
-    // should we show update icon?
-    //return self.msgStartLoading()
-      //.then(function () {
-        return self.getRequestContent($('textarea').val())//;
-      //})
+    // TODO: should we show update spinner?
+    return self
+      .getRequestContent($('textarea').val())
       .then(function (reqContent) {
         var url = self.privlyUrl;
         var reqUrl = self.requestUrl;
@@ -434,7 +425,8 @@ if (Privly.adapter === undefined) {
     var reqUrl = self.requestUrl;
     var contentToPost = {};
 
-    return self.msgStartLoading()
+    return self
+      .msgStartLoading()
       .then(function () {
         return new Promise(function (resolve) {
           privlyNetworkService.sameOriginDeleteRequest(
@@ -487,15 +479,13 @@ if (Privly.adapter === undefined) {
     var self = this;
     return self
       .emitAsync('connectionCheckSucceeded')
-      // TODO: fix this
-      //.then(self.msgGetTargetText.bind(self))
+      .then(self.msgGetTargetText.bind(self))
       .then(function (text) {
         $('textarea').val(text);
       })
       .then(self.createLink.bind(self))
       .then(function () {
-        // TODO: fix this
-        /*return */self.insertLink(self.privlyUrl);
+        return self.insertLink(self.privlyUrl);
       })
       .then(function (insertionSuccess) {
         if (insertionSuccess === false) {
