@@ -126,15 +126,10 @@ var callbacks = {
     privlyNetworkService.showLoggedInNav();
 
     // Listen for a message containing the initial content for the form
-    Privly.message.addListener(function(message){
-      if (! message.originalRequest ||
-          message.originalRequest.ask !== "initialContent") {
-        return false; // Don't remove this listener
-      }
-      $("#content")[0].value = message.initialContent;
-      return true; // Remove this listener
-    });
-    Privly.message.messageExtension( {"ask": "initialContent"} );
+    Privly.message.messageExtension( {"ask": "initialContent"} )
+      .then(function (response) {
+        $("#content")[0].value = response.initialContent;
+      });
 
     // Monitor the submit button
     $("#save").prop('disabled', false);

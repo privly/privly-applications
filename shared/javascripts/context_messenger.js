@@ -5,7 +5,7 @@
  * include this script on each of the platforms (Chrome, Firefox, etc).
  * When you want to receive a message, you should register the listener with
  * `Privly.message.addListener` and when you want to send a message to a
- * particular context you should use `Privly.message.messageTopPrivlyApplications`,
+ * particular context you should use `Privly.message.messagePrivlyApplications`,
  * `Privly.message.messageContentScripts`, and `Privly.message.messageExtension`.
  *
  * Currently this context messenger can only work in Chrome.
@@ -57,28 +57,35 @@
  *
  *    Send message to the background script (or the extension on Android platform):
  *
- *        Privly.message.messageExtension(data, responseCallback)
+ *        Privly.message.messageExtension(data)
  *
  *    Send message to all content scripts:
  *
- *        Privly.message.messageContentScripts(data, responseCallback)
+ *        Privly.message.messageContentScripts(data)
  *
- *    Send message to all opening Privly application page:
+ *    Send message to all Privly application page:
  *
- *        Privly.message.messageTopPrivlyApplications(data, responseCallback)
+ *        Privly.message.messagePrivlyApplications(data)
  *
- *    The three interfaces above accept two parameters: data, responseCallback.
  *    You can use any data type in the data parameter. The underlayer
  *    compatibility adapters can transparently serialize and unserialize it for you
  *    when sending messages and receiving messages using our interface.
  *
- *    If you would receive a response later after sending the message, you can
- *    specify a callback function in responseCallback parameter.
+ *    All of the three functions return Promise objects. You can retrive the response
+ *    data (or null) if the Promise is resolved.
  *
- *    Notice, please DON'T specify responseCallback if you won't receive responses.
- *    Otherwise this will case memory leak!
+ *    Sample usage:
  *
+ *        Privly.message.messageExtension(data).then(function () {
+ *          console.log('message sent!');
+ *        });
  *
+ *        Privly.message.messageExtension(data).then(function (response) {
+ *          console.log('response from the message receiver: ', response);
+ *        });
+ *    
+ *    
+ *    
  *    Receive messages sent to the current context:
  *
  *        Privly.message.addListener(callback)
@@ -90,13 +97,14 @@
  *
  *    The `data` parameter is the data of the message.
  *    The `sendResponse` parameter is a callable function. You could use sendResponse(data)
- *    to send response back to the sender.
- *
- *    You could return `true` in your message listener function. If you returns `true`,
- *    your message listener will be removed automatically.
- *
- *    You can manually remove a message listener to prevent it from receiving further
- *    messages:
+ *    to send response back to the sender. This function becomes invalid when the message
+ *    listener returns, unless you return true from the message listener to indicate you wish
+ *    to send a response asynchronously (this will keep the message channel open to the other
+ *    end until sendResponse is called)
+ * 
+ * 
+ * 
+ *    Remove a message listener:
  *
  *        Privly.message.removeListener(fn)
  * 
@@ -259,13 +267,7 @@ if (Privly === undefined) {
       // Send message to all content scripts
       chrome.tabs.query({}, function (tabs) {
         tabs.forEach(function (tab) {
-          // Only send the message to privly applications.
-          // Extension cannot inject content script into
-          // another extension, so if the tab can handle
-          // our message, it must be the Privly application.
-          if (tab.url.indexOf('chrome-extension://') === 0) {
-            chrome.tabs.sendMessage(tab.id, payload);
-          }
+          chrome.tabs.sendMessage(tab.id, payload);
         });
       });
       return;
@@ -528,25 +530,26 @@ if (Privly === undefined) {
   Privly.message._messageIdCounter = 0;
 
   /**
-   * Store every response callbacks here.
+   * Store every response promise resolve function here.
    * The key is the unique message id.
    * 
    * @type {Object}
    */
-  Privly.message._responseCallbacks = {};
+  Privly.message._responsePromiseResolvers = {};
 
   /**
    * Send message to a context. It is not recommended to use
    * this function. You can use wrapper functions instead:
    * `messageExtension`, `messageContentScripts`,
-   * `messageTopPrivlyApplications`.
+   * `messagePrivlyApplications`.
    * 
    * @param  {String} to available options:
    * 'CONTENT_SCRIPT', 'BACKGROUND_SCRIPT', 'PRIVLY_APPLICATION'
    * @param  {Any} data
-   * @param  {Function<data>} responseCallback
+   *
+   * @return {Promise<response>}
    */
-  Privly.message.sendMessageTo = function (to, data, responseCallback) {
+  Privly.message.sendMessageTo = function (to, data) {
     // generate a unique id for this message
     var msgId = Privly.message.contextId + '.' + (++Privly.message._messageIdCounter).toString(16) + '.' + Date.now().toString(16);
 
@@ -554,12 +557,13 @@ if (Privly === undefined) {
       body: data,
       type: 'MESSAGE',
       from: Privly.message.currentAdapter.getContextName(),
+      to: to,
       id: msgId
     });
 
-    if (typeof responseCallback === 'function') {
-      Privly.message._responseCallbacks[msgId] = responseCallback;
-    }
+    return new Promise(function (resolve) {
+      Privly.message._responsePromiseResolvers[msgId] = resolve;
+    });
   };
 
   /**
@@ -568,9 +572,11 @@ if (Privly === undefined) {
    *
    * @param {Any} data The value of the message being sent to the extension.
    *
+   * @return {Promise<response>}
+   *
    */
-  Privly.message.messageExtension = function (data, responseCallback) {
-    Privly.message.sendMessageTo('BACKGROUND_SCRIPT', data, responseCallback);
+  Privly.message.messageExtension = function (data) {
+    return Privly.message.sendMessageTo('BACKGROUND_SCRIPT', data);
   };
 
   /**
@@ -578,18 +584,22 @@ if (Privly === undefined) {
    * according to the messaging pathway required by the current platform.
    *
    * @param {Any} data The value of the message being sent to the content script.
+   *
+   * @return {Promise<response>}
    */
-  Privly.message.messageContentScripts = function (data, responseCallback) {
-    Privly.message.sendMessageTo('CONTENT_SCRIPT', data, responseCallback);
+  Privly.message.messageContentScripts = function (data) {
+    return Privly.message.sendMessageTo('CONTENT_SCRIPT', data);
   };
 
   /**
    * Message all Privly Applications that are not injected into an iframe.
    * 
    * @param {Any} data the data to message to all the Privly Applications.
+   *
+   * @return {Promise<response>}
    */
-  Privly.message.messageTopPrivlyApplications = function (data, responseCallback) {
-    Privly.message.sendMessageTo('PRIVLY_APPLICATION', data, responseCallback);
+  Privly.message.messagePrivlyApplications = function (data) {
+    return Privly.message.sendMessageTo('PRIVLY_APPLICATION', data);
   };
 
   /**
@@ -630,44 +640,107 @@ if (Privly === undefined) {
   Privly.message.currentAdapter.setListener(function (payload) {
     var fn, i;
 
+    // we may receive messages that are not intended to
+    // send to this context. In such case, we should ignore
+    // them.
+    if (payload.to !== Privly.message.currentAdapter.getContextName()) {
+      return;
+    }
+
     // receives a message
     if (payload.type === 'MESSAGE') {
 
+      // we only allow sending one response if there are
+      // multiple listeners want to send response.
+      var responseSent = false;
+
       var sendResponse = function (data) {
+        if (responseSent) {
+          return;
+        }
         Privly.message.currentAdapter.sendMessageTo(payload.from, {
+          to: payload.from,
           body: data,
           type: 'RESPONSE',
           id: payload.id
         });
+        responseSent = true;
       };
 
-      // A list of functions to remove after all the listener have completed
-      var removeList = [], removeListener;
+      // whether the response channel should be preserved
+      // if sendResponse is not called after all listener
+      // callbacks return
+      var preserveChannel = false;
       for (i = 0; i < Privly.message.listeners.length; i++) {
         fn = Privly.message.listeners[i];
-        removeListener = fn(payload.body, sendResponse);
-        if (removeListener === true) {
-          removeList.push(fn);
+        if (fn(payload.body, sendResponse) === true) {
+          preserveChannel = true;
         }
       }
 
-      // Remove all the functions that returned `true`.
-      for (i = 0; i < removeList.length; i++) {
-        Privly.message.removeListener(removeList[i]);
+      // if no response is sent and no further response
+      // will be sent, we still send a response message
+      // to close the channel
+      if (!responseSent && !preserveChannel) {
+        sendResponse(null);
       }
-
       return;
     }
 
-    // receives a response message
+    // received a response message
     if (payload.type === 'RESPONSE') {
-      if (Privly.message._responseCallbacks.hasOwnProperty(payload.id)) {
-        Privly.message._responseCallbacks[payload.id](payload.body);
-        // remove the response callback
-        delete Privly.message._responseCallbacks[payload.id];
+      if (Privly.message._responsePromiseResolvers.hasOwnProperty(payload.id)) {
+        Privly.message._responsePromiseResolvers[payload.id](payload.body);
+        // remove the response promise
+        delete Privly.message._responsePromiseResolvers[payload.id];
       }
       return;
     }
   });
+
+  // Setup a built-in ping-pong listener, mainly for testing and debuging purpose.
+  // Any ping message send to this context will receive a pong response.
+  // 
+  // Ping:
+  // {
+  //    action: 'ping' / 'pingAsync',
+  //    data: any magic data
+  // }
+  // 
+  // Should receive response:
+  // {
+  //    action: 'pong',
+  //    timestamp: timestamp that receive message,
+  //    platform: self platform name,
+  //    context: self context name,
+  //    location: window location,
+  //    data: the same as magic data in ping
+  // }
+  // 
+  // for `pingAsync`, response will be sent asynchronously.
+  // 
+  try {
+    Privly.message.addListener(function (message, sendResponse) {
+      if (message !== null && typeof message === 'object' && (message.action === 'ping' || message.action === 'pingAsync')) {
+        var responseBody = {
+          action: message.action === 'ping' ? 'pong' : 'pongAsync',
+          timestamp: Date.now(),
+          platform: Privly.message.currentAdapter.getPlatformName(),
+          context: Privly.message.currentAdapter.getContextName(),
+          location: location.href,
+          data: message.data
+        };
+        if (message.action === 'ping') {
+          sendResponse(responseBody);
+        } else if (message.action === 'pingAsync') {
+          setTimeout(function () {
+            sendResponse(responseBody);
+          }, 1);
+          return true; // keep response channel open since we will send an async response
+        }
+      }
+    });
+  } catch (ignore) {
+  }
 
 }());

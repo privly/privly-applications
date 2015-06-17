@@ -19,5 +19,12 @@
     "subtemplate_path": "Pages/EmbededLoginCallback.html.subtemplate",
     "outfile_path": "Pages/EmbededLoginCallback.html",
     "subtemplate_dict": {"name": "Embeded", "action": "login_callback"}
+  },
+  {
+    "release_status": "alpha",
+    "platforms": ["chrome", "firefox"],
+    "subtemplate_path": "Pages/MessageTest.html.subtemplate",
+    "outfile_path": "Pages/MessageTest.html",
+    "subtemplate_dict": {"name": "Page", "action": "MessageTest"}
   }
 ]
