@@ -297,7 +297,14 @@ if (Privly === undefined) {
 
   /** @inheritdoc */
   FirefoxAdapter.isPlatformMatched = function () {
-    return (typeof chrome === 'undefined' && window.location.href.indexOf('chrome://') === 0);
+
+    validContext = ["BACKGROUND_SCRIPT", "CONTENT_SCRIPT",
+                    "PRIVLY_APPLICATIONS"]
+    if (validContext.indexOf(FirefoxAdapter.prototype.getContextName()) !== -1) {
+      return true;
+    }
+    // unknown context, possibly not in Firefox.
+    return false;
   };
 
   /** @inheritdoc */
@@ -305,13 +312,88 @@ if (Privly === undefined) {
     return new FirefoxAdapter();
   };
 
+  /** @inheritdoc 
+   *
+   * "Workers" here refer to the Jetpack messaging API objects, which could 
+   * be workers created by page-mod, or a panel object or self. All these objects 
+   * provide the interface to send and receive messages using "port".
+   *
+   * Stores all the workers Or messaging API objects.
+   * @see FirefoxAdapter.prototype.pushWorker
+   */
+  FirefoxAdapter.prototype.workers = [];
+
+  /** @inheritdoc
+   * Adds a worker to the list of workers and listens for messages.
+   *
+   * @param {Object} worker Jetpack messaging API object
+   */
+  FirefoxAdapter.prototype.pushWorker = function(worker) {
+    // Add worker to array of workers
+    this.workers.push(worker);
+    var callback = this.listener;
+    // Use the worker to listen for messages.
+    worker.port.on("privly", callback);
+  };
+
+  /** @inheritdoc
+   *
+   * Remove the worker from the array of workers. This function is called when 
+   * a worker is destroyed("detach" event). The scripts using context messenger are
+   * responsible for calling this function.
+   * 
+   * @param {Object} worker Jetpack messaging API object.
+   */
+  FirefoxAdapter.prototype.popWorker = function(worker) {
+    var workers = this.workers;
+    // worker destroyed, remove from array
+    var idx = workers.indexOf(worker);
+    if (idx !== -1) {
+      workers.splice(idx, 1);
+    } 
+  };
+
   /** @inheritdoc */
   FirefoxAdapter.prototype.getPlatformName = function () {
     return 'FIREFOX';
   };
+
+  /** @inheritdoc */
+  FirefoxAdapter.prototype.getContextName = function () {
+
+    if (typeof require !== "undefined") {
+      return "BACKGROUND_SCRIPT";
+    }
+    else if (typeof self !== "undefined") {
+      if (typeof self.port !== "undefined") {
+        return "CONTENT_SCRIPT";
+      }
+    }
+    else if (typeof window !== "undefined") {
+      if (window.location.href.indexOf("chrome://") === 0) {
+        return "PRIVLY_APPLICATION";
+      }
+    }
+    else {
+      return "UNKNOWN_CONTEXT";
+    }
+  };
+
+  /** @inheritdoc */
+  FirefoxAdapter.prototype.sendMessageTo = function (to, data) {
+    // Send Message using available workers.
+    var len = this.workers.length;
+    for(var i=0 ; i<len ; i++) {
+      this.workers[i].port.emit("privly", data);
+    }
+  };
+
+  /** @inheritdoc */
+  FirefoxAdapter.prototype.setListener = function (callback) {
+    this.listener = callback;
+  };
+
   Privly.message.adapter.Firefox = FirefoxAdapter;
-
-
 
 
   /**
@@ -401,10 +483,13 @@ if (Privly === undefined) {
 
   /** @inheritdoc */
   IOSAdapter.isPlatformMatched = function () {
-    return (
-      (navigator.userAgent.indexOf('iPhone') >= 0 || navigator.userAgent.indexOf('iPad') >= 0)
-      && navigator.userAgent.indexOf('Safari') === -1
-    );
+    if (typeof navigator !== "undefined") {
+      return (
+        (navigator.userAgent.indexOf('iPhone') >= 0 || navigator.userAgent.indexOf('iPad') >= 0)
+        && navigator.userAgent.indexOf('Safari') === -1
+      );
+    }
+    return false;
   };
 
   /** @inheritdoc */
@@ -785,3 +870,8 @@ if (Privly === undefined) {
   }
 
 }());
+
+// CommonJS Module
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports.contextMessenger = Privly.message;
+}
