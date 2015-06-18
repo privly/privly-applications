@@ -540,7 +540,7 @@ if (Privly.adapter === undefined) {
       });
   };
 
-  EmbededAdapter.prototype.onMessageReceived = function (message) {
+  EmbededAdapter.prototype.onMessageReceived = function (message, sendResponse) {
     var self = this;
     switch (message.action) {
     case 'embeded/app/userClose':
@@ -602,11 +602,11 @@ if (Privly.adapter === undefined) {
     }()));
 
     // receive incoming messages
-    Privly.message.addListener(function (message) {
+    Privly.message.addListener(function (message, sendResponse) {
       if (message.targetAppId !== self.selfAppId) {
         return;
       }
-      self.onMessageReceived(message);
+      return self.onMessageReceived(message, sendResponse);
     });
   };
 
