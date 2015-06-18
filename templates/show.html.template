@@ -1,55 +1,34 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
-    <!--
-      This was likely rendered from the Privly-application templating system
-      See: https://github.com/privly/privly-applications/pull/19
-     -->
+{% extends "templates/base.html.template" %}
+{% block head %}
 
     <title>{{name}}</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content="This link contains your friend's private content. Click through to read.">
     <meta name="og:description" content="This link contains your friend's private content. Click through to read.">
     <meta name="twitter:description" content="This link contains your friend's private content. Click through to read.">
-    
-    <!-- Common Styles -->
-    <link href="../shared/css/common.css" media="screen" rel="stylesheet"
-     type="text/css"/>
-    <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet"
-     type="text/css"/>
-    
-    <!-- Shared JavaScripts -->  
-    <script type="text/javascript" src="../shared/javascripts/meta_loader.js"></script>
-    <script type="text/javascript" src="../shared/javascripts/parameters.js"></script>
+
+    <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet" type="text/css"/>
+
     <script type="text/javascript" src="../shared/javascripts/host_page_integration.js"></script>
-    <script type="text/javascript" src="../shared/javascripts/network_service.js"></script>
     <script type="text/javascript" src="../shared/javascripts/tooltip.js"></script>
-    <script type="text/javascript" src="../shared/javascripts/local_storage.js">
-    </script>
-    
-    <!-- Application Specific JavaScripts -->
     {% block javascripts %}{% endblock %}
-    
+
     <!-- Top Styles, will be added by JS if not viewed in iframe -->
     <meta name="PrivlyTopCSS" content="../vendor/bootstrap/css/bootstrap.min.css;../shared/css/top/top.css"/>
-    
     <!-- Injected Styles, will be added by JS if viewed in iframe -->
-    <meta name="PrivlyInjectedCSS"
-     content="../shared/css/injected/injected.css"/>
-     
-  </head>
+    <meta name="PrivlyInjectedCSS" content="../shared/css/injected/injected.css"/>
+
+{% endblock %}
+{% block body %}
   <body data-privly-exclude="true">
-    
+
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
-    
+
     <div id="wrap"><!-- for bootstrap footer -->
       <div id="privlyHeightWrapper">
-        
+
         {% include "templates/partials/navigation.html.subtemplate" %}
-        
+
         <div class="container">
           {% block main %}
             <div class="row">
@@ -167,4 +146,4 @@
       </div>
     </div>
   </body>
-</html>
+{% endblock %}
