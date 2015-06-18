@@ -126,7 +126,8 @@ var callbacks = {
     privlyNetworkService.showLoggedInNav();
 
     // Listen for a message containing the initial content for the form
-    Privly.message.messageExtension( {"ask": "initialContent"} )
+    // TODO: no receivers?
+    Privly.message.messageExtension({'ask': 'initialContent'}, true)
       .then(function (response) {
         $("#content")[0].value = response.initialContent;
       });
