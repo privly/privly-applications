@@ -57,15 +57,15 @@
  *
  *    Send message to the background script (or the extension on Android platform):
  *
- *        Privly.message.messageExtension(data)
+ *        Privly.message.messageExtension(data, hasResponse)
  *
  *    Send message to all content scripts:
  *
- *        Privly.message.messageContentScripts(data)
+ *        Privly.message.messageContentScripts(data, hasResponse)
  *
  *    Send message to all Privly application page:
  *
- *        Privly.message.messagePrivlyApplications(data)
+ *        Privly.message.messagePrivlyApplications(data, hasResponse)
  *
  *    You can use any data type in the data parameter. The underlayer
  *    compatibility adapters can transparently serialize and unserialize it for you
@@ -74,13 +74,16 @@
  *    All of the three functions return Promise objects. You can retrive the response
  *    data (or null) if the Promise is resolved.
  *
+ *    If you expect to receive a response, pass hasResponse = true, otherwise you
+ *    will only got a resolved Promise with `null` data.
+ *
  *    Sample usage:
  *
  *        Privly.message.messageExtension(data).then(function () {
  *          console.log('message sent!');
  *        });
  *
- *        Privly.message.messageExtension(data).then(function (response) {
+ *        Privly.message.messageExtension(data, true).then(function (response) {
  *          console.log('response from the message receiver: ', response);
  *        });
  *    
@@ -97,10 +100,7 @@
  *
  *    The `data` parameter is the data of the message.
  *    The `sendResponse` parameter is a callable function. You could use sendResponse(data)
- *    to send response back to the sender. This function becomes invalid when the message
- *    listener returns, unless you return true from the message listener to indicate you wish
- *    to send a response asynchronously (this will keep the message channel open to the other
- *    end until sendResponse is called)
+ *    to send response back to the sender.
  * 
  * 
  * 
@@ -595,10 +595,11 @@ if (Privly === undefined) {
    * @param  {String} to available options:
    * 'CONTENT_SCRIPT', 'BACKGROUND_SCRIPT', 'PRIVLY_APPLICATION'
    * @param  {Any} data
+   * @param  {Boolean} is this message expected to receive a response?
    *
    * @return {Promise<response>}
    */
-  Privly.message.sendMessageTo = function (to, data) {
+  Privly.message.sendMessageTo = function (to, data, hasResponse) {
     // generate a unique id for this message
     var msgId = Privly.message.contextId + '.' + (++Privly.message._messageIdCounter).toString(16) + '.' + Date.now().toString(16);
 
@@ -610,9 +611,13 @@ if (Privly === undefined) {
       id: msgId
     });
 
-    return new Promise(function (resolve) {
-      Privly.message._responsePromiseResolvers[msgId] = resolve;
-    });
+    if (hasResponse !== true) {
+      return Promise.resolve();
+    } else {
+      return new Promise(function (resolve) {
+        Privly.message._responsePromiseResolvers[msgId] = resolve;
+      });
+    }
   };
 
   /**
@@ -624,8 +629,8 @@ if (Privly === undefined) {
    * @return {Promise<response>}
    *
    */
-  Privly.message.messageExtension = function (data) {
-    return Privly.message.sendMessageTo('BACKGROUND_SCRIPT', data);
+  Privly.message.messageExtension = function (data, hasResponse) {
+    return Privly.message.sendMessageTo('BACKGROUND_SCRIPT', data, hasResponse);
   };
 
   /**
@@ -636,8 +641,8 @@ if (Privly === undefined) {
    *
    * @return {Promise<response>}
    */
-  Privly.message.messageContentScripts = function (data) {
-    return Privly.message.sendMessageTo('CONTENT_SCRIPT', data);
+  Privly.message.messageContentScripts = function (data, hasResponse) {
+    return Privly.message.sendMessageTo('CONTENT_SCRIPT', data, hasResponse);
   };
 
   /**
@@ -647,8 +652,8 @@ if (Privly === undefined) {
    *
    * @return {Promise<response>}
    */
-  Privly.message.messagePrivlyApplications = function (data) {
-    return Privly.message.sendMessageTo('PRIVLY_APPLICATION', data);
+  Privly.message.messagePrivlyApplications = function (data, hasResponse) {
+    return Privly.message.sendMessageTo('PRIVLY_APPLICATION', data, hasResponse);
   };
 
   /**
@@ -716,23 +721,11 @@ if (Privly === undefined) {
         responseSent = true;
       };
 
-      // whether the response channel should be preserved
-      // if sendResponse is not called after all listener
-      // callbacks return
-      var preserveChannel = false;
       for (i = 0; i < Privly.message.listeners.length; i++) {
         fn = Privly.message.listeners[i];
-        if (fn(payload.body, sendResponse) === true) {
-          preserveChannel = true;
-        }
+        fn(payload.body, sendResponse);
       }
 
-      // if no response is sent and no further response
-      // will be sent, we still send a response message
-      // to close the channel
-      if (!responseSent && !preserveChannel) {
-        sendResponse(null);
-      }
       return;
     }
 
@@ -785,7 +778,6 @@ if (Privly === undefined) {
           setTimeout(function () {
             sendResponse(responseBody);
           }, 1);
-          return true; // keep response channel open since we will send an async response
         }
       }
     });

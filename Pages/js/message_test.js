@@ -23,12 +23,12 @@ $(document).ready(function () {
       Privly.message[test.action]({
         action: 'ping',
         data: $('[name="data"]').val()
-      }).then(appendPongResponse);
+      }, true).then(appendPongResponse);
 
       Privly.message[test.action]({
         action: 'pingAsync',
         data: $('[name="data"]').val()
-      }).then(appendPongResponse);
+      }, true).then(appendPongResponse);
 
       $('[name="data"]').val('');
     });
