@@ -153,12 +153,13 @@ if (Privly.adapter === undefined) {
    * 
    * @return {Promise}
    */
-  EmbededAdapter.prototype.messageExtension = function (message) {
+  EmbededAdapter.prototype.messageExtension = function (message, hasResponse) {
     var messageToSend = JSON.parse(JSON.stringify(message));
     // specify which context to be received
     messageToSend.targetContextId = this.sourceContextId;
     messageToSend.targetResourceId = this.sourceResourceId;
-    return Privly.message.messageExtension(messageToSend);
+    messageToSend.hasResponse = hasResponse;
+    return Privly.message.messageExtension(messageToSend, hasResponse);
   };
 
 
@@ -188,20 +189,20 @@ if (Privly.adapter === undefined) {
   EmbededAdapter.prototype.msgGetTargetContent = function () {
     return this.messageExtension({
       action: 'embeded/contentScript/getTargetContent'
-    });
+    }, true);
   };
 
   EmbededAdapter.prototype.msgGetTargetText = function () {
     return this.messageExtension({
       action: 'embeded/contentScript/getTargetText'
-    });
+    }, true);
   };
 
   EmbededAdapter.prototype.msgSetTargetText = function (text) {
     return this.messageExtension({
       action: 'embeded/contentScript/setTargetText',
       text: text
-    });
+    }, true);
   };
 
 
@@ -215,7 +216,7 @@ if (Privly.adapter === undefined) {
     return this.messageExtension({
       action: 'embeded/contentScript/insertLink',
       link: link
-    });
+    }, true);
   };
 
 
@@ -234,7 +235,7 @@ if (Privly.adapter === undefined) {
     return this.messageExtension({
       action: 'embeded/contentScript/emitEnterEvent',
       keys: keys
-    });
+    }, true);
   };
 
   /**
