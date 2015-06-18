@@ -1,49 +1,22 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
-    <!--
-      This was likely rendered from the Privly-application templating system
-      See: https://github.com/privly/privly-applications/pull/19
-     -->
+{% extends "templates/base.html.template" %}
+{% block head %}
 
     {% block title %}<title> New {{ name }}</title>{% endblock %}
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    
-    <!-- Top Styles -->
-    <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen"/>
-    <link class="top" href="../shared/css/top/top.css" rel="stylesheet"/>
-    
-    <!-- Common Styles -->
-    <link href="../shared/css/common.css" media="screen" rel="stylesheet"
-     type="text/css"/>
-    <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet"
-     type="text/css"/>
-    
-    {% block css %}{% endblock %}
-    
-    <script type="text/javascript" src="../shared/javascripts/meta_loader.js">
-    </script>
-    <script type="text/javascript" src="../shared/javascripts/parameters.js">
-    </script>
-    <script type="text/javascript" src="../shared/javascripts/network_service.js">
-    </script>
-    <script type="text/javascript" src="../shared/javascripts/extension_integration.js">
-    </script>
-    <script type="text/javascript" src="../shared/javascripts/local_storage.js">
-    </script>
-     
-    {% block javascripts %}{% endblock %}
-     
-  </head>
 
+    <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
+    <link class="top" href="../shared/css/top/top.css" rel="stylesheet"/>
+    {% block css %}{% endblock %}
+
+    <script type="text/javascript" src="../shared/javascripts/extension_integration.js"></script>
+    {% block javascripts %}{% endblock %}
+
+{% endblock %}
+{% block body %}
   <body data-privly-exclude="true">
-    
+
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
-    
+
     <!-- Wrap all page content here -->
     <div id="wrap">
       {% include "templates/partials/navigation.html.subtemplate" %}
@@ -79,7 +52,7 @@
             </div>
           </div>
         </div>
-        
+
         {% block pre_form %}{% endblock %}
         <div id="form" style="display:none;">
           <div class="row">
@@ -122,17 +95,17 @@
           </div>
         </div>
       </div><!-- /.container -->
-      
-      
+
+
       <div class="container">
         <div class="row">
           {% block app_info %}
           {% endblock %}
         </div><!-- /.row -->
       </div><!-- /.container -->
-      
+
     </div><!-- /.wrap -->
-    
+
     <div id="footer">
       <div class="container">
         <p class="text-muted credit">
@@ -155,4 +128,4 @@
       </div>
     </div>
   </body>
-</html>
+{% endblock %}
