@@ -12,5 +12,12 @@
     "subtemplate_path": "Pages/ChromeOptions.html.subtemplate",
     "outfile_path": "Pages/ChromeOptions.html",
     "subtemplate_dict": {"name": "Options", "action": "nav"}
+  },
+  {
+    "release_status": "alpha",
+    "platforms": ["chrome", "firefox"],
+    "subtemplate_path": "Pages/MessageTest.html.subtemplate",
+    "outfile_path": "Pages/MessageTest.html",
+    "subtemplate_dict": {"name": "Page", "action": "MessageTest"}
   }
 ]

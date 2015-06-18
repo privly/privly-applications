@@ -33,12 +33,12 @@ function processURL(response, randomkey) {
 
   // Save the URL to localStorage if we are not in the HOSTED platform
   if ( privlyNetworkService.platformName() !== "HOSTED" ) {
-    var urls = ls.getItem("Message:URLs");
-    if ( urls !== undefined ) {
+    var urls = Privly.storage.get("Message:URLs");
+    if ( urls !== null ) {
       urls.push(url);
-      ls.setItem("Message:URLs", urls);
+      Privly.storage.set("Message:URLs", urls);
     } else {
-      ls.setItem("Message:URLs", [url]);
+      Privly.storage.set("Message:URLs", [url]);
     }
   }
   return url;

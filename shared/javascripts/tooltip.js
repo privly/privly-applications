@@ -78,15 +78,7 @@ var privlyTooltip = {
      * for anything other than the glyph.
      */
     generateNewGlyph: function(){
-
-      var glyphColor = Math.floor(Math.random()*16777215).toString(16);
-      var glyphString = ((Math.random() < 0.5) ? "false" : "true");
-      for( var i = 0; i < 14; i++) {
-        glyphString += "," + ((Math.random() < 0.5) ? "false" : "true");
-      }
-
-      ls.setItem("glyph_cells", glyphString);
-      ls.setItem("glyph_color", glyphColor);
+      Privly.glyph.generateGlyph();
     },
 
     /**
@@ -95,15 +87,12 @@ var privlyTooltip = {
     tooltip: function(){
 
       // Create a new glyph if needed
-      var glyphCells, glyphColor;
-      if (ls.getItem("glyph_cells") === undefined) {
+      if (Privly.options.getGlyph() === null) {
         privlyTooltip.generateNewGlyph();
       }
-      glyphString = ls.getItem("glyph_cells");
-      glyphColor = ls.getItem("glyph_color");
 
       // Generate the glyph HTML and assign the color
-      var glyph = privlyTooltip.glyphHTML();
+      var glyph = Privly.glyph.getGlyphDOM();
 
       // Create the tooltip element
       var tooltipMessageElement = document.createElement("div");
@@ -157,74 +146,5 @@ var privlyTooltip = {
           });
     },
 
-    /**
-     * Constructs the user's security glyph, which indicates whether the
-     * injected content is trusted. The Glyph is assumed to be defined by the
-     * extension before this script is run. It can be reset via the options
-     * interface.
-     *
-     * The glyph is currently defined by a string in local storage keyed by
-     * "privly_glyph". The glyph is a series of hex colors stated without the
-     * leading hash sign, and separated by commas.
-     *
-     * eg: ffffff,f0f0f0,3f3f3f
-     *
-     * @return {string} An HTML table of the glyph.
-     *
-     */
-    glyphHTML: function() {
-
-      // Get the glyph from storage
-      var glyphString = ls.getItem("glyph_cells");
-      var glyphArray = glyphString.split(",");
-      var glyphColor = ls.getItem("glyph_color");
-
-      // Construct the 5x5 table that will represent the glyph.
-      // Its 3rd column is the axis of symmetry
-      var table = document.createElement("table");
-      table.setAttribute("class", "glyph_table");
-      table.setAttribute("dir", "ltr");
-      table.setAttribute("width", "30");
-      table.setAttribute("border", "0");
-      table.setAttribute("summary", "Privly Visual Security Glyph");
-
-      var tbody = document.createElement("tbody");
-
-      for(var i = 0; i < 5; i++) {
-        var tr = document.createElement("tr");
-
-        for(var j = 0; j < 5; j++) {
-          var td = document.createElement("td");
-
-          // Add a non-breaking space
-          var nbs = document.createTextNode("\u00A0");
-          td.appendChild(nbs);
-
-          // Fill only the first three columns with the coresponding values from glyphArray[]
-          // The rest of two columns are simetrical to the first two
-          if(j <= 2) {
-            if(glyphArray[i * 3 + j] === "true") {
-              td.setAttribute("class", "glyph_fill");
-              td.setAttribute("style", "background-color:#"+glyphColor);
-            } else {
-              td.setAttribute("class", "glyph_empty");
-            }
-          } else {
-            if(glyphArray[i * 3 + (5 % (j + 1))] === "true") {
-              td.setAttribute("class", "glyph_fill");
-              td.setAttribute("style", "background-color:#"+glyphColor);
-            } else {
-              td.setAttribute("class", "glyph_empty");
-            }
-          }
-          tr.appendChild(td);
-        }
-
-        tbody.appendChild(tr);
-      }
-
-      table.appendChild(tbody);
-
-      return table;
-    }
+    
 };

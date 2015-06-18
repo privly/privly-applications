@@ -1,0 +1,38 @@
+.response {
+  margin: 10px 0;
+  padding: 10px 0;
+  border-bottom: 1px solid #DDD;
+}
+
+.response-action::before {
+  content: 'action: ';
+}
+
+.response-timestamp::before {
+  content: 'timestamp: ';
+}
+
+.response-platform::before {
+  content: 'platform: ';
+}
+
+.response-context::before {
+  content: 'context: ';
+}
+
+.response-location::before {
+  content: 'location: ';
+}
+
+.response-data::before {
+  content: 'data: ';
+}
+
+.response-target::before {
+  content: 'target data: ';
+}
+
+.response-item::before {
+  display: inline-block;
+  width: 100px;
+}

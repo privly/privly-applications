@@ -81,12 +81,7 @@ var privlyNetworkService = {
   },
   
   /**
-   * Determines which platform the script is runing on. This helps determine
-   * which request function should be used. The current values are "CHROME"
-   * for the Google Chrome extension, and "HOSTED" for all other architectures.
-   * HOSTED functions use standard same-origin AJAX requests.
-   *
-   * @return {string} the name of the platform.
+   * Deprecated. Use Privly.message.currentPlatform instead.
    */
   platformName: function() {
     if (navigator.userAgent.indexOf("iPhone") >= 0 || 
@@ -192,20 +187,8 @@ var privlyNetworkService = {
       privlyNetworkService.platformName() === "FIREFOX") {
       
       // get the user defined whitelist and add in the default whitelist
-      var whitelist = [];
-
-      // Legacy CSV Check, convert to JSON if found
-      if (ls.getItem('user_whitelist_csv') !== undefined) {
-        ls.setItem('user_whitelist_json', 
-          JSON.stringify(ls.getItem('user_whitelist_csv').split(' , ')));
-        ls.removeItem('user_whitelist_csv')
-      }
-
-      // There is no local storage API on Firefox XUL
-      if ( privlyNetworkService.platformName() === "CHROME" &&
-        ls.getItem("user_whitelist_json") !== undefined ) {
-        whitelist = ls.getItem('user_whitelist_json');
-      }
+      var whitelist = Privly.options.getWhitelistDomains();
+      
       whitelist.push("priv.ly");
       whitelist.push("dev.privly.org");
       whitelist.push("localhost");
@@ -248,7 +231,7 @@ var privlyNetworkService = {
     } else if (platformName === "CHROME" ||
                platformName === "FIREFOX" ||
                platformName === "IOS") {
-      return ls.getItem("posting_content_server_url");
+      return Privly.options.getServerUrl();
     } else if (platformName === "ANDROID") {
       return androidJsBridge.fetchDomainName();
     } else {
