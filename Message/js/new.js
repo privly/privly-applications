@@ -8,7 +8,9 @@
  * Display rendered markdown as a preview of the post.
  */
 function previewMarkdown() {
-  preview.innerHTML = markdown.toHTML(document.getElementById("content").value);
+  var preview = document.getElementById("preview");
+  var mkdwn = document.getElementById("content").value;
+  preview.innerHTML = markdown.toHTML(mkdwn);
 }
 
 /**
