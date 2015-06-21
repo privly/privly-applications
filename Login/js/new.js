@@ -167,9 +167,9 @@ var callbacks = {
   pendingPost: function() {
     
     // get from local storage the last known app to redirect to
-    if(ls.getItem("Login:redirect_to_app") !== undefined &&
-       ls.getItem("Login:redirect_to_app").indexOf("Login") < 0) {
-      window.location = ls.getItem("Login:redirect_to_app");
+    if(Privly.storage.get("Login:redirect_to_app") !== null &&
+       Privly.storage.get("Login:redirect_to_app").indexOf("Login") < 0) {
+      window.location = Privly.storage.get("Login:redirect_to_app");
     } else {
       window.location = "../Help/new.html";
     }

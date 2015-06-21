@@ -6,27 +6,6 @@
  * and the server the user uploads their content to when generating new
  * injectable links.
  *
- * For more information about the whitelist, read:
- * https://github.com/privly/privly-organization/wiki/whitelist
- *
- * Local Storage Bindings Used:
- *
- * - user_whitelist_json: This is an array of servers the user can provide
- *   to specify which servers they trust to automatically inject into the host
- *   page. This array is presented to the user every time they visit options,
- *   but the string used by the content script is user_whitelist_regexp.
- *
- * - user_whitelist_regexp: This string is formatted specifically so that 
- *   privly.js can update its whitelist regexp.
- *
- * - posting_content_server_url: The content server the user will post to
- *   when generating new content.
- *
- * - privly_glyph: A consistent visual identifier to prevent spoofing.
- *   It is stored as series of hex colors stated
- *   without the leading hash sign, and separated by commas. 
- *   eg: ffffff,f0f0f0,3f3f3f
- *
  */
 /* jshint undef: true, unused: true */
 /* global ls */
@@ -44,9 +23,12 @@ function saveCheckedSetting() {
   status.innerHTML = "";
 
   var checkedState = document.querySelector("#disableBtn").checked;
-  ls.setItem("Options:DissableButton", checkedState);
+  Privly.options.setPrivlyButtonEnabled(!checkedState);
 
   status.innerHTML = "Setting Saved."; 
+  setTimeout(function() {
+    status.innerHTML = "";
+  }, 1000);
 }
 
 /**
@@ -55,108 +37,46 @@ function saveCheckedSetting() {
 function restoreCheckedSetting() {
   var btn = document.getElementById("disableBtn");
   if ( btn === null ) {return;} // Don't run on Firefox
-  var stored = ls.getItem("Options:DissableButton");
-  btn.checked = (stored !== undefined && stored === true);
+
+  btn.checked = !Privly.options.isPrivlyButtonEnabled();
 
   // Save the current setting for the Privly button appearance
   btn.addEventListener('click', saveCheckedSetting);
-}
-
-/** 
- * Validates a FQDN
- */
-function isValidDomain(domain) {
-  // Each subdomain can be from 1-63 characters and may contain alphanumeric
-  // characters, - and _ but may not begin or end with - or _
-  // Each domain can be from 1-63 characters and may contain alphanumeric 
-  // characters and - but may not begin or end with - Each top level domain may
-  // be from 2 to 9 characters and may contain alpha characters
-  var validateSubdomain = /^(?!\-|_)[\w\-]{1,63}/g; //subdomains
-  var validateDomain = /^(?!\-)[a-zA-Z0-9\-?]{1,63}$/g; //domain
-  var validateDomainAndPort = /^(?!\-)[a-zA-Z0-9\-?]{1,63}(?::\d+)?$/g; 
-  var validateTLD = /^[a-zA-Z]{2,9}(?::\d+)?$/g; //top level domain
-  
-  //needed because js regex does not have look-behind
-  var notEndInHyphenOrUnder = /[^\-_]$/g; 
-  var notEndInHyphen = /[^\-]$/g;
-
-  var parts = domain.split(".");
-  var valid_parts_count = 0;
-
-  //iterate over domains, split by .
-  for (var j = 0; j < parts.length; j++) {
-    switch (j){
-    case parts.length-1: // validate TLD or Domain if no TLD present
-      if (parts.length == 1) {
-        if (parts[j].match(validateDomainAndPort)) 
-          valid_parts_count++;
-      } else {
-        if (parts[j].match(validateTLD))
-          valid_parts_count++;
-      } 
-      break;
-    case parts.length-2: // validate Domain
-      if (parts[j].match(validateDomain) &&
-          parts[j].match(notEndInHyphen)) {
-        valid_parts_count++;
-      }
-      break;
-    default: // validate Subdomain(s)
-      if (parts[j].match(validateSubdomain) &&
-          parts[j].match(notEndInHyphenOrUnder)) {
-        valid_parts_count++;
-      }
-      break;
-    }
-  }
-
-  //if all parts of domain are valid
-  //append to regex for restricting domains of injected content
-  return valid_parts_count === parts.length;
 }
 
 /**
  * Saves user's custom whitelist to local storage.
  */
 function saveWhitelist() {
-  var inputs = []; // Stores whitelist inputs and whitelisted values
   var url_inputs = document.getElementsByClassName('whitelist_url');
-  for(var i = 0; i < url_inputs.length ; i++ ){
-    url_inputs[i].className = "whitelist_url form-control"; // remove error class
-    if(url_inputs[i].value.length > 0) {
-      inputs.push({
-          // remove any leading protocol and invalid characters
-          domain:  url_inputs[i].value.replace(/ /g, "")
-                                      .replace(/[^a-zA-Z0-9\-:._]/g, ""),
-          input: url_inputs[i] // save input for later use
-      });
+  
+  var domains = [];  // Stores whitelist inputs and whitelisted values
+  var input_fields = [];
+  [].forEach.call(url_inputs, function (input) {
+    input.className = "whitelist_url form-control"; // remove error class
+    var domain = input.value.replace(/ /g, "")
+                            .replace(/[^a-zA-Z0-9\-:._]/g, "");
+    if (domain.length > 0) {
+      domains.push(domain);
+      input_fields.push(input);
     }
-  }
-
-  var domains = []; // stores valid domains
-  var domain_regexp = "";  // stores regex to match validated domains
+  });
 
   var invalid_domains = false;
   var invalid_domain = document.getElementById('invalid_domain');
   invalid_domain.className = ''; // hide the error message
 
-  //iterate over entered list, split by invalid chars
-  for (i = 0; i < inputs.length; i++) {
-    if (isValidDomain(inputs[i].domain)) {
-      domain_regexp += ("|" + inputs[i].domain.toLowerCase().replace(/\./g, "\\.") + "\\\/");
-      domains.push(inputs[i].domain.toLowerCase());
-    } else {
-      inputs[i].input.className += " invalid-domain";
+  for (var i = 0; i < domains.length; ++i) {
+    if (!Privly.options.isDomainValid(domains[i])) {
+      input_fields[i].className += " invalid-domain";
       invalid_domains = true;
     }
   }
+
   if (invalid_domains) {
     invalid_domain.className = 'show';
   } else {
-    ls.setItem("user_whitelist_json", JSON.stringify(domains));
-    ls.setItem("user_whitelist_regexp", domain_regexp);
-
-    // Update status to let user know options were saved.
+    Privly.options.setWhitelist(domains);
     var status = document.getElementById("status");
     status.innerHTML = "Options Saved.";
     setTimeout(function() {
@@ -170,17 +90,7 @@ function saveWhitelist() {
  * Restores select box state to saved value from local storage.
  */
 function restoreWhitelist() {
-
-  // Legacy CSV check
-  var user_whitelist_csv = ls.getItem("user_whitelist_csv");
-  if (user_whitelist_csv) {
-    ls.setItem("user_whitelist_json", JSON.stringify(user_whitelist_csv.split(',')));
-    ls.removeItem("user_whitelist_csv");
-  }
-
-  var user_whitelist = ls.getItem("user_whitelist_json");
-  if (!user_whitelist)
-      return;
+  var user_whitelist = Privly.options.getWhitelistDomains();
   for (var i = 0 ; i <= user_whitelist.length - 1 ; i++) {
     addUrlInputs();
   }
@@ -200,14 +110,9 @@ function restoreWhitelist() {
  */
 function restoreServer(){
   
-  var posting_content_server_url = ls.getItem("posting_content_server_url");
+  var posting_content_server_url = Privly.options.getServerUrl();
   var server_input = document.getElementById("content_server_url");
-  
-  // check content server
-  if (!posting_content_server_url) {
-    ls.setItem("posting_content_server_url", "https://privlyalpha.org");
-  }
-    
+
    // check content type and restore
   switch(posting_content_server_url){
 
@@ -277,17 +182,17 @@ function saveServer(event){
     // save user entered content server
     case "save_server":
       var server_selected = document.getElementById("content_server_url").value;
+      var input;
       if ( server_selected === "other" ) {
-        var other_content_server = document.getElementById("other_content_server");
-        var input = other_content_server.value;
-        ls.setItem("posting_content_server_url", input);
+        input = document.getElementById("other_content_server").value;
       } else if( server_selected === "alpha" ) {
-        ls.setItem("posting_content_server_url", "https://privlyalpha.org");
+        input = "https://privlyalpha.org";
       } else if( server_selected === "dev" ) {
-        ls.setItem("posting_content_server_url", "https://dev.privly.org");
+        input = "https://dev.privly.org";
       } else if( server_selected === "local" ) {
-        ls.setItem("posting_content_server_url", "http://localhost:3000");
+        input = "http://localhost:3000";
       }
+      Privly.options.setServerUrl(input);
       status.innerHTML = "Content Server Saved.";
       break;
       
@@ -328,16 +233,9 @@ function regenerateGlyph() {
     div.removeChild(div.lastChild);
   }
 
-  ls.setItem("glyph_color", Math.floor(Math.random()*16777215).toString(16));
-
-  var glyph_cells = ((Math.random() < 0.5) ? "false" : "true");
-  for( var i = 0; i < 14; i++) {
-    glyph_cells += "," + ((Math.random() < 0.5) ? "false" : "true");
-  }
-  
-  ls.setItem("glyph_cells", glyph_cells);
-  
+  Privly.glyph.generateGlyph();
   writeGlyph();
+
 }
 
 /**
@@ -346,57 +244,8 @@ function regenerateGlyph() {
  * The row is written as a table and assigned to the div element glyph_table.
  */
 function writeGlyph() {
-
-  var glyphString = ls.getItem("glyph_cells");
-  var glyphArray = glyphString.split(",");
-  
-  // The 5x5 table that will represent the glyph.
-  // Its 3rd column will be axis of symmetry
-  var table = document.createElement("table");  
-  table.setAttribute("class", "glyph_table");
-  table.setAttribute("dir", "ltr");
-  table.setAttribute("width", "30");
-  table.setAttribute("border", "0");
-  table.setAttribute("summary", "Privly Visual Security Glyph");
-
-  var tbody = document.createElement("tbody");
-
-  for(var i = 0; i < 5; i++) {
-    var tr = document.createElement("tr");
-
-    for(var j = 0; j < 5; j++) {
-      var td = document.createElement("td");
-      td.innerHTML = "&nbsp";
-
-      // Fill only the first three columns with the coresponding values from glyphArray[]
-      // The rest of two columns are simetrical to the first two
-      if(j <= 2) {
-        if(glyphArray[i * 3 + j] === "true") {
-          td.setAttribute("class", "glyph_fill");
-        } else {
-          td.setAttribute("class", "glyph_empty");
-        }        
-      } else {
-        if(glyphArray[i * 3 + (5 % (j + 1))] === "true") {
-          td.setAttribute("class", "glyph_fill");
-        } else {
-          td.setAttribute("class", "glyph_empty");
-        }
-      }
-
-      tr.appendChild(td);
-    }
-
-    tbody.appendChild(tr);
-  }
-
-  table.appendChild(tbody);
-
-  document.getElementById("glyph_div").appendChild(table);  
-  
-  $('.glyph_fill').css({"background-color": '#' + ls.getItem("glyph_color")});
-  $('.glyph_empty').css({"background-color": '#ffffff'});
-
+  var table = Privly.glyph.getGlyphDOM();
+  document.getElementById("glyph_div").appendChild(table);
 }
 
 /**
@@ -425,25 +274,10 @@ function addUrlInputs () {
  *
  */
 function removeWhitelistUrl (event) {
-
   var target = event.target;
   if (target.className.indexOf('remove_whitelist') >= 0) {
-
-    var domainToRemove = target.getAttribute("data-value-to-remove");
-
-    var whitelist = ls.getItem("user_whitelist_json");
-    whitelist.splice(whitelist.indexOf(domainToRemove), 1);
-
-    var domainRegexp = "";
-
-    for (var i = 0 ; i < whitelist.length ; i++) {
-      if (whitelist[i] !== domainToRemove)
-        domainRegexp += "|" + whitelist[i] + "\\/";
-
-    }
-    ls.setItem("user_whitelist_json", JSON.stringify(whitelist));
-    ls.setItem("user_whitelist_regexp", domainRegexp);
     target.parentElement.remove();
+    saveWhitelist();
   }
 }
 

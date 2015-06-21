@@ -1,4 +1,6 @@
 /**
+ * @deprecated Use Privly.storage
+ * 
  * @namespace A shim to support cross browser Local Storage. This
  * shim mimics the localStorage API, but it will use alternate
  * storage mechanisms if localStorage is not available.
@@ -15,6 +17,7 @@ var ls = {
    * Set an item to local storage. If the item is not a string, this
    * function will attempt to serialize it using the JSON.stringify
    * function.
+   * @deprecated
    * @param {string|object} key is the string to store in key/value storage.
    * @param {string} value is the value to assign to the key.
    */
@@ -37,6 +40,7 @@ var ls = {
    * The string value stored attempts to reconstruct an object using
    * the JSON.parse api. If parsing an object fails, the string will
    * be returned.
+   * @deprecated
    * @param {string} key the value to retrieve from local storage.
    * @return {string|object} Representing the current value of the key.
    */
@@ -69,6 +73,7 @@ var ls = {
 
   /**
    * Remove an item from local storage.
+   * @deprecated
    * @param {string} key the key to remove from storage.
    * @return {undefined} Returns undefined regardless
    * of whether the key existed in localStorage.
