@@ -11,7 +11,8 @@ describe ("Message New Suite", function() {
       "logout_link",
       "home_domain",
       "content",
-      "save"
+      "save",
+      "preview"
     ];
     domIDs.forEach(function(id){
       var newElement = $('<a/>', {
@@ -44,6 +45,51 @@ describe ("Message New Suite", function() {
     }
     expect(domain.split("/")[2]).toBe($(".home_domain").text());
   });
-  
+
+  it("previews markdown", function() {
+    var mkdwn = "# hello world";
+    var preview = document.getElementById("preview");
+    document.getElementById("content").value = mkdwn;
+    previewMarkdown();
+    expect(preview.innerHTML).toBe("<h1>hello world</h1>");
+  });
+
+  it("processesURL", function() {
+
+    ls.removeItem("Message:URLs");
+    var mkdwn = "# hello world";
+    var preview = document.getElementById("preview");
+    document.getElementById("content").value = mkdwn;
+    var response = {
+      jqXHR: {status: 200}
+    };
+    var randomKey = "kjflksjflakjfs=";
+    expect(processURL(response, randomKey)).toBe("");
+
+    response.jqXHR.status = 201;
+    response.jqXHR.getResponseHeader = function() {
+      return "http://dev.privly.org/lksdjfslkfjd";
+    };
+    expect(processURL(response, randomKey)).toBe(
+      "http://dev.privly.org/lksdjfslkfjd#privlyLinkKey=kjflksjflakjfs%3D");
+
+    privlyNetworkService.platformName = function() {
+      return "NOT HOSTED";
+    }
+    processURL(response, randomKey);
+    expect(ls.getItem("Message:URLs")[0]).toBe(
+      'http://dev.privly.org/lksdjfslkfjd#privlyLinkKey=kjflksjflakjfs%3D');
+
+    processURL(response, randomKey);
+    expect(ls.getItem("Message:URLs")[1]).toBe(
+      'http://dev.privly.org/lksdjfslkfjd#privlyLinkKey=kjflksjflakjfs%3D');
+  });
+
+  it("save does not result in an error", function() {
+    $("#content")[0].value = "# hello world";
+    callbacks.postSubmit = function(){}; // Eliminate the integration
+    save();
+  });
+
 });
 

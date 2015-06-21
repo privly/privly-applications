@@ -114,9 +114,11 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine'],
 
-    // Provide coverage information for the shared libraries
+    // Provide test coverage information for the matched
+    // files. The compression library (both start with "raw")
+    // is excluded.
     preprocessors: {
-      '*/j*/*.js': 'coverage'
+      '*/j*/!(raw*).js': 'coverage'
     },
 
     // list of files / patterns to load in the browser

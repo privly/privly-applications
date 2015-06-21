@@ -77,7 +77,10 @@ function processResponseContent(response) {
     $("#edit_text").val(cleartext);
     var markdownHTML = markdown.toHTML(cleartext);
     $('div#cleartext').html(markdownHTML);
-    
+
+    // Make all user-submitted links open a new window
+    $('div#cleartext a').attr("target", "_blank");
+
     // Make all text areas auto resize to show all their contents
     if ( ! privlyHostPage.isInjected() ) {
       $('textarea').autosize();
