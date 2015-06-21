@@ -8,16 +8,21 @@ describe ("Message Show Suite", function() {
   // Create the expected DOM
   beforeEach(function() {
     var domIDs = [
-      "logout_link",
-      "home_domain",
-      "content",
-      "save",
-      "update"
+      {label: "logout_link", tag: "a"},
+      {label: "home_domain", tag: "a"},
+      {label: "content", tag: "div"},
+      {label: "save", tag: "a"},
+      {label: "update", tag: "a"},
+      {label: "edit_text", tag: "textarea"},
+      {label: "privlyHeightWrapper", tag: "div"},
+      {label: "post_content", tag: "div"},
+      {label: "cleartext", tag: "div"},
+      {label: "edit_form", tag: "div"}
     ];
-    domIDs.forEach(function(id){
-      var newElement = $('<a/>', {
-        id: id,
-        "class": id
+    domIDs.forEach(function(ob){
+      var newElement = $('<' + ob.tag + '/>', {
+        id: ob.label,
+        "class": ob.label
       });
       $(document.body).append(newElement);
     });
@@ -97,5 +102,52 @@ describe ("Message Show Suite", function() {
     ls.setItem("Message:URLs", oldURLs);
     state.webApplicationURL = oldAppAddress;
   });
-});
 
+  it("previews markdown", function() {
+    var mkdwn = "# hello world";
+    var editText = document.getElementById("edit_text");
+    editText.value = mkdwn;
+    previewMarkdown();
+    expect($( "#post_content" ).html()).toBe("<h1>hello world</h1>");
+  });
+
+  it("processes response content", function() {
+    expect($("#edit_text").val()).toBe("");
+    expect($("div#cleartext").html()).toBe("");
+    expect($("a[target='_blank']").length).toBe(0);
+    var mkdwn = "[link](http://test.privly.org)";
+    var response = {json:
+      {"burn_after_date":"2015-06-20T16:23:11Z",
+       "content":"","created_at":"2015-06-19T16:23:11Z",
+       "id":2753,
+       "privly_application":"Message",
+       "public":true,
+       "random_token":"1532f280ec",
+       "structured_content":
+         "{\"iv\":\"WXjGNCC58mUL8B9pCFcAPA==\",\"v\":1,\"iter\":1000,\"ks\":128,\"ts\":64,\"mode\":\"ccm\",\"adata\":\"\",\"cipher\":\"aes\",\"salt\":\"AlNCKZz/nf8=\",\"ct\":\"wHnUBH3xPsVXb94w04Ss+CO/E0xGkDlWoZzzZ32BcbO4QqbZ5tZSDDyKIKvL5Qw3ehXP6A==\"}",
+       "updated_at":"2015-06-19T16:23:11Z",
+       "user_id":4,
+       "rendered_markdown":"\n",
+       "X-Privly-Url":"https://privlyalpha.org/apps/Message/show?privlyApp=Message&privlyInject1=true&random_token=1532f280ec&privlyDataURL=https%3A%2F%2Fprivlyalpha.org%2Fposts%2F2753.json%3Frandom_token%3D1532f280ec",
+       "permissions":{"canshow":true,"canupdate":true,"candestroy":true,"canshare":true}}};
+
+    state.webApplicationURL = "https://privlyalpha.org/apps/Message/show?privlyApp=Message&privlyInject1=true&random_token=1532f280ec&privlyDataURL=https%3A%2F%2Fprivlyalpha.org%2Fposts%2F2753.json%3Frandom_token%3D1532f280ec#privlyLinkKey=GMvZYPcobEY2ECzrmXIuDisb7FUo19IKyHCQfNoppno%3D";
+
+    processResponseContent(response);
+    expect($("#edit_text").val()).toBe(mkdwn);
+    expect($("div#cleartext > p > a")[0].getAttribute("target")).toBe("_blank");
+    expect($("a[target='_blank']").length).toBe(1);
+  });
+
+  it("can encrypt before update", function() {
+    var evt = {stopPropagation: function(){}};
+    state.key = "GMvZYPcobEY2ECzrmXIuDisb7FUo19IKyHCQfNoppno=";
+    privlyNetworkService.sameOriginPutRequest = function(url, callback, data){
+      expect(url).toBe(document.location.href);
+      expect(data.post.structured_content.length).toBe(165);
+    };
+    $("#edit_text")[0].value = "changed";
+    encryptBeforeUpdate(evt, function(){});
+  });
+
+});

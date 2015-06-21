@@ -6,21 +6,28 @@
 describe ("Options Suite", function() {
 
   beforeEach(function() {
+    var domIDs = [
+      {id: "button_status", type: "div"},
+      {id: "disableBtn", type: "input"},
+      {id: "status", type: "div"},
+      {id: "glyph_div", type: "div"},
+      {id: "invalid_domain", type: "div"},
+      {id: "server_form", type: "input"},
+      {id: "content_server_url", type: "input"},
+      {id: "user", type: "input"},
+      {id: "other_content_server", type: "input"},
+      {id: "server_status", type: "div"}
+    ];
+    domIDs.forEach(function(ob){
+      var newElement = $('<' + ob.type + '/>', {
+        id: ob.id
+      });
+      $(document.body).append(newElement);
+    });
+  });
 
-    // Initialize the content server
-    ls.setItem("posting_content_server_url", "https://dev.privly.org");
-
-    // Initialize the spoofing glyph
-    ls.setItem("glyph_color", Math.floor(Math.random()*16777215).toString(16));
-    var glyph_cells = ((Math.random() < 0.5) ? "false" : "true");
-    for(i = 0; i < 14; i++) {
-      glyph_cells += "," + ((Math.random() < 0.5) ? "false" : "true");
-    }
-    ls.setItem("glyph_cells", glyph_cells);
-
-    // Expected DOM
-    var e = $("<div id='glyph_div'></div>");
-    $('body').append(e);
+  afterEach(function() {
+    document.body.innerHTML = "";
   });
 
   it("tests writeability of glyph", function() {
@@ -34,6 +41,90 @@ describe ("Options Suite", function() {
     regenerateGlyph();
     expect(oldColor).not.toEqual(ls.getItem("glyph_color"));
     expect(oldGlyph).not.toEqual(ls.getItem("glyph_cells"));
+  });
+
+  it("saves settings from UI", function() {
+
+    ls.setItem("Options:DissableButton", "tmp");
+
+    saveCheckedSetting();
+
+    var status = document.getElementById("button_status");
+    expect(status.innerHTML).toBe("Setting Saved.");
+
+    document.querySelector("#disableBtn").checked = true;
+    expect(ls.getItem("Options:DissableButton")).toBe(false);
+  });
+
+  it("restores checked settings", function() {
+    var btn = document.getElementById("disableBtn");
+
+    // Dissables button
+    ls.setItem("Options:DissableButton", true);
+    restoreCheckedSetting();
+    expect(btn.checked).toBe(true);
+
+    // Enables button
+    ls.setItem("Options:DissableButton", false);
+    restoreCheckedSetting();
+    expect(btn.checked).toBe(false);
+  });
+
+  it("saves empty whitelist", function() {
+    saveWhitelist();
+    var status = document.getElementById("status");
+    expect(status.innerHTML).toBe("Options Saved.");
+    expect(ls.getItem("user_whitelist_json").length).toBe(0);
+  });
+
+  it("restore whitelist does not result in an error", function() {
+    // todo, the storage for this function is about to change, so
+    // I am not going to write the storage checks yet.
+    restoreWhitelist();
+  });
+
+  it("restores the content server", function() {
+
+    ls.removeItem("posting_content_server_url");
+    restoreServer();
+    expect(ls.getItem("posting_content_server_url"), "https://privlyalpha.org");
+
+    ls.setItem("posting_content_server_url", "https://privlyalpha.org");
+    expect(ls.getItem("posting_content_server_url"), "https://privlyalpha.org");
+
+    ls.setItem("posting_content_server_url", "https://custom.org");
+    expect(ls.getItem("posting_content_server_url"), "https://custom.org");
+
+    ls.setItem("posting_content_server_url", "https://dev.privly.org");
+    expect(ls.getItem("posting_content_server_url"), "https://dev.privly.org");
+
+    ls.setItem("posting_content_server_url", "http://localhost:3000");
+    expect(ls.getItem("posting_content_server_url"), "http://localhost:3000");
+
+  });
+
+  it("saves the content server", function() {
+
+    ls.removeItem("posting_content_server_url")
+
+    var elem = document.getElementById("content_server_url");
+
+    elem.value = "local";
+    saveServer({target: {value:"save_server"}});
+    expect(ls.getItem("posting_content_server_url")).toBe("http://localhost:3000");
+
+    elem.value = "alpha";
+    saveServer({target: {value:"save_server"}});
+    expect(ls.getItem("posting_content_server_url")).toBe("https://privlyalpha.org");
+
+    elem.value = "dev";
+    saveServer({target: {value:"save_server"}});
+    expect(ls.getItem("posting_content_server_url")).toBe("https://dev.privly.org");
+
+    elem.value = "other";
+    document.getElementById("other_content_server").value = "https://custom.org";
+    saveServer({target: {value:"save_server"}});
+    expect(ls.getItem("posting_content_server_url")).toBe("https://custom.org");
   });
 
   it("tests domain validation", function() {
