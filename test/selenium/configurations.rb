@@ -90,18 +90,22 @@ def common_configuration_for_sauce
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.firefox
       config['version'] = "37.0"
       @sauce_caps.version = "37.0"
+      platform = "Windows 7"
     elsif @browser == "chrome"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.chrome
       config['version'] = "dev"
       @sauce_caps.version = "dev"
+      platform = "Windows 7"
     elsif @browser == "safari"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.safari
-      config['version'] = "5.1"
-      @sauce_caps.version = "5.1"
+      config['version'] = "8.0"
+      @sauce_caps.version = "8.0"
+      platform = "OS X 10.10"
     end
 
-    @sauce_caps.platform = "Windows 7"
+    @sauce_caps.platform = platform
     @sauce_caps[:name] = "Priv.ly Project Integration Tests"
+
     if ENV['SAUCE_URL'] == nil or ENV['SAUCE_URL'] == ""
       puts "Before you can test on Sauce you need to set an environmental variable containing your Sauce URL"
       exit 1

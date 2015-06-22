@@ -67,7 +67,9 @@ module.exports = function(config) {
   }
   var sl_safari = {
     base: 'SauceLabs',
-    browserName: 'safari'
+    browserName: 'safari',
+    platform: 'OS X 10.10',
+    version: '8.0'
   }
 
   // Browsers to run on Sauce Labs based on command line argument
