@@ -162,6 +162,14 @@ if (Privly.adapter === undefined) {
     return Privly.message.messageExtension(messageToSend, hasResponse);
   };
 
+  /**
+   * The message that textarea got focus
+   */
+  EmbededAdapter.prototype.msgTextareaFocus = function () {
+    return this.messageExtension({
+      action: 'embeded/contentScript/textareaFocus',
+    });
+  };
 
   EmbededAdapter.prototype.msgStartLoading = function () {
     return this.messageExtension({
@@ -593,6 +601,10 @@ if (Privly.adapter === undefined) {
       return;
     }
     self.initialized = true;
+
+    $('textarea').focus(function () {
+      self.msgTextareaFocus();
+    });
 
     // add event listeners to forward ENTER key events
     $('textarea').keydown((function () {
