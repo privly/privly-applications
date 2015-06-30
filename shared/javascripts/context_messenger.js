@@ -96,11 +96,13 @@
  *    Your callback function will be called when there is an incoming message which is
  *    sent to the current context.
  *
- *    The signature of your callback function is: function(data, sendResponse)
+ *    The signature of your callback function is: function(data, sendResponse, sender)
  *
  *    The `data` parameter is the data of the message.
  *    The `sendResponse` parameter is a callable function. You could use sendResponse(data)
  *    to send response back to the sender.
+ *    The `sender` parameter is currently a platform related variable. In Chrome, it is
+ *    the object that sends the message.
  * 
  * 
  * 
@@ -276,9 +278,9 @@ if (Privly === undefined) {
 
   /** @inheritdoc */
   ChromeAdapter.prototype.setListener = function (callback) {
-    chrome.runtime.onMessage.addListener(function (payload) {
+    chrome.runtime.onMessage.addListener(function (payload, sender) {
       // for Chrome, we needn't check origin since it is always from a trust origin
-      callback(payload);
+      callback(payload, sender);
     });
   };
 
@@ -776,7 +778,7 @@ if (Privly === undefined) {
   // Add message listener. this message listener will
   // handle all raw messages received and forward to the
   // user specified listeners or a response callback function.
-  Privly.message.currentAdapter.setListener(function (payload) {
+  Privly.message.currentAdapter.setListener(function (payload, sender) {
     var fn, i;
 
     // we may receive messages that are not intended to
@@ -808,7 +810,7 @@ if (Privly === undefined) {
 
       for (i = 0; i < Privly.message.listeners.length; i++) {
         fn = Privly.message.listeners[i];
-        fn(payload.body, sendResponse);
+        fn(payload.body, sendResponse, sender);
       }
 
       return;
