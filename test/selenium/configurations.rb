@@ -55,6 +55,16 @@ def assign_chrome_extension_path
   @@privly_applications_folder_path = ""
 end
 
+def assign_safari_extension_path
+
+  # The safari extension URL changes everytime Safari is opened so,
+  # it is grabbed from the privly test page's injected application.
+  # It also fixes the path in the CRUD tests since this test doesn't
+  # run until all the initialization is complete
+  require_relative "tc_safari_helper"
+  @@privly_applications_folder_path = ""
+end
+
 # This is the common config for running tests from the
 # web scripting environment on SauceLabs
 def common_configuration_for_sauce_web(args)
@@ -225,5 +235,16 @@ def configure_for_chrome_extension(args)
   Capybara.default_driver = :chrome_extension
 
   assign_chrome_extension_path
+
+end
+
+def configure_for_safari_extension(args)
+  Capybara.register_driver :safari_extension do |app|
+    Capybara::Selenium::Driver.new(app, :browser => :safari)
+  end
+  Capybara.current_driver = :safari_extension
+  Capybara.default_driver = :safari_extension
+
+  assign_safari_extension_path
 
 end

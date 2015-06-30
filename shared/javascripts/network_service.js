@@ -99,6 +99,8 @@ var privlyNetworkService = {
       return "CHROME";
     } else if(window.location.href.indexOf("chrome://") === 0) {
       return "FIREFOX";
+    } else if(window.location.href.indexOf("safari-extension://") === 0) {
+      return "SAFARI";
     } else {
       return "HOSTED";
     }
@@ -247,6 +249,7 @@ var privlyNetworkService = {
       return protocolDomainPort;
     } else if (platformName === "CHROME" ||
                platformName === "FIREFOX" ||
+               platformName === "SAFARI" ||
                platformName === "IOS") {
       return ls.getItem("posting_content_server_url");
     } else if (platformName === "ANDROID") {
