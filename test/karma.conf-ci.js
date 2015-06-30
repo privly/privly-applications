@@ -15,7 +15,7 @@ module.exports = function(config) {
     if(process.cwd().indexOf("privly-safari") != -1) {
       // When the script is run from the privly-safari repo, update the coverageFiles
       coverageFiles = {
-        '../scripts/*.js': 'coverage'
+        '../scripts/**/*.js': 'coverage'
       };
     }
 
