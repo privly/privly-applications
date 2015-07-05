@@ -383,7 +383,7 @@ if (Privly.adapter === undefined) {
       self.lastUpdateXHR = null;
     }
 
-    // TODO: should we show update spinner?
+    // TODO: is it too frequent to show update spinner everytime?
     return self
       .getRequestContent($('textarea').val())
       .then(function (reqContent) {
@@ -493,6 +493,8 @@ if (Privly.adapter === undefined) {
         $('textarea').val(text);
       })
       .then(self.createLink.bind(self))
+      .then(self.msgStopLoading.bind(self))
+      .then(self.msgAppStarted.bind(self))
       .then(function () {
         return self.insertLink(self.privlyUrl);
       })
@@ -501,8 +503,6 @@ if (Privly.adapter === undefined) {
           return Promise.reject();
         }
       })
-      .then(self.msgStopLoading.bind(self))
-      .then(self.msgAppStarted.bind(self))
       .then(function () {
         self.beginContentClearObserver();
       })
