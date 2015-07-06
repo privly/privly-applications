@@ -19,9 +19,14 @@ if (Privly.app === undefined) {
   /**
    * The Privly Message Application
    */
-  var MessageApp = function () {
+  var MessageApp = function () {};
+
+  /**
+   * Generate a random key
+   */
+  MessageApp.prototype.generateRandomKey = function () {
     this.randomkey = sjcl.codec.base64.fromBits(sjcl.random.randomWords(8, 0), 0);
-  };
+  }
 
   /**
    * The name of the application, will be used to send
@@ -105,6 +110,24 @@ if (Privly.app === undefined) {
       }
     }
     Privly.storage.set("Message:URLs", urls);
+  };
+
+  /**
+   * Get the TTL options for this App
+   * 
+   * @return {Promise<[Object]>}
+   *   {String} text     The text of the option
+   *   {String} ttl      The seconds_util_burn value of the option
+   *   {Boolean} default Whether this option is the default option
+   */
+  MessageApp.prototype.getTTLOptions = function () {
+    return Promise.resolve([
+      {text: "1 Day", ttl: "86400"},
+      {text: "7 Days", ttl: "604800"},
+      {text: "14 Days", ttl: "1209600"},
+      {text: "28 Days", ttl: "2419200", default: true},
+      {text: "Infinite", ttl: ""},
+    ]);
   };
 
   Privly.app.Message = MessageApp;

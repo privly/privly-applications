@@ -106,14 +106,6 @@ if (Privly.adapter === undefined) {
     this.application = application;
 
     /**
-     * Whether the embeded-posting DOM has initialized.
-     * It should be initialized only once.
-     * 
-     * @type {Boolean}
-     */
-    this.initialized = false;
-
-    /**
      * Whether the embeded-posting form has started.
      * It should be started only once.
      * 
@@ -143,6 +135,12 @@ if (Privly.adapter === undefined) {
       'initialTTL': 86400,
       'observeInterval': 300,
     }, options);
+
+    /**
+     * Seconds until burn settings
+     * @type {Number}
+     */
+    this.ttl = this.options.initialTTL;
   };
 
   // Inhreit EventEmitter
@@ -220,13 +218,12 @@ if (Privly.adapter === undefined) {
    * @param  {String} link The link to insert
    * @return  {Promise}
    */
-  EmbededAdapter.prototype.insertLink = function (link) {
+  EmbededAdapter.prototype.msgInsertLink = function (link) {
     return this.messageExtension({
       action: 'embeded/contentScript/insertLink',
       link: link
     }, true);
   };
-
 
   /**
    * Dispatch ENTER key events on the editable element
@@ -317,6 +314,24 @@ if (Privly.adapter === undefined) {
     }
     return promise;
   };
+  
+  /**
+   * Get available TTL options from the Privly application.
+   * 
+   * @return {Promise<[Object]>}  TTL options
+   *           {String} text      The text of the option
+   *           {String} ttl       The seconds_util_burn value of the option
+   *           {Boolean} default  Whether this option is the default option
+   */
+  EmbededAdapter.prototype.getTTLOptions = function () {
+    var promise;
+    if (typeof this.application.getTTLOptions === 'function') {
+      promise = this.application.getTTLOptions();
+    } else {
+      promise = Promise.resolve([]);
+    }
+    return promise;
+  };
 
   /**
    * Create an empty Privly URL. The Privly URL will be stored in
@@ -393,7 +408,7 @@ if (Privly.adapter === undefined) {
           "post": {
             "content": reqContent.content,
             "structured_content": reqContent.structured_content,
-            "seconds_until_burn": $('#seconds_until_burn').val()
+            "seconds_until_burn": self.ttl
           },
           "format": "json"
         };
@@ -488,6 +503,15 @@ if (Privly.adapter === undefined) {
     var self = this;
     return self
       .emitAsync('connectionCheckSucceeded')
+      .then(self.getTTLOptions.bind(self))
+      .then(function (options) {
+        for (var i = 0; i < options.length; ++i) {
+          if (options[i].default) {
+            self.ttl = options[i].ttl;
+            break;
+          }
+        }
+      })
       .then(self.msgGetTargetText.bind(self))
       .then(function (text) {
         $('textarea').val(text);
@@ -496,7 +520,7 @@ if (Privly.adapter === undefined) {
       .then(self.msgStopLoading.bind(self))
       .then(self.msgAppStarted.bind(self))
       .then(function () {
-        return self.insertLink(self.privlyUrl);
+        return self.msgInsertLink(self.privlyUrl);
       })
       .then(function (insertionSuccess) {
         if (insertionSuccess === false) {
@@ -549,6 +573,16 @@ if (Privly.adapter === undefined) {
       });
   };
 
+  /**
+   * When receive message that user sets TTL
+   * 
+   * @param  {String} ttl
+   */
+  EmbededAdapter.prototype.onSetTTL = function (ttl) {
+    this.ttl = ttl;
+    this.updateLink();
+  };
+
   EmbededAdapter.prototype.onMessageReceived = function (message, sendResponse) {
     var self = this;
     switch (message.action) {
@@ -560,6 +594,9 @@ if (Privly.adapter === undefined) {
       break;
     case 'embeded/app/stateChanged':
       self.onStateChanged(message.state);
+      break;
+    case 'embeded/app/setTTL':
+      self.onSetTTL(message.ttl);
       break;
     }
   };
@@ -591,16 +628,14 @@ if (Privly.adapter === undefined) {
   };
 
   /**
-   * Bind event listeners. This function should be called after
-   * complete loading the document.
+   * Start the embeded-posting adapter
    */
-  EmbededAdapter.prototype.init = function () {
+  EmbededAdapter.prototype.start = function () {
     var self = this;
-
-    if (self.initialized) {
+    if (self.started) {
       return;
     }
-    self.initialized = true;
+    self.started = true;
 
     $('textarea').focus(function () {
       self.msgTextareaFocus();
@@ -621,20 +656,6 @@ if (Privly.adapter === undefined) {
       }
       return self.onMessageReceived(message, sendResponse);
     });
-  };
-
-  /**
-   * Start the embeded-posting adapter
-   */
-  EmbededAdapter.prototype.start = function () {
-    var self = this;
-    if (self.started) {
-      return;
-    }
-    self.started = true;
-    if (!self.initialized) {
-      self.init();
-    }
 
     self.msgStartLoading();
 
