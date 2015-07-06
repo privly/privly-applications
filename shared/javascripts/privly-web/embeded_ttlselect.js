@@ -184,7 +184,11 @@ if (Privly.adapter === undefined) {
     self.started = true;
 
     // bind event listeners
-    $(document).on('mousedown', '.embeded-select-item', self.onItemSelected.bind(self));
+    $(document).on('mousedown', '.embeded-select-item', function (ev) {
+      // prevent embeded-posting app losing focus
+      ev.preventDefault();
+    });
+    $(document).on('click', '.embeded-select-item', self.onItemSelected.bind(self));
 
     // receive incoming messages
     Privly.message.addListener(function (message, sendResponse) {
