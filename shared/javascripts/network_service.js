@@ -91,14 +91,15 @@ var privlyNetworkService = {
   platformName: function() {
     if (navigator.userAgent.indexOf("iPhone") >= 0 || 
       navigator.userAgent.indexOf("iPad") >= 0) {
-      if( navigator.userAgent.indexOf("Safari") >= 0 ) { return "HOSTED"; }
         return "IOS";
     } else if(typeof androidJsBridge !== "undefined") {
       return "ANDROID";
-    }  else if (typeof chrome !== "undefined" && typeof chrome.extension !== "undefined") {
+    } else if (typeof chrome !== "undefined" && typeof chrome.extension !== "undefined") {
       return "CHROME";
-    } else if(window.location.href.indexOf("chrome://") === 0) {
+    } else if (window.location.href.indexOf("chrome://") === 0) {
       return "FIREFOX";
+    } else if (typeof safari !== "undefined" && typeof safari.extension !== "undefined") {
+      return "SAFARI";
     } else {
       return "HOSTED";
     }
@@ -247,6 +248,7 @@ var privlyNetworkService = {
       return protocolDomainPort;
     } else if (platformName === "CHROME" ||
                platformName === "FIREFOX" ||
+               platformName === "SAFARI" ||
                platformName === "IOS") {
       return ls.getItem("posting_content_server_url");
     } else if (platformName === "ANDROID") {
