@@ -87,14 +87,25 @@ var ls = {
   }
 };
 
-// Determine whether localstorage can be used directly
-try { 
+try {
   localStorage;
 } catch(e) {
-  ls.localStorageDefined = false;
-  
-  // Assuming Xul firefox
-  ls.preferences = Components.classes["@mozilla.org/preferences-service;1"]
-                         .getService(Components.interfaces.nsIPrefService)
-                         .getBranch("extensions.privly.");
+  /**
+   * Firefox: Jetpack simple-storage
+   * Two Cases in which this file is run/used -- 
+   * 1. Loaded as a CommonJS module(reused as a Local Storage shim 
+   *    in lib/local_storage.js).
+   * 2. Privileged JS code run in a chrome page. for eg:- ChromeFirstRun page. 
+   */ 
+  if (typeof module !== 'undefined' && module.exports) {
+    // Case 1
+    module.exports.ls = ls;   
+  } else {
+    // Case 2
+    ls.localStorageDefined = false;
+    // Preferences Storage
+    ls.preferences = Components.classes["@mozilla.org/preferences-service;1"].
+                       getService(Components.interfaces.nsIPrefService).
+                       getBranch("extensions.privly.");
+  }
 }
