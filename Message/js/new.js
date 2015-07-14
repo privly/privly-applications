@@ -37,6 +37,7 @@ function processURL(response) {
  */
 function save() {
   message = new Privly.app.Message();
+  message.generateRandomKey();
   message
     .getRequestContent($("#content")[0].value)
     .then(function (content) {

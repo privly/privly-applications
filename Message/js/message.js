@@ -1,5 +1,5 @@
-/*global sjcl, zeroCipher */
-/*global Promise, privlyNetworkService */
+/*global sjcl, zeroCipher,zeroDecipher,pageKey */
+/*global Promise, privlyNetworkService, privlyParameters */
 
 // If Privly namespace is not initialized, initialize it
 var Privly;
@@ -26,7 +26,7 @@ if (Privly.app === undefined) {
    */
   MessageApp.prototype.generateRandomKey = function () {
     this.randomkey = sjcl.codec.base64.fromBits(sjcl.random.randomWords(8, 0), 0);
-  }
+  };
 
   /**
    * The name of the application, will be used to send
@@ -56,6 +56,27 @@ if (Privly.app === undefined) {
   };
 
   /**
+   * Get the raw User input content from a structured content
+   *
+   * @override
+   * @param  {String} url The privly link
+   * @param  {Object} structured_content
+   * @return {Promise<String>}
+   */
+  MessageApp.prototype.loadRawContent = function (url, structured_content) {
+    var key = privlyParameters.getParameterHash(url).privlyLinkKey;
+    if (key === undefined || key === '') {
+      key = this.resolveKeyFromHistory(url);
+    }
+    if (!key) {
+      return Promise.reject('You do not have the key required to decrypt this content.');
+    }
+    this.randomkey = pageKey(key);
+    var cleartext = zeroDecipher(this.randomkey, structured_content);
+    return Promise.resolve(cleartext);
+  };
+
+  /**
    * Process the link that Privly server returns.
    *
    * @override
@@ -70,6 +91,35 @@ if (Privly.app === undefined) {
       url = url + "#privlyLinkKey=" + encodeURIComponent(this.randomkey);
     }
     return Promise.resolve(url);
+  };
+
+  /**
+   * Attempt to find the key in local storage and redirect the app if
+   * possible to the URL with the key.
+   *
+   * @param  {String} url
+   * @return {String|false} Returns the key or false if not found
+   */
+  MessageApp.prototype.resolveKeyFromHistory = function (url) {
+    var i;
+    var urls = Privly.storage.get("Message:URLs");
+
+    // Deprecated
+    var oldUrls = Privly.storage.get("ZeroBin:URLs");
+    if (oldUrls !== null) {
+      urls = urls.concat(oldUrls);
+      Privly.storage.set("Message:URLs", urls);
+      Privly.storage.remove("ZeroBin:URLs");
+    }
+
+    if (urls !== null) {
+      for (i = 0; i < urls.length; i++) {
+        if (urls[i].indexOf(url) === 0) {
+          return privlyParameters.getParameterHash(urls[i]).privlyLinkKey;
+        }
+      }
+    }
+    return false;
   };
 
   /**

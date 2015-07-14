@@ -1,3 +1,30 @@
+/**
+ * @fileOverview The embeded-posting adapter.
+ *
+ * This adapter is designed to be loaded in an embeded-posting iframe.
+ * It needs embeded-posting content scripts to work correctly.
+ *
+ * The flow:
+ *   User clicks Privly button
+ *   Content Script creates an iframe and appends to the container
+ *   This script gets loaded
+ *     Initialize the Privly service
+ *     Retrive the content of the target element
+ *       Contains at least one Privly link?
+ *         Is it editable?
+ *           initial content = textareaContent.replace(privlyLink -> privlyLinkContent)
+ *         Not?
+ *           initial content = textareaContent
+ *           create Privly link using the initial content
+ *           textareaContent = privly link
+ *       Not?
+ *         initial content = textareaContent
+ *         create Privly link using the initial content
+ *         textareaContent = privly link
+ *     Start observer
+ *     App started
+ * 
+ */
 /*global chrome */
 /*global window, Privly:true, privlyNetworkService, privlyParameters, Promise */
 
@@ -141,6 +168,24 @@ if (Privly.adapter === undefined) {
      * @type {Number}
      */
     this.ttl = this.options.initialTTL;
+
+    /**
+     * The regular expression that matches Privly link
+     * @type {RegExp}
+     */
+    this.whitelistRegexp = new RegExp(
+      // see http://jsfiddle.net/8huL9qbz/
+      "\\b(https?:\\/\\/){0,1}(" + //protocol
+      "priv\\.ly\\/|" + //priv.ly
+      "dev\\.privly\\.org\\/|" + //dev.privly.org
+      "localhost\\/|" + //localhost
+      "privlyalpha.org\\/|" + //localhost
+      "privlybeta.org\\/|" + //localhost
+      "localhost:3000\\/" + //localhost:3000
+      Privly.options.getWhitelistRegExp() +
+      ")(\\S){3,}/[a-z0-9\._/~%\-\+&\#\?!=\(\)@]*", "i"
+      // no global flag here. we only support matching one link
+    );
   };
 
   // Inhreit EventEmitter
@@ -161,14 +206,21 @@ if (Privly.adapter === undefined) {
   };
 
   /**
-   * The message that textarea got focus
+   * Send message that the textarea got focus
+   *
+   * @return {Promise}
    */
   EmbededAdapter.prototype.msgTextareaFocus = function () {
     return this.messageExtension({
-      action: 'embeded/contentScript/textareaFocus',
+      action: 'embeded/contentScript/textareaFocused',
     });
   };
 
+  /**
+   * Send message to switch the Privly button into loading state
+   *
+   * @return {Promise}
+   */
   EmbededAdapter.prototype.msgStartLoading = function () {
     return this.messageExtension({
       action: 'embeded/contentScript/loading',
@@ -176,6 +228,11 @@ if (Privly.adapter === undefined) {
     });
   };
 
+  /**
+   * Send message to switch the Privly button from loading state
+   *
+   * @return {Promise}
+   */
   EmbededAdapter.prototype.msgStopLoading = function () {
     return this.messageExtension({
       action: 'embeded/contentScript/loading',
@@ -184,13 +241,13 @@ if (Privly.adapter === undefined) {
   };
 
   /**
-   * Get the content of the editable element.
+   * Send message to get the content of the editable element.
    * Used to determine whether original form is submitted
    * (usually it will clear the editable element).
    * Also used to revert content of the editable element
    * when user cancels embed posting process.
    * 
-   * @return  {Promise}
+   * @return  {Promise<String>} content
    */
   EmbededAdapter.prototype.msgGetTargetContent = function () {
     return this.messageExtension({
@@ -198,12 +255,23 @@ if (Privly.adapter === undefined) {
     }, true);
   };
 
+  /**
+   * Send message to get the text of the editable element.
+   * 
+   * @return {Promise<String>} text
+   */
   EmbededAdapter.prototype.msgGetTargetText = function () {
     return this.messageExtension({
       action: 'embeded/contentScript/getTargetText'
     }, true);
   };
 
+  /**
+   * Send message to set the text of the editable element.
+   * 
+   * @param  {String} text
+   * @return {Promise<Boolean>} Whether the operation succeeded
+   */
   EmbededAdapter.prototype.msgSetTargetText = function (text) {
     return this.messageExtension({
       action: 'embeded/contentScript/setTargetText',
@@ -211,12 +279,11 @@ if (Privly.adapter === undefined) {
     }, true);
   };
 
-
   /**
-   * Insert Privly URL to the editable element.
+   * Send message to insert Privly URL to the editable element.
    * 
    * @param  {String} link The link to insert
-   * @return  {Promise}
+   * @return  {Promise<Boolean>} Whether the operation succeeded
    */
   EmbededAdapter.prototype.msgInsertLink = function (link) {
     return this.messageExtension({
@@ -226,7 +293,7 @@ if (Privly.adapter === undefined) {
   };
 
   /**
-   * Dispatch ENTER key events on the editable element
+   * Send message to dispatch ENTER key events on the editable element
    * with the given modifier keys.
    * 
    * @param  {Object} keys Modifier keys
@@ -234,7 +301,7 @@ if (Privly.adapter === undefined) {
    *           {Boolean} shift
    *           {Boolean} alt
    *           {Boolean} meta
-   * @return  {Promise}
+   * @return  {Promise<Boolean>} Whether the operation succeeded
    */
   EmbededAdapter.prototype.msgEmitEnterEvent = function (keys) {
     return this.messageExtension({
@@ -244,7 +311,7 @@ if (Privly.adapter === undefined) {
   };
 
   /**
-   * Pop up a new window for user to log in.
+   * Send message to pop up a new window for user to log in.
    *
    * @return  {Promise}
    */
@@ -255,12 +322,22 @@ if (Privly.adapter === undefined) {
     });
   };
 
+  /**
+   * Send message that the Privly embeded-posting app is closed
+   *
+   * @return  {Promise}
+   */
   EmbededAdapter.prototype.msgAppClosed = function () {
     return this.messageExtension({
       action: 'embeded/contentScript/appClosed'
     });
   };
 
+  /**
+   * Send message that the Privly embeded-posting app is loaded
+   * 
+   * @return  {Promise}
+   */
   EmbededAdapter.prototype.msgAppStarted = function () {
     return this.messageExtension({
       action: 'embeded/contentScript/appStarted'
@@ -314,7 +391,7 @@ if (Privly.adapter === undefined) {
     }
     return promise;
   };
-  
+
   /**
    * Get available TTL options from the Privly application.
    * 
@@ -334,6 +411,49 @@ if (Privly.adapter === undefined) {
   };
 
   /**
+   * Try to load from an existing Privly link
+   * 
+   * @param  {String} url
+   * @return {Promise<String>} the content of the link
+   */
+  EmbededAdapter.prototype.loadLink = function (link) {
+    var self = this;
+    var url = privlyParameters.getApplicationUrl(link);
+    var reqUrl = privlyParameters.getParameterHash(url).privlyDataURL;
+
+    return new Promise(function (resolve) {
+      privlyNetworkService.sameOriginGetRequest(reqUrl, resolve);
+    })
+      .then(function (response) {
+        if (response.jqXHR.status !== 200) {
+          return Promise.reject();
+        }
+        var json = response.json;
+        var permission = {
+          canUpdate: false,
+          canDestroy: false
+        };
+        if (json.permissions) {
+          permission.canUpdate = (json.permissions.canupdate === true);
+          permission.canDestroy = (json.permissions.candestroy === true);
+        }
+
+        // no permission to update: reject it
+        if (!permission.canUpdate || !permission.canDestroy) {
+          return Promise.reject();
+        }
+
+        // got plain text!
+        return self.application.loadRawContent(url, json.structured_content);
+      })
+      .then(function (plaintext) {
+        self.privlyUrl = url;
+        self.requestUrl = reqUrl;
+        return plaintext;
+      });
+  };
+
+  /**
    * Create an empty Privly URL. The Privly URL will be stored in
    * this.privlyUrl.
    * 
@@ -341,7 +461,6 @@ if (Privly.adapter === undefined) {
    */
   EmbededAdapter.prototype.createLink = function () {
     var self = this;
-
     return self
       .getRequestContent($('textarea').val())
       .then(function (reqContent) {
@@ -355,25 +474,27 @@ if (Privly.adapter === undefined) {
           },
           "format": "json"
         };
-
         return new Promise(function (resolve) {
           privlyNetworkService.sameOriginPostRequest(
             privlyNetworkService.contentServerDomain() + '/posts',
-            function (response) {
-              var url = response.jqXHR.getResponseHeader('X-Privly-Url');
-              self
-                .postprocessLink(url)
-                .then(function (url) {
-                  var reqUrl = privlyParameters.getParameterHash(url).privlyDataURL;
-                  self.privlyUrl = url;
-                  self.requestUrl = reqUrl;
-                  return self.emitAsync('afterCreateLink', url, reqUrl);
-                })
-                .then(resolve);
-            },
+            resolve,
             contentToPost
           );
-        });
+        })
+      })
+      .then(function (response) {
+        var url = response.jqXHR.getResponseHeader('X-Privly-Url');
+        return self
+          .postprocessLink(url)
+          .then(function (url) {
+            var reqUrl = privlyParameters.getParameterHash(url).privlyDataURL;
+            self.privlyUrl = url;
+            self.requestUrl = reqUrl;
+            return self.emitAsync('afterCreateLink', url, reqUrl);
+          });
+      })
+      .then(function () {
+        return self.privlyUrl;
       });
   };
 
@@ -398,12 +519,12 @@ if (Privly.adapter === undefined) {
       self.lastUpdateXHR = null;
     }
 
-    // TODO: is it too frequent to show update spinner everytime?
+    var url = self.privlyUrl;
+    var reqUrl = self.requestUrl;
+
     return self
       .getRequestContent($('textarea').val())
       .then(function (reqContent) {
-        var url = self.privlyUrl;
-        var reqUrl = self.requestUrl;
         var contentToPost = {
           "post": {
             "content": reqContent.content,
@@ -412,22 +533,17 @@ if (Privly.adapter === undefined) {
           },
           "format": "json"
         };
-
         return new Promise(function (resolve) {
-          self.lastUpdateXHR = privlyNetworkService.sameOriginPutRequest(
-            reqUrl,
-            function () {
-              // re-enable controls
-              $('.saving-text').hide();
-              $('.embeded-form button').removeAttr('disabled');
-              self.lastUpdateXHR = null;
-              self.emitAsync('afterUpdateLink', url, reqUrl).then(resolve);
-            },
-            contentToPost
-          );
+          self.lastUpdateXHR = privlyNetworkService.sameOriginPutRequest(reqUrl, resolve, contentToPost);
         });
       })
-      .then(self.msgStopLoading.bind(self));
+      .then(function () {
+        // re-enable controls
+        $('.saving-text').hide();
+        $('.embeded-form button').removeAttr('disabled');
+        self.lastUpdateXHR = null;
+      })
+      .then(self.emitAsync.bind(self, 'afterUpdateLink', url, reqUrl));
   };
 
   /**
@@ -455,13 +571,12 @@ if (Privly.adapter === undefined) {
         return new Promise(function (resolve) {
           privlyNetworkService.sameOriginDeleteRequest(
             reqUrl,
-            function () {
-              self.emitAsync('afterDeleteLink', url, reqUrl).then(resolve);
-            },
+            resolve,
             contentToPost
           );
         });
       })
+      .then(self.emitAsync.bind(self, 'afterDeleteLink', url, reqUrl))
       .then(self.msgStopLoading.bind(self));
   };
 
@@ -505,7 +620,8 @@ if (Privly.adapter === undefined) {
       .emitAsync('connectionCheckSucceeded')
       .then(self.getTTLOptions.bind(self))
       .then(function (options) {
-        for (var i = 0; i < options.length; ++i) {
+        var i;
+        for (i = 0; i < options.length; ++i) {
           if (options[i].default) {
             self.ttl = options[i].ttl;
             break;
@@ -514,27 +630,42 @@ if (Privly.adapter === undefined) {
       })
       .then(self.msgGetTargetText.bind(self))
       .then(function (text) {
-        $('textarea').val(text);
+        // does not contain a privly link
+        if (!self.whitelistRegexp.test(text)) {
+          return Promise.reject(text);
+        }
+        var link = self.whitelistRegexp.exec(text)[0];
+        // contains link, try to get its content and meta data
+        return self.loadLink(link)
+          .then(function (plaintext) {
+            return {text: text, content: plaintext};
+          }, function () {
+            return Promise.reject(text);
+          });
       })
-      .then(self.createLink.bind(self))
+      .then(function (data) {
+        // resolved: the link content can be used as the initial content
+        $('textarea').val(data.text.replace(self.whitelistRegexp, data.content));
+      }, function (text) {
+        // rejected: cannot use the link content as the initial content
+        $('textarea').val(text);
+        return self.createLink()
+          .then(self.msgInsertLink.bind(self))
+          .then(function (insertionSuccess) {
+            if (insertionSuccess === false) {
+              return Promise.reject();
+            }
+          });
+      })
       .then(self.msgStopLoading.bind(self))
       .then(self.msgAppStarted.bind(self))
-      .then(function () {
-        return self.msgInsertLink(self.privlyUrl);
-      })
-      .then(function (insertionSuccess) {
-        if (insertionSuccess === false) {
-          return Promise.reject();
-        }
-      })
-      .then(function () {
-        self.beginContentClearObserver();
-      })
+      .then(self.beginContentClearObserver.bind(self))
       .then(null, function () {
+        // handle rejected: link insertion failed
         return self
           .deleteLink()
-          .then(self.msgAppClosed.bind(this))
-          .then(Promise.reject);
+          .then(self.msgStopLoading.bind(self))
+          .then(self.msgAppClosed.bind(self));
       });
   };
 
