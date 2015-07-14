@@ -87,21 +87,20 @@ var ls = {
   }
 };
 
+// Checks the platform the script is running in, selects the appropriate storage driver
 try {
+  // Chrome/Safari
   localStorage;
 } catch(e) {
-  /**
-   * Firefox: Jetpack simple-storage
-   * Two Cases in which this file is run/used -- 
-   * 1. Loaded as a CommonJS module(reused as a Local Storage shim 
-   *    in lib/local_storage.js).
-   * 2. Privileged JS code run in a chrome page. for eg:- ChromeFirstRun page. 
-   */ 
+  // Firefox
+  // Use Preferences service instead of localStorage
   if (typeof module !== 'undefined' && module.exports) {
-    // Case 1
+    // Loaded as a CommonJS module, reused as a Local Storage shim 
+    // in lib/local_storage.js.
     module.exports.ls = ls;   
   } else {
-    // Case 2
+    // Privileged JS code run in a firefox "chrome://" page. for eg:- ChromeFirstRun page.
+    // Components can be accessed.
     ls.localStorageDefined = false;
     // Preferences Storage
     ls.preferences = Components.classes["@mozilla.org/preferences-service;1"].
