@@ -92,14 +92,24 @@ var ls = {
   }
 };
 
-// Determine whether localstorage can be used directly
-try { 
+// Checks the platform the script is running in, selects the appropriate storage driver
+try {
+  // Chrome/Safari
   localStorage;
 } catch(e) {
-  ls.localStorageDefined = false;
-  
-  // Assuming Xul firefox
-  ls.preferences = Components.classes["@mozilla.org/preferences-service;1"]
-                         .getService(Components.interfaces.nsIPrefService)
-                         .getBranch("extensions.privly.");
+  // Firefox
+  // Use Preferences service instead of localStorage
+  if (typeof module !== 'undefined' && module.exports) {
+    // Loaded as a CommonJS module, reused as a Local Storage shim 
+    // in lib/local_storage.js.
+    module.exports.ls = ls;   
+  } else {
+    // Privileged JS code run in a firefox "chrome://" page. for eg:- ChromeFirstRun page.
+    // Components can be accessed.
+    ls.localStorageDefined = false;
+    // Preferences Storage
+    ls.preferences = Components.classes["@mozilla.org/preferences-service;1"].
+                       getService(Components.interfaces.nsIPrefService).
+                       getBranch("extensions.privly.");
+  }
 }
