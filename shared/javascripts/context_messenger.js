@@ -435,7 +435,12 @@ if (Privly === undefined) {
   /** @inheritdoc */
   SafariAdapter.prototype.sendMessageTo = function (to, payload) {
     if (to === 'BACKGROUND_SCRIPT') {
-      safari.self.tab.dispatchMessage(payload);
+      if (this.getContextName() === 'BACKGROUND_SCRIPT') {
+        safari.self.contentWindow.postMessage(payload, '*');
+      }
+      else {
+        safari.self.tab.dispatchMessage(payload);
+      }
       return;
     }
     if (to === 'CONTENT_SCRIPT') {

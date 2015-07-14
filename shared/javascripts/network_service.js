@@ -90,10 +90,12 @@ var privlyNetworkService = {
         return "IOS";
     } else if(typeof androidJsBridge !== "undefined") {
       return "ANDROID";
-    }  else if (typeof chrome !== "undefined" && typeof chrome.extension !== "undefined") {
+    } else if (typeof chrome !== "undefined" && typeof chrome.extension !== "undefined") {
       return "CHROME";
-    } else if(window.location.href.indexOf("chrome://") === 0) {
+    } else if (window.location.href.indexOf("chrome://") === 0) {
       return "FIREFOX";
+    } else if (window.location.href.indexOf("safari-extension://") === 0) {
+      return "SAFARI";
     } else {
       return "HOSTED";
     }
@@ -230,6 +232,7 @@ var privlyNetworkService = {
       return protocolDomainPort;
     } else if (platformName === "CHROME" ||
                platformName === "FIREFOX" ||
+               platformName === "SAFARI" ||
                platformName === "IOS") {
       return Privly.options.getServerUrl();
     } else if (platformName === "ANDROID") {

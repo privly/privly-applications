@@ -12,7 +12,10 @@ describe ("PlainPost Show Suite", function() {
       "home_domain",
       "content",
       "save",
-      "update"
+      "update",
+      "edit_text",
+      "privlyHeightWrapper",
+      "post_content"
     ];
     domIDs.forEach(function(id){
       var newElement = $('<a/>', {
@@ -53,6 +56,26 @@ describe ("PlainPost Show Suite", function() {
 
     // Restore the get request function
     privlyNetworkService.sameOriginGetRequest = oldSameOriginGetRequest;
+  });
+
+  it("previews markdown", function() {
+    var mkdwn = "# hello world";
+    var editText = document.getElementById("edit_text");
+    editText.value = mkdwn;
+    previewMarkdown();
+    expect($( "#post_content" ).html()).toBe("<h1>hello world</h1>");
+  });
+
+  it("processes response content", function() {
+    expect($("#edit_text").val()).toBe("");
+    expect($("#post_content").html()).toBe("");
+    expect($("a[target='_blank']").length).toBe(0);
+    var mkdwn = "[link](http://test.privly.org)";
+    var response = {json: {content: mkdwn}};
+    processResponseContent(response);
+    expect($("#edit_text").val()).toBe(mkdwn);
+    expect($("#post_content a")[0].getAttribute("target")).toBe("_blank");
+    expect($("a[target='_blank']").length).toBe(1);
   });
 
 });

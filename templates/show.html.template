@@ -6,13 +6,12 @@
     <meta name="description" content="This link contains your friend's private content. Click through to read.">
     <meta name="og:description" content="This link contains your friend's private content. Click through to read.">
     <meta name="twitter:description" content="This link contains your friend's private content. Click through to read.">
-    
+
     <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet" type="text/css"/>
-    
     <script type="text/javascript" src="../shared/javascripts/host_page_integration.js"></script>
     <script type="text/javascript" src="../shared/javascripts/tooltip.js"></script>
     {% block javascripts %}{% endblock %}
-    
+
     <!-- Top Styles, will be added by JS if not viewed in iframe -->
     <meta name="PrivlyTopCSS" content="../vendor/bootstrap/css/bootstrap.min.css;../shared/css/top/top.css"/>
     <!-- Injected Styles, will be added by JS if viewed in iframe -->
@@ -21,14 +20,14 @@
 {% endblock %}
 {% block body %}
   <body data-privly-exclude="true">
-    
+
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
-    
+
     <div id="wrap"><!-- for bootstrap footer -->
       <div id="privlyHeightWrapper">
-        
+
         {% include "templates/partials/navigation.html.subtemplate" %}
-        
+
         <div class="container">
           {% block main %}
             <div class="row">

@@ -51,11 +51,14 @@ function processResponseContent(response) {
       $("#edit_text").val(cleartext);
       var markdownHTML = markdown.toHTML(cleartext);
       $('div#cleartext').html(markdownHTML);
-      if (!privlyHostPage.isInjected()) {
+      // Make all user-submitted links open a new window
+      $('div#cleartext a').attr("target", "_blank");
+
+      // Make all text areas auto resize to show all their contents
+      if ( ! privlyHostPage.isInjected() ) {
         $('textarea').autosize();
       }
     }, function (rejectReason) {
-      console.log('reject: %s', rejectReason);
       $('div#cleartext').text(rejectReason);
     })
     .then(function () {

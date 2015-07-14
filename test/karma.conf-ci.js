@@ -3,8 +3,22 @@ var uuid = require('uuid');
 
 module.exports = function(config) {
 
+  // These are the default coverageFiles. They should be updated when run from
+  // the privly-safari repo, https://github.com/privly/privly-safari
+  var coverageFiles = {
+    '*/j*/!(raw*).js': 'coverage'
+  };
+
   // If the script is not being executed from the testing directory
   if(process.cwd() !== __dirname) {
+
+    if(process.cwd().indexOf("privly-safari") != -1) {
+      // When the script is run from the privly-safari repo, update the coverageFiles
+      coverageFiles = {
+        '../scripts/**/*.js': 'coverage'
+      };
+    }
+
     console.warn(
       "\n!!!\nYou are running this script from outside the test directory. " +
       "If you do not have the required node modules on your NODE_PATH, " +
@@ -67,7 +81,9 @@ module.exports = function(config) {
   }
   var sl_safari = {
     base: 'SauceLabs',
-    browserName: 'safari'
+    browserName: 'safari',
+    platform: 'OS X 10.10',
+    version: '8.0'
   }
 
   // Browsers to run on Sauce Labs based on command line argument
@@ -114,10 +130,10 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine'],
 
-    // Provide coverage information for the shared libraries
-    preprocessors: {
-      '*/j*/*.js': 'coverage'
-    },
+    // Provide test coverage information for the matched
+    // files. The compression library (both start with "raw")
+    // is excluded.
+    preprocessors: coverageFiles,
 
     // list of files / patterns to load in the browser
     files: filesToTest,
