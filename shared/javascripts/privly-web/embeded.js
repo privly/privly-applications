@@ -1,8 +1,8 @@
 /**
- * @fileOverview The embeded-posting adapter.
+ * @fileOverview The seamless-embeded-posting adapter.
  *
- * This adapter is designed to be loaded in an embeded-posting iframe.
- * It needs embeded-posting content scripts to work correctly.
+ * This adapter is designed to be loaded in an seamless-posting iframe.
+ * It needs seamless-posting content scripts to work correctly.
  *
  * The flow:
  *   User clicks Privly button
@@ -498,8 +498,6 @@ if (Privly.adapter === undefined) {
       });
   };
 
-  // TODO: update when losing focus
-
   /**
    * Update the content of the Privly URL provided by this.privlyUrl
    * according to the value of the textarea.
@@ -705,16 +703,12 @@ if (Privly.adapter === undefined) {
   };
 
   /**
-   * When receive message that user sets TTL
+   * Fired when Privly app receives messages
    * 
-   * @param  {String} ttl
+   * @param  {Object} message
+   * @param  {Function} sendResponse
    */
-  EmbededAdapter.prototype.onSetTTL = function (ttl) {
-    this.ttl = ttl;
-    this.updateLink();
-  };
-
-  EmbededAdapter.prototype.onMessageReceived = function (message, sendResponse) {
+  EmbededAdapter.prototype.onMessageReceived = function (message) {
     var self = this;
     switch (message.action) {
     case 'embeded/app/userClose':
@@ -732,6 +726,21 @@ if (Privly.adapter === undefined) {
     }
   };
 
+  /**
+   * When user sets TTL
+   * 
+   * @param  {String} ttl
+   */
+  EmbededAdapter.prototype.onSetTTL = function (ttl) {
+    this.ttl = ttl;
+    this.updateLink();
+  };
+
+  /**
+   * Update the style of the seamless-posting textarea according to the host site
+   * 
+   * @param  {Object} styles
+   */
   EmbededAdapter.prototype.updateStyle = function (styles) {
     var inputElement = $('textarea')[0];
     var styleName;
@@ -740,6 +749,18 @@ if (Privly.adapter === undefined) {
     }
   };
 
+  /**
+   * The handler when state got changed.
+   * 
+   * iframe created(hide) -> prepare link -> app started
+   * -> (focus iframe) -> state changed to open -> (focus textarea)
+   *
+   * Although this context fired "appStart" message,
+   * but at that time the iframe has not got the focus
+   * thus focusing the textarea has no effect.
+   * 
+   * @param  {String} state
+   */
   EmbededAdapter.prototype.onStateChanged = function (state) {
     switch (state) {
     case 'OPEN':
@@ -748,13 +769,16 @@ if (Privly.adapter === undefined) {
     }
   };
 
+  /**
+   * The handler when user clicks "Close" button.
+   *
+   * @return  {Promise}
+   */
   EmbededAdapter.prototype.onUserClose = function () {
     var self = this;
     return self
       .deleteLink()
-      .then(function () {
-        return self.msgSetTargetText($('textarea').val());
-      })
+      .then(self.msgSetTargetText.bind(self, $('textarea').val()))
       .then(self.msgAppClosed.bind(self));
   };
 
