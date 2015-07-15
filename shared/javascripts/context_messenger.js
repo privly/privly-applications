@@ -425,7 +425,7 @@ if (Privly === undefined) {
   SafariAdapter.prototype.getContextName = function () {
     if (window.document.getElementById('is-background-script') !== null) {
       return 'BACKGROUND_SCRIPT';
-    } else if (window.location.href.indexOf(window.location.origin + '/privly-applications') === 0) {
+    } else if (window.location.href.indexOf('safari-extension://') === 0) {
       return 'PRIVLY_APPLICATION';
     } else {
       return 'CONTENT_SCRIPT';
@@ -444,13 +444,18 @@ if (Privly === undefined) {
       return;
     }
     if (to === 'CONTENT_SCRIPT') {
-      // Send message to all content scripts
-      safari.application.activeBrowserWindow.tabs.forEach(function (tab) {
-        // Don't message Privly Applications
-        if (tab.url.indexOf('safari-extension') !== 0) {
-          tab.page.dispatchMessage(payload);
-        }
-      });
+      if (this.getContextName() === 'PRIVLY_APPLICATION') {
+        // Send message to the parent content script
+        window.parent.postMessage(payload, '*');
+      } else {
+        // Send message to all content scripts
+        safari.application.activeBrowserWindow.tabs.forEach(function (tab) {
+          // Don't message Privly Applications
+          if (tab.url.indexOf('safari-extension') !== 0) {
+            tab.page.dispatchMessage(payload);
+          }
+        });
+      }
       return;
     }
     if (to === 'PRIVLY_APPLICATION') {
