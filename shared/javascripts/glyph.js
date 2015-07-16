@@ -142,7 +142,7 @@ if (Privly === undefined) {
         nbs = document.createTextNode('\u00A0');
         td.appendChild(nbs);
 
-        // Fill only the first three columns with the coresponding values from glyphArray[]
+        // Fill only the first three columns with the coresponding values from glyph.cells[]
         // The rest of two columns are simetrical to the first two
         if (j <= 2) {
           if (glyph.cells[i * 3 + j]) {
@@ -166,6 +166,62 @@ if (Privly === undefined) {
 
     table.appendChild(tbody);
     return table;
+  };
+
+  /**
+   * Constructs the user's security glyph, which indicates whether the
+   * injected content is trusted. The Glyph is assumed to be defined by the
+   * extension before this script is run. It can be reset via the options
+   * interface.
+   *
+   * Unlike getGlyphDOM, this function returns an ImageData object.
+   *
+   * @param {int} size The width and height of the image
+   * @return {ImageData}
+   */
+  Privly.glyph.getGlyphImage = function (size) {
+    if (size === undefined) {
+      size = 30;
+    }
+    // Generate a new glyph if not exist
+    var glyph = Privly.options.getGlyph();
+    if (glyph === null) {
+      glyph = Privly.glyph.generateGlyph();
+    }
+
+    var cellSize = Math.floor(size / 5);
+    var realSize = cellSize * 5;
+    var offset = Math.floor((size - realSize) / 2);
+
+    var canvas = document.createElement("canvas");
+    var ctx = canvas.getContext("2d");
+
+    // draw background
+    ctx.fillStyle = "#FFF";
+    ctx.fillRect(0, 0, size, size);
+
+    // draw pattern
+    ctx.fillStyle = "#" + glyph.color;
+
+    var i, j;
+
+    for (i = 0; i < 5; i++) {
+      for (j = 0; j < 5; j++) {
+        // Fill only the first three columns with the coresponding values from glyph.cells[]
+        // The rest of two columns are simetrical to the first two
+        if (j <= 2) {
+          if (glyph.cells[i * 3 + j] === "true") {
+            ctx.fillRect(offset + j * cellSize, offset + i * cellSize, cellSize, cellSize);
+          }
+        } else {
+          if (glyph.cells[i * 3 + (5 % (j + 1))] === "true") {
+            ctx.fillRect(offset + j * cellSize, offset + i * cellSize, cellSize, cellSize);
+          }
+        }
+      }
+    }
+
+    return ctx.getImageData(0, 0, size, size);
   };
 
 }());
