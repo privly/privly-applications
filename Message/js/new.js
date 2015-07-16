@@ -4,6 +4,8 @@
  * in the shared directory.
  **/
 
+var message;
+
 /**
  * Display rendered markdown as a preview of the post.
  */
@@ -22,28 +24,12 @@ function previewMarkdown() {
  * server.
  * @param {string} The URL with the link key appended.
  */
-function processURL(response, randomkey) {
-  if( response.jqXHR.status !== 201 ) {
-    return "";
-  }
+function processURL(response) {
   var url = response.jqXHR.getResponseHeader("X-Privly-Url");
-  if( url.indexOf("#") > 0 ) {
-    url = url.replace("#", "#privlyLinkKey=" + encodeURIComponent(randomkey));
-  } else {
-    url = url + "#privlyLinkKey=" + encodeURIComponent(randomkey);
-  }
-
-  // Save the URL to localStorage if we are not in the HOSTED platform
-  if ( privlyNetworkService.platformName() !== "HOSTED" ) {
-    var urls = Privly.storage.get("Message:URLs");
-    if ( urls !== null ) {
-      urls.push(url);
-      Privly.storage.set("Message:URLs", urls);
-    } else {
-      Privly.storage.set("Message:URLs", [url]);
-    }
-  }
-  return url;
+  return message.postprocessLink(url).then(function (url) {
+    message.storeUrl(url);
+    return url;
+  });
 }
 
 /**
@@ -52,18 +38,22 @@ function processURL(response, randomkey) {
  * remote server.
  */
 function save() {
-  var randomkey = sjcl.codec.base64.fromBits(sjcl.random.randomWords(8, 0), 0);
-  var cipherdata = zeroCipher(randomkey, $("#content")[0].value);
-
-  callbacks.postCompleted = function(response) {
-    oldPostCompletedCallback(response, processURL(response, randomkey));
-  };
-
-  // Submit the ciphertext to the server
-  callbacks.postSubmit(cipherdata, 
-    "Message",
-    $( "#seconds_until_burn" ).val(), 
-    "");
+  message = new Privly.app.Message();
+  message.generateRandomKey();
+  message
+    .getRequestContent($("#content")[0].value)
+    .then(function (content) {
+      callbacks.postCompleted = function(response) {
+        processURL(response).then(function (url) {
+          oldPostCompletedCallback(response, url);
+        });
+      };
+      // Submit the ciphertext to the server
+      callbacks.postSubmit(content.structured_content, 
+        "Message",
+        $( "#seconds_until_burn" ).val(), 
+        "");
+    });
 }
 
 /**

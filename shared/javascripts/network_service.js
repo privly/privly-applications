@@ -81,7 +81,7 @@ var privlyNetworkService = {
   },
   
   /**
-   * Deprecated. Use Privly.message.currentPlatform instead.
+   * @deprecated Use Privly.message.currentAdapter.getPlatformName() instead.
    */
   platformName: function() {
     if (navigator.userAgent.indexOf("iPhone") >= 0 || 
@@ -260,7 +260,7 @@ var privlyNetworkService = {
       url = privlyNetworkService.getAuthenticatedUrl(url);
     }
     
-    $.ajax({
+    return $.ajax({
       url: url,
       dataType: "json",
       headers: { 
@@ -293,7 +293,7 @@ var privlyNetworkService = {
    */
   sameOriginPostRequest: function(url, callback, data) {
     url = privlyNetworkService.getAuthenticatedUrl(url);
-    $.ajax({
+    return $.ajax({
       url: url,
       cache: false,
       type: "POST",
@@ -330,7 +330,7 @@ var privlyNetworkService = {
    */
   sameOriginPutRequest: function(url, callback, data) {
     url = privlyNetworkService.getAuthenticatedUrl(url);
-    $.ajax({
+    return $.ajax({
       url: url,
       cache: false,
       type: "PUT",
@@ -367,7 +367,7 @@ var privlyNetworkService = {
    */
   sameOriginDeleteRequest: function(url, callback, data) {
     url = privlyNetworkService.getAuthenticatedUrl(url);
-    $.ajax({
+    return $.ajax({
       url: url,
       cache: false,
       type: "DELETE",

@@ -8,7 +8,6 @@
     <meta name="twitter:description" content="This link contains your friend's private content. Click through to read.">
 
     <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet" type="text/css"/>
-
     <script type="text/javascript" src="../shared/javascripts/host_page_integration.js"></script>
     <script type="text/javascript" src="../shared/javascripts/tooltip.js"></script>
     {% block javascripts %}{% endblock %}

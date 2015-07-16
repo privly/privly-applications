@@ -165,10 +165,13 @@ var callbacks = {
    * Tell the user they are now logged in to the server.
    */
   pendingPost: function() {
-    
-    // get from local storage the last known app to redirect to
-    if(Privly.storage.get("Login:redirect_to_app") !== null &&
-       Privly.storage.get("Login:redirect_to_app").indexOf("Login") < 0) {
+    if (window.location.search.indexOf('?') === 0 &&
+        // we doesn't allow redirecting to other domain
+        window.location.search.replace(/\\/g, '/').indexOf('//') === -1) {
+      window.location = window.location.search.substr(1);
+    } else if (Privly.storage.get("Login:redirect_to_app") !== null &&
+               Privly.storage.get("Login:redirect_to_app").indexOf("Login") < 0) {
+      // get from local storage the last known app to redirect to
       window.location = Privly.storage.get("Login:redirect_to_app");
     } else {
       window.location = "../Help/new.html";

@@ -1,0 +1,19 @@
+body, html {
+  height: 100%;
+  overflow: hidden;
+  margin: 0;
+  position: relative;
+}
+
+#input {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: 0;
+  height: 100%;
+  box-sizing: border-box;
+  border: 0;
+  outline: 0;
+  background: #d1e6d8;
+  resize: none;
+}

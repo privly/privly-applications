@@ -144,7 +144,6 @@ var privlyTooltip = {
             t.style.top = (e.clientY - xOffset) + "px";
             t.style.left = (e.clientX + yOffset) + "px";
           });
-    },
-
+    }
     
 };
