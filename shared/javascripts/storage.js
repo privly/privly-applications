@@ -28,6 +28,13 @@ if (Privly === undefined) {
   }
   Privly.storage = {};
 
+  // CommonJS Module
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports.storage = Privly.storage;
+    // load dependencies
+    ls = require("./local_storage.js").ls;
+  }
+
   /**
    * Set an item to the storage.
    * This function doesn't return values;

@@ -130,6 +130,11 @@ if (Privly === undefined) {
   Privly.message = {};
   Privly.message.adapter = {};
 
+  // CommonJS Module
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports.message = Privly.message;
+  }
+
   /**
    * A unique id for this context.
    * It will be used to identify the response.
@@ -300,8 +305,8 @@ if (Privly === undefined) {
   /** @inheritdoc */
   FirefoxAdapter.isPlatformMatched = function () {
 
-    validContext = ["BACKGROUND_SCRIPT", "CONTENT_SCRIPT",
-                    "PRIVLY_APPLICATIONS"]
+    var validContext = ["BACKGROUND_SCRIPT", "CONTENT_SCRIPT",
+                        "PRIVLY_APPLICATION"]
     if (validContext.indexOf(FirefoxAdapter.prototype.getContextName()) !== -1) {
       return true;
     }
@@ -316,43 +321,66 @@ if (Privly === undefined) {
 
   /** @inheritdoc 
    *
-   * "Workers" here refer to the Jetpack messaging API objects, which could 
-   * be workers created by page-mod, or a panel object or self. All these objects 
-   * provide the interface to send and receive messages using "port".
+   * "Workers" here refer to the dynamically created Jetpack messaging API objects, 
+   * which could be workers(Content Script instances) created by page-mod, or a panel object. 
+   * All these objects provide the interface to send and receive messages using "port".
+   * These objects, when created, should be added to the workers list/array using 
+   * Privly.message.currentAdapter.addWorker(<worker object>).
    *
-   * Stores all the workers Or messaging API objects.
-   * @see FirefoxAdapter.prototype.pushWorker
+   * Stores all the dynamically created workers Or messaging API objects.
    */
   FirefoxAdapter.prototype.workers = [];
 
   /** @inheritdoc
    * Adds a worker to the list of workers and listens for messages.
    *
-   * @param {Object} worker Jetpack messaging API object
+   * @param {Object} worker Jetpack messaging API object.
    */
-  FirefoxAdapter.prototype.pushWorker = function(worker) {
-    // Add worker to array of workers
-    this.workers.push(worker);
+  FirefoxAdapter.prototype.addWorker = function(worker) {
+   
+    var pushWorker = this.pushWorker.bind(this);
+    var popWorker = this.popWorker.bind(this);
     var callback = this.listener;
-    // Use the worker to listen for messages.
-    worker.port.on("privly", callback);
+    
+    // Add worker to array of workers
+    pushWorker(worker);
+    // Listen for messages.
+    worker.port.on("PRIVLY_MESSAGE", callback);
+    // the workers array should contain only active workers.
+    // remove the workers, that are inactive or destroyed, from the workers array.
+    worker.on("pageshow", function() { pushWorker(this); });
+    worker.on("pagehide", function() { popWorker(this); });
+    worker.on("detach", function() { popWorker(this); });
   };
 
-  /** @inheritdoc
+  /**
+   * Adds a worker to the list of active workers. This is called when -- 
+   * A new worker is attached to a tab, i.e, "attach". Or
+   * An existing worker is made active again, i.e, "pageshow".
    *
-   * Remove the worker from the array of workers. This function is called when 
-   * a worker is destroyed("detach" event). The scripts using context messenger are
-   * responsible for calling this function.
-   * 
-   * @param {Object} worker Jetpack messaging API object.
+   * @return {Object} worker Jetpack messaging API object.
+   */
+  FirefoxAdapter.prototype.pushWorker = function(worker) {
+    var workers = this.workers;
+    var idx = workers.indexOf(worker);
+    if (idx === -1) {
+      workers.push(worker);
+    }
+  };
+
+  /**
+   * Removes a worker from the list of active workers. This is called when -- 
+   * A tab is reloaded/closed, i.e, "detach". Or
+   * A worker is made inactive, i.e, "pagehide"
+   *
+   * @return {Object} worker Jetpack messaging API object.
    */
   FirefoxAdapter.prototype.popWorker = function(worker) {
     var workers = this.workers;
-    // worker destroyed, remove from array
     var idx = workers.indexOf(worker);
     if (idx !== -1) {
       workers.splice(idx, 1);
-    } 
+    }
   };
 
   /** @inheritdoc */
@@ -366,32 +394,81 @@ if (Privly === undefined) {
     if (typeof require !== "undefined") {
       return "BACKGROUND_SCRIPT";
     }
-    else if (typeof self !== "undefined") {
+    if (typeof self !== "undefined") {
       if (typeof self.port !== "undefined") {
         return "CONTENT_SCRIPT";
       }
     }
-    else if (typeof window !== "undefined") {
+    if (typeof window !== "undefined") {
       if (window.location.href.indexOf("chrome://") === 0) {
         return "PRIVLY_APPLICATION";
       }
     }
-    else {
-      return "UNKNOWN_CONTEXT";
-    }
+    return "UNKNOWN_CONTEXT";
   };
 
   /** @inheritdoc */
   FirefoxAdapter.prototype.sendMessageTo = function (to, data) {
-    // Send Message using available workers.
-    var len = this.workers.length;
-    for(var i=0 ; i<len ; i++) {
-      this.workers[i].port.emit("privly", data);
+   
+    var contextName = this.getContextName();
+    // Messages from Privly Applications to Background Script, Content Scripts
+    // Privly Applications can't send messages directly to background scripts, they do so via
+    // content scripts injected in the application.
+    if (contextName === "PRIVLY_APPLICATION") {
+      // Override the target so that the message doesn't get dropped.
+      data.to = "CONTENT_SCRIPT";
+      parent.postMessage(JSON.stringify(data), "*");
+    } 
+    // Messages from Content Script to Background Script, Privly-Applications.
+    else if (contextName === "CONTENT_SCRIPT") {
+      if (to === "BACKGROUND_SCRIPT") {
+        self.port.emit("PRIVLY_MESSAGE", data);
+      } 
+      else if (to === "PRIVLY_APPLICATION") {
+        window.postMessage(JSON.stringify(data), "*");
+      }
+      else if (to === "CONTENT_SCRIPT") {
+        throw new Error("Content => Content not implemented.");
+      }
+    }
+    // Messages from Background Script to Content Script, Privly Applications
+    // Background scripts can't send messages directly to privly-applications, they do so via
+    // content scripts injected in the applications. 
+    else if (contextName === "BACKGROUND_SCRIPT") {
+      if (to === "CONTENT_SCRIPT" || to === "PRIVLY_APPLICATION") {
+        // Override the target so that the message doesn't get dropped.
+        data.to = "CONTENT_SCRIPT";
+        // Send the message using available workers.
+        var len = this.workers.length;
+        for(var i=0 ; i<len ; i++) {
+          this.workers[i].port.emit("PRIVLY_MESSAGE", data);
+        }
+      }
     }
   };
 
   /** @inheritdoc */
   FirefoxAdapter.prototype.setListener = function (callback) {
+    var contextName = this.getContextName();
+    if (contextName === "CONTENT_SCRIPT" || contextName === "PRIVLY_APPLICATION") {
+      // Listen for messages sent via postMessage.
+      window.addEventListener("message", function(message) {
+        var success = true;
+        try {
+          var data = JSON.parse(message.data);
+        } catch(e) {
+          success = false;
+        }
+        if (success) {
+          callback(data);
+        }
+      }, false, true);
+    }
+    if (contextName === "CONTENT_SCRIPT") {
+      if (typeof self.port !== "undefined") {
+        self.port.on("PRIVLY_MESSAGE", callback);
+      }
+    }
     this.listener = callback;
   };
 
@@ -882,8 +959,3 @@ if (Privly === undefined) {
   }
 
 }());
-
-// CommonJS Module
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports.contextMessenger = Privly.message;
-}

@@ -98,15 +98,21 @@ try {
   localStorage;
 } catch(e) {
   // Firefox
+  ls.localStorageDefined = false;
   // Use Preferences service instead of localStorage
   if (typeof module !== 'undefined' && module.exports) {
+    const { Cc, Ci } = require("chrome");
+    // Preferences storage
+    ls.preferences = Cc["@mozilla.org/preferences-service;1"].
+                       getService(Ci.nsIPrefService).
+                       getBranch("extensions.privly.");
     // Loaded as a CommonJS module, reused as a Local Storage shim 
     // in lib/local_storage.js.
-    module.exports.ls = ls;   
+    module.exports.ls = ls;
+
   } else {
     // Privileged JS code run in a firefox "chrome://" page. for eg:- ChromeFirstRun page.
     // Components can be accessed.
-    ls.localStorageDefined = false;
     // Preferences Storage
     ls.preferences = Components.classes["@mozilla.org/preferences-service;1"].
                        getService(Components.interfaces.nsIPrefService).
