@@ -1,0 +1,69 @@
+// If Privly namespace is not initialized, initialize it
+var Privly;
+if (Privly === undefined) {
+  Privly = {};
+}
+if (Privly.app === undefined) {
+  Privly.app = {};
+}
+
+(function () {
+  // If this file is already loaded, don't do it again
+  if (Privly.app.Plainpost !== undefined) {
+    return;
+  }
+
+  /**
+   * The Privly Plainpost Application
+   */
+  var PlainpostApp = function () {};
+
+  /**
+   * The name of the application, will be used to send
+   * request.
+   *
+   * @override
+   * @type {String}
+   */
+  PlainpostApp.prototype.name = 'PlainPost';
+
+  /**
+   * Get structured content of the application.
+   *
+   * @override
+   * @param  {String} raw User input content
+   * @return {Promise<Object>}
+   *           {String} content
+   *           {String} structured_content
+   *           {Boolean} isPublic
+   */
+  PlainpostApp.prototype.getRequestContent = function (raw) {
+    return Promise.resolve({
+      content: raw,
+      structured_content: '',
+      isPublic: true
+    });
+  };
+
+  /**
+   * Get the TTL options for this App
+   *
+   * @override
+   * @return {Promise<[Object]>}
+   *   {String} text     The text of the option
+   *   {String} ttl      The seconds_util_burn value of the option
+   *   {Boolean} default Whether this option is the default option
+   */
+  PlainpostApp.prototype.getTTLOptions = function () {
+    return Promise.resolve([
+      {text: "1 Day", ttl: "86400"},
+      {text: "7 Days", ttl: "604800"},
+      {text: "14 Days", ttl: "1209600"},
+      {text: "28 Days", ttl: "2419200", default: true},
+      {text: "Infinite", ttl: ""},
+    ]);
+  };
+
+  Privly.app.Plainpost = PlainpostApp;
+
+}());

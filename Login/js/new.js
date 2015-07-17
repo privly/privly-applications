@@ -1,6 +1,7 @@
 /**
  * @fileOverview Logs the user into the content server.
  **/
+/*global Privly, markdown */
 
 /**
  * The callbacks assign the state of the application.
@@ -38,9 +39,6 @@ var callbacks = {
     
     privlyNetworkService.showLoggedOutNav();
     
-    // Set the nav bar to the proper domain
-    privlyNetworkService.initializeNavigation();
-    
     var loginForm = document.getElementById("loginForm");
     var registerForm = document.getElementById("registerForm");
 
@@ -54,20 +52,15 @@ var callbacks = {
       callbacks.submitRegistration();
     });
 
-    // Add listeners to show loading animation while making ajax requests
-    $(document).ajaxStart(function() {
-      $('#loadingDiv').show(); 
-    });
-    $(document).ajaxStop(function() { 
-      $('#loadingDiv').hide(); 
-    });
-    
     // See if the user is currently logged in
     privlyNetworkService.initPrivlyService(
       privlyNetworkService.contentServerDomain(), 
       callbacks.pendingPost, 
       callbacks.notLoggedIn, 
       callbacks.loginError);
+
+    // prevent default
+    return true;
   },
   
   /**
@@ -176,14 +169,19 @@ var callbacks = {
   }
 };
 
-// Initialize the application
-document.addEventListener('DOMContentLoaded',
-  function() {
-
-    // Don't start the script if it is running in a Headless
-    // browser
-    if( document.getElementById("logout_link") ) {
-      callbacks.pendingLogin();
-    }
+document.addEventListener('DOMContentLoaded', function () {
+  // Don't start the script if it is running in a Headless
+  // browser
+  if (!document.getElementById("logout_link")) {
+    return;
   }
-);
+
+  var adapter = new Privly.adapter.CreationProcess({});
+
+  adapter.on('beforePendingLogin', function () {
+    callbacks.pendingLogin();
+    return true;
+  });
+
+  adapter.start();
+});

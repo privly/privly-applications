@@ -24,9 +24,6 @@ var callbacks = {
     // Save to local storage the app to redirect to after succesful log in
     Privly.storage.set("Login:redirect_to_app", window.location.href);
 
-    // Set the nav bar to the proper domain
-    privlyNetworkService.initializeNavigation();
-
     var domain = privlyNetworkService.contentServerDomain();
     $("#current_content_server").text(domain.split("/")[2]);
     $("#remote_content_server").attr("href", domain);
@@ -34,14 +31,6 @@ var callbacks = {
     if ( privlyNetworkService.platformName() === "CHROME" ) {
       $(".chrome_options_link").show();
     }
-
-    // Add listeners to show loading animation while making ajax requests
-    $(document).ajaxStart(function() {
-      $('#loadingDiv').show(); 
-    });
-    $(document).ajaxStop(function() {
-      $('#loadingDiv').hide();
-    });
 
     privlyNetworkService.initPrivlyService(
       privlyNetworkService.contentServerDomain(),
@@ -77,14 +66,19 @@ var callbacks = {
   
 };
 
-// Initialize the application
-document.addEventListener('DOMContentLoaded',
-  function() {
-
-    // Don't start the script if it is running in a Headless
-    // browser
-    if( document.getElementById("logout_link") ) {
-      callbacks.pendingLogin();
-    }
+document.addEventListener('DOMContentLoaded', function () {
+  // Don't start the script if it is running in a Headless
+  // browser
+  if (!document.getElementById("logout_link")) {
+    return;
   }
-);
+
+  var adapter = new Privly.adapter.CreationProcess({});
+
+  adapter.on('beforePendingLogin', function () {
+    callbacks.pendingLogin();
+    return true;
+  });
+  
+  adapter.start();
+});

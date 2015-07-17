@@ -255,14 +255,20 @@ function postUrl() {
   Privly.message.messageExtension({privlyUrl: url});
 }
 
-// Initialize the application
-document.addEventListener('DOMContentLoaded',
-  function() {
 
-    // Don't start the script if it is running in a Headless
-    // browser
-    if( document.getElementById("logout_link") ) {
-      callbacks.pendingLogin();
-    }
+document.addEventListener('DOMContentLoaded', function () {
+  // Don't start the script if it is running in a Headless
+  // browser
+  if (!document.getElementById("logout_link")) {
+    return;
   }
-);
+
+  var adapter = new Privly.adapter.CreationProcess({});
+
+  adapter.on('beforePendingLogin', function () {
+    callbacks.pendingLogin();
+    return true;
+  });
+  
+  adapter.start();
+});

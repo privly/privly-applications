@@ -23,125 +23,265 @@
  * '#content")[0]': The content area that accepts user text.
  *
  * ## Extending this script ##
- * Each of these functions have callbacks that will be called at the
- * end of the function, if the callback is defined.
- * If you need to modify the inputs to these callbacks or to perform an 
- * action before the callback is executed, we recommend you overwrite the
- * callback with a new callback that calls the original callback with the
- * modified parameters. For example:
- *
- * var oldCallback = callbacks.postCompleted;
- * callbacks.postCompleted = function(response) {
- *   oldCallback(response, "modified");
- * }
+ * See Message/js/messageApp.js and Message/js/new.js for examples.
  *
  **/
+/*global privlyNetworkService, window */
+// If Privly namespace is not initialized, initialize it
+var Privly;
+if (Privly === undefined) {
+  Privly = {};
+}
+if (Privly.adapter === undefined) {
+  Privly.adapter = {};
+}
+(function () {
+  // If this file is already loaded, don't do it again
+  if (Privly.adapter.CreationProcess !== undefined) {
+    return;
+  }
 
-/**
- * The callbacks assign the state of the application.
- *
- * These applications can be placed into the following states:
- * 1. Pending Login Check: The app is currently requesting the CSRF
- *    token from the remote server. Callback=pendingLogin
- * 2. Failure to login: The user is not currently authenticated with the
- *    remote server. In this state the user is prompted to login.
- *    Callback=loginFailure
- * 3. Pending post: The user can make the post at this point.
- *    Callback=pendingPost
- * 4. postSubmit: The user submitted the form so the content is being
- *    sent to the remote server. Once it is returned, the URL will
- *    be messaged to the extension (if present) by calling the
- *    "postCompleted" callback.
- * 5. Error creating post: The remote server would not accept the user's
- *    content. The app should display an error message.
- *    Callback=createError
- * 6. Completed post: The remote server has returned a URL. This app should
- *    display it and fire the URL event.
- *    Callback=postCompleted
- */
-var callbacks = {
-  
   /**
-   * Initialize the whole application.
-   *
-   * @param {function} callback A function to call after the content
-   * returns from the server.
+   * These applications can be placed into the following states:
+   * 1. Pending Login Check: The app is currently requesting the CSRF
+   *    token from the remote server.
+   * 2. Failure to login: The user is not currently authenticated with the
+   *    remote server. In this state the user is prompted to login.
+   * 3. Pending post: The user can make the post at this point.
+   * 4. postSubmit: The user submitted the form so the content is being
+   *    sent to the remote server. Once it is returned, the URL will
+   *    be messaged to the extension (if present) by calling the
+   *    "postCompleted" function.
+   * 5. Error creating post: The remote server would not accept the user's
+   *    content. The app should display an error message.
+   * 6. Completed post: The remote server has returned a URL. This app should
+   *    display it and fire the URL event.
    */
-  pendingLogin: function(callback) {
+  var CreationProcessAdapter = function (application) {
+    /**
+     * The Privly application instance.
+     * 
+     * @type {Object}
+     */
+    this.application = application;
 
-    Privly.storage.set("Login:redirect_to_app", window.location.href);
+    /**
+     * Whether the adapter is started
+     * 
+     * @type {Boolean}
+     */
+    this.started = false;
+  };
+
+  // Inhreit EventEmitter
+  Privly.EventEmitter.inherit(CreationProcessAdapter);
+
+  Privly.adapter.CreationProcess = CreationProcessAdapter;
+
+  /**
+   * Method factory. Add overridable function to CreationProcessAdapter.
+   * It will create a function which behavior can be overridden by
+   * listening `before{name}` event and `after{name}` event.
+   * 
+   * @param {String} name The name of the function.
+   * @param {Function} func The body of the function if `before` event
+   * doesn't return true=preventDefault.
+   */
+  var addOverridableFunction = function (name, func) {
+    var eventName = name.substr(0, 1).toUpperCase() + name.substr(1);
+    CreationProcessAdapter.prototype[name] = function () {
+      var self = this;
+      var argv = [].slice.call(arguments);
+      return self
+        .emitAsync.apply(self, ['before' + eventName].concat(argv))
+        .then(function (preventDefault) {
+          if (preventDefault === true) {
+            return;
+          }
+          return func.apply(self, argv);
+        })
+        .then(function () {
+          return self.emitAsync.apply(self, ['after' + eventName].concat(argv));
+        });
+    };
+  };
+
+  /**
+   * Start the creation process adapter.
+   * It will create the default navigation bar, assign ajax request listeners and
+   * finally call `pendingLogin()` to start the login checking process.
+   *
+   * @return {Promise}
+   */
+  CreationProcessAdapter.prototype._start = function () {
+    var self = this;
+    if (self.started) {
+      return;
+    }
+    self.started = true;
 
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
 
     // Add listeners to show loading animation while making ajax requests
-    $(document).ajaxStart(function() {
-      $('#loadingDiv').show(); 
+    $(document).ajaxStart(function () {
+      $('#loadingDiv').show();
     });
-    $(document).ajaxStop(function() { 
-      $('#loadingDiv').hide(); 
+    $(document).ajaxStop(function () {
+      $('#loadingDiv').hide();
     });
-    
-    // Pass the callback forward
-    function wrapPendingPost() {
-      callbacks.pendingPost(callback);
+
+    self.pendingLogin();
+  };
+  addOverridableFunction('start', CreationProcessAdapter.prototype._start);
+
+  /**
+   * When server connection checking succeeded.
+   * It will add event listeners to the submit button and
+   * make textarea able to auto resize. Finally it will call
+   * `pendingPost()` to prepare the posting form.
+   *
+   * @return {Promise}
+   */
+  CreationProcessAdapter.prototype._connectionSucceeded = function () {
+    var self = this;
+
+    // Monitor the submit button
+    $(document).on('click', '#save', self.save.bind(self));
+
+    // Make all text areas auto resize to show all their contents
+    $('textarea').autosize();
+
+    self.pendingPost();
+  };
+  addOverridableFunction('connectionSucceeded', CreationProcessAdapter.prototype._connectionSucceeded);
+
+  /**
+   * When server connection checking failed.
+   * It will call `loginFailure()` to show error messages.
+   *
+   * @return {Promise}
+   */
+  CreationProcessAdapter.prototype._connectionFailed = function () {
+    var self = this;
+    self.loginFailure();
+  };
+  addOverridableFunction('connectionFailed', CreationProcessAdapter.prototype._connectionFailed);
+
+  /**
+   * Get processed request content from the Privly application.
+   * 
+   * @param  {String} content
+   * @return {Promise<Object>}
+   *           {String} content
+   *           {String} structured_content
+   *           {Boolean} isPublic
+   */
+  CreationProcessAdapter.prototype.getRequestContent = function (content) {
+    var promise;
+    if (typeof this.application.getRequestContent === 'function') {
+      promise = this.application.getRequestContent(content);
+    } else {
+      promise = Promise.resolve({});
     }
-    function wrapLoginFailure() {
-      callbacks.loginFailure(callback);
+    return promise.then(function (reqContent) {
+      if (reqContent.content === undefined) {
+        reqContent.content = content;
+      }
+      if (reqContent.structured_content === undefined) {
+        reqContent.structured_content = content;
+      }
+      if (reqContent.isPublic === undefined) {
+        reqContent.isPublic = true;
+      }
+      return reqContent;
+    });
+  };
+
+  /**
+   * Get processed Privly link from the Privly application.
+   * Privly application may manipulate the url to add additional
+   * information.
+   * 
+   * @param  {String} link
+   * @return {Promise<String>} The processed link
+   */
+  CreationProcessAdapter.prototype.postprocessLink = function (link) {
+    var promise;
+    if (typeof this.application.postprocessLink === 'function') {
+      promise = this.application.postprocessLink(link);
+    } else {
+      promise = Promise.resolve(link);
     }
-    
+    return promise;
+  };
+
+  /**
+   * Submit the content to the remote server.
+   * 
+   * @return {Promise}
+   */
+  CreationProcessAdapter.prototype._save = function () {
+    var self = this;
+    return self
+      .getRequestContent($("#content")[0].value)
+      .then(function (data) {
+        self.postSubmit(
+          data.structured_content,
+          self.application.name,
+          $("#seconds_until_burn").val(),
+          data.content
+        );
+      });
+  };
+  addOverridableFunction('save', CreationProcessAdapter.prototype._save);
+
+  /**
+   * Start login process. It will call `connectionSucceeded()` when
+   * the checking is passed and call `connectionFailed()` in other
+   * cases.
+   *
+   * @return {Promise}
+   */
+  CreationProcessAdapter.prototype._pendingLogin = function () {
+    var self = this;
+
+    Privly.storage.set("Login:redirect_to_app", window.location.href);
     privlyNetworkService.initPrivlyService(
-      privlyNetworkService.contentServerDomain(), 
-      wrapPendingPost, 
-      wrapLoginFailure, 
-      wrapLoginFailure);
-  },
-  
+      privlyNetworkService.contentServerDomain(),
+      self.connectionSucceeded.bind(self),
+      self.connectionFailed.bind(self),
+      self.connectionFailed.bind(self)
+    );
+  };
+  addOverridableFunction('pendingLogin', CreationProcessAdapter.prototype._pendingLogin);
+
   /**
    * Prompt the user to sign into their server. This assumes the remote
    * server's sign in endpoint is at "/users/sign_in".
    *
-   * @param {function} callback A function to call after the UI updates
-   * to tell the user they are not logged in.
+   * @return {Promise}
    */
-  loginFailure: function(callback) {
-    
+  CreationProcessAdapter.prototype._loginFailure = function () {
     privlyNetworkService.showLoggedOutNav();
-    
     $("#messages").hide();
     $("#login_message").show();
-    if(callbacks.functionExists(callback)) {
-      callback();
-    }
-  },
-  
+  };
+  addOverridableFunction('loginFailure', CreationProcessAdapter.prototype._loginFailure);
+
   /**
    * Tell the user they can create their post by updating the UI.
    *
-   * @param {function} callback A function to call after the login check
-   * was successfull.
+   * @return {Promise}
    */
-  pendingPost: function(callback) {
-    
+  CreationProcessAdapter.prototype._pendingPost = function () {
     privlyNetworkService.showLoggedInNav();
-
-    // Listen for a message containing the initial content for the form
-    // TODO: no receivers?
-    Privly.message.messageExtension({'ask': 'initialContent'}, true)
-      .then(function (response) {
-        $("#content")[0].value = response.initialContent;
-      });
-
-    // Monitor the submit button
     $("#save").prop('disabled', false);
     $("#messages").toggle();
     $("#form").toggle();
+  };
+  addOverridableFunction('pendingPost', CreationProcessAdapter.prototype._pendingPost);
 
-    if(callbacks.functionExists(callback)) {
-      callback();
-    }
-  },
-  
   /**
    * Submit the posting form and await the return of the post.
    *
@@ -153,114 +293,93 @@ var callbacks = {
    * content should be destroyed by the server.
    * @param {string} content A markdown string. This will likely
    * be deprecated in the future.
-   * @param {function} callback A function to call after the content
-   * returns from the server. If this is not specificed then the
-   * default is the postCompleted callback.
+   * @return {Promise}
    */
-  postSubmit: function(structured_content, privly_application,
-    seconds_until_burn, content, callback) {
-    
-    function wrapCallback(response) {
-      var url = response.jqXHR.getResponseHeader("X-Privly-Url");
-      callbacks.postCompleted(response, url, callback);
-    }
-    
+  CreationProcessAdapter.prototype._postSubmit = function (structured_content, privly_application, seconds_until_burn, content) {
+    var self = this;
+
     $("#save").prop('disabled', true);
-    
-    var contentToPost = {post:
-      {"content": content,
-       "structured_content": structured_content,
-       "privly_application":privly_application,
-       "seconds_until_burn": seconds_until_burn,
-       "public":true},
-      "format":"json"};
-    
+
+    var contentToPost = {
+      post: {
+        "content": content,
+        "structured_content": structured_content,
+        "privly_application": privly_application,
+        "seconds_until_burn": seconds_until_burn,
+        "public": true
+      },
+      "format": "json"
+    };
+
     // Send the post
     privlyNetworkService.sameOriginPostRequest(
-      privlyNetworkService.contentServerDomain() + "/posts", 
-      wrapCallback,
-      contentToPost);
-  },
-  
+      privlyNetworkService.contentServerDomain() + "/posts",
+      function (response) {
+        var url = response.jqXHR.getResponseHeader("X-Privly-Url");
+        self.postprocessLink(url).then(function (url) {
+          self.postCompleted(response, url);
+        });
+      },
+      contentToPost
+    );
+  };
+  addOverridableFunction('postSubmit', CreationProcessAdapter.prototype._postSubmit);
+
   /**
    * Tell the user that there was a problem.
    *
-   * @param {jqhr} response The AJAX response from the server.
-   * @param {function} callback The function to call after createError
-   * completes.
+   * @param {jqXHR} response The AJAX response from the server.
+   * @return {Promise}
    */
-  createError: function(response, callback) {
+  CreationProcessAdapter.prototype._createError = function (response) {
     $("#save").prop('disabled', false);
-    $("#messages").text(
-      "There was an error creating your post. Status: " +
-      response.jqXHR.status);
+    $("#messages").text("There was an error creating your post. Status: " + response.jqXHR.status);
     $("#messages").show();
-    if(callbacks.functionExists(callback)) {
-      callback();
-    }
-  },
-  
+  };
+  addOverridableFunction('createError', CreationProcessAdapter.prototype._createError);
+
   /**
    * Send the URL to the extension or mobile device if it exists and display
    * it to the end user.
    *
-   * @param {jqhr} response The AJAX response from the server.
+   * @param {jqXHR} response The AJAX response from the server.
    * @param {string} url The injectable URL for the Privly Application.
-   * @param {function} callback The function to call when this function
-   * completes.
+   * @return {Promise}
    */
-  postCompleted: function(response, url, callback) {
-    
+  CreationProcessAdapter.prototype._postCompleted = function (response, url) {
     $("#save").prop('disabled', false);
-    
-    if(response.jqXHR.status === 201 && url !== undefined && url !== "") {
+
+    if (response.jqXHR.status === 201 && url !== undefined && url !== "") {
       Privly.message.messageExtension({privlyUrl: url});
 
       $("#copy_message").show();
 
       $('#local_address').attr("href", url);
-      if ( privlyNetworkService.platformName() !== "HOSTED" ) {
+      if (privlyNetworkService.platformName() !== "HOSTED") {
         var localCodeURL = "show.html?privlyOriginalURL=" + encodeURIComponent(url);
         $('#local_address').attr("href", localCodeURL);
       }
 
       $(".privlyUrl").text(url);
       $(".privlyUrl").css("cursor", "pointer");
-      $(".privlyUrl").click(function() {
+      $(".privlyUrl").click(function () {
         var range, selection;
 
         if (window.getSelection && document.createRange) {
-            selection = window.getSelection();
-            range = document.createRange();
-            range.selectNodeContents($(this)[0]);
-            selection.removeAllRanges();
-            selection.addRange(range);
+          selection = window.getSelection();
+          range = document.createRange();
+          range.selectNodeContents($(this)[0]);
+          selection.removeAllRanges();
+          selection.addRange(range);
         } else if (document.selection && document.body.createTextRange) {
-            range = document.body.createTextRange();
-            range.moveToElementText($(this)[0]);
-            range.select();
+          range = document.body.createTextRange();
+          range.moveToElementText($(this)[0]);
+          range.select();
         }
         $(".open-app-button").show();
       });
+    }
+  };
+  addOverridableFunction('postCompleted', CreationProcessAdapter.prototype._postCompleted);
 
-      if(callbacks.functionExists(callback)) {
-        callback();
-      }
-    } else {
-      callbacks.createError(response, callback);
-    }
-  },
-  
-  /**
-   * Determines whether a callback is defined.
-   *
-   * @param {function} callback Potentially a function.
-   * @return {boolean} True if the parameter is a function, else false
-   */
-  functionExists: function(callback) {
-    if (typeof callback == 'function') { 
-      return true;
-    }
-    return false;
-  }
-}
+}());
