@@ -439,7 +439,7 @@ if (Privly === undefined) {
         safari.self.contentWindow.postMessage(payload, '*');
       }
       else {
-        safari.self.tab.dispatchMessage(payload);
+        safari.self.tab.dispatchMessage("privlyMessage", payload);
       }
       return;
     }
@@ -452,7 +452,7 @@ if (Privly === undefined) {
         safari.application.activeBrowserWindow.tabs.forEach(function (tab) {
           // Don't message Privly Applications
           if (tab.url.indexOf('safari-extension') !== 0) {
-            tab.page.dispatchMessage(payload);
+            tab.page.dispatchMessage("privlyMessage", payload);
           }
         });
       }
@@ -461,7 +461,7 @@ if (Privly === undefined) {
     if (to === 'PRIVLY_APPLICATION') {
       // Send message to all content scripts
       safari.application.activeBrowserWindow.tabs.forEach(function (tab) {
-        tab.page.dispatchMessage(payload);
+        tab.page.dispatchMessage("privlyMessage", payload);
       });
       return;
     }
@@ -471,12 +471,24 @@ if (Privly === undefined) {
   SafariAdapter.prototype.setListener = function (callback) {
     if (this.getContextName() === 'BACKGROUND_SCRIPT') {
       safari.application.addEventListener("message", function(payload) {
-        callback(payload);
+        if (typeof payload.name !== "undefined" && payload.name === "privlyMessage") {
+          // The message is received from other than BACKGROUND_SCRIPT
+          callback(payload.message);
+        } else {
+          // The message is received from BACKGROUND_SCRIPT
+          callback(payload);
+        }
       }, true);
     }
     if (this.getContextName() === 'CONTENT_SCRIPT') {
       safari.self.addEventListener("message", function(payload) {
-        callback(payload);
+        if (typeof payload.name !== "undefined" && payload.name === "privlyMessage") {
+          // The message is received from other than PRIVLY_APPLICATION
+          callback(payload.message);
+        } else {
+          // The message is received from PRIVLY_APPLICATION
+          callback(payload);
+        }
       }, true);
     }
   };
