@@ -1,0 +1,11 @@
+{% extends "templates/seamless.html.template" %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="../vendor/sjcl.js"></script>
+  <script type="text/javascript" src="js/base64.js"></script>
+  <script type="text/javascript" src="js/rawdeflate.js"></script>
+  <script type="text/javascript" src="js/rawinflate.js"></script>
+  <script type="text/javascript" src="js/zerobin.js"></script>
+  <script type="text/javascript" src="js/messageApp.js"></script>
+  <script type="text/javascript" src="js/seamless.js"></script>
+{% endblock %}

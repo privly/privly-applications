@@ -1,0 +1,7 @@
+{% extends "templates/seamless.html.template" %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="../shared/javascripts/privly-web/seamless.js"></script>
+  <script type="text/javascript" src="js/plainpostApp.js"></script>
+  <script type="text/javascript" src="js/seamless.js"></script>
+{% endblock %}

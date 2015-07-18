@@ -1,0 +1,7 @@
+{% extends "templates/base.html.template" %}
+
+{% block head %}
+  <script>
+    window.close();
+  </script>
+{% endblock %}
