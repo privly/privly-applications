@@ -37,6 +37,19 @@ if (Privly === undefined) {
    */
   Privly.storage.set = function (key, value) {
     ls.setItem(key, JSON.stringify(value));
+
+    // In the SAFARI extension, the localStorage for PRIVLY_APPLICATION
+    // and the BACKGROUND_SCRIPT is different. If changes are made in the
+    // PRIVLY_APPLICATION, send the corresponding message to BACKGROUND_SCRIPT
+    if (Privly.message.currentAdapter.getPlatformName() === 'SAFARI' &&
+        Privly.message.currentAdapter.getContextName() === 'PRIVLY_APPLICATION') {
+          var message = {
+            action: 'storage/set',
+            key: key,
+            value: value
+          };
+          Privly.message.messageExtension(message);
+    }
   };
 
   /**
@@ -63,6 +76,17 @@ if (Privly === undefined) {
    */
   Privly.storage.remove = function (key) {
     ls.removeItem(key);
+
+    // In SAFARI extension, if changes are made in the PRIVLY_APPLICAION, send
+    // the corresponding message to BACKGROUND_SCRIPT
+    if (Privly.message.currentAdapter.getPlatformName() === 'SAFARI' &&
+        Privly.message.currentAdapter.getContextName() === 'PRIVLY_APPLICATION') {
+          var message = {
+            action: 'storage/remove',
+            key: key
+          };
+          Privly.message.messageExtension(message);
+    }
   };
 
 }());
