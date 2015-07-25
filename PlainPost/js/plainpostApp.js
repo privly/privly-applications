@@ -1,3 +1,18 @@
+/**
+ * @fileOverview This file provides the model layer of Plainpost
+ * App. Plainpost App is a simple Privly application that
+ * DOES NOT offer any security protection for your content.
+ * 
+ * It only supports inputing text (which is the default view
+ * behaviour as well).
+ * 
+ * This App only demostrates the overview process of a Privly
+ * application for developers.
+ *
+ * For a more complex sample, take a look at the Message App.
+ * For information about the MVC architecture of a Privly App,
+ * see Message/js/messageApp.js.
+ */ 
 // If Privly namespace is not initialized, initialize it
 var Privly;
 if (Privly === undefined) {
