@@ -26,14 +26,14 @@ if (Privly === undefined) {
    * @param  {Function} listener
    */
   Privly.EventEmitter.prototype.on = function (ev, listener) {
-    if (this.listeners === undefined) {
-      this.listeners = {};
+    if (this.__listeners === undefined) {
+      this.__listeners = {};
     }
-    if (!this.listeners.hasOwnProperty(ev)) {
-      this.listeners[ev] = [];
+    if (!this.__listeners.hasOwnProperty(ev)) {
+      this.__listeners[ev] = [];
     }
-    if (this.listeners[ev].indexOf(listener) === -1) {
-      this.listeners[ev].push(listener);
+    if (this.__listeners[ev].indexOf(listener) === -1) {
+      this.__listeners[ev].push(listener);
     }
   };
 
@@ -44,18 +44,21 @@ if (Privly === undefined) {
    * @param  {Function} listener
    */
   Privly.EventEmitter.prototype.off = function (ev, listener) {
+    if (this.__listeners === undefined) {
+      this.__listeners = {};
+    }
     // delete all event listeners
     if (listener === undefined) {
-      delete this.listeners[ev];
+      delete this.__listeners[ev];
       return;
     }
-    if (this.listeners === undefined) {
-      this.listeners = {};
-    }
-    if (!this.listeners.hasOwnProperty(ev)) {
+    if (!this.__listeners.hasOwnProperty(ev)) {
       return;
     }
-    this.listeners.splice(this.listeners[ev].indexOf(listener), 1);
+    var idx = this.__listeners[ev].indexOf(listener);
+    if (idx > -1) {
+      this.__listeners[ev].splice(idx, 1);
+    }
   };
 
   /**
@@ -69,14 +72,14 @@ if (Privly === undefined) {
    */
   Privly.EventEmitter.prototype.emit = function (ev) {
     var i, ret;
-    if (this.listeners === undefined) {
-      this.listeners = {};
+    if (this.__listeners === undefined) {
+      this.__listeners = {};
     }
-    if (!this.listeners.hasOwnProperty(ev)) {
+    if (!this.__listeners.hasOwnProperty(ev)) {
       return;
     }
-    for (i = 0; i < this.listeners[ev].length; ++i) {
-      ret = this.listeners[ev][i].apply(this, Array.prototype.slice.call(arguments, 1));
+    for (i = 0; i < this.__listeners[ev].length; ++i) {
+      ret = this.__listeners[ev][i].apply(this, Array.prototype.slice.call(arguments, 1));
       if (ret !== undefined) {
         return ret;
       }
@@ -85,7 +88,7 @@ if (Privly === undefined) {
 
   /**
    * Trigger an event and returns a resolved Promise
-   * if non of the event listeners returns a Promise.
+   * if none of the event listeners returns a Promise.
    *
    * Requires Promise loaded.
    * 

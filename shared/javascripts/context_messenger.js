@@ -173,7 +173,8 @@ if (Privly === undefined) {
    * @return {String}
    */
   BaseAdapter.prototype.getPlatformName = function () {
-    throw new Error('Not implemented');
+    console.warn('getPlatformName is called but is not implemented');
+    return 'BaseAdapter';
   };
 
   /**
@@ -185,7 +186,8 @@ if (Privly === undefined) {
    * 'PRIVLY_APPLICATION': The privly application
    */
   BaseAdapter.prototype.getContextName = function () {
-    throw new Error('Not implemented');
+    console.warn('getContextName is called but is not implemented (current adapter: %s)', this.getPlatformName());
+    return 'PRIVLY_APPLICATION';
   };
 
   /**
@@ -196,7 +198,7 @@ if (Privly === undefined) {
    * @param  {Object} payload
    */
   BaseAdapter.prototype.sendMessageTo = function (to, payload) {
-    console.warn('not implemented');
+    console.warn('sendMessageTo is called but is not implemented (current adapter: %s)', this.getPlatformName());
   };
 
   /**
@@ -205,7 +207,7 @@ if (Privly === undefined) {
    * @param {Function<payload>} callback
    */
   BaseAdapter.prototype.setListener = function (callback) {
-    console.warn('not implemented');
+    console.warn('setListener is called but is not implemented (current adapter: %s)', this.getPlatformName());
   };
 
   Privly.message.adapter.Base = BaseAdapter;
@@ -647,6 +649,12 @@ if (Privly === undefined) {
       return;
     }
   };
+
+  /** @inheritdoc */
+  HostedAdapter.prototype.setListener = function () {
+    return;
+  };
+
   Privly.message.adapter.Hosted = HostedAdapter;
 
 
