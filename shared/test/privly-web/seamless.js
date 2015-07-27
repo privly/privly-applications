@@ -17,11 +17,18 @@ describe('Privly.adapter.SeamlessPosting', function () {
     spyOn(Privly.message, 'messageExtension').and.callThrough();
   });
 
-  it('msgTextareaFocus calls Privly.message.messageExtension', function () {
+  it('msgTextareaFocused calls Privly.message.messageExtension', function () {
     var adapter = new Privly.adapter.SeamlessPosting({});
-    adapter.msgTextareaFocus();
+    adapter.msgTextareaFocused();
     expect(Privly.message.messageExtension).toHaveBeenCalled();
     expect(msgSent[0].action).toBe('posting/contentScript/textareaFocused');
+  });
+
+  it('msgTextareaBlurred calls Privly.message.messageExtension', function () {
+    var adapter = new Privly.adapter.SeamlessPosting({});
+    adapter.msgTextareaBlurred();
+    expect(Privly.message.messageExtension).toHaveBeenCalled();
+    expect(msgSent[0].action).toBe('posting/contentScript/textareaBlurred');
   });
 
   it('msgStartLoading calls Privly.message.messageExtension', function () {

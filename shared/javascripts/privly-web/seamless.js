@@ -210,9 +210,20 @@ if (Privly.adapter === undefined) {
    *
    * @return {Promise}
    */
-  SeamlessPostingAdapter.prototype.msgTextareaFocus = function () {
+  SeamlessPostingAdapter.prototype.msgTextareaFocused = function () {
     return this.messageExtension({
       action: 'posting/contentScript/textareaFocused',
+    });
+  };
+
+  /**
+   * Send message that the textarea blurred
+   *
+   * @return {Promise}
+   */
+  SeamlessPostingAdapter.prototype.msgTextareaBlurred = function () {
+    return this.messageExtension({
+      action: 'posting/contentScript/textareaBlurred',
     });
   };
 
@@ -793,7 +804,11 @@ if (Privly.adapter === undefined) {
     self.started = true;
 
     $('textarea').focus(function () {
-      self.msgTextareaFocus();
+      self.msgTextareaFocused();
+    });
+
+    $('textarea').blur(function () {
+      self.msgTextareaBlurred();
     });
 
     // add event listeners to forward ENTER key events
