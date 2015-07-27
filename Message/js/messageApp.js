@@ -68,8 +68,8 @@
  *   The model layer handles such basic tasks below:
  *   
  *   - How should the user inputted content in the view layer be
- *     transformed into a Privly structured_content? This task is
- *     used in publishing or editing the content.
+ *     transformed into a Privly json object? This task is used
+ *     in publishing or editing the content.
  *
  *     Example:
  *     For Plainpost App, no transformations.
@@ -77,10 +77,10 @@
  *     For Image App (not existed yet), the transformation is
  *     binary serialization and encryption.
  *     
- *   - How should we transform a Privly structured_content to the
- *     content that the view layer can present? This task is just
- *     a reserve situation of the task above. It is used when user
- *     is going to see the content (`show` case).
+ *   - How should we transform a Privly json object to the content
+ *     that the view layer can present? This task is just a reserve
+ *     situation of the task above. It is used when user is going
+ *     to see the content (`show` case).
  *
  *     For example, for Message App, the transformation is decryption
  *     according to the encryption key attached in the link.
@@ -164,7 +164,7 @@ if (Privly.app === undefined) {
   MessageApp.prototype.name = 'Message';
 
   /**
-   * Get structured content of the application.
+   * Get json content object of the application.
    *
    * @override
    * @param  {String} raw User input content
@@ -182,14 +182,14 @@ if (Privly.app === undefined) {
   };
 
   /**
-   * Get the raw User input content from a structured content
+   * Get the raw User input content from a response json object
    *
    * @override
    * @param  {String} url The privly link
-   * @param  {Object} structured_content
+   * @param  {Object} json
    * @return {Promise<String>}
    */
-  MessageApp.prototype.loadRawContent = function (url, structured_content) {
+  MessageApp.prototype.loadRawContent = function (url, json) {
     var key = privlyParameters.getParameterHash(url).privlyLinkKey;
     if (key === undefined || key === '') {
       key = this.resolveKeyFromHistory(url);
@@ -198,7 +198,7 @@ if (Privly.app === undefined) {
       return Promise.reject('You do not have the key required to decrypt this content.');
     }
     this.randomkey = pageKey(key);
-    var cleartext = zeroDecipher(this.randomkey, structured_content);
+    var cleartext = zeroDecipher(this.randomkey, json.structured_content);
     return Promise.resolve(cleartext);
   };
 

@@ -225,12 +225,12 @@ if (Privly.adapter === undefined) {
     var self = this;
     return self
       .getRequestContent($("#content")[0].value)
-      .then(function (data) {
+      .then(function (json) {
         self.postSubmit(
-          data.structured_content,
+          json.structured_content,
           self.application.name,
           $("#seconds_until_burn").val(),
-          data.content
+          json.content
         );
       });
   };

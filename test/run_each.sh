@@ -66,7 +66,7 @@ runTest "$commonScripts,shared/javascripts/privly-web/seamless.js,shared/test/pr
 runTest "$commonScripts,shared/javascripts/privly-web/seamless_ttlselect.js,shared/test/privly-web/seamless_ttlselect.js"
 # test app models
 runTest "$commonScripts,PlainPost/js/plainpostApp.js,PlainPost/test/plainpostApp.js"
-runTest "$commonScripts,Message/js/base64.js,Message/js/rawdeflate.js,Message/js/rawinflate.js,Message/js/zerobin.js,Message/test/zerobin.js,Message/test/messageApp.js"
+runTest "$commonScripts,Message/js/base64.js,Message/js/rawdeflate.js,Message/js/rawinflate.js,Message/js/zerobin.js,Message/test/zerobin.js,Message/js/messageApp.js,Message/test/messageApp.js"
 
 if [ ! $ISFAIL -eq 0 ]
 then

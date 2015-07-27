@@ -89,12 +89,12 @@ function processResponseContent(response) {
 function encryptBeforeUpdate(evt, callback) {
   message
     .getRequestContent($("#edit_text")[0].value)
-    .then(function (content) {
+    .then(function (json) {
       privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
         function(response){
           callbacks.contentReturned(response, processResponseContent);
         },
-        {post: {structured_content: content.structured_content,
+        {post: {structured_content: json.structured_content,
         seconds_until_burn: $( "#seconds_until_burn" ).val()}});
     });
 

@@ -444,7 +444,7 @@ if (Privly.adapter === undefined) {
         }
 
         // got plain text!
-        return self.application.loadRawContent(url, json.structured_content);
+        return self.application.loadRawContent(url, json);
       })
       .then(function (plaintext) {
         self.privlyUrl = url;
@@ -463,12 +463,12 @@ if (Privly.adapter === undefined) {
     var self = this;
     return self
       .getRequestContent($('textarea').val())
-      .then(function (reqContent) {
+      .then(function (json) {
         var contentToPost = {
           "post": {
-            "content": reqContent.content,
-            "structured_content": reqContent.structured_content,
-            "public": reqContent.isPublic,
+            "content": json.content,
+            "structured_content": json.structured_content,
+            "public": json.isPublic,
             "privly_application": self.application.name,
             "seconds_until_burn": self.options.initialTTL
           },
@@ -522,11 +522,11 @@ if (Privly.adapter === undefined) {
 
     return self
       .getRequestContent($('textarea').val())
-      .then(function (reqContent) {
+      .then(function (json) {
         var contentToPost = {
           "post": {
-            "content": reqContent.content,
-            "structured_content": reqContent.structured_content,
+            "content": json.content,
+            "structured_content": json.structured_content,
             "seconds_until_burn": self.ttl
           },
           "format": "json"

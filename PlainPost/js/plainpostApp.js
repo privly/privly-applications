@@ -61,6 +61,18 @@ if (Privly.app === undefined) {
   };
 
   /**
+   * Get the raw User input content from a response json object
+   *
+   * @override
+   * @param  {String} url The privly link
+   * @param  {Object} json
+   * @return {Promise<String>}
+   */
+  PlainpostApp.prototype.loadRawContent = function (url, json) {
+    return Promise.resolve(json.content);
+  };
+
+  /**
    * Get the TTL options for this App
    *
    * @override
