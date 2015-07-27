@@ -59,7 +59,7 @@ function processResponseContent(response) {
 
   message = new Privly.app.Message();
   message
-    .loadRawContent(url, json.structured_content)
+    .loadRawContent(url, json)
     .then(function (cleartext) {
       $("#edit_text").val(cleartext);
       var markdownHTML = markdown.toHTML(cleartext);
