@@ -8,7 +8,8 @@ describe('Privly.adapter.CreationProcess', function () {
 
   beforeEach(function () {
     var domIDs = [
-      "logout_link"
+      "logout_link",
+      "content"
     ];
     domIDs.forEach(function (id) {
       var newElement = $('<a/>', {
@@ -201,6 +202,15 @@ describe('Privly.adapter.CreationProcess', function () {
       }, 100);
     }
     test1();
+  });
+
+  it('save calls postSubmit', function (done) {
+    var adapter = new Privly.adapter.CreationProcess({});
+    spyOn(adapter, 'postSubmit').and.callThrough();
+    adapter.save().then(function () {
+      expect(adapter.postSubmit).toHaveBeenCalled();
+      done();
+    });
   });
 
 });

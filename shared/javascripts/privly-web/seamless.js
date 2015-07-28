@@ -44,40 +44,6 @@ if (Privly.adapter === undefined) {
   }
 
   /**
-   * Returns a function, that, as long as it continues to be invoked, will not
-   * be triggered. The function will be called after it stops being called for
-   * N milliseconds. If `immediate` is passed, trigger the function on the
-   * leading edge, instead of the trailing.
-   *
-   * This function is used to throttle updating request when pressing ENTER.
-   *
-   * Ported from underscore.js
-   * 
-   * @param  {Function} func The function to throttle calling
-   * @param  {Number} wait
-   * @param  {Boolean} immediate Whether to trigger the function on the leading edge
-   * @return {Function} The throttled function
-   */
-  function debounce(func, wait, immediate) {
-    var timeout;
-    return function () {
-      var context = this, args = arguments;
-      var later = function () {
-        timeout = null;
-        if (!immediate) {
-          func.apply(context, args);
-        }
-      };
-      var callNow = immediate && !timeout;
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-      if (callNow) {
-        func.apply(context, args);
-      }
-    };
-  }
-
-  /**
    * The seamless-posting generic adapter.
    * 
    * @param {Object} application The Privly application instance
@@ -190,6 +156,41 @@ if (Privly.adapter === undefined) {
 
   // Inhreit EventEmitter
   Privly.EventEmitter.inherit(SeamlessPostingAdapter);
+
+
+  /**
+   * Returns a function, that, as long as it continues to be invoked, will not
+   * be triggered. The function will be called after it stops being called for
+   * N milliseconds. If `immediate` is passed, trigger the function on the
+   * leading edge, instead of the trailing.
+   *
+   * This function is used to throttle updating request when pressing ENTER.
+   *
+   * Ported from underscore.js
+   * 
+   * @param  {Function} func The function to throttle calling
+   * @param  {Number} wait
+   * @param  {Boolean} immediate Whether to trigger the function on the leading edge
+   * @return {Function} The throttled function
+   */
+  SeamlessPostingAdapter.debounce = function (func, wait, immediate) {
+    var timeout;
+    return function () {
+      var context = this, args = arguments;
+      var later = function () {
+        timeout = null;
+        if (!immediate) {
+          func.apply(context, args);
+        }
+      };
+      var callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) {
+        func.apply(context, args);
+      }
+    };
+  };
 
   /**
    * Promise wrapper for sending message to the background script
@@ -453,7 +454,6 @@ if (Privly.adapter === undefined) {
         if (!permission.canUpdate || !permission.canDestroy) {
           return Promise.reject();
         }
-
         // got plain text!
         return self.application.loadRawContent(url, json);
       })
@@ -813,7 +813,7 @@ if (Privly.adapter === undefined) {
 
     // add event listeners to forward ENTER key events
     $('textarea').keydown((function () {
-      var debouncedListener = debounce(self.onHitKey.bind(self), 300);
+      var debouncedListener = SeamlessPostingAdapter.debounce(self.onHitKey.bind(self), 300);
       return function (ev) {
         debouncedListener(ev);
       };

@@ -3,10 +3,17 @@
  * This spec is managed by the Jasmine testing library.
  **/
 /*global describe, it, expect, beforeEach, afterEach, jasmine, spyOn */
-/*global Privly, Promise */
+/*global Privly, Promise, privlyNetworkService */
 describe('Privly.adapter.SeamlessPosting', function () {
 
   var msgSent;
+  var requestJson;
+
+  var testPrivlyUrl = 'http://localhost:3000/apps/PlainPost/show?privlyApp=PlainPost&privlyInject1=true&random_token=67782720ce&privlyDataURL=http%3A%2F%2Flocalhost%3A3000%2Fposts%2F468.json%3Frandom_token%3D67782720ce';
+  var testDataUrl = 'http://localhost:3000/posts/468.json?random_token=67782720ce';
+  var testDestroyedUrl = 'http://localhost:3000/posts/469.json?random_token=67782720ce';
+  var testJson = {};  // will be reset before each test
+  var testApp = null; // will be reset before each test
 
   beforeEach(function () {
     msgSent = [];
@@ -15,6 +22,139 @@ describe('Privly.adapter.SeamlessPosting', function () {
       return Promise.resolve();
     };
     spyOn(Privly.message, 'messageExtension').and.callThrough();
+    document.body.innerHTML = '<textarea>hello</textarea>';
+
+    // reset mock data
+    testApp = new Privly.app.Plainpost();
+    testJson = {
+      "burn_after_date": "2015-08-25T01:55:46Z",
+      "content": "123",
+      "created_at": "2015-07-28T01:55:46Z",
+      "id": 468,
+      "privly_application": "PlainPost",
+      "public": true,
+      "random_token": "67782720ce",
+      "structured_content": "",
+      "updated_at": "2015-07-28T01:55:46Z",
+      "user_id": 1,
+      "rendered_markdown": "<p>123</p>\n",
+      "X-Privly-Url": "http://localhost:3000/apps/PlainPost/show?privlyApp=PlainPost&privlyInject1…tp%3A%2F%2Flocalhost%3A3000%2Fposts%2F468.json%3Frandom_token%3D67782720ce",
+      "permissions": {
+        "canshow": true,
+        "canupdate": true,
+        "candestroy": true,
+        "canshare": true
+      }
+    };
+
+    // mock network services
+    privlyNetworkService.contentServerDomain = function () {
+      return 'http://localhost:3000';
+    };
+    privlyNetworkService.sameOriginGetRequest = function (url, callback) {
+      if (url === testDataUrl) {
+        callback({
+          json: testJson,
+          jqXHR: {
+            status: 200
+          }
+        });
+      } else if (url === testDestroyedUrl) {
+        callback({
+          json: {
+            "error": "You do not have access or it doesn't exist."
+          },
+          jqXHR: {
+            status: 403
+          }
+        });
+      } else {
+        callback({
+          json: null,
+          jqXHR: {
+            status: 404
+          }
+        });
+      }
+    };
+    privlyNetworkService.sameOriginPostRequest = function (url, callback, data) {
+      if (url === 'http://localhost:3000/posts') {
+        requestJson = JSON.parse(JSON.stringify(testJson));
+        // seconds_until_burn are omitted here
+        requestJson.content = data.post.content;
+        requestJson.structured_content = data.post.structured_content;
+        requestJson.privly_application = data.post.privly_application;
+        requestJson.public = data.post.public;
+        callback({
+          json: requestJson,
+          jqXHR: {
+            status: 201, // created
+            getResponseHeader: function (header) {
+              if (header.toLowerCase() === 'x-privly-url') {
+                return testPrivlyUrl;
+              }
+            }
+          }
+        });
+      } else {
+        callback({
+          json: {},
+          jqXHR: {
+            status: 404
+          }
+        });
+      }
+    };
+    privlyNetworkService.sameOriginPutRequest = function (url, callback, data) {
+      if (url.indexOf('http://localhost:3000/posts') === 0) {
+        requestJson = JSON.parse(JSON.stringify(testJson));
+        requestJson.content = data.post.content;
+        callback({
+          json: requestJson,
+          jqXHR: {
+            status: 200
+          }
+        });
+      } else {
+        callback({
+          json: {},
+          jqXHR: {
+            status: 404
+          }
+        });
+      }
+    };
+    privlyNetworkService.sameOriginDeleteRequest = function (url, callback, data) {
+      callback({
+        json: {},
+        jqXHR: {
+          status: 200
+        }
+      });
+    };
+    spyOn(privlyNetworkService, 'sameOriginGetRequest').and.callThrough();
+    spyOn(privlyNetworkService, 'sameOriginPostRequest').and.callThrough();
+    spyOn(privlyNetworkService, 'sameOriginPutRequest').and.callThrough();
+    spyOn(privlyNetworkService, 'sameOriginDeleteRequest').and.callThrough();
+  });
+
+  afterEach(function () {
+    document.body.innerHTML = '';
+  });
+
+  it('debounce works', function (done) {
+    var counter = 0;
+    var foo = function () { counter++; };
+    var debouncedFoo = Privly.adapter.SeamlessPosting.debounce(foo, 50);
+    debouncedFoo();
+    debouncedFoo();
+    setTimeout(function () {
+      debouncedFoo();
+    }, 20);
+    setTimeout(function () {
+      expect(counter).toBe(1);
+      done();
+    }, 100);
   });
 
   it('msgTextareaFocused calls Privly.message.messageExtension', function () {
@@ -284,6 +424,352 @@ describe('Privly.adapter.SeamlessPosting', function () {
       action: 'posting/app/setTTL',
       ttl: '180'
     });
+  });
+
+  it('loadLink returns plaintext when user has edit permissions', function (done) {
+    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    adapter.loadLink(testPrivlyUrl).then(function (plaintext) {
+      // expect plaintext
+      expect(plaintext).toBe('123');
+      expect(adapter.privlyUrl).toBe(testPrivlyUrl);
+      expect(adapter.requestUrl).toBe(testDataUrl);
+      done();
+    }, function () {
+      // should not go here
+      expect(true).toBe(false);
+      done();
+    });
+  });
+
+  it('loadLink rejects when user does not have edit permissions', function (done) {
+    testJson.permissions = {
+      canshow: true,
+      canupdate: false,
+      candestroy: false,
+      canshare: true
+    };
+    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    adapter.loadLink(testPrivlyUrl).then(function () {
+      // should not go here
+      expect(true).toBe(false);
+      done();
+    }, function () {
+      // expect a rejection
+      done();
+    });
+  });
+
+  it('loadLink rejects when the content was destroyed', function (done) {
+    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    adapter.loadLink(testDestroyedUrl).then(function () {
+      // should not go here
+      expect(true).toBe(false);
+      done();
+    }, function () {
+      // expect a rejection
+      done();
+    });
+  });
+
+  it('createLink send requests to create a new link', function (done) {
+    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    adapter.createLink().then(function (link) {
+      expect(privlyNetworkService.sameOriginPostRequest).toHaveBeenCalled();
+      expect(requestJson.content).toBe('hello');
+      expect(requestJson.structured_content).toBe('');
+      expect(requestJson.public).toBe(true);
+      expect(requestJson.privly_application).toBe('PlainPost');
+      expect(link).toBe(testPrivlyUrl);
+      expect(adapter.privlyUrl).toBe(testPrivlyUrl);
+      expect(adapter.requestUrl).toBe(testDataUrl);
+      done();
+    }, function () {
+      // should not go here
+      expect(true).toBe(false);
+      done();
+    });
+  });
+
+  it('updateLink does not send requests when link is not loaded or created', function (done) {
+    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    document.getElementsByTagName('TEXTAREA')[0].value = 'hello2';
+    adapter.updateLink().then(function () {
+      expect(privlyNetworkService.sameOriginPutRequest).not.toHaveBeenCalled();
+      done();
+    }, function () {
+      // should not go here
+      expect(true).toBe(false);
+      done();
+    });
+  });
+
+  it('updateLink send requests to update the loaded or created link', function (done) {
+    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    adapter.loadLink(testPrivlyUrl).then(function () {
+      document.getElementsByTagName('TEXTAREA')[0].value = 'hello2';
+      adapter.updateLink().then(function () {
+        expect(privlyNetworkService.sameOriginPutRequest).toHaveBeenCalled();
+        expect(requestJson.content).toBe('hello2');
+        done();
+      }, function () {
+        // should not go here
+        expect(true).toBe(false);
+        done();
+      });
+    });
+  });
+
+  it('deleteLink does not send requests when link is not loaded or created', function (done) {
+    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    adapter.deleteLink().then(function () {
+      expect(privlyNetworkService.sameOriginDeleteRequest).not.toHaveBeenCalled();
+      done();
+    }, function () {
+      // should not go here
+      expect(true).toBe(false);
+      done();
+    });
+  });
+
+  it('deleteLink send requests to delete the loaded or created link', function (done) {
+    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    adapter.loadLink(testPrivlyUrl).then(function () {
+      adapter.deleteLink().then(function () {
+        expect(privlyNetworkService.sameOriginDeleteRequest).toHaveBeenCalled();
+        done();
+      }, function () {
+        // should not go here
+        expect(true).toBe(false);
+        done();
+      });
+    });
+  });
+
+  it('onConnectionCheckSucceeded will create a link if the content does not contain a Privly link', function (done) {
+    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    adapter.beginContentClearObserver = function () {
+      return Promise.resolve();
+    };
+    adapter.msgGetTargetText = function () {
+      return Promise.resolve('hello');
+    };
+    adapter.msgInsertLink = function () {
+      return Promise.resolve(true);
+    };
+    spyOn(adapter, 'loadLink').and.callThrough();
+    spyOn(adapter, 'createLink').and.callThrough();
+    spyOn(adapter, 'msgAppStarted').and.callThrough();
+    spyOn(adapter, 'msgAppClosed').and.callThrough();
+    adapter.onConnectionCheckSucceeded().then(function () {
+      expect(adapter.loadLink).not.toHaveBeenCalled();
+      expect(adapter.createLink).toHaveBeenCalled();
+      expect(adapter.msgAppStarted).toHaveBeenCalled();
+      expect(adapter.msgAppClosed).not.toHaveBeenCalled();
+      done();
+    }, function () {
+      // should not go here
+      expect(true).toBe(false);
+      done();
+    });
+  });
+
+  it('onConnectionCheckSucceeded will load the link if the content contains a editable Privly link', function (done) {
+    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    adapter.beginContentClearObserver = function () {
+      return Promise.resolve();
+    };
+    adapter.msgGetTargetText = function () {
+      return Promise.resolve(testPrivlyUrl);
+    };
+    adapter.msgInsertLink = function () {
+      return Promise.resolve(true);
+    };
+    spyOn(adapter, 'loadLink').and.callThrough();
+    spyOn(adapter, 'createLink').and.callThrough();
+    spyOn(adapter, 'msgAppStarted').and.callThrough();
+    spyOn(adapter, 'msgAppClosed').and.callThrough();
+    adapter.onConnectionCheckSucceeded().then(function () {
+      expect(document.getElementsByTagName('TEXTAREA')[0].value).toBe('123');
+      expect(adapter.loadLink).toHaveBeenCalled();
+      expect(adapter.createLink).not.toHaveBeenCalled();
+      expect(adapter.msgAppStarted).toHaveBeenCalled();
+      expect(adapter.msgAppClosed).not.toHaveBeenCalled();
+      done();
+    }, function () {
+      // should not go here
+      expect(true).toBe(false);
+      done();
+    });
+  });
+
+  it('onConnectionCheckSucceeded will create a link if the content contains a non-editable Privly link', function (done) {
+    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    testJson.permissions = {
+      canshow: true,
+      canupdate: false,
+      candestroy: false,
+      canshare: true
+    };
+    adapter.beginContentClearObserver = function () {
+      return Promise.resolve();
+    };
+    adapter.msgGetTargetText = function () {
+      return Promise.resolve(testPrivlyUrl);
+    };
+    adapter.msgInsertLink = function () {
+      return Promise.resolve(true);
+    };
+    spyOn(adapter, 'loadLink').and.callThrough();
+    spyOn(adapter, 'createLink').and.callThrough();
+    spyOn(adapter, 'msgAppStarted').and.callThrough();
+    spyOn(adapter, 'msgAppClosed').and.callThrough();
+    adapter.onConnectionCheckSucceeded().then(function () {
+      expect(adapter.loadLink).toHaveBeenCalled();
+      expect(adapter.createLink).toHaveBeenCalled();
+      expect(adapter.msgAppStarted).toHaveBeenCalled();
+      expect(adapter.msgAppClosed).not.toHaveBeenCalled();
+      done();
+    }, function () {
+      // should not go here
+      expect(true).toBe(false);
+      done();
+    });
+  });
+
+  it('onConnectionCheckSucceeded will create a link if the content contains an invalid Privly link', function (done) {
+    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    adapter.beginContentClearObserver = function () {
+      return Promise.resolve();
+    };
+    adapter.msgGetTargetText = function () {
+      return Promise.resolve(testDestroyedUrl);
+    };
+    adapter.msgInsertLink = function () {
+      return Promise.resolve(true);
+    };
+    spyOn(adapter, 'loadLink').and.callThrough();
+    spyOn(adapter, 'createLink').and.callThrough();
+    spyOn(adapter, 'msgAppStarted').and.callThrough();
+    spyOn(adapter, 'msgAppClosed').and.callThrough();
+    adapter.onConnectionCheckSucceeded().then(function () {
+      expect(adapter.loadLink).toHaveBeenCalled();
+      expect(adapter.createLink).toHaveBeenCalled();
+      expect(adapter.msgAppStarted).toHaveBeenCalled();
+      expect(adapter.msgAppClosed).not.toHaveBeenCalled();
+      done();
+    }, function () {
+      // should not go here
+      expect(true).toBe(false);
+      done();
+    });
+  });
+
+  it('onConnectionCheckSucceeded will fail if insertion link fails', function (done) {
+    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    adapter.beginContentClearObserver = function () {
+      return Promise.resolve();
+    };
+    adapter.msgGetTargetText = function () {
+      return Promise.resolve('hello');
+    };
+    adapter.msgInsertLink = function () {
+      return Promise.resolve(false);
+    };
+    spyOn(adapter, 'loadLink').and.callThrough();
+    spyOn(adapter, 'createLink').and.callThrough();
+    spyOn(adapter, 'msgAppStarted').and.callThrough();
+    spyOn(adapter, 'msgAppClosed').and.callThrough();
+    adapter.onConnectionCheckSucceeded().then(function () {
+      expect(adapter.loadLink).not.toHaveBeenCalled();
+      expect(adapter.createLink).toHaveBeenCalled();
+      expect(adapter.msgAppStarted).not.toHaveBeenCalled();
+      expect(adapter.msgAppClosed).toHaveBeenCalled();
+      done();
+    }, function () {
+      // should not go here
+      expect(true).toBe(false);
+      done();
+    });
+  });
+
+  it('onConnectionCheckFailed will destroy the app', function (done) {
+    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    spyOn(adapter, 'msgAppClosed').and.callThrough();
+    adapter.onConnectionCheckFailed().then(function () {
+      expect(adapter.msgAppClosed).toHaveBeenCalled();
+      done();
+    });
+  });
+
+  it('beginContentClearObserver close the app if target content does not contain our created link', function (done) {
+    var adapter = new Privly.adapter.SeamlessPosting(testApp, {observeInterval: 50});
+    adapter.msgGetTargetContent = function () {
+      return Promise.resolve('cleared');
+    };
+    spyOn(adapter, 'msgAppClosed').and.callThrough();
+    adapter.loadLink(testPrivlyUrl).then(function () {
+      adapter.beginContentClearObserver();
+      setTimeout(function () {
+        expect(adapter.msgAppClosed).toHaveBeenCalled();
+        expect(adapter.clearObserver).toBe(null);
+        done();
+      }, 100);
+    });
+  });
+
+  it('beginContentClearObserver does not close the app if target content contains our created link', function (done) {
+    var adapter = new Privly.adapter.SeamlessPosting(testApp, {observeInterval: 50});
+    adapter.msgGetTargetContent = function () {
+      return Promise.resolve(testPrivlyUrl);
+    };
+    spyOn(adapter, 'msgAppClosed').and.callThrough();
+    adapter.loadLink(testPrivlyUrl).then(function () {
+      adapter.beginContentClearObserver();
+      setTimeout(function () {
+        expect(adapter.msgAppClosed).not.toHaveBeenCalled();
+        expect(adapter.clearObserver).not.toBe(null);
+        clearInterval(adapter.clearObserver);
+        done();
+      }, 100);
+    });
+  });
+
+  it('onSetTTL calls updateLink', function () {
+    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    spyOn(adapter, 'updateLink').and.callThrough();
+    adapter.onSetTTL('');
+    expect(adapter.updateLink).toHaveBeenCalled();
+  });
+
+  it('updateStyle updates textarea styles', function () {
+    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    adapter.updateStyle({
+      'borderColor': 'red',
+      'fontSize': '14px'
+    });
+    var textarea = document.getElementsByTagName('TEXTAREA')[0];
+    expect(textarea.style.borderColor).toBe('red');
+    expect(textarea.style.fontSize).toBe('14px');
+  });
+
+  it('onUserClose calls deleteLink and destroys the app', function () {
+    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    adapter.msgSetTargetText = function () {
+      return Promise.resolve();
+    };
+    spyOn(adapter, 'deleteLink').and.callThrough();
+    spyOn(adapter, 'msgAppClosed').and.callThrough();
+    adapter.onUserClose().then(function () {
+      expect(adapter.deleteLink).toHaveBeenCalled();
+      expect(adapter.msgAppClosed).toHaveBeenCalledWith('hello');
+    });
+  });
+
+  it('start sets button state to loading', function () {
+    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    spyOn(adapter, 'msgStartLoading').and.callThrough();
+    adapter.start();
+    expect(adapter.msgStartLoading).toHaveBeenCalled();
   });
 
 });

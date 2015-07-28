@@ -139,4 +139,45 @@ describe('Privly.adapter.SeamlessPostingTTLSelect', function () {
     });
   });
 
+  it('call initMenu when receives posting/app/initializeTTLSelect', function () {
+    var adapter = new Privly.adapter.SeamlessPostingTTLSelect({});
+    spyOn(adapter, 'initMenu').and.callThrough();
+    adapter.onMessageReceived({
+      action: 'posting/app/initializeTTLSelect'
+    }, function () {});
+    expect(adapter.initMenu).toHaveBeenCalled();
+  });
+
+  it('call msgTTLChange when user clicks an item', function () {
+    var adapter = new Privly.adapter.SeamlessPostingTTLSelect({});
+    spyOn(adapter, 'msgTTLChange').and.callThrough();
+    adapter.onItemSelected({
+      target: {
+        getAttribute: function () {
+          return '100';
+        }
+      }
+    });
+    expect(adapter.msgTTLChange).toHaveBeenCalledWith('100');
+  });
+
+  it('start will call msgAppReady', function (done) {
+    var application = {
+      getTTLOptions: function () {
+        return Promise.resolve([
+          {ttl: '1', text: 'text for 1'},
+          {ttl: '10', text: 'text for 10'},
+          {ttl: '100', text: 'default value', default: true}
+        ]);
+      }
+    };
+    var adapter = new Privly.adapter.SeamlessPostingTTLSelect(application);
+    spyOn(adapter, 'msgAppReady').and.callThrough();
+    adapter.start();
+    setTimeout(function () {
+      expect(adapter.msgAppReady).toHaveBeenCalled();
+      done();
+    }, 50);
+  });
+
 });
