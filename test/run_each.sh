@@ -62,7 +62,7 @@ runTest "$commonScripts,Pages/js/options.js,Pages/js/tests/*.js"
 # test app view adapters
 runTest "$commonScripts,shared/javascripts/privly-web/new.js,shared/test/privly-web/new.js"
 runTest "$commonScripts,shared/javascripts/privly-web/show.js,shared/test/privly-web/show.js"
-runTest "$commonScripts,shared/javascripts/privly-web/seamless.js,shared/test/privly-web/seamless.js"
+runTest "$commonScripts,shared/javascripts/privly-web/seamless.js,PlainPost/js/plainpostApp.js,shared/test/privly-web/seamless.js"
 runTest "$commonScripts,shared/javascripts/privly-web/seamless_ttlselect.js,shared/test/privly-web/seamless_ttlselect.js"
 # test app models
 runTest "$commonScripts,PlainPost/js/plainpostApp.js,PlainPost/test/plainpostApp.js"
