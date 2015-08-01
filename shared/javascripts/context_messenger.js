@@ -415,8 +415,10 @@ if (Privly === undefined) {
     // Privly Applications can't send messages directly to background scripts, they do so via
     // content scripts injected in the application.
     if (contextName === "PRIVLY_APPLICATION") {
-      // Override the target so that the message doesn't get dropped.
-      data.to = "CONTENT_SCRIPT";
+      if (to === "BACKGROUND_SCRIPT" || to === "CONTENT_SCRIPT") {
+        // Override the target so that the message doesn't get dropped.
+        data.to = "CONTENT_SCRIPT";
+      }
       parent.postMessage(JSON.stringify(data), "*");
     } 
     // Messages from Content Script to Background Script, Privly-Applications.

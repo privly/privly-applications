@@ -307,7 +307,7 @@ if (Privly === undefined) {
    */
   Privly.options.setWhitelist = function (whitelist) {
     // typeof null === 'object'
-    if (typeof whitelist !== 'object' || whitelist === null || whitelist.constructor !== Array) {
+    if (typeof whitelist !== 'object' || whitelist === null || Object.prototype.toString.call(whitelist) !== "[object Array]") {
       throw new Error('invalid argument');
     }
     var regexp = ''; // stores regex to match validated domains
