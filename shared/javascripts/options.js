@@ -68,10 +68,8 @@ if (Privly === undefined) {
     module.exports.options = Privly.options;
     // load dependencies
     ls = require("./local_storage.js").ls;
-    var { storage } = require("./storage.js");  
-    var { message } = require("./context_messenger.js");
-    Privly.storage = storage;
-    Privly.message = message;
+    Privly.storage = require("./storage.js").storage;
+    Privly.message = require("./context_messenger.js").message;
   }
 
 

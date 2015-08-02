@@ -51,8 +51,7 @@ if (Privly === undefined) {
   if (typeof module !== "undefined" && module.exports) {
     module.exports.glyph = Privly.glyph;
     // load dependencies
-    var { options } = require("./options.js");
-    Privly.options = options;
+    Privly.options = require("./options.js").options;
   }
 
   /**
