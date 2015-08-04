@@ -1,3 +1,8 @@
+/**
+ * @fileOverview This is the script file of MessageTest.html, provides
+ * basic ping-pong feature which will be used to test context messenger.
+ */
+
 $(document).ready(function () {
 
   function appendPongResponse(pong) {
@@ -34,7 +39,5 @@ $(document).ready(function () {
     });
 
   });
-
-  
 
 });
