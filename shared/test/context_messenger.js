@@ -94,3 +94,139 @@ describe ("Messaging Test Suite", function() {
   });
 
 });
+
+describe('Privly.message.adapter.Chrome', function () {
+
+  it('creates instance', function () {
+    var instance = Privly.message.adapter.Chrome.getInstance();
+    expect(instance instanceof Privly.message.adapter.Chrome).toBe(true);
+  });
+
+  it('returns platform name', function () {
+    var instance = Privly.message.adapter.Chrome.getInstance();
+    expect(instance.getPlatformName()).toBe('CHROME');
+  });
+
+  it('returns context name', function () {
+    var instance = Privly.message.adapter.Chrome.getInstance();
+
+    // for backgrouns script, we have a special meta node
+    var backgroundMarker = document.createElement('meta');
+    backgroundMarker.id = 'is-background-script';
+    document.head.appendChild(backgroundMarker);
+    expect(instance.getContextName()).toBe('BACKGROUND_SCRIPT');
+    document.head.removeChild(backgroundMarker);
+
+    // for privly applications (top or embedded), the location is special.. however we could not test it here
+    expect(instance.getContextName()).toBe('CONTENT_SCRIPT');
+  });
+
+  it('sends message to background scripts using chrome.extension.sendMessage', function (done) {
+    if (!window.chrome) {
+      window.chrome = {};
+    }
+    if (!window.chrome.extension) {
+      window.chrome.extension = {};
+    }
+    var backup = window.chrome.extension.sendMessage;
+    window.chrome.extension.sendMessage = function (payload) {
+      expect(payload).toEqual({magic: '456'});
+      // restore and done
+      window.chrome.extension.sendMessage = backup;
+      done();
+    };
+
+    var instance = Privly.message.adapter.Chrome.getInstance();
+    instance.sendMessageTo('BACKGROUND_SCRIPT', { magic: '456' });
+  });
+
+  it('sends message to content scripts and Privly applications using chrome.tabs.sendMessage', function () {
+    var messageSent = {};
+    if (!window.chrome) {
+      window.chrome = {};
+    }
+    if (!window.chrome.tabs) {
+      window.chrome.tabs = {};
+    }
+    var queryBackup = window.chrome.tabs.query;
+    window.chrome.tabs.query = function (query, callback) {
+      callback([
+        {
+          id: 1,
+          url: 'http://notexist.example.com'
+        },
+        {
+          id: 10,
+          url: 'chrome-extension://ogijphpnglhlecfcfhcbhjmphpokhcfg/privly-applications/Pages/ChromeOptions.html'
+        },
+        {
+          id: 15,
+          url: 'http://test.privly.org/test_pages/whitelist.html'
+        }
+      ]);
+    };
+    var sendMessageBackup = window.chrome.tabs.sendMessage;
+    window.chrome.tabs.sendMessage = function (target, payload) {
+      if (!messageSent[target]) {
+        messageSent[target] = [];
+      }
+      messageSent[target].push(payload);
+    };
+
+    var data = { magic: '123' };
+    var instance = Privly.message.adapter.Chrome.getInstance();
+    instance.sendMessageTo('CONTENT_SCRIPT', data);
+    expect(messageSent[1].length).toBe(1);
+    expect(messageSent[1][0]).toEqual(data);
+    expect(messageSent[15].length).toBe(1);
+    expect(messageSent[15][0]).toEqual(data);
+
+    // clear and test sending message to Privly application
+    messageSent = {};
+    instance.sendMessageTo('PRIVLY_APPLICATION', data);
+    expect(messageSent[1].length).toBe(1);
+    expect(messageSent[1][0]).toEqual(data);
+    expect(messageSent[10].length).toBe(1);
+    expect(messageSent[10][0]).toEqual(data);
+    expect(messageSent[15].length).toBe(1);
+    expect(messageSent[15][0]).toEqual(data);
+
+    // sending message to other: no errors should be thrown
+    try {
+      instance.sendMessageTo('XXX', { magic: '456' });
+    } catch(ignore) {
+      // fail the test
+      expect(false).toBe(true);
+    }
+
+    // restore
+    window.chrome.tabs.sendMessage = sendMessageBackup;
+    window.chrome.tabs.query = queryBackup;
+  });
+
+  it('sets listener using chrome.runtime.onMessage.addListener', function (done) {
+    if (!window.chrome) {
+      window.chrome = {};
+    }
+    if (!window.chrome.runtime) {
+      window.chrome.runtime = {};
+    }
+    if (!window.chrome.runtime.onMessage) {
+      window.chrome.runtime.onMessage = {};
+    }
+    var backup = window.chrome.runtime.onMessage.addListener;
+    window.chrome.runtime.onMessage.addListener = function (callback) {
+      callback({ magic: 'data' });
+    };
+
+    var instance = Privly.message.adapter.Chrome.getInstance();
+    instance.setListener(function (payload) {
+      expect(payload).toEqual({ magic: 'data' });
+      // restore and done
+      window.chrome.runtime.onMessage.addListener = backup;
+      done();
+    });
+  });
+
+});
+

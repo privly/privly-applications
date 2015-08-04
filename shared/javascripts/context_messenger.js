@@ -242,7 +242,7 @@ if (Privly === undefined) {
   ChromeAdapter.prototype.getContextName = function () {
     if (window.document.getElementById('is-background-script') !== null) {
       return 'BACKGROUND_SCRIPT';
-    } else if (window.location.href.indexOf(window.location.origin + '/privly-applications') === 0) {
+    } else if (window.location.href.indexOf('chrome-extension://' + window.location.host + '/privly-applications/') === 0) {
       return 'PRIVLY_APPLICATION';
     } else {
       return 'CONTENT_SCRIPT';
@@ -260,7 +260,7 @@ if (Privly === undefined) {
       chrome.tabs.query({}, function (tabs) {
         tabs.forEach(function (tab) {
           // Don't message Privly Applications
-          if (tab.url.indexOf('chrome') !== 0) {
+          if (tab.url.indexOf('chrome') === -1) {
             chrome.tabs.sendMessage(tab.id, payload);
           }
         });
@@ -268,9 +268,12 @@ if (Privly === undefined) {
       return;
     }
     if (to === 'PRIVLY_APPLICATION') {
-      // Send message to all content scripts
+      // Send message to all privly applications
       chrome.tabs.query({}, function (tabs) {
         tabs.forEach(function (tab) {
+          // Privly applications may stay inside iframes, so we just send message
+          // to tabs. Those messages will be received by content scripts as well,
+          // but it doesn't matter. The top layer would filter messages.
           chrome.tabs.sendMessage(tab.id, payload);
         });
       });
