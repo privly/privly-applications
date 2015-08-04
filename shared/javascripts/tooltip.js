@@ -5,25 +5,21 @@
  * Requirements: This script assumes the existence of the following CSS:
  *
  * body {
- * cursor:pointer;
+ *   cursor:pointer;
  * }
  *
  * #tooltip {
- * position:absolute;
- * border:1px solid #333;
- * background:#f7f5d1;
- * padding:1px 1px;
- * color:#333;
- * display:none;
- * font:14px Helvetica;
+ *   position:absolute;
+ *   border:1px solid #333;
+ *   background:#f7f5d1;
+ *   padding:1px 1px;
+ *   color:#333;
+ *   display:none;
+ *   font:14px Helvetica;
  * }
- * .glyph_empty {background-color:#ffffff;}
- *
  * .glyph_table {
- *  border-collapse: collapse;
- *  line-height: 4px;
- *  float: left;
- *  margin-right: 5px;
+ *   float: left;
+ *   margin-right: 5px;
  * }
  **/
 
@@ -93,6 +89,7 @@ var privlyTooltip = {
 
       // Generate the glyph HTML and assign the color
       var glyph = Privly.glyph.getGlyphDOM();
+      glyph.className = 'glyph_table';
 
       // Create the tooltip element
       var tooltipMessageElement = document.createElement("div");

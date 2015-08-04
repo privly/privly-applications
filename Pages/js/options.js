@@ -241,11 +241,10 @@ function regenerateGlyph() {
 /**
  * Creates the security glyph for the page as a series of random colors.
  * The glyph is represented as a row of colors defined in local storage.
- * The row is written as a table and assigned to the div element glyph_table.
  */
 function writeGlyph() {
-  var table = Privly.glyph.getGlyphDOM();
-  document.getElementById("glyph_div").appendChild(table);
+  var canvas = Privly.glyph.getGlyphDOM();
+  document.getElementById("glyph_div").appendChild(canvas);
 }
 
 /**

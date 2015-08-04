@@ -38,21 +38,53 @@ describe('Privly.glyph', function () {
     expect(oldGlyph.cells).not.toEqual(newGlyph.cells);
   });
 
-  it('getGlyphDOM() can generate glyph DOM', function () {
-    var table;
-    // test no glyph condition
+  it('getGlyphDOM() can generate glyph canvas DOM', function () {
     Privly.storage.remove('options/glyph');
-    table = Privly.glyph.getGlyphDOM();
-    expect(table.nodeName).toBe('TABLE');
-    expect(table.querySelectorAll('td').length).toEqual(25);
-    // test glyph condition
-    Privly.storage.remove('options/glyph');
-    Privly.glyph.generateGlyph();
-    var glyph = Privly.glyph.getGlyph();
-    table = Privly.glyph.getGlyphDOM();
-    expect(Privly.glyph.getGlyph()).toEqual(glyph);
-    expect(table.nodeName).toBe('TABLE');
-    expect(table.querySelectorAll('td').length).toEqual(25);
+    var canvas = Privly.glyph.getGlyphDOM(40);
+    expect(canvas instanceof HTMLCanvasElement);
+    var ctx = canvas.getContext('2d');
+    var data = ctx.getImageData(0, 0, 40, 40);
+    expect(data instanceof ImageData).toBe(true);
+    expect(data.width).toBe(40);
+    expect(data.height).toBe(40);
+    // every cell should be 8*8
+    // verify that each pixel in each cell contains the same color
+    var cellMainColor = [];
+    var row, col, i, j, ch, color, pos;
+    for (row = 0; row < 5; ++row) {
+      for (col = 0; col < 5; ++col) {
+        pos = row * 8/*lines per row*/ * 40/*pixels per line*/ * 4/*channels per pixel*/ + col * 8/*pixels per col*/ * 4/*channels per pixel*/;
+        color = data.data.subarray(pos, pos + 4);
+        // convert to 0xAARRGGBB
+        cellMainColor.push(((color[2] | color[1] << 8 | color[0] << 16 | color[3] << 24) >>> 0/*unsigned*/).toString(16));
+        for (j = 0; j < 8; ++j) {
+          for (i = 0; i < 8; ++i) {
+            for (ch = 0; ch < 4; ++ch) {  // channel
+              expect(data.data[row * 8 * 40 * 4 + j * 40 * 4 + col * 8 * 4 + i * 4 + ch]).toBe(color[ch]);
+            }
+          }
+        }
+      }
+    }
+    // verify cells
+    var glyph = Privly.options.getGlyph();
+    for (i = 0; i < 5; i++) {
+      for (j = 0; j < 5; j++) {
+        if (j <= 2) {
+          if (!glyph.cells[i * 3 + j]) {
+            expect(cellMainColor[i * 5 + j]).toBe('ffffffff');
+          } else {
+            expect(cellMainColor[i * 5 + j]).toBe('ff' + glyph.color);
+          }
+        } else {
+          if (!glyph.cells[i * 3 + (5 % (j + 1))]) {
+            expect(cellMainColor[i * 5 + j]).toBe('ffffffff');
+          } else {
+            expect(cellMainColor[i * 5 + j]).toBe('ff' + glyph.color);
+          }
+        }
+      }
+    }
   });
 
   it('initGlyph() creates a glyph when there is no glyph', function () {
