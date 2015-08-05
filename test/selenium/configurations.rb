@@ -36,11 +36,13 @@ def common_configuration_for_firefox_extension
   Capybara.app_host = "chrome://privly"
   @@privly_applications_folder_path = Capybara.app_host + "/content/privly-applications/"
   puts "Packaging the Firefox Extension"
-  system( "cd ../../../../../ && pwd && ./package.sh && cd chrome/content/privly-applications/test/selenium" )
-
+  system("cd ../../../../../ && pwd && jpm xpi && cd chrome/content/privly-applications/test/selenium")
+  # Find out the xpi file name
+  json = JSON.load(File.new("../../../../../package.json"))
+  xpi_filename = "@" + json['name'] + "-" + json['version'] + ".xpi"
   # Load the Firefox driver with the extension installed
   @profile = Selenium::WebDriver::Firefox::Profile.new
-  @profile.add_extension("../../../../../PrivlyFirefoxExtension.xpi")
+  @profile.add_extension("../../../../../" + xpi_filename)
 end
 
 # This is the common config for running tests from the
