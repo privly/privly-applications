@@ -1,3 +1,5 @@
+# This test should only be run on Firefox and Safari,
+# the posting process for Chrome has changed.
 class TestPostingProcess < Test::Unit::TestCase
 
   # Helps perform authentication with the content server
