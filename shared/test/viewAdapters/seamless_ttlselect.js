@@ -4,7 +4,7 @@
  **/
 /*global describe, it, expect, beforeEach, afterEach, jasmine, spyOn */
 /*global Privly, Promise */
-describe('Privly.adapter.SeamlessPostingTTLSelect', function () {
+describe('Privly.app.viewAdapter.SeamlessTTLSelect', function () {
 
   var msgSent;
 
@@ -23,7 +23,7 @@ describe('Privly.adapter.SeamlessPostingTTLSelect', function () {
   });
 
   it('msgTTLChange calls Privly.message.messageExtension', function () {
-    var adapter = new Privly.adapter.SeamlessPostingTTLSelect({});
+    var adapter = new Privly.app.viewAdapter.SeamlessTTLSelect({});
     adapter.msgTTLChange('2147');
     expect(Privly.message.messageExtension).toHaveBeenCalled();
     expect(msgSent[0].action).toBe('posting/contentScript/TTLChanged');
@@ -31,7 +31,7 @@ describe('Privly.adapter.SeamlessPostingTTLSelect', function () {
   });
 
   it('msgAppReady calls Privly.message.messageExtension', function () {
-    var adapter = new Privly.adapter.SeamlessPostingTTLSelect({});
+    var adapter = new Privly.app.viewAdapter.SeamlessTTLSelect({});
     adapter.msgAppReady({
       width: 100,
       height: 300
@@ -46,7 +46,7 @@ describe('Privly.adapter.SeamlessPostingTTLSelect', function () {
 
   it('getTTLOptions returns a Promise of empty array if application.getTTLOptions is not a function', function (done) {
     var application = {};
-    var adapter = new Privly.adapter.SeamlessPostingTTLSelect(application);
+    var adapter = new Privly.app.viewAdapter.SeamlessTTLSelect(application);
     expect(adapter.getTTLOptions().then).toEqual(jasmine.any(Function));
     adapter.getTTLOptions().then(function (options) {
       expect(options).toEqual([]);
@@ -63,7 +63,7 @@ describe('Privly.adapter.SeamlessPostingTTLSelect', function () {
         ]);
       }
     };
-    var adapter = new Privly.adapter.SeamlessPostingTTLSelect(application);
+    var adapter = new Privly.app.viewAdapter.SeamlessTTLSelect(application);
     adapter.getTTLOptions().then(function (options) {
       expect(options).toEqual([
         {ttl: '1', text: 'text for 1'},
@@ -82,7 +82,7 @@ describe('Privly.adapter.SeamlessPostingTTLSelect', function () {
         ]);
       }
     };
-    var adapter = new Privly.adapter.SeamlessPostingTTLSelect(application);
+    var adapter = new Privly.app.viewAdapter.SeamlessTTLSelect(application);
     adapter.initMenu(false, '10', function () {
       expect(document.querySelectorAll('.posting-select-item')[0].getAttribute('data-value')).toBe('1');
       expect(document.querySelectorAll('.posting-select-item')[0].innerText.trim()).toBe('text for 1');
@@ -104,7 +104,7 @@ describe('Privly.adapter.SeamlessPostingTTLSelect', function () {
       }
     };
     // if isAbove=true, the memu should be reversed so that the smallest index is always closest to user
-    var adapter = new Privly.adapter.SeamlessPostingTTLSelect(application);
+    var adapter = new Privly.app.viewAdapter.SeamlessTTLSelect(application);
     adapter.initMenu(true, '10', function () {
       expect(document.querySelectorAll('.posting-select-item')[1].getAttribute('data-value')).toBe('1');
       expect(document.querySelectorAll('.posting-select-item')[1].innerText.trim()).toBe('text for 1');
@@ -125,7 +125,7 @@ describe('Privly.adapter.SeamlessPostingTTLSelect', function () {
         ]);
       }
     };
-    var adapter = new Privly.adapter.SeamlessPostingTTLSelect(application);
+    var adapter = new Privly.app.viewAdapter.SeamlessTTLSelect(application);
     adapter.initMenu(false, null, function () {
       expect(document.querySelectorAll('.posting-select-item')[0].getAttribute('data-value')).toBe('1');
       expect(document.querySelectorAll('.posting-select-item')[0].innerText.trim()).toBe('text for 1');
@@ -140,7 +140,7 @@ describe('Privly.adapter.SeamlessPostingTTLSelect', function () {
   });
 
   it('call initMenu when receives posting/app/initializeTTLSelect', function () {
-    var adapter = new Privly.adapter.SeamlessPostingTTLSelect({});
+    var adapter = new Privly.app.viewAdapter.SeamlessTTLSelect({});
     spyOn(adapter, 'initMenu').and.callThrough();
     adapter.onMessageReceived({
       action: 'posting/app/initializeTTLSelect'
@@ -149,7 +149,7 @@ describe('Privly.adapter.SeamlessPostingTTLSelect', function () {
   });
 
   it('call msgTTLChange when user clicks an item', function () {
-    var adapter = new Privly.adapter.SeamlessPostingTTLSelect({});
+    var adapter = new Privly.app.viewAdapter.SeamlessTTLSelect({});
     spyOn(adapter, 'msgTTLChange').and.callThrough();
     adapter.onItemSelected({
       target: {
@@ -171,7 +171,7 @@ describe('Privly.adapter.SeamlessPostingTTLSelect', function () {
         ]);
       }
     };
-    var adapter = new Privly.adapter.SeamlessPostingTTLSelect(application);
+    var adapter = new Privly.app.viewAdapter.SeamlessTTLSelect(application);
     spyOn(adapter, 'msgAppReady').and.callThrough();
     adapter.start();
     setTimeout(function () {

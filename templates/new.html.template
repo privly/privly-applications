@@ -8,7 +8,7 @@
     {% block css %}{% endblock %}
 
     <script type="text/javascript" src="../shared/javascripts/event_emitter.js"></script>
-    <script type="text/javascript" src="../shared/javascripts/privly-web/new.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/viewAdapters/new.js"></script>
     {% block javascripts %}{% endblock %}
 
 {% endblock %}

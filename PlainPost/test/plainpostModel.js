@@ -4,7 +4,7 @@
  **/
 /*global describe, it, expect, beforeEach */
 /*global Privly, privlyNetworkService */
-describe("Privly.app.Plainpost", function () {
+describe("Privly.app.model.Plainpost", function () {
 
   beforeEach(function () {
     privlyNetworkService.platformName = function () {
@@ -13,7 +13,7 @@ describe("Privly.app.Plainpost", function () {
   });
 
   it("can load content", function (done) {
-    var app = new Privly.app.Plainpost();
+    var app = new Privly.app.model.Plainpost();
     var mkdwn = "[link](http://test.privly.org)";
     var json = {
       content: mkdwn

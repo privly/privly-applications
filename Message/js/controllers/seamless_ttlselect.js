@@ -10,7 +10,7 @@
  */
 /*global Privly */
 document.addEventListener('DOMContentLoaded', function () {
-  var app = new Privly.app.Message();
-  var adapter = new Privly.adapter.SeamlessPostingTTLSelect(app);
+  var app = new Privly.app.model.Message();
+  var adapter = new Privly.app.viewAdapter.SeamlessTTLSelect(app);
   adapter.start();
 });

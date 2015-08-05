@@ -57,7 +57,7 @@ function processResponseContent(response) {
     return;
   }
 
-  message = new Privly.app.Message();
+  message = new Privly.app.model.Message();
   message
     .loadRawContent(url, json)
     .then(function (cleartext) {

@@ -2,10 +2,10 @@
 
 {% block javascripts %}
   <script type="text/javascript" src="../vendor/sjcl.js"></script>
-  <script type="text/javascript" src="js/base64.js"></script>
-  <script type="text/javascript" src="js/rawdeflate.js"></script>
-  <script type="text/javascript" src="js/rawinflate.js"></script>
-  <script type="text/javascript" src="js/zerobin.js"></script>
-  <script type="text/javascript" src="js/messageApp.js"></script>
-  <script type="text/javascript" src="js/seamless.js"></script>
+  <script type="text/javascript" src="js/vendor/base64.js"></script>
+  <script type="text/javascript" src="js/vendor/rawdeflate.js"></script>
+  <script type="text/javascript" src="js/vendor/rawinflate.js"></script>
+  <script type="text/javascript" src="js/vendor/zerobin.js"></script>
+  <script type="text/javascript" src="js/messageModel.js"></script>
+  <script type="text/javascript" src="js/controllers/seamless.js"></script>
 {% endblock %}

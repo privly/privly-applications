@@ -8,7 +8,7 @@
  * when the web page is loaded. The most important thing is,
  * it should connect the view layer and the model layer.
  * This is accomplished by simply pass our Application Model
- * Object (Privly.app.Message) to the view adapter script.
+ * Object (Privly.app.model.Message) to the view adapter script.
  *
  * In Message App, when user is creating a content, we also
  * need a preview functionality. Markdown are parsed into
@@ -32,10 +32,10 @@ document.addEventListener('DOMContentLoaded', function () {
     preview.innerHTML = markdown.toHTML(mkdwn);
   }
 
-  var app = new Privly.app.Message();
+  var app = new Privly.app.model.Message();
   app.generateRandomKey();
 
-  var adapter = new Privly.adapter.CreationProcess(app);
+  var adapter = new Privly.app.viewAdapter.New(app);
 
   adapter.on('afterPostCompleted', function (response, url) {
     app.storeUrl(url);

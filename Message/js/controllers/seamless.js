@@ -6,7 +6,14 @@
  */
 /*global Privly */
 document.addEventListener('DOMContentLoaded', function () {
-  var app = new Privly.app.Plainpost();
-  var adapter = new Privly.adapter.SeamlessPosting(app);
+  var app = new Privly.app.model.Message();
+  app.generateRandomKey();
+  var adapter = new Privly.app.viewAdapter.Seamless(app);
+  adapter.on('afterCreateLink', function (url) {
+    app.storeUrl(url);
+  });
+  adapter.on('afterDeleteLink', function (url) {
+    app.removeUrl(url);
+  });
   adapter.start();
 });

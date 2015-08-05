@@ -32,12 +32,16 @@ var Privly;
 if (Privly === undefined) {
   Privly = {};
 }
-if (Privly.adapter === undefined) {
-  Privly.adapter = {};
+if (Privly.app === undefined) {
+  Privly.app = {};
 }
+if (Privly.app.viewAdapter === undefined) {
+  Privly.app.viewAdapter = {};
+}
+
 (function () {
   // If this file is already loaded, don't do it again
-  if (Privly.adapter.CreationProcess !== undefined) {
+  if (Privly.app.viewAdapter.New !== undefined) {
     return;
   }
 
@@ -57,7 +61,7 @@ if (Privly.adapter === undefined) {
    * 6. Completed post: The remote server has returned a URL. This app should
    *    display it and fire the URL event.
    */
-  var CreationProcessAdapter = function (application) {
+  var NewAdapter = function (application) {
     /**
      * The Privly application instance.
      * 
@@ -74,12 +78,12 @@ if (Privly.adapter === undefined) {
   };
 
   // Inhreit EventEmitter
-  Privly.EventEmitter.inherit(CreationProcessAdapter);
+  Privly.EventEmitter.inherit(NewAdapter);
 
-  Privly.adapter.CreationProcess = CreationProcessAdapter;
+  Privly.app.viewAdapter.New = NewAdapter;
 
   /**
-   * Method factory. Add overridable function to CreationProcessAdapter.
+   * Method factory. Add overridable function to NewAdapter.
    * It will create a function which behavior can be overridden by
    * listening `before{name}` event and `after{name}` event.
    * 
@@ -89,7 +93,7 @@ if (Privly.adapter === undefined) {
    */
   var addOverridableFunction = function (name, func) {
     var eventName = name.substr(0, 1).toUpperCase() + name.substr(1);
-    CreationProcessAdapter.prototype[name] = function () {
+    NewAdapter.prototype[name] = function () {
       var self = this;
       var argv = [].slice.call(arguments);
       return self
@@ -113,7 +117,7 @@ if (Privly.adapter === undefined) {
    *
    * @return {Promise}
    */
-  CreationProcessAdapter.prototype._start = function () {
+  NewAdapter.prototype._start = function () {
     var self = this;
     if (self.started) {
       return;
@@ -133,7 +137,7 @@ if (Privly.adapter === undefined) {
 
     self.pendingLogin();
   };
-  addOverridableFunction('start', CreationProcessAdapter.prototype._start);
+  addOverridableFunction('start', NewAdapter.prototype._start);
 
   /**
    * When server connection checking succeeded.
@@ -143,7 +147,7 @@ if (Privly.adapter === undefined) {
    *
    * @return {Promise}
    */
-  CreationProcessAdapter.prototype._connectionSucceeded = function () {
+  NewAdapter.prototype._connectionSucceeded = function () {
     var self = this;
 
     // Monitor the submit button
@@ -154,7 +158,7 @@ if (Privly.adapter === undefined) {
 
     self.pendingPost();
   };
-  addOverridableFunction('connectionSucceeded', CreationProcessAdapter.prototype._connectionSucceeded);
+  addOverridableFunction('connectionSucceeded', NewAdapter.prototype._connectionSucceeded);
 
   /**
    * When server connection checking failed.
@@ -162,11 +166,11 @@ if (Privly.adapter === undefined) {
    *
    * @return {Promise}
    */
-  CreationProcessAdapter.prototype._connectionFailed = function () {
+  NewAdapter.prototype._connectionFailed = function () {
     var self = this;
     self.loginFailure();
   };
-  addOverridableFunction('connectionFailed', CreationProcessAdapter.prototype._connectionFailed);
+  addOverridableFunction('connectionFailed', NewAdapter.prototype._connectionFailed);
 
   /**
    * Get processed request content from the Privly application.
@@ -177,7 +181,7 @@ if (Privly.adapter === undefined) {
    *           {String} structured_content
    *           {Boolean} isPublic
    */
-  CreationProcessAdapter.prototype.getRequestContent = function (content) {
+  NewAdapter.prototype.getRequestContent = function (content) {
     var promise;
     if (typeof this.application.getRequestContent === 'function') {
       promise = this.application.getRequestContent(content);
@@ -206,7 +210,7 @@ if (Privly.adapter === undefined) {
    * @param  {String} link
    * @return {Promise<String>} The processed link
    */
-  CreationProcessAdapter.prototype.postprocessLink = function (link) {
+  NewAdapter.prototype.postprocessLink = function (link) {
     var promise;
     if (typeof this.application.postprocessLink === 'function') {
       promise = this.application.postprocessLink(link);
@@ -221,7 +225,7 @@ if (Privly.adapter === undefined) {
    * 
    * @return {Promise}
    */
-  CreationProcessAdapter.prototype._save = function () {
+  NewAdapter.prototype._save = function () {
     var self = this;
     return self
       .getRequestContent($("#content")[0].value)
@@ -234,7 +238,7 @@ if (Privly.adapter === undefined) {
         );
       });
   };
-  addOverridableFunction('save', CreationProcessAdapter.prototype._save);
+  addOverridableFunction('save', NewAdapter.prototype._save);
 
   /**
    * Start login process. It will call `connectionSucceeded()` when
@@ -243,7 +247,7 @@ if (Privly.adapter === undefined) {
    *
    * @return {Promise}
    */
-  CreationProcessAdapter.prototype._pendingLogin = function () {
+  NewAdapter.prototype._pendingLogin = function () {
     var self = this;
 
     Privly.storage.set("Login:redirect_to_app", window.location.href);
@@ -254,7 +258,7 @@ if (Privly.adapter === undefined) {
       self.connectionFailed.bind(self)
     );
   };
-  addOverridableFunction('pendingLogin', CreationProcessAdapter.prototype._pendingLogin);
+  addOverridableFunction('pendingLogin', NewAdapter.prototype._pendingLogin);
 
   /**
    * Prompt the user to sign into their server. This assumes the remote
@@ -262,25 +266,25 @@ if (Privly.adapter === undefined) {
    *
    * @return {Promise}
    */
-  CreationProcessAdapter.prototype._loginFailure = function () {
+  NewAdapter.prototype._loginFailure = function () {
     privlyNetworkService.showLoggedOutNav();
     $("#messages").hide();
     $("#login_message").show();
   };
-  addOverridableFunction('loginFailure', CreationProcessAdapter.prototype._loginFailure);
+  addOverridableFunction('loginFailure', NewAdapter.prototype._loginFailure);
 
   /**
    * Tell the user they can create their post by updating the UI.
    *
    * @return {Promise}
    */
-  CreationProcessAdapter.prototype._pendingPost = function () {
+  NewAdapter.prototype._pendingPost = function () {
     privlyNetworkService.showLoggedInNav();
     $("#save").prop('disabled', false);
     $("#messages").toggle();
     $("#form").toggle();
   };
-  addOverridableFunction('pendingPost', CreationProcessAdapter.prototype._pendingPost);
+  addOverridableFunction('pendingPost', NewAdapter.prototype._pendingPost);
 
   /**
    * Submit the posting form and await the return of the post.
@@ -295,7 +299,7 @@ if (Privly.adapter === undefined) {
    * be deprecated in the future.
    * @return {Promise}
    */
-  CreationProcessAdapter.prototype._postSubmit = function (structured_content, privly_application, seconds_until_burn, content) {
+  NewAdapter.prototype._postSubmit = function (structured_content, privly_application, seconds_until_burn, content) {
     var self = this;
 
     $("#save").prop('disabled', true);
@@ -323,7 +327,7 @@ if (Privly.adapter === undefined) {
       contentToPost
     );
   };
-  addOverridableFunction('postSubmit', CreationProcessAdapter.prototype._postSubmit);
+  addOverridableFunction('postSubmit', NewAdapter.prototype._postSubmit);
 
   /**
    * Tell the user that there was a problem.
@@ -331,12 +335,12 @@ if (Privly.adapter === undefined) {
    * @param {jqXHR} response The AJAX response from the server.
    * @return {Promise}
    */
-  CreationProcessAdapter.prototype._createError = function (response) {
+  NewAdapter.prototype._createError = function (response) {
     $("#save").prop('disabled', false);
     $("#messages").text("There was an error creating your post. Status: " + response.jqXHR.status);
     $("#messages").show();
   };
-  addOverridableFunction('createError', CreationProcessAdapter.prototype._createError);
+  addOverridableFunction('createError', NewAdapter.prototype._createError);
 
   /**
    * Send the URL to the extension or mobile device if it exists and display
@@ -346,7 +350,7 @@ if (Privly.adapter === undefined) {
    * @param {string} url The injectable URL for the Privly Application.
    * @return {Promise}
    */
-  CreationProcessAdapter.prototype._postCompleted = function (response, url) {
+  NewAdapter.prototype._postCompleted = function (response, url) {
     $("#save").prop('disabled', false);
 
     if (response.jqXHR.status === 201 && url !== undefined && url !== "") {
@@ -380,6 +384,6 @@ if (Privly.adapter === undefined) {
       });
     }
   };
-  addOverridableFunction('postCompleted', CreationProcessAdapter.prototype._postCompleted);
+  addOverridableFunction('postCompleted', NewAdapter.prototype._postCompleted);
 
 }());

@@ -6,13 +6,16 @@ var Privly;
 if (Privly === undefined) {
   Privly = {};
 }
-if (Privly.adapter === undefined) {
-  Privly.adapter = {};
+if (Privly.app === undefined) {
+  Privly.app = {};
+}
+if (Privly.app.viewAdapter === undefined) {
+  Privly.app.viewAdapter = {};
 }
 
 (function () {
   // If this file is already loaded, don't do it again
-  if (Privly.adapter.SeamlessPostingTTLSelect !== undefined) {
+  if (Privly.app.viewAdapter.SeamlessTTLSelect !== undefined) {
     return;
   }
 
@@ -21,7 +24,7 @@ if (Privly.adapter === undefined) {
    * 
    * @param {Object} application The Privly application instance
    */
-  var SeamlessPostingTTLSelectAdapter = function (application) {
+  var SeamlessTTLSelectAdapter = function (application) {
     /**
      * The Privly application instance.
      * 
@@ -44,14 +47,16 @@ if (Privly.adapter === undefined) {
   };
 
   // Inhreit EventEmitter
-  Privly.EventEmitter.inherit(SeamlessPostingTTLSelectAdapter);
+  Privly.EventEmitter.inherit(SeamlessTTLSelectAdapter);
+
+  Privly.app.viewAdapter.SeamlessTTLSelect = SeamlessTTLSelectAdapter;
 
   /**
    * Promise wrapper for sending message to the background script
    * 
    * @return {Promise}
    */
-  SeamlessPostingTTLSelectAdapter.prototype.messageExtension = function (message, hasResponse) {
+  SeamlessTTLSelectAdapter.prototype.messageExtension = function (message, hasResponse) {
     var messageToSend = JSON.parse(JSON.stringify(message));
     // specify which context to be received
     messageToSend.targetContextId = this.sourceContextId;
@@ -64,7 +69,7 @@ if (Privly.adapter === undefined) {
    * Send message that the TTL has changed
    * @param  {String} ttlvalue Seconds until burn
    */
-  SeamlessPostingTTLSelectAdapter.prototype.msgTTLChange = function (ttlValue) {
+  SeamlessTTLSelectAdapter.prototype.msgTTLChange = function (ttlValue) {
     return this.messageExtension({
       action: 'posting/contentScript/TTLChanged',
       value: ttlValue
@@ -80,7 +85,7 @@ if (Privly.adapter === undefined) {
    *           {Boolean} isAboveButton
    *           {String}  selectedValue
    */
-  SeamlessPostingTTLSelectAdapter.prototype.msgAppReady = function (size) {
+  SeamlessTTLSelectAdapter.prototype.msgAppReady = function (size) {
     return this.messageExtension({
       action: 'posting/contentScript/TTLSelectReady',
       size: size
@@ -95,7 +100,7 @@ if (Privly.adapter === undefined) {
    *           {String} ttl       The seconds_util_burn value of the option
    *           {Boolean} default  Whether this option is the default option
    */
-  SeamlessPostingTTLSelectAdapter.prototype.getTTLOptions = function () {
+  SeamlessTTLSelectAdapter.prototype.getTTLOptions = function () {
     var promise;
     if (typeof this.application.getTTLOptions === 'function') {
       promise = this.application.getTTLOptions();
@@ -105,7 +110,7 @@ if (Privly.adapter === undefined) {
     return promise;
   };
 
-  SeamlessPostingTTLSelectAdapter.prototype.onMessageReceived = function (message, sendResponse) {
+  SeamlessTTLSelectAdapter.prototype.onMessageReceived = function (message, sendResponse) {
     var self = this;
     switch (message.action) {
     case 'posting/app/initializeTTLSelect':
@@ -121,7 +126,7 @@ if (Privly.adapter === undefined) {
    * @param  {String}   selectedTTLValue The current selected TTL value (optional)
    * @param  {Function} callback         Completion callback
    */
-  SeamlessPostingTTLSelectAdapter.prototype.initMenu = function (isAboveButton, selectedTTLValue, callback) {
+  SeamlessTTLSelectAdapter.prototype.initMenu = function (isAboveButton, selectedTTLValue, callback) {
     $('#menu').empty();
     this.getTTLOptions()
       .then(function (options) {
@@ -169,14 +174,14 @@ if (Privly.adapter === undefined) {
   /**
    * when user clicks an item
    */
-  SeamlessPostingTTLSelectAdapter.prototype.onItemSelected = function (ev) {
+  SeamlessTTLSelectAdapter.prototype.onItemSelected = function (ev) {
     this.msgTTLChange(ev.target.getAttribute('data-value'));
   };
 
   /**
    * Start the seamless-posting-ttlselect adapter
    */
-  SeamlessPostingTTLSelectAdapter.prototype.start = function () {
+  SeamlessTTLSelectAdapter.prototype.start = function () {
     var self = this;
     if (self.started) {
       return;
@@ -206,7 +211,5 @@ if (Privly.adapter === undefined) {
       });
     });
   };
-
-  Privly.adapter.SeamlessPostingTTLSelect = SeamlessPostingTTLSelectAdapter;
 
 }());

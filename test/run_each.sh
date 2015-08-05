@@ -60,13 +60,13 @@ runTest "$commonScripts,History/js/*.js,History/test/*.js"
 runTest "$commonScripts,Login/js/*.js,Login/test/*.js"
 runTest "$commonScripts,Pages/js/options.js,Pages/js/tests/*.js"
 # test app view adapters
-runTest "$commonScripts,shared/javascripts/privly-web/new.js,shared/test/privly-web/new.js"
-runTest "$commonScripts,shared/javascripts/privly-web/show.js,shared/test/privly-web/show.js"
-runTest "$commonScripts,shared/javascripts/privly-web/seamless.js,PlainPost/js/plainpostApp.js,shared/test/privly-web/seamless.js"
-runTest "$commonScripts,shared/javascripts/privly-web/seamless_ttlselect.js,shared/test/privly-web/seamless_ttlselect.js"
+runTest "$commonScripts,shared/javascripts/viewAdapters/new.js,shared/test/viewAdapters/new.js"
+runTest "$commonScripts,shared/javascripts/viewAdapters/show.js,shared/test/viewAdapters/show.js"
+runTest "$commonScripts,shared/javascripts/viewAdapters/seamless.js,PlainPost/js/plainpostModel.js,shared/test/viewAdapters/seamless.js"
+runTest "$commonScripts,shared/javascripts/viewAdapters/seamless_ttlselect.js,shared/test/viewAdapters/seamless_ttlselect.js"
 # test app models
-runTest "$commonScripts,PlainPost/js/plainpostApp.js,PlainPost/test/plainpostApp.js"
-runTest "$commonScripts,Message/js/base64.js,Message/js/rawdeflate.js,Message/js/rawinflate.js,Message/js/zerobin.js,Message/test/zerobin.js,Message/js/messageApp.js,Message/test/messageApp.js"
+runTest "$commonScripts,PlainPost/js/plainpostModel.js,PlainPost/test/plainpostModel.js"
+runTest "$commonScripts,Message/js/vendor/base64.js,Message/js/vendor/rawdeflate.js,Message/js/vendor/rawinflate.js,Message/js/vendor/zerobin.js,Message/test/zerobin.js,Message/js/messageModel.js,Message/test/messageModel.js"
 
 if [ ! $ISFAIL -eq 0 ]
 then

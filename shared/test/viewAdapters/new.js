@@ -4,7 +4,7 @@
  **/
 /*global describe, it, expect, beforeEach, afterEach, jasmine */
 /*global Privly, Promise */
-describe('Privly.adapter.CreationProcess', function () {
+describe('Privly.app.viewAdapter.New', function () {
 
   beforeEach(function () {
     var domIDs = [
@@ -33,7 +33,7 @@ describe('Privly.adapter.CreationProcess', function () {
   eventFunctions.forEach(function (funcName) {
     it('emits before events for function ' + funcName, function (done) {
       var eventName = funcName.substr(0, 1).toUpperCase() + funcName.substr(1);
-      var adapter = new Privly.adapter.CreationProcess({});
+      var adapter = new Privly.app.viewAdapter.New({});
       adapter.on('before' + eventName, function () {
         done();
       });
@@ -42,7 +42,7 @@ describe('Privly.adapter.CreationProcess', function () {
 
     it('emits after events for function ' + funcName, function (done) {
       var eventName = funcName.substr(0, 1).toUpperCase() + funcName.substr(1);
-      var adapter = new Privly.adapter.CreationProcess({});
+      var adapter = new Privly.app.viewAdapter.New({});
       adapter.on('after' + eventName, function () {
         done();
       });
@@ -57,7 +57,7 @@ describe('Privly.adapter.CreationProcess', function () {
 
   // test createError
   it('emits before events for function createError and parameters are passed to event listeners', function (done) {
-    var adapter = new Privly.adapter.CreationProcess({});
+    var adapter = new Privly.app.viewAdapter.New({});
     adapter.on('beforeCreateError', function (response) {
       expect(response).toEqual(mockServerResponse);
       done();
@@ -66,7 +66,7 @@ describe('Privly.adapter.CreationProcess', function () {
   });
 
   it('emits after events for function createError', function (done) {
-    var adapter = new Privly.adapter.CreationProcess({});
+    var adapter = new Privly.app.viewAdapter.New({});
     adapter.on('afterCreateError', function () {
       done();
     });
@@ -76,7 +76,7 @@ describe('Privly.adapter.CreationProcess', function () {
   // test getRequestContent
   it('getRequestContent returns a Promise of default object if application.getRequestContent is not a function', function (done) {
     var application = {};
-    var adapter = new Privly.adapter.CreationProcess(application);
+    var adapter = new Privly.app.viewAdapter.New(application);
     expect(adapter.getRequestContent('hello').then).toEqual(jasmine.any(Function));
     adapter.getRequestContent('hello').then(function (obj) {
       expect(obj).toEqual({
@@ -97,7 +97,7 @@ describe('Privly.adapter.CreationProcess', function () {
         });
       }
     };
-    var adapter = new Privly.adapter.CreationProcess(application);
+    var adapter = new Privly.app.viewAdapter.New(application);
     adapter.getRequestContent('hello').then(function (obj) {
       expect(obj).toEqual({
         content: 'hello',       // specified by the application, it should keep
@@ -118,7 +118,7 @@ describe('Privly.adapter.CreationProcess', function () {
         });
       }
     };
-    var adapter = new Privly.adapter.CreationProcess(application);
+    var adapter = new Privly.app.viewAdapter.New(application);
     adapter.getRequestContent('hello').then(function (obj) {
       expect(obj).toEqual({
         content: 'hello123',
@@ -131,7 +131,7 @@ describe('Privly.adapter.CreationProcess', function () {
 
   it('postprocessLink returns a Promise of original link if application.postprocessLink is not a function', function (done) {
     var application = {};
-    var adapter = new Privly.adapter.CreationProcess(application);
+    var adapter = new Privly.app.viewAdapter.New(application);
     expect(adapter.postprocessLink('http://privlyalpha.com/123').then).toEqual(jasmine.any(Function));
     adapter.postprocessLink('http://privlyalpha.com/123').then(function (newUrl) {
       expect(newUrl).toBe('http://privlyalpha.com/123');
@@ -145,7 +145,7 @@ describe('Privly.adapter.CreationProcess', function () {
         return Promise.resolve(link + 'magic');
       }
     };
-    var adapter = new Privly.adapter.CreationProcess(application);
+    var adapter = new Privly.app.viewAdapter.New(application);
     adapter.postprocessLink('http://privlyalpha.com/123').then(function (newUrl) {
       expect(newUrl).toBe('http://privlyalpha.com/123magic');
       done();
@@ -159,7 +159,7 @@ describe('Privly.adapter.CreationProcess', function () {
 
     // first, let's test the situation that `start` is not hijacked
     function test1() {
-      var adapter = new Privly.adapter.CreationProcess({});
+      var adapter = new Privly.app.viewAdapter.New({});
       var beforeStart = false, afterStart = false, beforePendingLogin = false;
       adapter.on('beforeStart', function () {
         beforeStart = true;
@@ -181,7 +181,7 @@ describe('Privly.adapter.CreationProcess', function () {
 
     // then, let's test hijacked situation
     function test2() {
-      var adapter = new Privly.adapter.CreationProcess({});
+      var adapter = new Privly.app.viewAdapter.New({});
       var beforeStart = false, afterStart = false, beforePendingLogin = false;
       adapter.on('beforeStart', function () {
         beforeStart = true;
@@ -205,7 +205,7 @@ describe('Privly.adapter.CreationProcess', function () {
   });
 
   it('save calls postSubmit', function (done) {
-    var adapter = new Privly.adapter.CreationProcess({});
+    var adapter = new Privly.app.viewAdapter.New({});
     spyOn(adapter, 'postSubmit').and.callThrough();
     adapter.save().then(function () {
       expect(adapter.postSubmit).toHaveBeenCalled();

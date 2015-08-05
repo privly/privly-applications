@@ -21,10 +21,13 @@ if (Privly === undefined) {
 if (Privly.app === undefined) {
   Privly.app = {};
 }
+if (Privly.app.model === undefined) {
+  Privly.app.model = {};
+}
 
 (function () {
   // If this file is already loaded, don't do it again
-  if (Privly.app.Plainpost !== undefined) {
+  if (Privly.app.model.Plainpost !== undefined) {
     return;
   }
 
@@ -91,6 +94,6 @@ if (Privly.app === undefined) {
     ]);
   };
 
-  Privly.app.Plainpost = PlainpostApp;
+  Privly.app.model.Plainpost = PlainpostApp;
 
 }());

@@ -135,10 +135,13 @@ if (Privly === undefined) {
 if (Privly.app === undefined) {
   Privly.app = {};
 }
+if (Privly.app.model === undefined) {
+  Privly.app.model = {};
+}
 
 (function () {
   // If this file is already loaded, don't do it again
-  if (Privly.app.Message !== undefined) {
+  if (Privly.app.model.Message !== undefined) {
     return;
   }
 
@@ -307,6 +310,6 @@ if (Privly.app === undefined) {
     ]);
   };
 
-  Privly.app.Message = MessageApp;
+  Privly.app.model.Message = MessageApp;
 
 }());

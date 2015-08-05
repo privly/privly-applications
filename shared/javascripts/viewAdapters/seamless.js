@@ -33,13 +33,16 @@ var Privly;
 if (Privly === undefined) {
   Privly = {};
 }
-if (Privly.adapter === undefined) {
-  Privly.adapter = {};
+if (Privly.app === undefined) {
+  Privly.app = {};
+}
+if (Privly.app.viewAdapter === undefined) {
+  Privly.app.viewAdapter = {};
 }
 
 (function () {
   // If this file is already loaded, don't do it again
-  if (Privly.adapter.SeamlessPosting !== undefined) {
+  if (Privly.app.viewAdapter.Seamless !== undefined) {
     return;
   }
 
@@ -59,7 +62,7 @@ if (Privly.adapter === undefined) {
    *                   if the content is cleared. When the observer detects such
    *                   situation, it will just close the seamless-posting dialog.
    */
-  var SeamlessPostingAdapter = function (application, options) {
+  var SeamlessAdapter = function (application, options) {
     /**
      * The Privly URL that is created to insert to the editable element.
      * 
@@ -155,8 +158,9 @@ if (Privly.adapter === undefined) {
   };
 
   // Inhreit EventEmitter
-  Privly.EventEmitter.inherit(SeamlessPostingAdapter);
+  Privly.EventEmitter.inherit(SeamlessAdapter);
 
+  Privly.app.viewAdapter.Seamless = SeamlessAdapter;
 
   /**
    * Returns a function, that, as long as it continues to be invoked, will not
@@ -173,7 +177,7 @@ if (Privly.adapter === undefined) {
    * @param  {Boolean} immediate Whether to trigger the function on the leading edge
    * @return {Function} The throttled function
    */
-  SeamlessPostingAdapter.debounce = function (func, wait, immediate) {
+  SeamlessAdapter.debounce = function (func, wait, immediate) {
     var timeout;
     return function () {
       var context = this, args = arguments;
@@ -197,7 +201,7 @@ if (Privly.adapter === undefined) {
    * 
    * @return {Promise}
    */
-  SeamlessPostingAdapter.prototype.messageExtension = function (message, hasResponse) {
+  SeamlessAdapter.prototype.messageExtension = function (message, hasResponse) {
     var messageToSend = JSON.parse(JSON.stringify(message));
     // specify which context to be received
     messageToSend.targetContextId = this.sourceContextId;
@@ -211,7 +215,7 @@ if (Privly.adapter === undefined) {
    *
    * @return {Promise}
    */
-  SeamlessPostingAdapter.prototype.msgTextareaFocused = function () {
+  SeamlessAdapter.prototype.msgTextareaFocused = function () {
     return this.messageExtension({
       action: 'posting/contentScript/textareaFocused',
     });
@@ -222,7 +226,7 @@ if (Privly.adapter === undefined) {
    *
    * @return {Promise}
    */
-  SeamlessPostingAdapter.prototype.msgTextareaBlurred = function () {
+  SeamlessAdapter.prototype.msgTextareaBlurred = function () {
     return this.messageExtension({
       action: 'posting/contentScript/textareaBlurred',
     });
@@ -233,7 +237,7 @@ if (Privly.adapter === undefined) {
    *
    * @return {Promise}
    */
-  SeamlessPostingAdapter.prototype.msgStartLoading = function () {
+  SeamlessAdapter.prototype.msgStartLoading = function () {
     return this.messageExtension({
       action: 'posting/contentScript/loading',
       state: true
@@ -245,7 +249,7 @@ if (Privly.adapter === undefined) {
    *
    * @return {Promise}
    */
-  SeamlessPostingAdapter.prototype.msgStopLoading = function () {
+  SeamlessAdapter.prototype.msgStopLoading = function () {
     return this.messageExtension({
       action: 'posting/contentScript/loading',
       state: false
@@ -261,7 +265,7 @@ if (Privly.adapter === undefined) {
    * 
    * @return  {Promise<String>} content
    */
-  SeamlessPostingAdapter.prototype.msgGetTargetContent = function () {
+  SeamlessAdapter.prototype.msgGetTargetContent = function () {
     return this.messageExtension({
       action: 'posting/contentScript/getTargetContent'
     }, true);
@@ -272,7 +276,7 @@ if (Privly.adapter === undefined) {
    * 
    * @return {Promise<String>} text
    */
-  SeamlessPostingAdapter.prototype.msgGetTargetText = function () {
+  SeamlessAdapter.prototype.msgGetTargetText = function () {
     return this.messageExtension({
       action: 'posting/contentScript/getTargetText'
     }, true);
@@ -284,7 +288,7 @@ if (Privly.adapter === undefined) {
    * @param  {String} text
    * @return {Promise<Boolean>} Whether the operation succeeded
    */
-  SeamlessPostingAdapter.prototype.msgSetTargetText = function (text) {
+  SeamlessAdapter.prototype.msgSetTargetText = function (text) {
     return this.messageExtension({
       action: 'posting/contentScript/setTargetText',
       text: text
@@ -297,7 +301,7 @@ if (Privly.adapter === undefined) {
    * @param  {String} link The link to insert
    * @return  {Promise<Boolean>} Whether the operation succeeded
    */
-  SeamlessPostingAdapter.prototype.msgInsertLink = function (link) {
+  SeamlessAdapter.prototype.msgInsertLink = function (link) {
     return this.messageExtension({
       action: 'posting/contentScript/insertLink',
       link: link
@@ -315,7 +319,7 @@ if (Privly.adapter === undefined) {
    *           {Boolean} meta
    * @return  {Promise<Boolean>} Whether the operation succeeded
    */
-  SeamlessPostingAdapter.prototype.msgEmitEnterEvent = function (keys) {
+  SeamlessAdapter.prototype.msgEmitEnterEvent = function (keys) {
     return this.messageExtension({
       action: 'posting/contentScript/emitEnterEvent',
       keys: keys
@@ -327,7 +331,7 @@ if (Privly.adapter === undefined) {
    *
    * @return  {Promise}
    */
-  SeamlessPostingAdapter.prototype.msgPopupLoginDialog = function () {
+  SeamlessAdapter.prototype.msgPopupLoginDialog = function () {
     return this.messageExtension({
       action: 'posting/background/popupLogin',
       loginCallbackUrl: '../Pages/SeamlessPostingLoginCallback.html'
@@ -339,7 +343,7 @@ if (Privly.adapter === undefined) {
    *
    * @return  {Promise}
    */
-  SeamlessPostingAdapter.prototype.msgAppClosed = function () {
+  SeamlessAdapter.prototype.msgAppClosed = function () {
     return this.messageExtension({
       action: 'posting/contentScript/appClosed'
     });
@@ -350,7 +354,7 @@ if (Privly.adapter === undefined) {
    * 
    * @return  {Promise}
    */
-  SeamlessPostingAdapter.prototype.msgAppStarted = function () {
+  SeamlessAdapter.prototype.msgAppStarted = function () {
     return this.messageExtension({
       action: 'posting/contentScript/appStarted'
     });
@@ -365,7 +369,7 @@ if (Privly.adapter === undefined) {
    *           {String} structured_content
    *           {Boolean} isPublic
    */
-  SeamlessPostingAdapter.prototype.getRequestContent = function (content) {
+  SeamlessAdapter.prototype.getRequestContent = function (content) {
     var promise;
     if (typeof this.application.getRequestContent === 'function') {
       promise = this.application.getRequestContent(content);
@@ -394,7 +398,7 @@ if (Privly.adapter === undefined) {
    * @param  {String} link
    * @return {Promise<String>} The processed link
    */
-  SeamlessPostingAdapter.prototype.postprocessLink = function (link) {
+  SeamlessAdapter.prototype.postprocessLink = function (link) {
     var promise;
     if (typeof this.application.postprocessLink === 'function') {
       promise = this.application.postprocessLink(link);
@@ -412,7 +416,7 @@ if (Privly.adapter === undefined) {
    *           {String} ttl       The seconds_util_burn value of the option
    *           {Boolean} default  Whether this option is the default option
    */
-  SeamlessPostingAdapter.prototype.getTTLOptions = function () {
+  SeamlessAdapter.prototype.getTTLOptions = function () {
     var promise;
     if (typeof this.application.getTTLOptions === 'function') {
       promise = this.application.getTTLOptions();
@@ -428,7 +432,7 @@ if (Privly.adapter === undefined) {
    * @param  {String} url
    * @return {Promise<String>} the content of the link
    */
-  SeamlessPostingAdapter.prototype.loadLink = function (link) {
+  SeamlessAdapter.prototype.loadLink = function (link) {
     var self = this;
     var url = privlyParameters.getApplicationUrl(link);
     var reqUrl = privlyParameters.getParameterHash(url).privlyDataURL;
@@ -470,7 +474,7 @@ if (Privly.adapter === undefined) {
    * 
    * @return  {Promise}
    */
-  SeamlessPostingAdapter.prototype.createLink = function () {
+  SeamlessAdapter.prototype.createLink = function () {
     var self = this;
     return self
       .getRequestContent($('textarea').val())
@@ -515,7 +519,7 @@ if (Privly.adapter === undefined) {
    * 
    * @return  {Promise}
    */
-  SeamlessPostingAdapter.prototype.updateLink = function () {
+  SeamlessAdapter.prototype.updateLink = function () {
     var self = this;
 
     if (self.privlyUrl === null) {
@@ -560,7 +564,7 @@ if (Privly.adapter === undefined) {
    * 
    * @return  {Promise}
    */
-  SeamlessPostingAdapter.prototype.deleteLink = function () {
+  SeamlessAdapter.prototype.deleteLink = function () {
     var self = this;
 
     if (self.privlyUrl === null) {
@@ -594,7 +598,7 @@ if (Privly.adapter === undefined) {
    * If Privly URL is removed in the content of the editable element,
    * we should close the embed-posting dialog.
    */
-  SeamlessPostingAdapter.prototype.beginContentClearObserver = function () {
+  SeamlessAdapter.prototype.beginContentClearObserver = function () {
     var self = this;
 
     if (self.clearObserver) {
@@ -623,7 +627,7 @@ if (Privly.adapter === undefined) {
    *
    * @return {Promise}
    */
-  SeamlessPostingAdapter.prototype.onConnectionCheckSucceeded = function () {
+  SeamlessAdapter.prototype.onConnectionCheckSucceeded = function () {
     var self = this;
     return self
       .emitAsync('connectionCheckSucceeded')
@@ -683,7 +687,7 @@ if (Privly.adapter === undefined) {
    * 
    * @return {Promise}
    */
-  SeamlessPostingAdapter.prototype.onConnectionCheckFailed = function () {
+  SeamlessAdapter.prototype.onConnectionCheckFailed = function () {
     var self = this;
     return self
       .emitAsync('connectionCheckFailed')
@@ -697,7 +701,7 @@ if (Privly.adapter === undefined) {
    * 
    * @return {Promise}
    */
-  SeamlessPostingAdapter.prototype.onHitKey = function (ev) {
+  SeamlessAdapter.prototype.onHitKey = function (ev) {
     var self = this;
     return self
       .updateLink()
@@ -719,7 +723,7 @@ if (Privly.adapter === undefined) {
    * @param  {Object} message
    * @param  {Function} sendResponse
    */
-  SeamlessPostingAdapter.prototype.onMessageReceived = function (message) {
+  SeamlessAdapter.prototype.onMessageReceived = function (message) {
     var self = this;
     switch (message.action) {
     case 'posting/app/userClose':
@@ -742,7 +746,7 @@ if (Privly.adapter === undefined) {
    * 
    * @param  {String} ttl
    */
-  SeamlessPostingAdapter.prototype.onSetTTL = function (ttl) {
+  SeamlessAdapter.prototype.onSetTTL = function (ttl) {
     this.ttl = ttl;
     this.updateLink();
   };
@@ -752,7 +756,7 @@ if (Privly.adapter === undefined) {
    * 
    * @param  {Object} styles
    */
-  SeamlessPostingAdapter.prototype.updateStyle = function (styles) {
+  SeamlessAdapter.prototype.updateStyle = function (styles) {
     var inputElement = $('textarea')[0];
     var styleName;
     for (styleName in styles) {
@@ -772,7 +776,7 @@ if (Privly.adapter === undefined) {
    * 
    * @param  {String} state
    */
-  SeamlessPostingAdapter.prototype.onStateChanged = function (state) {
+  SeamlessAdapter.prototype.onStateChanged = function (state) {
     switch (state) {
     case 'OPEN':
       $('textarea').focus();
@@ -785,7 +789,7 @@ if (Privly.adapter === undefined) {
    *
    * @return  {Promise}
    */
-  SeamlessPostingAdapter.prototype.onUserClose = function () {
+  SeamlessAdapter.prototype.onUserClose = function () {
     var self = this;
     return self
       .deleteLink()
@@ -796,7 +800,7 @@ if (Privly.adapter === undefined) {
   /**
    * Start the seamless-posting adapter
    */
-  SeamlessPostingAdapter.prototype.start = function () {
+  SeamlessAdapter.prototype.start = function () {
     var self = this;
     if (self.started) {
       return;
@@ -813,7 +817,7 @@ if (Privly.adapter === undefined) {
 
     // add event listeners to forward ENTER key events
     $('textarea').keydown((function () {
-      var debouncedListener = SeamlessPostingAdapter.debounce(self.onHitKey.bind(self), 300);
+      var debouncedListener = SeamlessAdapter.debounce(self.onHitKey.bind(self), 300);
       return function (ev) {
         debouncedListener(ev);
       };
@@ -836,7 +840,5 @@ if (Privly.adapter === undefined) {
       self.onConnectionCheckFailed.bind(self)
     );
   };
-
-  Privly.adapter.SeamlessPosting = SeamlessPostingAdapter;
 
 }());

@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
     return;
   }
 
-  var adapter = new Privly.adapter.CreationProcess({});
+  var adapter = new Privly.app.viewAdapter.New({});
 
   adapter.on('beforePendingLogin', function () {
     callbacks.pendingLogin();

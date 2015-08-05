@@ -4,8 +4,8 @@
  * to bring event emitter feature to his/her own class.
  *
  * Event emitter is used in `new` adapter and `seamless`
- * adapter. See shared/javascripts/privly-web/new.js and
- * shared/javascripts/privly-web/seamless.js for examples.
+ * adapter. See shared/javascripts/viewAdapters/new.js and
+ * shared/javascripts/viewAdapters/seamless.js for examples.
  */
 
 // If Privly namespace is not initialized, initialize it

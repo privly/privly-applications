@@ -4,7 +4,7 @@
  **/
 /*global describe, it, expect, beforeEach, afterEach, jasmine, spyOn */
 /*global Privly, Promise, privlyNetworkService */
-describe('Privly.adapter.SeamlessPosting', function () {
+describe('Privly.app.viewAdapter.Seamless', function () {
 
   var msgSent;
   var requestJson;
@@ -25,7 +25,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
     document.body.innerHTML = '<textarea>hello</textarea>';
 
     // reset mock data
-    testApp = new Privly.app.Plainpost();
+    testApp = new Privly.app.model.Plainpost();
     testJson = {
       "burn_after_date": "2015-08-25T01:55:46Z",
       "content": "123",
@@ -145,7 +145,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   it('debounce works', function (done) {
     var counter = 0;
     var foo = function () { counter++; };
-    var debouncedFoo = Privly.adapter.SeamlessPosting.debounce(foo, 50);
+    var debouncedFoo = Privly.app.viewAdapter.Seamless.debounce(foo, 50);
     debouncedFoo();
     debouncedFoo();
     setTimeout(function () {
@@ -158,21 +158,21 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('msgTextareaFocused calls Privly.message.messageExtension', function () {
-    var adapter = new Privly.adapter.SeamlessPosting({});
+    var adapter = new Privly.app.viewAdapter.Seamless({});
     adapter.msgTextareaFocused();
     expect(Privly.message.messageExtension).toHaveBeenCalled();
     expect(msgSent[0].action).toBe('posting/contentScript/textareaFocused');
   });
 
   it('msgTextareaBlurred calls Privly.message.messageExtension', function () {
-    var adapter = new Privly.adapter.SeamlessPosting({});
+    var adapter = new Privly.app.viewAdapter.Seamless({});
     adapter.msgTextareaBlurred();
     expect(Privly.message.messageExtension).toHaveBeenCalled();
     expect(msgSent[0].action).toBe('posting/contentScript/textareaBlurred');
   });
 
   it('msgStartLoading calls Privly.message.messageExtension', function () {
-    var adapter = new Privly.adapter.SeamlessPosting({});
+    var adapter = new Privly.app.viewAdapter.Seamless({});
     adapter.msgStartLoading();
     expect(Privly.message.messageExtension).toHaveBeenCalled();
     expect(msgSent[0].action).toBe('posting/contentScript/loading');
@@ -180,7 +180,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('msgStopLoading calls Privly.message.messageExtension', function () {
-    var adapter = new Privly.adapter.SeamlessPosting({});
+    var adapter = new Privly.app.viewAdapter.Seamless({});
     adapter.msgStopLoading();
     expect(Privly.message.messageExtension).toHaveBeenCalled();
     expect(msgSent[0].action).toBe('posting/contentScript/loading');
@@ -188,7 +188,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('msgGetTargetContent calls Privly.message.messageExtension', function () {
-    var adapter = new Privly.adapter.SeamlessPosting({});
+    var adapter = new Privly.app.viewAdapter.Seamless({});
     adapter.msgGetTargetContent();
     expect(Privly.message.messageExtension).toHaveBeenCalled();
     expect(msgSent[0].action).toBe('posting/contentScript/getTargetContent');
@@ -196,7 +196,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('msgGetTargetText calls Privly.message.messageExtension', function () {
-    var adapter = new Privly.adapter.SeamlessPosting({});
+    var adapter = new Privly.app.viewAdapter.Seamless({});
     adapter.msgGetTargetText();
     expect(Privly.message.messageExtension).toHaveBeenCalled();
     expect(msgSent[0].action).toBe('posting/contentScript/getTargetText');
@@ -204,7 +204,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('msgSetTargetText calls Privly.message.messageExtension', function () {
-    var adapter = new Privly.adapter.SeamlessPosting({});
+    var adapter = new Privly.app.viewAdapter.Seamless({});
     adapter.msgSetTargetText('abc');
     expect(Privly.message.messageExtension).toHaveBeenCalled();
     expect(msgSent[0].action).toBe('posting/contentScript/setTargetText');
@@ -213,7 +213,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('msgInsertLink calls Privly.message.messageExtension', function () {
-    var adapter = new Privly.adapter.SeamlessPosting({});
+    var adapter = new Privly.app.viewAdapter.Seamless({});
     adapter.msgInsertLink('http://privlyalpha.com/123');
     expect(Privly.message.messageExtension).toHaveBeenCalled();
     expect(msgSent[0].action).toBe('posting/contentScript/insertLink');
@@ -222,7 +222,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('msgEmitEnterEvent calls Privly.message.messageExtension', function () {
-    var adapter = new Privly.adapter.SeamlessPosting({});
+    var adapter = new Privly.app.viewAdapter.Seamless({});
     adapter.msgEmitEnterEvent({
       meta: true,
       shift: true
@@ -237,21 +237,21 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('msgPopupLoginDialog calls Privly.message.messageExtension', function () {
-    var adapter = new Privly.adapter.SeamlessPosting({});
+    var adapter = new Privly.app.viewAdapter.Seamless({});
     adapter.msgPopupLoginDialog();
     expect(Privly.message.messageExtension).toHaveBeenCalled();
     expect(msgSent[0].action).toBe('posting/background/popupLogin');
   });
 
   it('msgAppClosed calls Privly.message.messageExtension', function () {
-    var adapter = new Privly.adapter.SeamlessPosting({});
+    var adapter = new Privly.app.viewAdapter.Seamless({});
     adapter.msgAppClosed();
     expect(Privly.message.messageExtension).toHaveBeenCalled();
     expect(msgSent[0].action).toBe('posting/contentScript/appClosed');
   });
 
   it('msgAppStarted calls Privly.message.messageExtension', function () {
-    var adapter = new Privly.adapter.SeamlessPosting({});
+    var adapter = new Privly.app.viewAdapter.Seamless({});
     adapter.msgAppStarted();
     expect(Privly.message.messageExtension).toHaveBeenCalled();
     expect(msgSent[0].action).toBe('posting/contentScript/appStarted');
@@ -261,7 +261,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   // test getRequestContent
   it('getRequestContent returns a Promise of default object if application.getRequestContent is not a function', function (done) {
     var application = {};
-    var adapter = new Privly.adapter.SeamlessPosting(application);
+    var adapter = new Privly.app.viewAdapter.Seamless(application);
     expect(adapter.getRequestContent('hello').then).toEqual(jasmine.any(Function));
     adapter.getRequestContent('hello').then(function (obj) {
       expect(obj).toEqual({
@@ -282,7 +282,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
         });
       }
     };
-    var adapter = new Privly.adapter.SeamlessPosting(application);
+    var adapter = new Privly.app.viewAdapter.Seamless(application);
     adapter.getRequestContent('hello').then(function (obj) {
       expect(obj).toEqual({
         content: 'hello',       // specified by the application, it should keep
@@ -303,7 +303,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
         });
       }
     };
-    var adapter = new Privly.adapter.SeamlessPosting(application);
+    var adapter = new Privly.app.viewAdapter.Seamless(application);
     adapter.getRequestContent('hello').then(function (obj) {
       expect(obj).toEqual({
         content: 'hello123',
@@ -316,7 +316,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
 
   it('postprocessLink returns a Promise of original link if application.postprocessLink is not a function', function (done) {
     var application = {};
-    var adapter = new Privly.adapter.SeamlessPosting(application);
+    var adapter = new Privly.app.viewAdapter.Seamless(application);
     expect(adapter.postprocessLink('http://privlyalpha.com/123').then).toEqual(jasmine.any(Function));
     adapter.postprocessLink('http://privlyalpha.com/123').then(function (newUrl) {
       expect(newUrl).toBe('http://privlyalpha.com/123');
@@ -330,7 +330,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
         return Promise.resolve(link + 'magic');
       }
     };
-    var adapter = new Privly.adapter.SeamlessPosting(application);
+    var adapter = new Privly.app.viewAdapter.Seamless(application);
     adapter.postprocessLink('http://privlyalpha.com/123').then(function (newUrl) {
       expect(newUrl).toBe('http://privlyalpha.com/123magic');
       done();
@@ -339,7 +339,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
 
   it('getTTLOptions returns a Promise of empty array if application.getTTLOptions is not a function', function (done) {
     var application = {};
-    var adapter = new Privly.adapter.SeamlessPosting(application);
+    var adapter = new Privly.app.viewAdapter.Seamless(application);
     expect(adapter.getTTLOptions().then).toEqual(jasmine.any(Function));
     adapter.getTTLOptions().then(function (options) {
       expect(options).toEqual([]);
@@ -356,7 +356,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
         ]);
       }
     };
-    var adapter = new Privly.adapter.SeamlessPosting(application);
+    var adapter = new Privly.app.viewAdapter.Seamless(application);
     adapter.getTTLOptions().then(function (options) {
       expect(options).toEqual([
         {ttl: 1, text: 'text for 1'},
@@ -367,7 +367,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('onHitKey calls msgEmitEnterEvent if keyCode is 13', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting({});
+    var adapter = new Privly.app.viewAdapter.Seamless({});
     adapter.msgEmitEnterEvent = function (modifier) {
       expect(modifier.ctrl).toBe(true);
       done();
@@ -379,7 +379,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('calls onUserClose if receives message userClose', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting({});
+    var adapter = new Privly.app.viewAdapter.Seamless({});
     adapter.onUserClose = function () {
       done();
     };
@@ -389,7 +389,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('calls updateStyle if receives message updateStyles', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting({});
+    var adapter = new Privly.app.viewAdapter.Seamless({});
     adapter.updateStyle = function (styles) {
       expect(styles.borderColor).toBe('red');
       done();
@@ -403,7 +403,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('calls onStateChanged if receives message stateChanged', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting({});
+    var adapter = new Privly.app.viewAdapter.Seamless({});
     adapter.onStateChanged = function (state) {
       expect(state).toBe('OPEN');
       done();
@@ -415,7 +415,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('calls onSetTTL if receives message setTTL', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting({});
+    var adapter = new Privly.app.viewAdapter.Seamless({});
     adapter.onSetTTL = function (ttl) {
       expect(ttl).toBe('180');
       done();
@@ -427,7 +427,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('loadLink returns plaintext when user has edit permissions', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp);
     adapter.loadLink(testPrivlyUrl).then(function (plaintext) {
       // expect plaintext
       expect(plaintext).toBe('123');
@@ -448,7 +448,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
       candestroy: false,
       canshare: true
     };
-    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp);
     adapter.loadLink(testPrivlyUrl).then(function () {
       // should not go here
       expect(true).toBe(false);
@@ -460,7 +460,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('loadLink rejects when the content was destroyed', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp);
     adapter.loadLink(testDestroyedUrl).then(function () {
       // should not go here
       expect(true).toBe(false);
@@ -472,7 +472,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('createLink send requests to create a new link', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp);
     adapter.createLink().then(function (link) {
       expect(privlyNetworkService.sameOriginPostRequest).toHaveBeenCalled();
       expect(requestJson.content).toBe('hello');
@@ -491,7 +491,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('updateLink does not send requests when link is not loaded or created', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp);
     document.getElementsByTagName('TEXTAREA')[0].value = 'hello2';
     adapter.updateLink().then(function () {
       expect(privlyNetworkService.sameOriginPutRequest).not.toHaveBeenCalled();
@@ -504,7 +504,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('updateLink send requests to update the loaded or created link', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp);
     adapter.loadLink(testPrivlyUrl).then(function () {
       document.getElementsByTagName('TEXTAREA')[0].value = 'hello2';
       adapter.updateLink().then(function () {
@@ -520,7 +520,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('deleteLink does not send requests when link is not loaded or created', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp);
     adapter.deleteLink().then(function () {
       expect(privlyNetworkService.sameOriginDeleteRequest).not.toHaveBeenCalled();
       done();
@@ -532,7 +532,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('deleteLink send requests to delete the loaded or created link', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp);
     adapter.loadLink(testPrivlyUrl).then(function () {
       adapter.deleteLink().then(function () {
         expect(privlyNetworkService.sameOriginDeleteRequest).toHaveBeenCalled();
@@ -546,7 +546,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('onConnectionCheckSucceeded will create a link if the content does not contain a Privly link', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp);
     adapter.beginContentClearObserver = function () {
       return Promise.resolve();
     };
@@ -574,7 +574,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('onConnectionCheckSucceeded will load the link if the content contains a editable Privly link', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp);
     adapter.beginContentClearObserver = function () {
       return Promise.resolve();
     };
@@ -603,7 +603,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('onConnectionCheckSucceeded will create a link if the content contains a non-editable Privly link', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp);
     testJson.permissions = {
       canshow: true,
       canupdate: false,
@@ -637,7 +637,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('onConnectionCheckSucceeded will create a link if the content contains an invalid Privly link', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp);
     adapter.beginContentClearObserver = function () {
       return Promise.resolve();
     };
@@ -665,7 +665,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('onConnectionCheckSucceeded will fail if insertion link fails', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp);
     adapter.beginContentClearObserver = function () {
       return Promise.resolve();
     };
@@ -693,7 +693,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('onConnectionCheckFailed will destroy the app', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp);
     spyOn(adapter, 'msgAppClosed').and.callThrough();
     adapter.onConnectionCheckFailed().then(function () {
       expect(adapter.msgAppClosed).toHaveBeenCalled();
@@ -702,7 +702,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('beginContentClearObserver close the app if target content does not contain our created link', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting(testApp, {observeInterval: 50});
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp, {observeInterval: 50});
     adapter.msgGetTargetContent = function () {
       return Promise.resolve('cleared');
     };
@@ -718,7 +718,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('beginContentClearObserver does not close the app if target content contains our created link', function (done) {
-    var adapter = new Privly.adapter.SeamlessPosting(testApp, {observeInterval: 50});
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp, {observeInterval: 50});
     adapter.msgGetTargetContent = function () {
       return Promise.resolve(testPrivlyUrl);
     };
@@ -735,14 +735,14 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('onSetTTL calls updateLink', function () {
-    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp);
     spyOn(adapter, 'updateLink').and.callThrough();
     adapter.onSetTTL('');
     expect(adapter.updateLink).toHaveBeenCalled();
   });
 
   it('updateStyle updates textarea styles', function () {
-    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp);
     adapter.updateStyle({
       'borderColor': 'red',
       'fontSize': '14px'
@@ -753,7 +753,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('onUserClose calls deleteLink and destroys the app', function () {
-    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp);
     adapter.msgSetTargetText = function () {
       return Promise.resolve();
     };
@@ -766,7 +766,7 @@ describe('Privly.adapter.SeamlessPosting', function () {
   });
 
   it('start sets button state to loading', function () {
-    var adapter = new Privly.adapter.SeamlessPosting(testApp);
+    var adapter = new Privly.app.viewAdapter.Seamless(testApp);
     spyOn(adapter, 'msgStartLoading').and.callThrough();
     adapter.start();
     expect(adapter.msgStartLoading).toHaveBeenCalled();

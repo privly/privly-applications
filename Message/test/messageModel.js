@@ -4,7 +4,7 @@
  **/
 /*global describe, it, expect, beforeEach */
 /*global Privly, privlyNetworkService */
-describe("Privly.app.Message", function () {
+describe("Privly.app.model.Message", function () {
 
   beforeEach(function () {
     privlyNetworkService.platformName = function () {
@@ -13,7 +13,7 @@ describe("Privly.app.Message", function () {
   });
 
   it("processes Urls", function (done) {
-    var app = new Privly.app.Message();
+    var app = new Privly.app.model.Message();
     Privly.storage.remove('Message:URLs');
     app.randomkey = 'kjflksjflakjfs=';
     app.postprocessLink('http://dev.privly.org/lksdjfslkfjd').then(function (url) {
@@ -23,14 +23,14 @@ describe("Privly.app.Message", function () {
   });
 
   it("stores key to localStorage", function () {
-    var app = new Privly.app.Message();
+    var app = new Privly.app.model.Message();
     Privly.storage.remove('Message:URLs');
     app.storeUrl('http://dev.privly.org/lksdjfslkfjd#privlyLinkKey=kjflksjflakjfs%3D');
     expect(Privly.storage.get('Message:URLs')[0]).toBe('http://dev.privly.org/lksdjfslkfjd#privlyLinkKey=kjflksjflakjfs%3D');
   });
 
   it("recovers key from localStorage", function () {
-    var app = new Privly.app.Message();
+    var app = new Privly.app.model.Message();
 
     // Run test
     var url = "https://priv.ly/test/show?fu=bar";
@@ -43,7 +43,7 @@ describe("Privly.app.Message", function () {
   });
 
   it("does not recover key from localStorage", function () {
-    var app = new Privly.app.Message();
+    var app = new Privly.app.model.Message();
 
     // Run test
     var url = "https://priv.ly/test/show?fu=bar";
@@ -57,7 +57,7 @@ describe("Privly.app.Message", function () {
   });
 
   it("can encrypt content", function (done) {
-    var app = new Privly.app.Message();
+    var app = new Privly.app.model.Message();
     app.randomkey = "GMvZYPcobEY2ECzrmXIuDisb7FUo19IKyHCQfNoppno=";
     app.getRequestContent('changed').then(function (json) {
       expect(json.content).toBe('');
@@ -67,7 +67,7 @@ describe("Privly.app.Message", function () {
   });
 
   it("can decrypt content", function (done) {
-    var app = new Privly.app.Message();
+    var app = new Privly.app.model.Message();
     var json = {
       "burn_after_date": "2015-06-20T16:23:11Z",
       "content": "",

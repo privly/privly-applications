@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', function () {
     preview.innerHTML = markdown.toHTML(mkdwn);
   }
 
-  var app = new Privly.app.Plainpost();
-  var adapter = new Privly.adapter.CreationProcess(app);
+  var app = new Privly.app.model.Plainpost();
+  var adapter = new Privly.app.viewAdapter.New(app);
 
   adapter.on('afterConnectionSucceeded', function () {
     var contentElement = document.getElementById("content");
