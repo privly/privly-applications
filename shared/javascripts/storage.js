@@ -33,6 +33,7 @@ if (Privly === undefined) {
     module.exports.storage = Privly.storage;
     // load dependencies
     ls = require("./local_storage.js").ls;
+    module.exports.ls = ls;
   }
 
   /**
