@@ -4,11 +4,6 @@ class TestMessage < Test::Unit::TestCase
   include Capybara::DSL # Provides for Webdriving
 
   def test_message_between_extension_and_application
-
-    if not @@privly_extension_active
-      return
-    end
-
     @background_url = Capybara.app_host + "/background.html"
     @privly_app_url = @@privly_applications_folder_path + "Pages/MessageTest.html"
 
@@ -23,15 +18,9 @@ class TestMessage < Test::Unit::TestCase
     assert page.find(:css, '#response').has_text?('pong/BACKGROUND_SCRIPT/magic_1/' + @background_url)
     assert page.find(:css, '#response').has_text?('pongAsync/BACKGROUND_SCRIPT/magic_1/' + @background_url)
     find(:css, '[name="clear"]').click
-
   end
 
   def test_message_between_application_and_application
-
-    if not @@privly_extension_active
-      return
-    end
-
     @background_url = Capybara.app_host + "/background.html"
     @privly_app_url = @@privly_applications_folder_path + "Pages/MessageTest.html"
 
@@ -43,7 +32,6 @@ class TestMessage < Test::Unit::TestCase
     assert page.find(:css, '#response').has_text?('pong/PRIVLY_APPLICATION/magic_2/' + @privly_app_url)
     assert page.find(:css, '#response').has_text?('pongAsync/PRIVLY_APPLICATION/magic_2/' + @privly_app_url)
     find(:css, '[name="clear"]').click
-
   end
 
 end
