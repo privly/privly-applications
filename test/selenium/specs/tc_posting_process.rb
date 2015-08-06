@@ -1,5 +1,5 @@
-# This test should only be run on Firefox and Safari,
-# the posting process for Chrome has changed.
+# This test should only be run on Firefox, the posting process for Chrome 
+# has changed.
 class TestPostingProcess < Test::Unit::TestCase
 
   # Helps perform authentication with the content server
@@ -22,7 +22,7 @@ class TestPostingProcess < Test::Unit::TestCase
   end
 
   # Helper Functions
-  #
+
   # Clicks the privly button and returns the resulting privly application
   # window
   def click_privly_button
@@ -42,6 +42,7 @@ class TestPostingProcess < Test::Unit::TestCase
     end
     new_window
   end
+
   # Enters a message in the privly application
   def enter_message(app_window)
     within_window app_window do
@@ -54,6 +55,7 @@ class TestPostingProcess < Test::Unit::TestCase
     # Give some time to close the app window
     sleep 1.5
   end
+
   # Checks for a successful post
   def assert_successful_post(app_window)
     # Makes sure the posting application window is closed
@@ -77,6 +79,7 @@ class TestPostingProcess < Test::Unit::TestCase
     enter_message(new_window)
     assert_successful_post(new_window)
   end
+
   # Tests if an already pending post works after a new post attempt
   def test_pending_post
     new_window = click_privly_button
@@ -91,6 +94,7 @@ class TestPostingProcess < Test::Unit::TestCase
     enter_message(new_window)
     assert_successful_post(new_window)
   end
+
   # Tests if a new post works after a canceled post
   def test_canceled_post
     new_window = click_privly_button
@@ -106,6 +110,7 @@ class TestPostingProcess < Test::Unit::TestCase
     enter_message(new_window)
     assert_successful_post(new_window)
   end
+
   # Tests if the posting process works for an iframe
   def test_posting_iframe
     @privly_testing = 'IFRAME'
@@ -123,4 +128,5 @@ class TestPostingProcess < Test::Unit::TestCase
     Capybara.reset_sessions!
     Capybara.use_default_driver
   end
+
 end
