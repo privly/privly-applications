@@ -49,10 +49,11 @@ if (Privly === undefined) {
 
   // CommonJS Module
   if (typeof module !== "undefined" && module.exports) {
-    module.exports.glyph = Privly.glyph;
     // load dependencies    
     var optionsModule = require("./options.js");
     Privly.options = optionsModule.options;
+    // export interfaces
+    module.exports.glyph = Privly.glyph;
     module.exports.options = optionsModule.options;
     module.exports.storage = optionsModule.storage;
     module.exports.message = optionsModule.message;

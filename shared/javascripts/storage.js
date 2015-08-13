@@ -30,9 +30,12 @@ if (Privly === undefined) {
 
   // CommonJS Module
   if (typeof module !== "undefined" && module.exports) {
-    module.exports.storage = Privly.storage;
     // load dependencies
     ls = require("./local_storage.js").ls;
+    Privly.message = require("./context_messenger.js").message;
+    // export interfaces
+    module.exports.storage = Privly.storage;
+    module.exports.message = Privly.message;
     module.exports.ls = ls;
   }
 
