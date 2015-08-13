@@ -60,14 +60,14 @@ describe('Privly.options', function () {
     expect(ls.getItem('posting_content_server_url')).not.toBeDefined();
 
     ls.setItem('glyph_color', '001122');
-    ls.setItem('glyph_cell', 'true,true,false,true,false,true,false,false,false,true,false,true,false,true,false');
+    ls.setItem('glyph_cells', 'true,true,false,true,false,true,false,false,false,true,false,true,false,true,false');
     Privly.options.upgrade();
     var glyph = Privly.options.getGlyph();
     expect(glyph).toEqual(jasmine.any(Object));
     expect(glyph.color).toBe('001122');
     expect(glyph.cells).toEqual([true, true, false, true, false, true, false, false, false, true, false, true, false, true, false]);
     expect(ls.getItem('glyph_color')).not.toBeDefined();
-    expect(ls.getItem('glyph_cell')).not.toBeDefined();
+    expect(ls.getItem('glyph_cells')).not.toBeDefined();
   });
 
   it('upgrade() should not change existing options if there are no old options', function () {
