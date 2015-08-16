@@ -962,20 +962,26 @@ if (Privly === undefined) {
   try {
     Privly.message.addListener(function (message, sendResponse) {
       if (message !== null && typeof message === 'object' && (message.action === 'ping' || message.action === 'pingAsync')) {
-        var responseBody = {
-          action: message.action === 'ping' ? 'pong' : 'pongAsync',
-          timestamp: Date.now(),
-          platform: Privly.message.currentAdapter.getPlatformName(),
-          context: Privly.message.currentAdapter.getContextName(),
-          location: location.href,
-          data: message.data
-        };
-        if (message.action === 'ping') {
-          sendResponse(responseBody);
-        } else if (message.action === 'pingAsync') {
-          setTimeout(function () {
+        var platform = Privly.message.currentAdapter.getPlatformName();
+        // Only for Firefox
+        // Don't respond if the message is intended for the extension background scripts.
+        // Messages sent to the background scripts are received by the content scripts.
+        if (platform !== "FIREFOX" || message.name !== "messageExtension") {
+          var responseBody = {
+            action: message.action === 'ping' ? 'pong' : 'pongAsync',
+            timestamp: Date.now(),
+            platform: platform,
+            context: Privly.message.currentAdapter.getContextName(),
+            location: location.href,
+            data: message.data
+          };
+          if (message.action === 'ping') {
             sendResponse(responseBody);
-          }, 1);
+          } else if (message.action === 'pingAsync') {
+            setTimeout(function () {
+              sendResponse(responseBody);
+            }, 1);
+          }
         }
       }
     });

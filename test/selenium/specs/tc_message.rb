@@ -15,8 +15,19 @@ class TestMessage < Test::Unit::TestCase
 
     fill_in 'data', :with => 'magic_1'
     find(:css, '[name="to_extension"]').click
-    assert page.find(:css, '#response').has_text?('pong/BACKGROUND_SCRIPT/magic_1/' + @background_url)
-    assert page.find(:css, '#response').has_text?('pongAsync/BACKGROUND_SCRIPT/magic_1/' + @background_url)
+
+    if Capybara.app_host == "chrome://privly"
+      # Firefox
+      response = 'pong/BACKGROUND_SCRIPT/magic_1'
+      async_response = 'pongAsync/BACKGROUND_SCRIPT/magic_1'
+    else
+      # Chrome
+      response = 'pong/BACKGROUND_SCRIPT/magic_1/' + @background_url
+      async_response = 'pongAsync/BACKGROUND_SCRIPT/magic_1/' + @background_url
+    end
+
+    assert page.find(:css, '#response').has_text?(response)
+    assert page.find(:css, '#response').has_text?(async_response)
     find(:css, '[name="clear"]').click
   end
 
