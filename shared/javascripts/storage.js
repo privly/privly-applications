@@ -28,6 +28,17 @@ if (Privly === undefined) {
   }
   Privly.storage = {};
 
+  // CommonJS Module
+  if (typeof module !== "undefined" && module.exports) {
+    // load dependencies
+    ls = require("./local_storage.js").ls;
+    Privly.message = require("./context_messenger.js").message;
+    // export interfaces
+    module.exports.storage = Privly.storage;
+    module.exports.message = Privly.message;
+    module.exports.ls = ls;
+  }
+
   /**
    * Set an item to the storage.
    * This function doesn't return values;

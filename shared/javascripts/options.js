@@ -43,7 +43,7 @@
  *
  * - options/glyph {Object} A consistent visual identifier to prevent spoofing
  *     color {String} The cell color of the glyph.
- *     cells {[Boolean]} The bitmap of the glyp cell.
+ *     cells {[Boolean]} The bitmap of the glyph cell.
  * 
  */
 /*global chrome */
@@ -62,6 +62,20 @@ if (Privly === undefined) {
     return;
   }
   Privly.options = {};
+
+  // CommonJS Module
+  if (typeof module !== "undefined" && module.exports) {
+    // load dependencies
+    var storageModule = require("./storage.js");
+    ls = storageModule.ls;
+    Privly.storage = storageModule.storage;
+    Privly.message = storageModule.message;
+    // export interfaces
+    module.exports.options = Privly.options;
+    module.exports.storage = Privly.storage;
+    module.exports.message = Privly.message;
+  }
+
 
   /**
    * Broadcast option changed message
@@ -117,7 +131,7 @@ if (Privly === undefined) {
     }
     // Glyph
     var glyphColor = ls.getItem('glyph_color');
-    var glyphCell = ls.getItem('glyph_cell');
+    var glyphCell = ls.getItem('glyph_cells');
     if (glyphColor !== undefined && glyphCell !== undefined) {
       // ls.setItem(..., "001122") would become number 1122 when calling ls.getItem(...)
       glyphColor = String(glyphColor);
@@ -130,7 +144,7 @@ if (Privly === undefined) {
           })
         });
         ls.removeItem('glyph_color');
-        ls.removeItem('glyph_cell');
+        ls.removeItem('glyph_cells');
       } catch (ignore) {}
     }
   };
@@ -295,7 +309,7 @@ if (Privly === undefined) {
    */
   Privly.options.setWhitelist = function (whitelist) {
     // typeof null === 'object'
-    if (typeof whitelist !== 'object' || whitelist === null || whitelist.constructor !== Array) {
+    if (typeof whitelist !== 'object' || whitelist === null || Object.prototype.toString.call(whitelist) !== "[object Array]") {
       throw new Error('invalid argument');
     }
     var regexp = ''; // stores regex to match validated domains
@@ -364,7 +378,11 @@ if (Privly === undefined) {
     if (typeof glyph !== 'object' || glyph === null) {
       throw new Error('invalid argument');
     }
-    if (typeof glyph.color !== 'string' || typeof glyph.cells !== 'object' || glyph.cells === null || glyph.cells.constructor !== Array) {
+    // "glyph.cells.constructor !== Array" is not a safe check for "Array" data type.
+    // Does not work if this script(options.js) is loaded in a different global environment than
+    // glyph.js, i.e, when the scripts are loaded as CommonJS modules.
+    if (typeof glyph.color !== 'string' || typeof glyph.cells !== 'object' || 
+        glyph.cells === null || Object.prototype.toString.call(glyph.cells) !== "[object Array]") {
       throw new Error('invalid argument');
     }
     var obj = {
