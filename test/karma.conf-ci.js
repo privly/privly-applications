@@ -77,13 +77,14 @@ module.exports = function(config) {
   var sl_firefox = {
     base: 'SauceLabs',
     browserName: 'firefox',
-    version: 'dev'
+    platform: 'Windows 7',
+    version: '39.0'
   }
   var sl_safari = {
     base: 'SauceLabs',
     browserName: 'safari',
-    platform: 'OS X 10.10',
-    version: '8.0'
+    platform: 'OS X 10.8',
+    version: '6.0'
   }
 
   // Browsers to run on Sauce Labs based on command line argument
