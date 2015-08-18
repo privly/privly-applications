@@ -175,6 +175,9 @@ module.exports = function(config) {
       build: process.env.TRAVIS_BUILD_NUMBER
     },
     captureTimeout: 120000,
+    browserNoActivityTimeout: 20000,
+    browserDisconnectTolerance: 2,
+    browserDisconnectTimeout: 6000,
     customLaunchers: customLaunchers,
 
     // start these browsers
