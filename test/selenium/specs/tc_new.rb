@@ -71,6 +71,7 @@ class TestNew < Test::Unit::TestCase
 
         # Make sure the refreshed page has the new content
         assert page.has_text?('Updated!')
+        new_window.close()
       end
     end
   end

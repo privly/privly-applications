@@ -45,6 +45,18 @@ if (Privly === undefined) {
   }
   Privly.glyph = {};
 
+  // CommonJS Module
+  if (typeof module !== "undefined" && module.exports) {
+    // load dependencies    
+    var optionsModule = require("./options.js");
+    Privly.options = optionsModule.options;
+    // export interfaces
+    module.exports.glyph = Privly.glyph;
+    module.exports.options = optionsModule.options;
+    module.exports.storage = optionsModule.storage;
+    module.exports.message = optionsModule.message;
+  }
+
   /**
    * Get glyph color and cells
    */
