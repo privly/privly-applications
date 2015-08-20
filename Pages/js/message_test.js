@@ -10,7 +10,14 @@ $(document).ready(function () {
     ['action', 'timestamp', 'platform', 'context', 'location', 'data'].forEach(function (field) {
       $('<div class="response-' + field + ' response-item"></div>').text(pong[field]).appendTo($container);
     });
-    $('<div class="response-target response-item"></div>').text(pong.action + '/' + pong.context + '/' + pong.data + '/' + pong.location).appendTo($container);
+    var responseText;
+    if (pong.platform === "FIREFOX" && pong.context === "BACKGROUND_SCRIPT") {
+      // location isn't defined for Firefox extension background scripts.
+      responseText = pong.action + '/' + pong.context + '/' + pong.data;
+    } else {
+      responseText = pong.action + '/' + pong.context + '/' + pong.data + '/' + pong.location;
+    }
+    $('<div class="response-target response-item"></div>').text(responseText).appendTo($container);
     $container.appendTo('#response');
   }
 
@@ -26,11 +33,13 @@ $(document).ready(function () {
 
     $('[name="' + test.button + '"]').click(function () {
       Privly.message[test.action]({
+        name: test.action,
         action: 'ping',
         data: $('[name="data"]').val()
       }, true).then(appendPongResponse);
 
       Privly.message[test.action]({
+        name: test.action,
         action: 'pingAsync',
         data: $('[name="data"]').val()
       }, true).then(appendPongResponse);
