@@ -6,8 +6,8 @@
  * Fore more details about the Message App, please visit Privly
  * website.
  *
- * Read documentation of the MVC architecture of the Privly
- * application here: https://priv.ly/pages/develop.html
+ * Learn more about the MVC architecture of the Privly application:
+ * https://priv.ly/pages/develop.html#MVCarchitecture
  * 
  * For Message App, the controller layer for each view is:
  *   new:       Message/js/new.js
