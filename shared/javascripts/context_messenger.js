@@ -265,7 +265,7 @@ if (Privly === undefined) {
       chrome.tabs.query({}, function (tabs) {
         tabs.forEach(function (tab) {
           // Don't message Privly Applications
-          if (tab.url.indexOf('chrome') === -1) {
+          if (tab.url.indexOf('chrome') !== 0) {
             chrome.tabs.sendMessage(tab.id, payload);
           }
         });
