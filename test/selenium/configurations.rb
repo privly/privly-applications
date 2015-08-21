@@ -42,6 +42,7 @@ def common_configuration_for_firefox_extension
   xpi_filename = "@" + json['name'] + "-" + json['version'] + ".xpi"
   # Load the Firefox driver with the extension installed
   @profile = Selenium::WebDriver::Firefox::Profile.new
+  @profile["extensions.privly.integration_test"] = "true"
   @profile.add_extension("../../../../../" + xpi_filename)
 end
 
