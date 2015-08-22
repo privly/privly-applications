@@ -58,7 +58,7 @@ commonScripts="vendor/jquery.min.js,vendor/*.js,vendor/datatables/jquery.dataTab
 runTest "$commonScripts,Help/js/*.js,Help/test/*.js"
 runTest "$commonScripts,History/js/*.js,History/test/*.js"
 runTest "$commonScripts,Login/js/*.js,Login/test/*.js"
-runTest "$commonScripts,Pages/js/options.js,Pages/js/tests/*.js"
+runTest "$commonScripts,Pages/js/options.js,Pages/js/first_run.js,Pages/js/tests/*.js"
 # test app view adapters
 runTest "$commonScripts,shared/javascripts/viewAdapters/new.js,shared/test/viewAdapters/new.js"
 runTest "$commonScripts,shared/javascripts/viewAdapters/show.js,shared/test/viewAdapters/show.js"
