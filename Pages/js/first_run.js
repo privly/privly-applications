@@ -63,7 +63,7 @@ function init() {
 
   $("#messages").hide();
   $("#form").show();
-  $(".content_server").text(ls.getItem("posting_content_server_url").split("//")[1]);
+  $(".content_server").text(ls.getItem("options/contentServer/url").split("//")[1]);
 
   $("#registerForm").on("submit", function(e) {
     e.preventDefault();
