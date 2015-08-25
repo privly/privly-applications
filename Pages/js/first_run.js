@@ -35,16 +35,15 @@ var callbacks = {
    * Tell the user their registration was submitted.
    */
   pendingRegistration: function() {
-    $(".register_feedback").html("<p><strong>Please check your email</strong>." +
-        " Your account information should arrive soon.</p>");
+    $(".register_feedback_failure").slideUp();
+    $(".register_feedback_emailed").slideDown();
   },
 
   /**
    * Tell the user their registration was rejected.
    */
   registrationFailure: function() {
-    $(".register_feedback").html("<p><strong>Error</strong> communicating with"
-        + " registration server. Please try again.</p>");
+    $(".register_feedback_failure").slideDown();
   }
 
 }

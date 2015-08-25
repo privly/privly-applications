@@ -31,7 +31,16 @@
             <button id="register_btn" class="btn btn-primary">Request invite on
               <span class="content_server"></span>
             </button>
-              <span class="register_feedback"></span>
+            <p></p>
+            <p class="register_feedback_failure alert alert-danger" style="display:none" role="alert">
+              <strong class="register_feedback_strong">Error</strong>
+              <span class="register_feedback_description">communicating with registration server. Please try again.</span>
+            </p>
+            <p class="register_feedback_emailed alert alert-success" style="display:none" role="alert">
+              <strong class="register_feedback_strong">Please check your email.</strong>
+              <span class="register_feedback_description">Your account information should arrive soon</span>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </p>
           </div>
         </div>
       </form>
