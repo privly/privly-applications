@@ -85,9 +85,9 @@ describe('Privly.app.viewAdapter.SeamlessTTLSelect', function () {
     var adapter = new Privly.app.viewAdapter.SeamlessTTLSelect(application);
     adapter.initMenu(false, '10', function () {
       expect(document.querySelectorAll('.posting-select-item')[0].getAttribute('data-value')).toBe('1');
-      expect(document.querySelectorAll('.posting-select-item')[0].innerText.trim()).toBe('text for 1');
+      expect(document.querySelectorAll('.posting-select-item')[0].textContent.trim()).toBe('text for 1');
       expect(document.querySelectorAll('.posting-select-item')[1].getAttribute('data-value')).toBe('10');
-      expect(document.querySelectorAll('.posting-select-item')[1].innerText.trim()).toBe('text for 10');
+      expect(document.querySelectorAll('.posting-select-item')[1].textContent.trim()).toBe('text for 10');
       // second is selected
       expect(document.querySelectorAll('.posting-select-item')[1].classList.contains('selected')).toBe(true);
       done();
@@ -99,7 +99,7 @@ describe('Privly.app.viewAdapter.SeamlessTTLSelect', function () {
       getTTLOptions: function () {
         return Promise.resolve([
           {ttl: '1', text: 'text for 1'},
-          {ttl: '10', text: 'text for 10'},
+          {ttl: '10', text: 'text for 10'}
         ]);
       }
     };
@@ -107,9 +107,9 @@ describe('Privly.app.viewAdapter.SeamlessTTLSelect', function () {
     var adapter = new Privly.app.viewAdapter.SeamlessTTLSelect(application);
     adapter.initMenu(true, '10', function () {
       expect(document.querySelectorAll('.posting-select-item')[1].getAttribute('data-value')).toBe('1');
-      expect(document.querySelectorAll('.posting-select-item')[1].innerText.trim()).toBe('text for 1');
+      expect(document.querySelectorAll('.posting-select-item')[1].textContent.trim()).toBe('text for 1');
       expect(document.querySelectorAll('.posting-select-item')[0].getAttribute('data-value')).toBe('10');
-      expect(document.querySelectorAll('.posting-select-item')[0].innerText.trim()).toBe('text for 10');
+      expect(document.querySelectorAll('.posting-select-item')[0].textContent.trim()).toBe('text for 10');
       expect(document.querySelectorAll('.posting-select-item')[0].classList.contains('selected')).toBe(true);
       done();
     });
@@ -128,11 +128,11 @@ describe('Privly.app.viewAdapter.SeamlessTTLSelect', function () {
     var adapter = new Privly.app.viewAdapter.SeamlessTTLSelect(application);
     adapter.initMenu(false, null, function () {
       expect(document.querySelectorAll('.posting-select-item')[0].getAttribute('data-value')).toBe('1');
-      expect(document.querySelectorAll('.posting-select-item')[0].innerText.trim()).toBe('text for 1');
+      expect(document.querySelectorAll('.posting-select-item')[0].textContent.trim()).toBe('text for 1');
       expect(document.querySelectorAll('.posting-select-item')[1].getAttribute('data-value')).toBe('10');
-      expect(document.querySelectorAll('.posting-select-item')[1].innerText.trim()).toBe('text for 10');
+      expect(document.querySelectorAll('.posting-select-item')[1].textContent.trim()).toBe('text for 10');
       expect(document.querySelectorAll('.posting-select-item')[2].getAttribute('data-value')).toBe('100');
-      expect(document.querySelectorAll('.posting-select-item')[2].innerText.trim()).toBe('default value');
+      expect(document.querySelectorAll('.posting-select-item')[2].textContent.trim()).toBe('default value');
       // default
       expect(document.querySelectorAll('.posting-select-item')[2].classList.contains('selected')).toBe(true);
       done();
