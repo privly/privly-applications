@@ -14,7 +14,6 @@ var callbacks = {
    * Submit the registration form and await the return of the registration.
    */
   submitRegistration: function() {
-    $("#registerModal").modal('hide');
     privlyNetworkService.sameOriginPostRequest(
       privlyNetworkService.contentServerDomain() + "/users/invitation",
       callbacks.checkRegistration,
@@ -25,7 +24,7 @@ var callbacks = {
    * Check to see if the user's registration was accepted by the server.
    */
   checkRegistration: function(response) {
-     if ( response.json.success === true ) {
+    if ( response.json.success === true ) {
       callbacks.pendingRegistration();
     } else {
       callbacks.registrationFailure();
@@ -36,17 +35,16 @@ var callbacks = {
    * Tell the user their registration was submitted.
    */
   pendingRegistration: function() {
-    $("#messages").html("<strong>Thanks!</strong> If your email isn't already in our " +
-      "database you should receive an email shortly.");
-    $("#messages").show();
+    $(".register_feedback").html("<p><strong>Please check your email</strong>." +
+        " Your account information should arrive soon.</p>");
   },
 
   /**
    * Tell the user their registration was rejected.
    */
   registrationFailure: function() {
-    $("#messages").html("<strong>Error</strong> communicating with registration server.");
-    $("#messages").show();
+    $(".register_feedback").html("<p><strong>Error</strong> communicating with"
+        + " registration server. Please try again.</p>");
   }
 
 }
@@ -64,6 +62,10 @@ function init() {
   $("#messages").hide();
   $("#form").show();
   $(".content_server").text(ls.getItem("options/contentServer/url").split("//")[1]);
+
+  $("#registerModal").on("shown.bs.modal", function() {
+    $("#register_email").focus();
+  });
 
   $("#registerForm").on("submit", function(e) {
     e.preventDefault();
