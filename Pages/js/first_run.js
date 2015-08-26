@@ -43,6 +43,7 @@ var callbacks = {
    * Tell the user their registration was rejected.
    */
   registrationFailure: function() {
+    $(".register_feedback_emailed").slideUp();
     $(".register_feedback_failure").slideDown();
   }
 
@@ -62,8 +63,14 @@ function init() {
   $("#form").show();
   $(".content_server").text(ls.getItem("options/contentServer/url").split("//")[1]);
 
-  $("#registerModal").on("shown.bs.modal", function() {
+  $("#registerModal")
+  .on("shown.bs.modal", function() {
     $("#register_email").focus();
+  })
+  .on("hidden.bs.modal", function() {
+    $(".register_feedback_failure").slideUp();
+    $(".register_feedback_emailed").slideUp();
+    $("#register_email").val("");
   });
 
   $("#registerForm").on("submit", function(e) {
