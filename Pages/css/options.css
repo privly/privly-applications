@@ -6,6 +6,10 @@ fieldset#server_form, #user{
   display: none;
 }
 
+#register_email {
+  margin-bottom: 0.5em;
+}
+
 .glyph_table {
   border-collapse: collapse;  
   line-height: 4px;

@@ -36,11 +36,14 @@ def common_configuration_for_firefox_extension
   Capybara.app_host = "chrome://privly"
   @@privly_applications_folder_path = Capybara.app_host + "/content/privly-applications/"
   puts "Packaging the Firefox Extension"
-  system( "cd ../../../../../ && pwd && ./package.sh && cd chrome/content/privly-applications/test/selenium" )
-
+  system("cd ../../../../../ && pwd && jpm xpi && cd chrome/content/privly-applications/test/selenium")
+  # Find out the xpi file name
+  json = JSON.load(File.new("../../../../../package.json"))
+  xpi_filename = "@" + json['name'] + "-" + json['version'] + ".xpi"
   # Load the Firefox driver with the extension installed
   @profile = Selenium::WebDriver::Firefox::Profile.new
-  @profile.add_extension("../../../../../PrivlyFirefoxExtension.xpi")
+  @profile["extensions.privly.integration_test"] = "true"
+  @profile.add_extension("../../../../../" + xpi_filename)
 end
 
 # This is the common config for running tests from the
@@ -90,18 +93,22 @@ def common_configuration_for_sauce
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.firefox
       config['version'] = "37.0"
       @sauce_caps.version = "37.0"
+      platform = "Windows 7"
     elsif @browser == "chrome"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.chrome
       config['version'] = "dev"
       @sauce_caps.version = "dev"
+      platform = "Windows 7"
     elsif @browser == "safari"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.safari
-      config['version'] = "5.1"
-      @sauce_caps.version = "5.1"
+      config['version'] = "8.0"
+      @sauce_caps.version = "8.0"
+      platform = "OS X 10.10"
     end
 
-    @sauce_caps.platform = "Windows 7"
+    @sauce_caps.platform = platform
     @sauce_caps[:name] = "Priv.ly Project Integration Tests"
+
     if ENV['SAUCE_URL'] == nil or ENV['SAUCE_URL'] == ""
       puts "Before you can test on Sauce you need to set an environmental variable containing your Sauce URL"
       exit 1

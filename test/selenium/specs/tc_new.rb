@@ -71,12 +71,14 @@ class TestNew < Test::Unit::TestCase
 
         # Make sure the refreshed page has the new content
         assert page.has_text?('Updated!')
+        new_window.close()
       end
     end
   end
 
   def teardown
     page.driver.browser.get(@@privly_test_set[0][:url])
+    page.driver.browser.navigate.refresh # force reload
     logout
     Capybara.reset_sessions!
     Capybara.use_default_driver

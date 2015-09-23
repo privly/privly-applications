@@ -159,10 +159,10 @@ elsif platform == "safari_web"
   sanity_check "privly-web"
   configure_for_safari_web(args)
 elsif platform == "firefox_extension"
-  sanity_check "privly-firefox"
+  sanity_check "privly-jetpack"
   configure_for_firefox_extension(args)
 elsif platform == "sauce_firefox_extension"
-  sanity_check "privly-firefox"
+  sanity_check "privly-jetpack"
   configure_for_sauce_firefox_extension(args)
 elsif platform == "chrome_extension"
   sanity_check "privly-chrome"

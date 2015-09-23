@@ -1,8 +1,23 @@
 /**
- * @fileOverview Privly Application specific code.
- * This file modifies the privly-web adapter found
- * in the shared directory.
- **/
+ * @fileOverview This is the controller part for the
+ * `show` use-case of the Message App. To learn more
+ * about the MVC architecture of a Privly Application,
+ * see Message/js/messageApp.js and Message/js/new.js.
+ *
+ * Currently the `show` view is under refactoring.
+ * So the "controller" here for the `show` action is
+ * quite different from other controllers. It is still
+ * arranged in a former way, but only added a few lines
+ * in order to reuse the interfaces in the model.
+ *
+ * The difference between the new App architecture and
+ * the former:
+ *
+ *    In the new Privly application architecture,
+ *    there are three parts, MVC. However in the former
+ *    architecutre, there are only views and controllers.
+ */
+var message;
 
 /**
  * Display rendered markdown as a preview of the post.
@@ -11,34 +26,6 @@ function previewMarkdown() {
   $( "#post_content" ).html(markdown.toHTML($( "#edit_text" ).val()));
   $( "#update" ).attr("class", "btn btn-warning");
   privlyHostPage.resizeToWrapper();
-}
-
-/**
- * Attempt to find the key in local storage and redirect the app if
- * possible to the URL with the key.
- * @return {boolean} Indicates whether the key was resolved from history.
- */
-function resolveKeyFromHistory() {
-  var urls = ls.getItem("Message:URLs");
-
-  // Deprecated
-  var oldUrls = ls.getItem("ZeroBin:URLs");
-  if ( oldUrls !== undefined ) {
-    urls = urls.concat(oldUrls);
-    ls.setItem("Message:URLs", urls);
-    ls.removeItem("ZeroBin:URLs");
-  }
-
-  if ( urls !== undefined ) {
-    for( var i = 0; i < urls.length; i++ ) {
-      var index = urls[i].indexOf(state.webApplicationURL);
-      if ( index === 0 ) {
-        state.key = privlyParameters.getParameterHash(urls[i]).privlyLinkKey;
-        return true;
-      }
-    }
-  }
-  return false;
 }
 
 /**
@@ -58,37 +45,38 @@ function processResponseContent(response) {
   $( "#update" ).attr("class", "btn btn-default");
   
   var url = state.webApplicationURL;
-  state.key = privlyParameters.getParameterHash(url).privlyLinkKey;
   
   privlyNetworkService.permissions.canShow = true;
-  
+
   var json = response.json;
   if( json === null ) {return;}
-  
-  if (state.key === undefined || state.key === "") {
-    if ( ! resolveKeyFromHistory() ) {
-      $('div#cleartext').text("You do not have the key required to decrypt this content.");
-      return;
-    }
-  }
 
-  if(json.structured_content !== undefined) {
-    var cleartext = zeroDecipher(pageKey(state.key), json.structured_content);
-    $("#edit_text").val(cleartext);
-    var markdownHTML = markdown.toHTML(cleartext);
-    $('div#cleartext').html(markdownHTML);
-
-    // Make all user-submitted links open a new window
-    $('div#cleartext a').attr("target", "_blank");
-
-    // Make all text areas auto resize to show all their contents
-    if ( ! privlyHostPage.isInjected() ) {
-      $('textarea').autosize();
-    }
-  } else {
+  if(json.structured_content === undefined) {
     $('div#cleartext').text("The data behind this link is destroyed or corrupted.");
+    privlyHostPage.resizeToWrapper();
+    return;
   }
-  privlyHostPage.resizeToWrapper();
+
+  message = new Privly.app.model.Message();
+  message
+    .loadRawContent(url, json)
+    .then(function (cleartext) {
+      $("#edit_text").val(cleartext);
+      var markdownHTML = markdown.toHTML(cleartext);
+      $('div#cleartext').html(markdownHTML);
+      // Make all user-submitted links open a new window
+      $('div#cleartext a').attr("target", "_blank");
+
+      // Make all text areas auto resize to show all their contents
+      if ( ! privlyHostPage.isInjected() ) {
+        $('textarea').autosize();
+      }
+    }, function (rejectReason) {
+      $('div#cleartext').text(rejectReason);
+    })
+    .then(function () {
+      privlyHostPage.resizeToWrapper();
+    });
 }
 
 /**
@@ -99,14 +87,17 @@ function processResponseContent(response) {
  * need to pass in a callback in this case.
  */
 function encryptBeforeUpdate(evt, callback) {
-  var cipherdata = zeroCipher(state.key, $("#edit_text")[0].value);
-  privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
-    function(response){
-      callbacks.contentReturned(response, processResponseContent);
-    },
-    {post: {structured_content: cipherdata,
-    seconds_until_burn: $( "#seconds_until_burn" ).val()}});
-  
+  message
+    .getRequestContent($("#edit_text")[0].value)
+    .then(function (json) {
+      privlyNetworkService.sameOriginPutRequest(state.jsonURL, 
+        function(response){
+          callbacks.contentReturned(response, processResponseContent);
+        },
+        {post: {structured_content: json.structured_content,
+        seconds_until_burn: $( "#seconds_until_burn" ).val()}});
+    });
+
   // needed to stop click event from propagating to body
   // and prevent a new window from opening because of click listener
   // on body.
@@ -142,4 +133,3 @@ document.addEventListener('DOMContentLoaded',
     }
   }
 );
-

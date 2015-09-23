@@ -1,8 +1,15 @@
 /**
- * @fileOverview Privly Application specific code.
- * This file modifies the privly-web adapter found
- * in the shared directory.
- **/
+ * @fileOverview This is the controller part for the
+ * `show` use-case of the Plainpost App. To learn more
+ * about the MVC architecture of a Privly Application,
+ * see Message/js/messageApp.js and Message/js/new.js.
+ *
+ * Currently the `show` view is under refactoring.
+ * So the "controller" here for the `show` action is
+ * quite different from other controllers. It is still
+ * arranged in a former way, but only added a few lines
+ * in order to reuse the interfaces in the model.
+ */
 
 /**
  * Display rendered markdown as a preview of the post.

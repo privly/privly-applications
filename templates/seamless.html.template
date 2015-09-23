@@ -1,0 +1,20 @@
+{% extends "templates/base.html.template" %}
+{% block head %}
+  <link href="../shared/css/seamless/seamless.css" media="screen" rel="stylesheet" type="text/css"/>
+  {% block css %}{% endblock %}
+
+  <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+  <script type="text/javascript" src="../shared/javascripts/event_emitter.js"></script>
+  <script type="text/javascript" src="../shared/javascripts/viewAdapters/seamless.js"></script>
+  {% block javascripts %}{% endblock %}
+{% endblock %}
+
+{% block body %}
+<body data-privly-exclude="true">
+  {% block seamless_posting_form %}
+  <div class="posting-form">
+    {% block input %}<textarea id="input"></textarea>{% endblock %}
+  </div>
+  {% endblock %}
+</div>
+{% endblock %}

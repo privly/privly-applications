@@ -4,8 +4,8 @@
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
   <script type="text/javascript" src="../vendor/jquery.autosize.js"></script>
   <script type="text/javascript" src="../vendor/markdown.js"></script>
-  <script type="text/javascript" src="../shared/javascripts/privly-web/new.js"></script>
-  <script type="text/javascript" src="js/new.js"></script>
+  <script type="text/javascript" src="js/plainpostModel.js"></script>
+  <script type="text/javascript" src="js/controllers/new.js"></script>
 {% endblock %}
 
 {# note: Uncomment this block to modify the main form

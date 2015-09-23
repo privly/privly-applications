@@ -7,7 +7,8 @@
     <link class="top" href="../shared/css/top/top.css" rel="stylesheet"/>
     {% block css %}{% endblock %}
 
-    <script type="text/javascript" src="../shared/javascripts/extension_integration.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/event_emitter.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/viewAdapters/new.js"></script>
     {% block javascripts %}{% endblock %}
 
 {% endblock %}
@@ -23,16 +24,16 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
-            <p id="messages" class="flash notice">
+            <p id="messages" class="alert alert-info">
               Pending server check. The application is checking its connection 
               with the remote server.
             </p>
-            <p style="display:none;" class="flash notice" id="login_message">
+            <p style="display:none;" class="alert alert-warning" id="login_message">
               You are not currently signed into your content server. Please
               <a href="../Login/new.html" class="login_url btn btn-default">login</a>
             </p>
             <div id="copy_message" style="display:none;">
-              <p class="flash notice">
+              <p class="alert alert-warning">
                 <span id="step1_message">
                   <strong>Step 1.</strong>
                   Copy and paste the address found below to any website
@@ -41,7 +42,7 @@
                 <span class="glyphicon glyphicon-link"></span>
                 <span class="privlyUrl" data-privly-exclude="true"></span>
               </p>
-              <p class="flash notice open-app-button" style="display:none;">
+              <p class="alert alert-warning open-app-button" style="display:none;">
                 <strong>Step 2.</strong>
                 Copy/paste the highlighted address anywhere you want to share it. You can also
                 <a id="local_address" href="" target="_blank" class="btn btn-default">
