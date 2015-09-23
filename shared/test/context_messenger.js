@@ -266,7 +266,7 @@ describe('Privly.message.adapter.Firefox', function () {
     expect(instance.getPlatformName()).toBe('FIREFOX');
   });
 
-  it('returns context name', function () {
+  it('returns Firefox context names', function (done) {
     var instance = Privly.message.adapter.Firefox.getInstance();
 
     // for backgrouns script, "require" will be defined
@@ -281,5 +281,6 @@ describe('Privly.message.adapter.Firefox', function () {
     // We can't overwrite window.location.href
     // so we can't test for the PRIVLY_APPLICATION environment
     expect(instance.getContextName()).toBe('UNKNOWN_CONTEXT');
+    done();
   });
 });
