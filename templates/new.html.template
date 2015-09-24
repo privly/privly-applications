@@ -1,65 +1,39 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
-    <!--
-      This was likely rendered from the Privly-application templating system
-      See: https://github.com/privly/privly-applications/pull/19
-     -->
+{% extends "templates/base.html.template" %}
+{% block head %}
 
     {% block title %}<title> New {{ name }}</title>{% endblock %}
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    
-    <!-- Top Styles -->
-    <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen"/>
-    <link class="top" href="../shared/css/top/top.css" rel="stylesheet"/>
-    
-    <!-- Common Styles -->
-    <link href="../shared/css/common.css" media="screen" rel="stylesheet"
-     type="text/css"/>
-    <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet"
-     type="text/css"/>
-    
-    {% block css %}{% endblock %}
-    
-    <script type="text/javascript" src="../shared/javascripts/meta_loader.js">
-    </script>
-    <script type="text/javascript" src="../shared/javascripts/parameters.js">
-    </script>
-    <script type="text/javascript" src="../shared/javascripts/network_service.js">
-    </script>
-    <script type="text/javascript" src="../shared/javascripts/extension_integration.js">
-    </script>
-    <script type="text/javascript" src="../shared/javascripts/local_storage.js">
-    </script>
-     
-    {% block javascripts %}{% endblock %}
-     
-  </head>
 
+    <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
+    <link class="top" href="../shared/css/top/top.css" rel="stylesheet"/>
+    {% block css %}{% endblock %}
+
+    <script type="text/javascript" src="../shared/javascripts/event_emitter.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/viewAdapters/new.js"></script>
+    {% block javascripts %}{% endblock %}
+
+{% endblock %}
+{% block body %}
   <body data-privly-exclude="true">
-    
+
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
-    
+
     <!-- Wrap all page content here -->
     <div id="wrap">
       {% include "templates/partials/navigation.html.subtemplate" %}
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
-            <p id="messages" class="flash notice">
+            <p id="messages" class="alert alert-info">
               Pending server check. The application is checking its connection 
               with the remote server.
             </p>
-            <p style="display:none;" class="flash notice" id="login_message">
+            <p style="display:none;" class="alert alert-warning" id="login_message">
               You are not currently signed into your content server. Please
               <a href="../Login/new.html" class="login_url btn btn-default">login</a>
             </p>
             <div id="copy_message" style="display:none;">
-              <p class="flash notice">
+              <p class="alert alert-warning">
                 <span id="step1_message">
                   <strong>Step 1.</strong>
                   Copy and paste the address found below to any website
@@ -68,7 +42,7 @@
                 <span class="glyphicon glyphicon-link"></span>
                 <span class="privlyUrl" data-privly-exclude="true"></span>
               </p>
-              <p class="flash notice open-app-button" style="display:none;">
+              <p class="alert alert-warning open-app-button" style="display:none;">
                 <strong>Step 2.</strong>
                 Copy/paste the highlighted address anywhere you want to share it. You can also
                 <a id="local_address" href="" target="_blank" class="btn btn-default">
@@ -79,7 +53,7 @@
             </div>
           </div>
         </div>
-        
+
         {% block pre_form %}{% endblock %}
         <div id="form" style="display:none;">
           <div class="row">
@@ -122,17 +96,17 @@
           </div>
         </div>
       </div><!-- /.container -->
-      
-      
+
+
       <div class="container">
         <div class="row">
           {% block app_info %}
           {% endblock %}
         </div><!-- /.row -->
       </div><!-- /.container -->
-      
+
     </div><!-- /.wrap -->
-    
+
     <div id="footer">
       <div class="container">
         <p class="text-muted credit">
@@ -155,4 +129,4 @@
       </div>
     </div>
   </body>
-</html>
+{% endblock %}

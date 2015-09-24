@@ -39,13 +39,25 @@ describe ("Help New Suite", function() {
     // Call the test
     callbacks.pendingLogin();
 
-    expect(ls.getItem("Login:redirect_to_app")).toBe(window.location.href);
+    expect(Privly.storage.get("Login:redirect_to_app")).toBe(window.location.href);
     expect($("#current_content_server").text()).toBe("localhost:9876");
     expect($("#remote_content_server").attr("href")).toBe("http://localhost:9876");
 
     // Restore the callback for the other tests
     privlyNetworkService.initPrivlyService = oldInit;
     privlyNetworkService.initializeNavigation = oldInitNav;
+  });
+
+  it("shows login failures", function() {
+    spyOn(privlyNetworkService, "showLoggedOutNav");
+    callbacks.loginFailure();
+
+    // Visibility is defined differently on Chrome and Safari
+    if(privlyNetworkService.platformName() === "FIREFOX") {
+      expect($("#messages").is(':visible')).toBe(false);
+      expect($("#login_message").is(':visible')).toBe(true);
+    }
+    expect(privlyNetworkService.showLoggedOutNav).toHaveBeenCalled();
   });
 
 });

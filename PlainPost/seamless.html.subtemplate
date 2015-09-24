@@ -1,0 +1,6 @@
+{% extends "templates/seamless.html.template" %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="js/plainpostModel.js"></script>
+  <script type="text/javascript" src="js/controllers/seamless.js"></script>
+{% endblock %}

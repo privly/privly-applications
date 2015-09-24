@@ -47,7 +47,7 @@ To run these tests you need to download several software packages.
 * Ruby 1.9.3 or higher. This has been tested on 1.9.3.
 * The browser you are testing against (Chrome and Firefox are currently available).
 * A running [content server](https://github.com/privly/privly-web). This is necessary
-even if you are note testing the content server because the extension tests will
+even if you are not testing the content server because the extension tests will
 expect to have a place it can store content.
 * Several gems are required and can be installed with bundler, which is installed
 with `gem install bundler`.
@@ -96,7 +96,9 @@ necessary to test against the hundreds of virtualized browsers found on SauceLab
 
 Each test requires **SauceConnect to be running**, as well as **a local webserver.**
 
-To launch on Sauce, you need to replace the `@sauce_url` variable in run_all.rb
+To run SauceConnect, follow [this web page](https://docs.saucelabs.com/reference/sauce-connect/).
+
+To launch on Sauce, you need to replace the `@sauce_url` variable in configurations.rb
 with the URL for your SauceLabs account. You can find that URL if you are logged
 in to SauceLab's website by visiting [this web page](https://saucelabs.com/docs/ondemand/getting-started/env/ruby/se2/mac)
 when you are logged in and viewing the specially formatted URL that SauceLabs
@@ -129,6 +131,13 @@ This will launch the current Beta version of Chrome on Windows. It will navigate
 extension from which you launched the tests, but the applications expect localhost:3000 to present a content server for storage.
 
 From the privly-applications directory, run: `ruby run_all.rb -p sauce_chrome_extension -c http://localhost:3000 -r experimental`
+
+### sauce_safari_web
+
+This will launch Safari on Windows. It will navigate the
+webserver you have running on localhost so make sure that is where the applicaion files are that you want to test.
+
+From the privly-applications directory, run: `ruby run_all.rb -p sauce_chrome_web -c http://localhost:3000 -r experimental`
 
 ## TravisCI
 
