@@ -41,6 +41,7 @@ class TestHistory < Test::Unit::TestCase
 
   def teardown
     page.driver.browser.get(@@privly_test_set[0][:url])
+    page.driver.browser.navigate.refresh # force reload
     logout
     Capybara.reset_sessions!
     Capybara.use_default_driver

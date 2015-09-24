@@ -5,12 +5,12 @@
   <script type="text/javascript" src="../vendor/jquery.autosize.js"></script>
   <script type="text/javascript" src="../vendor/markdown.js"></script>
   <script type="text/javascript" src="../vendor/sjcl.js"></script>
-  <script type="text/javascript" src="js/base64.js"></script>
-  <script type="text/javascript" src="js/rawdeflate.js"></script>
-  <script type="text/javascript" src="js/rawinflate.js"></script>
-  <script type="text/javascript" src="js/zerobin.js"></script>
-  <script type="text/javascript" src="../shared/javascripts/privly-web/new.js"></script>
-  <script type="text/javascript" src="js/new.js"></script>
+  <script type="text/javascript" src="js/vendor/base64.js"></script>
+  <script type="text/javascript" src="js/vendor/rawdeflate.js"></script>
+  <script type="text/javascript" src="js/vendor/rawinflate.js"></script>
+  <script type="text/javascript" src="js/vendor/zerobin.js"></script>
+  <script type="text/javascript" src="js/messageModel.js"></script>
+  <script type="text/javascript" src="js/controllers/new.js"></script>
 {% endblock %}
 
 {% block app_info %}

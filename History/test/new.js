@@ -45,7 +45,7 @@ describe ("History New Suite", function() {
      // Call the test
      callbacks.pendingLogin();
 
-     expect(ls.getItem("Login:redirect_to_app")).toBe(window.location.href);
+     expect(Privly.storage.get("Login:redirect_to_app")).toBe(window.location.href);
 
      if( privlyNetworkService.platformName() !== "HOSTED" ) {
 

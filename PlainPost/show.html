@@ -6,37 +6,44 @@
       This was likely rendered from the Privly-application templating system
       See: https://github.com/privly/privly-applications/pull/19
      -->
-  <title>
-   PlainPost
-  </title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <meta content="This link contains your friend's private content. Click through to read." name="description"/>
-  <meta content="This link contains your friend's private content. Click through to read." name="og:description"/>
-  <meta content="This link contains your friend's private content. Click through to read." name="twitter:description"/>
-  <!-- Common Styles -->
   <link href="../shared/css/common.css" media="screen" rel="stylesheet" type="text/css"/>
-  <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet" type="text/css"/>
-  <!-- Shared JavaScripts -->
   <script src="../shared/javascripts/meta_loader.js" type="text/javascript">
   </script>
   <script src="../shared/javascripts/parameters.js" type="text/javascript">
   </script>
-  <script src="../shared/javascripts/host_page_integration.js" type="text/javascript">
+  <script src="../shared/javascripts/local_storage.js" type="text/javascript">
+  </script>
+  <script src="../shared/javascripts/context_messenger.js" type="text/javascript">
+  </script>
+  <script src="../shared/javascripts/glyph.js" type="text/javascript">
+  </script>
+  <script src="../shared/javascripts/storage.js" type="text/javascript">
+  </script>
+  <script src="../shared/javascripts/options.js" type="text/javascript">
   </script>
   <script src="../shared/javascripts/network_service.js" type="text/javascript">
   </script>
+  <title>
+   PlainPost
+  </title>
+  <meta content="This link contains your friend's private content. Click through to read." name="description"/>
+  <meta content="This link contains your friend's private content. Click through to read." name="og:description"/>
+  <meta content="This link contains your friend's private content. Click through to read." name="twitter:description"/>
+  <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet" type="text/css"/>
+  <script src="../shared/javascripts/host_page_integration.js" type="text/javascript">
+  </script>
   <script src="../shared/javascripts/tooltip.js" type="text/javascript">
   </script>
-  <script src="../shared/javascripts/local_storage.js" type="text/javascript">
-  </script>
-  <!-- Application Specific JavaScripts -->
   <script src="../vendor/jquery.min.js" type="text/javascript">
   </script>
   <script src="../vendor/markdown.js" type="text/javascript">
   </script>
-  <script src="../shared/javascripts/privly-web/show.js" type="text/javascript">
+  <script src="../shared/javascripts/viewAdapters/show.js" type="text/javascript">
   </script>
-  <script src="js/show.js" type="text/javascript">
+  <script src="js/plainpostModel.js" type="text/javascript">
+  </script>
+  <script src="js/controllers/show.js" type="text/javascript">
   </script>
   <meta content="../vendor/jquery.autosize.js" name="PrivlyTopJS"/>
   <!-- Top Styles, will be added by JS if not viewed in iframe -->

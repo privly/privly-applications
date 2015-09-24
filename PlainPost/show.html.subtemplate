@@ -3,8 +3,9 @@
 {% block javascripts %}
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
   <script type="text/javascript" src="../vendor/markdown.js"></script>
-  <script type="text/javascript" src="../shared/javascripts/privly-web/show.js"></script>
-  <script type="text/javascript" src="js/show.js"></script>
+  <script type="text/javascript" src="../shared/javascripts/viewAdapters/show.js"></script>
+  <script type="text/javascript" src="js/plainpostModel.js"></script>
+  <script type="text/javascript" src="js/controllers/show.js"></script>
   <meta name="PrivlyTopJS" content="../vendor/jquery.autosize.js" />
 {% endblock %}
 

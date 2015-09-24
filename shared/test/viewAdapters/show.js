@@ -68,9 +68,12 @@ describe ("Privly-web show.js API Test Suite", function() {
   });
 
   it("does not result in an error (update)", function(done) {
+    var tmp = privlyNetworkService.sameOriginPutRequest;
+    privlyNetworkService.sameOriginPutRequest = function() {};
     callbacks.update(
         mockEvent,
         done);
+    privlyNetworkService.sameOriginPutRequest = tmp;
   });
 
   it("does not result in an error (cancel)", function(done) {
