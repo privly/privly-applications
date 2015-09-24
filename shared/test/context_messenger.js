@@ -95,6 +95,30 @@ describe ("Messaging Test Suite", function() {
 
 });
 
+describe('Privly.message.adapter.*', function () {
+
+  it('can remove listeners', function (done) {
+    var totalListeners = Privly.message.listeners.length;
+    var newListener = function(a,b){expect(true).toBe(false)};// Should never be called
+    Privly.message.addListener(newListener);
+    var newTotalListeners = Privly.message.listeners.length;
+    expect(totalListeners + 1).toEqual(newTotalListeners);
+    Privly.message.removeListener(newListener);
+    newTotalListeners = Privly.message.listeners.length;
+    expect(totalListeners).toEqual(newTotalListeners);
+    done();
+  });
+
+  it('does not remove absent listeners', function (done) {
+    var totalListeners = Privly.message.listeners.length;
+    var absentListener = function(a,b){expect(true).toBe(false)};// Should never be called
+    Privly.message.removeListener(absentListener);
+    expect(totalListeners).toEqual(Privly.message.listeners.length);
+    done();
+  });
+
+});
+
 describe('Privly.message.adapter.Chrome', function () {
 
   it('creates instance', function () {
@@ -230,3 +254,33 @@ describe('Privly.message.adapter.Chrome', function () {
 
 });
 
+describe('Privly.message.adapter.Firefox', function () {
+
+  it('creates instance', function () {
+    var instance = Privly.message.adapter.Firefox.getInstance();
+    expect(instance instanceof Privly.message.adapter.Firefox).toBe(true);
+  });
+
+  it('returns platform name', function () {
+    var instance = Privly.message.adapter.Firefox.getInstance();
+    expect(instance.getPlatformName()).toBe('FIREFOX');
+  });
+
+  it('returns Firefox context names', function (done) {
+    var instance = Privly.message.adapter.Firefox.getInstance();
+
+    // for backgrouns script, "require" will be defined
+    require = "defined";
+    expect(instance.getContextName()).toBe('BACKGROUND_SCRIPT');
+    require = undefined;
+
+    self = {port: "defined"};
+    expect(instance.getContextName()).toBe('CONTENT_SCRIPT');
+    self = undefined;
+
+    // We can't overwrite window.location.href
+    // so we can't test for the PRIVLY_APPLICATION environment
+    expect(instance.getContextName()).toBe('UNKNOWN_CONTEXT');
+    done();
+  });
+});

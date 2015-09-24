@@ -6,6 +6,26 @@
 /*global Privly, ls */
 describe('Privly.options', function () {
 
+  beforeEach(function() {
+    var domIDs = [
+      {id: "server_status", type: "div"},
+      {id: "user", type: "div"},
+      {id: "content_server_url", type: "div"},
+      {id: "other_content_server", type: "div"},
+      {id: "server_form", type: "div"}
+    ];
+    domIDs.forEach(function(ob){
+      var newElement = $('<' + ob.type + '/>', {
+        id: ob.id
+      });
+      $(document.body).append(newElement);
+    });
+  });
+
+  afterEach(function() {
+    document.body.innerHTML = "";
+  });
+
   it('isDomainValid() should validate FQDN', function () {
     // Valid domains that should pass
     expect(Privly.options.isDomainValid('localhost')).toBe(true);
@@ -237,5 +257,4 @@ describe('Privly.options', function () {
     expect(function () { Privly.options.setGlyph({color: [], cells: []}); }).toThrow(new Error('invalid argument'));
     expect(function () { Privly.options.setGlyph({color: '123123', cells: null}); }).toThrow(new Error('invalid argument'));
   });
-
 });

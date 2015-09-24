@@ -761,7 +761,7 @@ describe('Privly.app.viewAdapter.Seamless', function () {
     spyOn(adapter, 'msgAppClosed').and.callThrough();
     adapter.onUserClose().then(function () {
       expect(adapter.deleteLink).toHaveBeenCalled();
-      expect(adapter.msgAppClosed).toHaveBeenCalledWith('hello');
+      expect(adapter.msgAppClosed).toHaveBeenCalled();
     });
   });
 
