@@ -104,6 +104,8 @@ if (Privly === undefined) {
         Privly.options.setPrivlyButtonEnabled((disableButton !== true));
         ls.removeItem('Options:DissableButton');
       } catch (ignore) {}
+    } else {
+      Privly.options.setPrivlyButtonEnabled(true);
     }
     // Whitelist CSV
     var userWhitelistCSV = ls.getItem('user_whitelist_csv');
