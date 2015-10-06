@@ -110,37 +110,38 @@ var privlyTooltip = {
       var bodyElement = document.getElementsByTagName("body")[0];
 
       // Display the tooltip when hovering
-      bodyElement.addEventListener('mouseenter',
-        function(e){
-            bodyElement.appendChild(tooltipMessageElement);
+      privlyTooltip.mouseenterListener = function(e) {
+        bodyElement.appendChild(tooltipMessageElement);
 
-            // Update the message since it may have changed.
-            var textNodeDiv = document.getElementById("textNodeDiv");
-            var tooltipTextNode = document.createTextNode(privlyTooltip.tooltipMessage);
-            textNodeDiv.removeChild(textNodeDiv.firstChild);
-            textNodeDiv.appendChild(tooltipTextNode);
+        // Update the message since it may have changed.
+        var textNodeDiv = document.getElementById("textNodeDiv");
+        var tooltipTextNode = document.createTextNode(privlyTooltip.tooltipMessage);
+        textNodeDiv.removeChild(textNodeDiv.firstChild);
+        textNodeDiv.appendChild(tooltipTextNode);
 
-            var t = document.getElementById("tooltip");
-            t.style.top = (e.clientY - xOffset) + "px";
-            t.style.left = (e.clientX + yOffset) + "px";
-          });
+        var t = document.getElementById("tooltip");
+        t.style.top = (e.clientY - xOffset) + "px";
+        t.style.left = (e.clientX + yOffset) + "px";
+      }
 
       // Remove the tooltip when the mouse leaves the app
-      bodyElement.addEventListener('mouseleave',
-        function(e){
-            if ( ! bodyElement.contains(e.toElement) ) {
-              var t = document.getElementById("tooltip");
-              t.parentNode.removeChild(t);
-            }
-          });
+      privlyTooltip.mouseleaveListener = function(e) {
+        if ( ! bodyElement.contains(e.toElement) ) {
+          var t = document.getElementById("tooltip");
+          t.parentNode.removeChild(t);
+        }
+      }
 
       // Move the tooltip when the mouse moves
-      bodyElement.addEventListener('mousemove',
-        function(e){
-            var t = document.getElementById("tooltip");
-            t.style.top = (e.clientY - xOffset) + "px";
-            t.style.left = (e.clientX + yOffset) + "px";
-          });
+      privlyTooltip.mousemoveListener = function(e) {
+        var t = document.getElementById("tooltip");
+        t.style.top = (e.clientY - xOffset) + "px";
+        t.style.left = (e.clientX + yOffset) + "px";
+      }
+
+      bodyElement.addEventListener('mouseenter', privlyTooltip.mouseenterListener);
+      bodyElement.addEventListener('mouseleave', privlyTooltip.mouseleaveListener);
+      bodyElement.addEventListener('mousemove', privlyTooltip.mousemoveListener);
     }
     
 };

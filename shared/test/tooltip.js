@@ -7,6 +7,10 @@
  
 describe ("Tooltip Test Suite", function() {
 
+  afterEach(function() {
+    document.body.innerHTML = "";
+  });
+
   it("updates the message", function() {
     privlyTooltip.updateMessage("data domain", "tested");
     expect(privlyTooltip.tooltipMessage).toBe(": tested, from data domain");
@@ -25,11 +29,37 @@ describe ("Tooltip Test Suite", function() {
     expect($(textNodeDiv).text()).toBe(": tested, from data domain");
   });
 
-  it("Does not result in an error", function() {
+  it("removes tooltip when mouse leaves app", function() {
     privlyTooltip.tooltip();
-    $("body")
-      .trigger("mouseenter")
-      .trigger("mousemove")
-      .trigger("mouseleave");
+    var tooltip = $('<div/>', {
+      id: "tooltip"
+    });
+    $(document.body).append(tooltip);
+    expect($("#tooltip").length).toBe(1);
+    privlyTooltip.mouseleaveListener({});
+    expect($("#tooltip").length).toBe(0);
   });
+
+  it("updates tooltip position when mouse enters", function() {
+    privlyTooltip.tooltip();
+    var tooltip = $('<div/>', {
+      id: "tooltip"
+    });
+    $(document.body).append(tooltip);
+    privlyTooltip.mouseenterListener({clientY: 123, clientX: 321});
+    expect(tooltip.css("top")).toBe("116px");
+    expect(tooltip.css("left")).toBe("331px");
+  });
+
+  it("updates tooltip position when mouse moves", function() {
+    privlyTooltip.tooltip();
+    var tooltip = $('<div/>', {
+      id: "tooltip"
+    });
+    $(document.body).append(tooltip);
+    privlyTooltip.mousemoveListener({clientY: 123, clientX: 321});
+    expect(tooltip.css("top")).toBe("116px");
+    expect(tooltip.css("left")).toBe("331px");
+  });
+
 });
