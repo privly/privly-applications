@@ -6,16 +6,30 @@
  **/
  
 describe ("Tooltip Test Suite", function() {
-  
-  it("does not result in an error", function() {
-    privlyTooltip.updateMessage("tested", "tested");
 
-    if( jQuery("privlyHeightWrapper").length === 0 ) {
-      return;
-    }
+  it("updates the message", function() {
+    privlyTooltip.updateMessage("data domain", "tested");
+    expect(privlyTooltip.tooltipMessage).toBe(": tested, from data domain");
 
-    privlyTooltip.tooltip();
-    expect(true).toBe(true);
+    var textNodeDiv = document.createElement("div");
+    textNodeDiv.setAttribute("id", "textNodeDiv");
+
+    var tooltipTextNode = document.createTextNode("tmp");
+    textNodeDiv.appendChild(tooltipTextNode);
+
+    var bodyElement = document.getElementsByTagName("body")[0];
+    bodyElement.appendChild(textNodeDiv);
+
+    privlyTooltip.updateMessage("data domain", "tested");
+
+    expect($(textNodeDiv).text()).toBe(": tested, from data domain");
   });
-  
+
+  it("Does not result in an error", function() {
+    privlyTooltip.tooltip();
+    $("body")
+      .trigger("mouseenter")
+      .trigger("mousemove")
+      .trigger("mouseleave");
+  });
 });
