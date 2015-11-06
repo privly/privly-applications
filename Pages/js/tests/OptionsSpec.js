@@ -211,8 +211,8 @@ describe ("Options Suite", function() {
     });
     $(document.body).append(newElement);
 
-    spyOn(privlyNetworkService, 'initializeNavigation').and.callThrough();
-    spyOn(privlyNetworkService, 'initPrivlyService').and.callThrough();
+    spyOn(privlyNetworkService, 'initializeNavigation').and.stub();
+    spyOn(privlyNetworkService, 'initPrivlyService').and.stub();
     spyOn(window, 'restoreCheckedSetting').and.callThrough();
     spyOn(window, 'restoreWhitelist').and.callThrough();
     spyOn(window, 'restoreServer').and.callThrough();
