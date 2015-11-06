@@ -19,7 +19,6 @@ describe ("Options Suite", function() {
       {id: "server_status", type: "div"},
       {id: "whitelist_url", type: "input", class: "whitelist_url", value: "example.org"},
       {id: "remove_whitelist", type: "div"},
-      {id: "logout_link", type: "a"},
       {id: "urls", type: "div"}
     ];
     domIDs.forEach(function(ob){
@@ -201,4 +200,33 @@ describe ("Options Suite", function() {
     restoreServer();
   });
 
+  it('tests initialize app function', function () {
+
+    // add logout_link to DOM so init function does not return immediately
+    var ob =  {id: "logout_link", type: "a", class: "logout_url"};
+    var newElement = $('<' + ob.type + '/>', {
+      id: ob.id,
+      class: ob.class,
+      value: ob.value
+    });
+    $(document.body).append(newElement);
+
+    spyOn(privlyNetworkService, 'initializeNavigation').and.callThrough();
+    spyOn(privlyNetworkService, 'initPrivlyService').and.callThrough();
+    spyOn(window, 'restoreCheckedSetting').and.callThrough();
+    spyOn(window, 'restoreWhitelist').and.callThrough();
+    spyOn(window, 'restoreServer').and.callThrough();
+    spyOn(window, 'listeners').and.stub(); // mock because depends on DOM elements
+    spyOn(window, 'writeGlyph').and.callThrough();
+
+    initializeApp();
+
+    expect(privlyNetworkService.initializeNavigation).toHaveBeenCalled();
+    expect(privlyNetworkService.initPrivlyService).toHaveBeenCalled();
+    expect(restoreCheckedSetting).toHaveBeenCalled();
+    expect(restoreWhitelist).toHaveBeenCalled();
+    expect(restoreServer).toHaveBeenCalled();
+    expect(listeners).toHaveBeenCalled();
+    expect(writeGlyph).toHaveBeenCalled();
+  });
 });
