@@ -322,4 +322,4 @@ function initializeApp () {
 }
 
 // Initialize the application after DOM loads
-document.addEventListener('DOMContentLoaded', initializeApp());
+document.addEventListener('DOMContentLoaded', initializeApp);
