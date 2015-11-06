@@ -291,38 +291,40 @@ function inputEvent (ev) {
   }
 }
 
-// Initialize the application
-document.addEventListener('DOMContentLoaded',
-  function() {
-
-    // Don't initialize the app if it is running in a
-    // headless browser.
-    if( ! document.getElementById("logout_link") ) {
-      return;
-    }
-
-    // Set the nav bar to the proper domain
-    privlyNetworkService.initializeNavigation();
-
-    privlyNetworkService.initPrivlyService(
-      privlyNetworkService.contentServerDomain(),
-      privlyNetworkService.showLoggedInNav,
-      privlyNetworkService.showLoggedOutNav
-    );
-
-    $("#messages").hide();
-    $("#form").show();
-    $("#server_form").show();
-
-    // Don't start the script if it is running in a Headless
-    // browser
-    if( document.getElementById("logout_link") ) {
-      restoreCheckedSetting();
-      restoreWhitelist(); // Restore whitelist settings
-      restoreServer(); // Restore server settings
-      listeners(); // Listen for UI events
-      writeGlyph(); // Write the spoofing glyph to the page
-    }
-
+/**
+ * Initialize app when not run in a headless browser
+ */
+function initializeApp () {
+  // Don't initialize the app if it is running in a
+  // headless browser.
+  if( ! document.getElementById("logout_link") ) {
+    return;
   }
-);
+
+  // Set the nav bar to the proper domain
+  privlyNetworkService.initializeNavigation();
+
+  privlyNetworkService.initPrivlyService(
+    privlyNetworkService.contentServerDomain(),
+    privlyNetworkService.showLoggedInNav,
+    privlyNetworkService.showLoggedOutNav
+  );
+
+  $("#messages").hide();
+  $("#form").show();
+  $("#server_form").show();
+
+  // Don't start the script if it is running in a Headless
+  // browser
+  if( document.getElementById("logout_link") ) {
+    restoreCheckedSetting();
+    restoreWhitelist(); // Restore whitelist settings
+    restoreServer(); // Restore server settings
+    listeners(); // Listen for UI events
+    writeGlyph(); // Write the spoofing glyph to the page
+  }
+
+}
+
+// Initialize the application after DOM loads
+document.addEventListener('DOMContentLoaded', initializeApp());
