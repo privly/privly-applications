@@ -314,16 +314,11 @@ function initializeApp () {
   $("#form").show();
   $("#server_form").show();
 
-  // Don't start the script if it is running in a Headless
-  // browser
-  if( document.getElementById("logout_link") ) {
-    restoreCheckedSetting();
-    restoreWhitelist(); // Restore whitelist settings
-    restoreServer(); // Restore server settings
-    listeners(); // Listen for UI events
-    writeGlyph(); // Write the spoofing glyph to the page
-  }
-
+  restoreCheckedSetting();
+  restoreWhitelist(); // Restore whitelist settings
+  restoreServer(); // Restore server settings
+  listeners(); // Listen for UI events
+  writeGlyph(); // Write the spoofing glyph to the page
 }
 
 // Initialize the application after DOM loads
