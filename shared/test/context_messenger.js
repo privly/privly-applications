@@ -283,4 +283,36 @@ describe('Privly.message.adapter.Firefox', function () {
     expect(instance.getContextName()).toBe('UNKNOWN_CONTEXT');
     done();
   });
+
+  it('Sends messages to different contexts (smoke test)', function (done) {
+    var instance = Privly.message.adapter.Firefox.getInstance();
+    var savedFunctionReference = instance.getContextName;
+
+    // Set each of the context names that are being sent from
+    // and then send to each of the other contexts
+    instance.getContextName = function(){return "CONTENT_SCRIPT"};
+    try {
+      instance.sendMessageTo("CONTENT_SCRIPT", {});
+      expect(false).toBe(true);
+    } catch(all) {
+      expect(true).toBe(true);
+    }
+    self = {port: {emit: function(ident, data){}}};
+    instance.sendMessageTo("BACKGROUND_SCRIPT", {});
+    instance.sendMessageTo("PRIVLY_APPLICATION", {});
+
+    instance.getContextName = function(){return "BACKGROUND_SCRIPT"};
+    instance.sendMessageTo("CONTENT_SCRIPT", {});
+    instance.sendMessageTo("BACKGROUND_SCRIPT", {});
+    instance.sendMessageTo("PRIVLY_APPLICATION", {});
+
+    instance.getContextName = function(){return "PRIVLY_APPLICATION"};
+    instance.sendMessageTo("CONTENT_SCRIPT", {});
+    instance.sendMessageTo("BACKGROUND_SCRIPT", {});
+    instance.sendMessageTo("PRIVLY_APPLICATION", {});
+
+    instance.getContextName = savedFunctionReference;
+    done();
+  });
+
 });
