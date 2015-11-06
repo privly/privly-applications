@@ -19,6 +19,7 @@ describe ("Options Suite", function() {
       {id: "server_status", type: "div"},
       {id: "whitelist_url", type: "input", class: "whitelist_url", value: "example.org"},
       {id: "remove_whitelist", type: "div"},
+      {id: "logout_link", type: "a"},
       {id: "urls", type: "div"}
     ];
     domIDs.forEach(function(ob){
