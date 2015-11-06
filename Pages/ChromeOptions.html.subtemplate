@@ -15,7 +15,7 @@
   
   <h1 class="page-header">Extension Options</h1>
 
-{% if args.platform == "chrome" %}
+{% if args.platform == "chrome" or args.platform == "firefox" %}
   <section id="button_option">
 
     <h2>Privly Button</h2>

@@ -84,6 +84,7 @@ end
 def common_configuration_for_sauce
   require 'sauce'
   require 'sauce/capybara'
+  @@sauce_os = "Windows 7"
   Sauce.config do |config|
     config['name'] = "Feature Specs"
     config['browserName'] = @browser
@@ -91,19 +92,20 @@ def common_configuration_for_sauce
     # https://docs.saucelabs.com/reference/platforms-configurator
     if @browser == "firefox"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.firefox
-      config['version'] = "37.0"
-      @sauce_caps.version = "37.0"
-      platform = "Windows 7"
+      config['version'] = "38.0"
+      @sauce_caps.version = "38.0"
+      platform = @@sauce_os
     elsif @browser == "chrome"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.chrome
       config['version'] = "dev"
       @sauce_caps.version = "dev"
-      platform = "Windows 7"
+      platform = @@sauce_os
     elsif @browser == "safari"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.safari
       config['version'] = "8.0"
       @sauce_caps.version = "8.0"
-      platform = "OS X 10.10"
+      @@sauce_os = "OS X 10.10"
+      platform = @@sauce_os
     end
 
     @sauce_caps.platform = platform
