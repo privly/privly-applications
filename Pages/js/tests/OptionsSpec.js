@@ -229,4 +229,33 @@ describe ("Options Suite", function() {
     expect(listeners).toHaveBeenCalled();
     expect(writeGlyph).toHaveBeenCalled();
   });
+
+  it('removes whitelist url', function () {
+
+    var event = { target:
+                  {
+                    className: ['foo', 'remove_whitelist'],
+                    parentElement: { remove: function(){} }
+                  }
+                };
+
+    spyOn(event.target.parentElement, 'remove').and.stub();
+    spyOn(window, 'saveWhitelist').and.stub();
+
+    removeWhitelistUrl(event);
+
+    expect(event.target.parentElement.remove).toHaveBeenCalled();
+    expect(saveWhitelist).toHaveBeenCalled();
+  });
+
+  it('saves whitelist on changes', function () {
+    var event = { target:
+                  { classList: 'foo whitelist_url' }
+                };
+
+    spyOn(window, 'saveWhitelist').and.stub();
+    inputEvent(event);
+    expect(saveWhitelist).toHaveBeenCalled();
+  });
+
 });
