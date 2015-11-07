@@ -286,7 +286,7 @@ function removeWhitelistUrl (event) {
  */
 function inputEvent (ev) {
   var target = ev.target;
-  if (target.classList.contains('whitelist_url')) {
+  if (target.className.indexOf('whitelist_url') >= 0) {
     saveWhitelist();
   }
 }

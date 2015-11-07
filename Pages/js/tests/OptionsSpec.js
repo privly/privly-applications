@@ -250,7 +250,7 @@ describe ("Options Suite", function() {
 
   it('saves whitelist on changes', function () {
     var event = { target:
-                  { classList: 'foo whitelist_url' }
+                  { className: ['foo', 'whitelist_url'] }
                 };
 
     spyOn(window, 'saveWhitelist').and.stub();
