@@ -283,4 +283,84 @@ describe('Privly.message.adapter.Firefox', function () {
     expect(instance.getContextName()).toBe('UNKNOWN_CONTEXT');
     done();
   });
+
+  it('Sends messages to different contexts (smoke test)', function (done) {
+    var instance = Privly.message.adapter.Firefox.getInstance();
+    var savedFunctionReference = instance.getContextName;
+
+    // Set each of the context names that are being sent from
+    // and then send to each of the other contexts
+    instance.getContextName = function(){return "CONTENT_SCRIPT"};
+    try {
+      instance.sendMessageTo("CONTENT_SCRIPT", {});
+      expect(false).toBe(true);
+    } catch(all) {
+      expect(true).toBe(true);
+    }
+    self = {port: {emit: function(ident, data){}}};
+    instance.sendMessageTo("BACKGROUND_SCRIPT", {});
+    instance.sendMessageTo("PRIVLY_APPLICATION", {});
+
+    instance.getContextName = function(){return "BACKGROUND_SCRIPT"};
+    instance.sendMessageTo("CONTENT_SCRIPT", {});
+    instance.sendMessageTo("BACKGROUND_SCRIPT", {});
+    instance.sendMessageTo("PRIVLY_APPLICATION", {});
+
+    instance.getContextName = function(){return "PRIVLY_APPLICATION"};
+    instance.sendMessageTo("CONTENT_SCRIPT", {});
+    instance.sendMessageTo("BACKGROUND_SCRIPT", {});
+    instance.sendMessageTo("PRIVLY_APPLICATION", {});
+
+    instance.getContextName = savedFunctionReference;
+    done();
+  });
+
+});
+
+describe('Privly.message.adapter.Safari', function () {
+
+  it('creates instance', function () {
+    var instance = Privly.message.adapter.Safari.getInstance();
+    expect(instance instanceof Privly.message.adapter.Safari).toBe(true);
+  });
+
+  it('returns platform name', function () {
+    var instance = Privly.message.adapter.Safari.getInstance();
+    expect(instance.getPlatformName()).toBe('SAFARI');
+  });
+
+  it('returns context name', function () {
+    var instance = Privly.message.adapter.Safari.getInstance();
+
+    // for backgrouns script, we have a special meta node
+    var backgroundMarker = document.createElement('meta');
+    backgroundMarker.id = 'is-background-script';
+    document.head.appendChild(backgroundMarker);
+    expect(instance.getContextName()).toBe('BACKGROUND_SCRIPT');
+    document.head.removeChild(backgroundMarker);
+
+    // for privly applications (top or embedded), the location is special.. however we could not test it here
+    expect(instance.getContextName()).toBe('CONTENT_SCRIPT');
+  });
+
+  it('sends message to background scripts using safari.self.contentWindow.postMessage', function (done) {
+    if( typeof safari === "undefined" ) {
+      safari = {
+        "self": {
+          "contentWindow": {postMessage: {}}
+        }
+      };
+    }
+    var backup = safari.self.contentWindow.postMessage;
+    safari.self.contentWindow.postMessage = function (payload) {
+      expect(payload).toEqual({magic: '456'});
+      safari.self.contentWindow.postMessage = backup;
+      done();
+    };
+    var instance = Privly.message.adapter.Safari.getInstance();
+    var contextBackup = instance.getContextName;
+    instance.getContextName = function(){return "BACKGROUND_SCRIPT"};
+    instance.sendMessageTo('BACKGROUND_SCRIPT', { magic: '456' });
+    instance.getContextName = contextBackup;
+  });
 });
