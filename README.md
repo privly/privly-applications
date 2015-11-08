@@ -16,6 +16,7 @@ For more information on what Privly is,
 [![Build Status](https://travis-ci.org/privly/privly-applications.svg)](https://travis-ci.org/privly/privly-applications)
 [![Dependency Status](https://gemnasium.com/privly/privly-applications.png?travis)](https://gemnasium.com/privly/privly-applications)
 [![Code Climate](https://codeclimate.com/github/privly/privly-applications/badges/gpa.svg)](https://codeclimate.com/github/privly/privly-applications)
+[![Coverage Status](https://coveralls.io/repos/privly/privly-applications/badge.svg?branch=develop&service=github)](https://coveralls.io/github/privly/privly-applications?branch=develop)
 
 This repository is oriented to cross-platform development of Privly 
 Applications, which are web applications viewed within the context of other web 
@@ -25,7 +26,7 @@ iframe, they also support layout as the top document in the browser.
 The two current Privly applications are found in the PlainPost and Message
 folders. They are currently bundled into the 
 [Google Chrome Extension](https://github.com/privly/privly-chrome),
-[Firefox Extension](https://github.com/privly/privly-firefox) and the hosted
+[Firefox Extension](https://github.com/privly/privly-jetpack) and the hosted
 [content server](https://github.com/privly/privly-web) as 
 [Git Submodules](http://git-scm.com/book/en/Git-Tools-Submodules).
 
@@ -37,11 +38,12 @@ this directory.
 If you have discovered a bug, only 
 [open a public issue](https://github.com/privly/privly-web/issues/new) on GitHub 
 if it could not possibly be a security related bug. If the bug affects the 
-security of the system, please report it privately to privly@privly.org or at 
-[privly.org](http://www.privly.org/content/bug-report). We will then fix the bug 
-and follow a process of responsible disclosure.
+security of the system, please report it privately to privly@privly.org or at.
+We will then fix the bug and follow a process of responsible disclosure.
 
 ## Developer Documentation ##
+
+Visit the [developer guide](https://priv.ly/pages/develop) for in depth development information.
 
 Discussion of system concepts and high level processes are found in the 
 [central wiki](https://github.com/privly/privly-organization/wiki).
