@@ -38,11 +38,61 @@ body {
   word-wrap: break-word;
 }
 
-#side_block {
-  background:white;
-  border-radius:6px;
-  padding:13px;
+#post_content {
+    background: white;
+    border-radius: 6px;
+    padding: 13px;
+    box-shadow: 4px 5px 0px #8E8980;
 }
+
+#post_content p {
+  margin: 0;
+  word-wrap: break-word;
+}
+
+#cleartext {
+  height: 100%;
+}
+
+@media(min-width: 992px){
+  #dashed_hr {
+    display: none;
+  }
+}
+
+#dashed_hr {
+  border-top: 3px solid #CCBEA8;
+  width: 80%;
+  margin-bottom: 50px;
+  border-style: dashed;
+}
+
+#message_h2 {
+  color: #716652;
+  text-align: center;
+  font-size: 24px;
+}
+
+#side_block {
+  background: #424242;
+  color: white;
+  border-radius:0px 6px 6px 6px;
+  box-shadow: 0px -5px 0px #2D2D2D;
+  padding:13px;
+  margin-top: 32px;
+  position: relative;
+}
+
+#side_block h2 {
+    position: absolute;
+    margin: 0;
+    top: -36px;
+    left: 0px;
+    font-size: 24px;
+    background-color: #2D2D2D;
+    padding: 5px;
+}
+
 #side_block h3 {
   font-size:13px;
   border-bottom:1px solid #242424;

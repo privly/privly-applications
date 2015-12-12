@@ -67,6 +67,8 @@
                     </noscript>
                   </div>
                 </div>
+                <br />
+                <hr id="dashed_hr"></hr>
               </div>
 
               <div class="col-md-4 injected_hide">
