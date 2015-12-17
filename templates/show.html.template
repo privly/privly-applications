@@ -74,20 +74,20 @@
               <div class="col-md-4 injected_hide">
                 <div id="side_block">
                   <h2>Metadata</h2>
-                  <p class="meta_created_at"></p>
-                  <p class="meta_destroyed_around"></p>
-                  <p class="meta_updated_at"></p>
-                  <p class="meta_candestroy" style="display:none;">
-                    You can destroy this content now.
-                  </p>
-                  <p class="meta_canupdate" style="display:none;">
-                    You can update this content.
-                  </p>
-                  <p class="meta_source_domain"></p>
+                  <div class="topsource"><span class="glyphicon glyphicon-hdd"></span><strong>Source: </strong><p class="meta_source_domain"></p></div><br />
+                  <span class="glyphicon glyphicon-plus"></span><strong>Created: </strong><p class="meta_created_at meta"></p>
+                  <span class="glyphicon glyphicon-minus"></span><strong>Destroyed: </strong><p class="meta_destroyed_around meta"></p>
+                  <a href="/"><button class="meta_candestroy" style="display:none;">
+                    Destroy Now
+                  </button></a><br />
+                  <span class="glyphicon glyphicon-pencil"></span><strong>Updated: </strong><p class="meta_updated_at meta"></p>
+                  <a href="/"><button class="meta_canupdate" style="display:none;">
+                    Update
+                  </button></a><br />
                   <p>
                     <span class="glyphicon glyphicon-link"></span>
-                    Source Link:
-                    <span class="meta_source_url break_all"></span>
+                    <strong>Source Link: </strong>
+                    <a class="meta_source_url break_all"></a>
                   </p>
                 </div>
               </div>
