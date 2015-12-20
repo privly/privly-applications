@@ -1,6 +1,6 @@
 # This test class tests whether the extensions options change
 # after they are selected on the options page.
-class TestOptions < Test::Unit::TestCase
+class TestOptions < Minitest::Test
 
   include Capybara::DSL # Provides for Webdriving
 

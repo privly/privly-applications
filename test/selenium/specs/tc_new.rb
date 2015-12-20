@@ -1,5 +1,5 @@
 # Test CRUD on posts for each application
-class TestNew < Test::Unit::TestCase
+class TestNew < Minitest::Test
 
   # Helps perform authentication with the content server
   require_relative "auth_helper"

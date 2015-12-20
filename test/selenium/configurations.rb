@@ -4,7 +4,7 @@
 require 'selenium-webdriver' # Connecting to the browsers
 require 'capybara' # Manages Selenium
 require 'capybara/dsl' # Syntax for interacting with Selenium
-require 'test/unit' # Provides syntax for expectation statements
+require 'minitest/autorun' # Provides syntax for expectation statements
 
 # Sets the amount of time tests will wait for
 # asynchronous events to happen. Increasing this

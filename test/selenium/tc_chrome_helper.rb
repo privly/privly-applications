@@ -1,4 +1,4 @@
-class ChromeHelper < Test::Unit::TestCase
+class ChromeHelper < Minitest::Test
   include Capybara::DSL # Provides for Webdriving
 
   # Ensure that the proper URL for the browser is assigned
