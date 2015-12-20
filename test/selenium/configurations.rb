@@ -97,8 +97,8 @@ def common_configuration_for_sauce
       platform = @@sauce_os
     elsif @browser == "chrome"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.chrome
-      config['version'] = "dev"
-      @sauce_caps.version = "dev"
+      config['version'] = "beta"
+      @sauce_caps.version = "beta"
       platform = @@sauce_os
     elsif @browser == "safari"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.safari
