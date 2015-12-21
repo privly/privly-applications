@@ -19,9 +19,9 @@
  *
  * ## Expected DOM Elements ##
  * This adapter expects the DOM to have the set of elements defined below.
- * '#destroy_link': This is the link to destroy the content.
+ * '.destroy_link': This is the link to destroy the content.
  * '#cancel_button': This is the link to cancel the updating process.
- * '#edit_link': This is the link to start the updating process.
+ * '.edit_link': This is the link to start the updating process.
  * '#post_content': This is the content displayed to the end user.
  * '#messages': These are UI messages presented to the user.
  * '#login_message': This is the message telling the user they need to login.
@@ -35,7 +35,8 @@
  * '#seconds_until_burn': The number of seconds until the content is destroyed.
  * '#edit_form': The form for editing the content.
  * '#edit_text': The text in the text area for editing.
- * '.meta_created_at': When the content was created.
+ * '.meta_created_at': A block containing when content was created.
+ * '.meta_created_at_value': The timedate when content was created.
  * '.meta_destroyed_around': When the content will be destroyed.
  *
  * ## Extending this script ##
@@ -142,23 +143,40 @@ var callbacks = {
     // Display the data source to the user
     var domainSelector = document.createElement('a');
     domainSelector.href = state.jsonURL;
-    $(".meta_source_domain").text("Data Source: " + domainSelector.hostname);
+    $(".meta_source_domain").text(domainSelector.hostname);
 
-    // Display the data source to the user
-    $(".meta_source_url").text(state.webApplicationURL);
+    // Display the data source to the user. Highlight the link on click.
+    $(".meta_source_url")
+      .text(state.webApplicationURL)
+      .attr("href", state.webApplicationURL)
+      .click(function (ev) {
+        var range, selection;
+        if (window.getSelection && document.createRange) {
+          selection = window.getSelection();
+          range = document.createRange();
+          range.selectNodeContents($(this)[0]);
+          selection.removeAllRanges();
+          selection.addRange(range);
+        } else if (document.selection && document.body.createTextRange) {
+          range = document.body.createTextRange();
+          range.moveToElementText($(this)[0]);
+          range.select();
+        }
+        ev.preventDefault();
+      });
 
     // Register the click listener.
     $("#post_content").on("click", callbacks.click);
     $("#edit_form").on("click", callbacks.click);
 
     // Register the link and button listeners.
-    $("#destroy_link").click(callbacks.destroy);
+    $(".destroy_link").click(callbacks.destroy);
     
     // Watch the update button and pass the content callback
     // to the update function
     document.getElementById("update").addEventListener('click', 
       function(evt){callbacks.update(evt, callback);});
-    $("#edit_link").click(callbacks.edit);
+    $(".edit_link").click(callbacks.edit);
 
     // Set the nav bar to the proper domain
     privlyNetworkService.initializeNavigation();
@@ -288,7 +306,7 @@ var callbacks = {
               // Initialize the form for updating the post
               // if the user has permission.
               if( privlyNetworkService.permissions.canUpdate) {
-                $("#edit_link").show();
+                $(".edit_link").show();
                 $("#no_permissions_nav").hide();
                 $("#permissions_nav").show();
                 
@@ -305,7 +323,7 @@ var callbacks = {
               // Initialize the form for destroying the post
               // if the user has permission.
               if( privlyNetworkService.permissions.canDestroy) {
-                $("#destroy_link").show();
+                $(".destroy_link").show();
                 $("#no_permissions_nav").hide();
                 $("#permissions_nav").show();
                 $(".meta_candestroy").show();
@@ -320,8 +338,8 @@ var callbacks = {
       // Set creation date meta
       if( json.created_at ) {
         var createdDate = new Date(json.created_at);
-        $(".meta_created_at").text("Created Around " + 
-          createdDate.toDateString() + ". ");
+        $(".meta_created_at_value").text(createdDate.toDateString());
+        $(".meta_created_at").show();
       }
       
       // Set burnt date meta
@@ -398,7 +416,13 @@ var callbacks = {
       // Hide the drop down menu
       $("#no_permissions_nav").show();
       $("#permissions_nav").hide();
-      
+
+      // Hide metadata
+      $(".meta_canupdate").hide();
+      $(".destroy_link").hide();
+      $(".meta_candestroy").hide();
+      $(".meta_created_at").hide();
+
       // Tells the parent document how tall the iframe is so that
       // the iframe height can be changed to its content's height
       privlyHostPage.resizeToWrapper();
