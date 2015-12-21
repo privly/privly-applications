@@ -9,8 +9,8 @@ body{
 
 html,
 body {
-  height: 100%;
   /* The html and body elements cannot have any padding or margin. */
+  height: 100%;
 }
 
 /* Wrapper for page content to push down footer */
@@ -34,6 +34,7 @@ body {
   margin: 10px 10px 0px 10px;
 }
 
+/* Make the long URLs that we display to users display on multiple lines */
 .privlyUrl {
   word-wrap: break-word;
 }
@@ -67,12 +68,6 @@ body {
   border-style: dashed;
 }
 
-#message_h2 {
-  color: #716652;
-  text-align: center;
-  font-size: 24px;
-}
-
 #side_block {
   background: #424242;
   color: white;
@@ -98,12 +93,106 @@ body {
   border-bottom:1px solid #242424;
 }
 
+#side_block .glyphicon-floppy-disk {
+  color: #B3FFAF;
+  margin-right: 5px;
+}
+
+#side_block .glyphicon-minus {
+  color: #FFAFAF;
+  margin-right: 5px;
+}
+
+#side_block .glyphicon-pencil {
+  color: #FFFEAF;
+  margin-right: 5px;
+}
+
+#side_block .destroy-button {
+  width: 90%;
+  margin-left: 5%;
+  background: #FFAFAF;
+  border: none;
+  border-color: #FB8C8C;
+  font-weight: bold;
+  color: #484848;
+  margin-bottom: 10px;
+  transition: all 0.5s;
+}
+
+#side_block .destroy-button:hover {
+  background-color: #FF6161;
+}
+
+#side_block .edit-button {
+  width: 90%;
+  margin-left: 5%;
+  background: #FFFEAF;
+  border: none;
+  border-color: #D4D266;
+  font-weight: bold;
+  color: #484848;
+  margin-bottom: 10px;
+  transition: all 0.5s;
+}
+
+#side_block .meta_source_domain {
+  display: inline-block;
+}
+
+#side_block .edit-button:hover {
+  background-color: #B5B467;
+}
+
+#side_block .topsource {
+  background-color: #6F6F6F;
+  width: 100%;
+  padding-left: 12px;
+  height: 30px;
+  border-radius: 0 0 10px 10px;
+  margin-top: -5px;
+  padding-top: 4px;
+}
+
+#side_block .meta {
+  padding-left: 10px;
+  margin-top: 5px;
+  border-radius: 5px;
+}
+
+#side_block .meta_source_url {
+  background-color: #F1F1F1;
+  color: black;
+  font-size: 13px;
+  cursor: pointer;
+  max-height: 37px;
+  overflow: scroll;
+  border-radius: 5px 5px 0 0;
+  padding-left: 5px;
+  margin-top: 5px;
+}
+
+#side_block hr {
+  border-style: solid;
+  border-width: 4px;
+  width: 100%;
+  margin-left: -13px;
+  padding-right: 18px;
+  border-color: #2D2D2D;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#side_block .url-container {
+  margin-bottom: 0;
+}
+
 #step1_message {
-    display: block;
-    border-bottom: 1px solid #e1e1e1;
-    width: 70%;
-    margin: 0 auto 5px;
-    padding-bottom: 3px;
+  display: block;
+  border-bottom: 1px solid #e1e1e1;
+  width: 90%;
+  margin: 0 auto 5px;
+  padding-bottom: 3px;
 }
 
 .alert-warning {
