@@ -101,7 +101,6 @@ body {
 #side_block .glyphicon-plus {
   color: #B3FFAF;
   margin-right: 5px;
-  margin-top: 10px;
 }
 
 #side_block .glyphicon-minus {
@@ -114,7 +113,7 @@ body {
   margin-right: 5px;
 }
 
-#side_block .meta_candestroy {
+#side_block .destroy-button {
   width: 90%;
   margin-left: 5%;
   background: #FFAFAF;
@@ -126,11 +125,11 @@ body {
   transition: all 0.5s;
 }
 
-#side_block .meta_candestroy:hover {
+#side_block .destroy-button:hover {
   background-color: #FF6161;
 }
 
-#side_block .meta_canupdate {
+#side_block .edit-button {
   width: 90%;
   margin-left: 5%;
   background: #FFFEAF;
@@ -146,23 +145,21 @@ body {
   display: inline-block;
 }
 
-#side_block .meta_canupdate:hover {
+#side_block .edit-button:hover {
   background-color: #B5B467;
 }
 
 #side_block .topsource {
   background-color: #6F6F6F;
-  position: absolute;
-  top: 0px;
-  left: 0px;
   width: 100%;
   padding-left: 12px;
-  padding-top: 5px;
   height: 30px;
+  border-radius: 0 0 10px 10px;
+  margin-top: -5px;
+  padding-top: 4px;
 }
 
 #side_block .meta {
-  background-color: #2D2D2D;
   line-height: 31px;
   padding-left: 10px;
   margin-top: 5px;
@@ -170,15 +167,30 @@ body {
 }
 
 #side_block .meta_source_url {
-  background-color: #2D2D2D;
-  color: white;
+  background-color: #F1F1F1;
+  color: black;
   font-size: 13px;
   cursor: pointer;
   max-height: 37px;
   overflow: scroll;
-  border-radius: 5px;
+  border-radius: 5px 5px 0 0;
   padding-left: 5px;
   margin-top: 5px;
+}
+
+#side_block hr {
+  border-style: solid;
+  border-width: 4px;
+  width: 100%;
+  margin-left: -13px;
+  padding-right: 18px;
+  border-color: #2D2D2D;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#side_block .url-container {
+  margin-bottom: 0;
 }
 
 #step1_message {
