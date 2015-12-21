@@ -4,7 +4,7 @@
 require 'selenium-webdriver' # Connecting to the browsers
 require 'capybara' # Manages Selenium
 require 'capybara/dsl' # Syntax for interacting with Selenium
-require 'test/unit' # Provides syntax for expectation statements
+require 'minitest/autorun' # Provides syntax for expectation statements
 
 # Sets the amount of time tests will wait for
 # asynchronous events to happen. Increasing this
@@ -97,8 +97,8 @@ def common_configuration_for_sauce
       platform = @@sauce_os
     elsif @browser == "chrome"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.chrome
-      config['version'] = "dev"
-      @sauce_caps.version = "dev"
+      config['version'] = "beta"
+      @sauce_caps.version = "beta"
       platform = @@sauce_os
     elsif @browser == "safari"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.safari
