@@ -1,11 +1,11 @@
 # This test class tests whether the extensions options change
 # after they are selected on the options page.
-class TestOptions < Minitest::Test
+class TestOptions < Test::Unit::TestCase
 
   include Capybara::DSL # Provides for Webdriving
 
   def setup
-    @options_url = @@privly_applications_folder_path + "/Pages/ChromeOptions.html"
+    @options_url = $privly_applications_folder_path + "/Pages/ChromeOptions.html"
     page.driver.browser.get(@options_url)
   end
 

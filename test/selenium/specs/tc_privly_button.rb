@@ -4,18 +4,18 @@ class TestPrivlyButton < Test::Unit::TestCase
   include Capybara::DSL # Provides for Webdriving
 
   def setup
-    if not @@privly_extension_active
+    if not $privly_extension_active
       return
     end
     # enable Privly button
-    @options_url = @@privly_applications_folder_path + '/Pages/ChromeOptions.html'
+    @options_url = $privly_applications_folder_path + '/Pages/ChromeOptions.html'
     page.driver.browser.get(@options_url)
     page.uncheck('disableBtn')
   end
 
   def test_showing_button
 
-    if not @@privly_extension_active
+    if not $privly_extension_active
       return
     end
 

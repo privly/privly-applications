@@ -20,7 +20,7 @@ def common_configuration_for_web(args)
 
   # Assign the privly-applications repository path
   content_server = args[:content_server]
-  @@privly_applications_folder_path = content_server + "/apps/"
+  $privly_applications_folder_path = content_server + "/apps/"
 
   Capybara.register_driver :web_browser do |app|
    Capybara::Selenium::Driver.new(app, :browser => @browser.to_sym)
@@ -34,7 +34,7 @@ end
 def common_configuration_for_firefox_extension
   # Assign the path to find the applications in the extension
   Capybara.app_host = "chrome://privly"
-  @@privly_applications_folder_path = Capybara.app_host + "/content/privly-applications/"
+  $privly_applications_folder_path = Capybara.app_host + "/content/privly-applications/"
   puts "Packaging the Firefox Extension"
   system("cd ../../../../../ && pwd && jpm xpi && cd chrome/content/privly-applications/test/selenium")
   # Find out the xpi file name
@@ -50,12 +50,31 @@ end
 # Chrome scripting environment
 def assign_chrome_extension_path
 
-  # The chrome URL can change periodically so this test grabs the
+  # The chrome URL can change periodically so this grabs the
   # URL from the first run page. It also fixes the path in the
   # CRUD tests since this test doesn't run until all the
   # initialization is complete
-  require_relative "tc_chrome_helper"
-  @@privly_applications_folder_path = ""
+  include Capybara::DSL # Provides for Webdriving
+
+  # Give the first-run page 15 seconds to appear
+  for i in 0..15
+    newest_window = page.driver.browser.window_handles.last
+    page.driver.switch_to_window newest_window
+    address = page.driver.browser.current_url
+    if address.include? "chrome-extension://"
+      break
+    end
+    if i == 15
+      puts "failed to recover Chrome extension URL for testing"
+      exit 1
+    end
+    sleep 1
+  end
+  app_host = "chrome-extension://" + address.split("/")[2]
+  Capybara.app_host = app_host
+  $privly_applications_folder_path = Capybara.app_host + "/privly-applications/"
+  Capybara.reset_sessions!
+  Capybara.use_default_driver
 end
 
 # This is the common config for running tests from the
@@ -64,7 +83,7 @@ def common_configuration_for_sauce_web(args)
 
   # Assign the applications path
   content_server = args[:content_server]
-  @@privly_applications_folder_path = content_server + "/apps/"
+  $privly_applications_folder_path = content_server + "/apps/"
 
   Capybara.register_driver :sauce_web do |app|
    Capybara::Selenium::Driver.new(
@@ -84,7 +103,7 @@ end
 def common_configuration_for_sauce
   require 'sauce'
   require 'sauce/capybara'
-  @@sauce_os = "Windows 7"
+  $sauce_os = "Windows 7"
   Sauce.config do |config|
     config['name'] = "Feature Specs"
     config['browserName'] = @browser
@@ -94,18 +113,18 @@ def common_configuration_for_sauce
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.firefox
       config['version'] = "38.0"
       @sauce_caps.version = "38.0"
-      platform = @@sauce_os
+      platform = $sauce_os
     elsif @browser == "chrome"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.chrome
       config['version'] = "beta"
       @sauce_caps.version = "beta"
-      platform = @@sauce_os
+      platform = $sauce_os
     elsif @browser == "safari"
       @sauce_caps = Selenium::WebDriver::Remote::Capabilities.safari
       config['version'] = "8.0"
       @sauce_caps.version = "8.0"
-      @@sauce_os = "OS X 10.10"
-      platform = @@sauce_os
+      $sauce_os = "OS X 10.10"
+      platform = $sauce_os
     end
 
     @sauce_caps.platform = platform

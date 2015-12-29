@@ -1,5 +1,5 @@
 #Test the history page
-class TestHistory < Minitest::Test
+class TestHistory < Test::Unit::TestCase
 
   # Helps perform authentication with the content server
   require_relative "auth_helper"
@@ -8,8 +8,8 @@ class TestHistory < Minitest::Test
   include Capybara::DSL # Provides for Webdriving
 
   def setup
-    page.driver.browser.get(@@privly_test_set[0][:url])
-    login(@@privly_test_set[0][:content_server])
+    page.driver.browser.get($privly_test_set[0][:url])
+    login($privly_test_set[0][:content_server])
 
     #Create a message to test with
     click_on ('New Link')
@@ -40,7 +40,7 @@ class TestHistory < Minitest::Test
   end
 
   def teardown
-    page.driver.browser.get(@@privly_test_set[0][:url])
+    page.driver.browser.get($privly_test_set[0][:url])
     page.driver.browser.navigate.refresh # force reload
     logout
     Capybara.reset_sessions!
