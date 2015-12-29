@@ -408,9 +408,25 @@ var privlyNetworkService = {
     $(".account_url").attr("href", domain + "/pages/account");
     $(".legal_nav").attr("href", domain + "/pages/privacy");
     document.getElementById("logout_link").addEventListener('click', function(){
-      $.post(domain + "/users/sign_out", "_method=delete", function(data) {
-        window.location = "../Login/new.html";
+      var url = domain + "/users/sign_out";
+      $.ajax({
+        url: url,
+        type: "POST",
+        data: "_method=delete",
+        headers: {
+          Accept: "application/html",
+          "X-CSRF-Token": privlyNetworkService.getCSRFToken(url)
+        },
+        success: function (json, textStatus, jqXHR) {
+          window.location = "../Login/new.html";
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          $("#messages").text("We are unable to verify that this computer has " +
+            "been logged out from the server. Please refresh the page and try again.");
+        }
       });
+
+
     });
     
     // Change the target property to be self if the application is hosted

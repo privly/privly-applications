@@ -200,4 +200,62 @@ describe ("Options Suite", function() {
     restoreServer();
   });
 
+  it('tests initialize app function', function () {
+
+    // add logout_link to DOM so init function does not return immediately
+    var ob =  {id: "logout_link", type: "a", class: "logout_url"};
+    var newElement = $('<' + ob.type + '/>', {
+      id: ob.id,
+      class: ob.class,
+      value: ob.value
+    });
+    $(document.body).append(newElement);
+
+    spyOn(privlyNetworkService, 'initializeNavigation').and.stub();
+    spyOn(privlyNetworkService, 'initPrivlyService').and.stub();
+    spyOn(window, 'restoreCheckedSetting').and.callThrough();
+    spyOn(window, 'restoreWhitelist').and.callThrough();
+    spyOn(window, 'restoreServer').and.callThrough();
+    spyOn(window, 'listeners').and.stub(); // mock because depends on DOM elements
+    spyOn(window, 'writeGlyph').and.callThrough();
+
+    initializeApp();
+
+    expect(privlyNetworkService.initializeNavigation).toHaveBeenCalled();
+    expect(privlyNetworkService.initPrivlyService).toHaveBeenCalled();
+    expect(restoreCheckedSetting).toHaveBeenCalled();
+    expect(restoreWhitelist).toHaveBeenCalled();
+    expect(restoreServer).toHaveBeenCalled();
+    expect(listeners).toHaveBeenCalled();
+    expect(writeGlyph).toHaveBeenCalled();
+  });
+
+  it('removes whitelist url', function () {
+
+    var event = { target:
+                  {
+                    className: ['foo', 'remove_whitelist'],
+                    parentElement: { remove: function(){} }
+                  }
+                };
+
+    spyOn(event.target.parentElement, 'remove').and.stub();
+    spyOn(window, 'saveWhitelist').and.stub();
+
+    removeWhitelistUrl(event);
+
+    expect(event.target.parentElement.remove).toHaveBeenCalled();
+    expect(saveWhitelist).toHaveBeenCalled();
+  });
+
+  it('saves whitelist on changes', function () {
+    var event = { target:
+                  { className: ['foo', 'whitelist_url'] }
+                };
+
+    spyOn(window, 'saveWhitelist').and.stub();
+    inputEvent(event);
+    expect(saveWhitelist).toHaveBeenCalled();
+  });
+
 });

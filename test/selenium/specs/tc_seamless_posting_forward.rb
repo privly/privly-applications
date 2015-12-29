@@ -44,7 +44,14 @@ class TestEmbedPosting < Test::Unit::TestCase
       assert_no_selector('[src*="seamless.html"]')
     end
 
-    if RbConfig::CONFIG['host_os'].match /darwin|mac os/
+    # If it is running on SauceLabs, the OS of the keyboard can be different
+    if defined?(@@sauce_os)
+      if @@sauce_os == "OS X 10.10"
+        meta_control = :meta
+      else
+        meta_control = :control
+      end
+    elsif RbConfig::CONFIG['host_os'].match /darwin|mac os/
       meta_control = :meta
     else
       meta_control = :control

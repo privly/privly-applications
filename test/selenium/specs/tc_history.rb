@@ -1,5 +1,5 @@
 #Test the history page
-class TestHistory < Test::Unit::TestCase
+class TestHistory < Minitest::Test
 
   # Helps perform authentication with the content server
   require_relative "auth_helper"

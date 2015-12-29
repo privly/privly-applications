@@ -67,26 +67,59 @@
                     </noscript>
                   </div>
                 </div>
+                <br class="injected_hide" />
+                <div class="injected_hide">
+                <hr id="dashed_hr"></hr>
+                </div>
               </div>
 
               <div class="col-md-4 injected_hide">
                 <div id="side_block">
                   <h2>Metadata</h2>
-                  <p class="meta_created_at"></p>
-                  <p class="meta_destroyed_around"></p>
-                  <p class="meta_updated_at"></p>
-                  <p class="meta_candestroy" style="display:none;">
-                    You can destroy this content now.
-                  </p>
-                  <p class="meta_canupdate" style="display:none;">
-                    You can update this content.
-                  </p>
-                  <p class="meta_source_domain"></p>
-                  <p>
+                  
+                  <!--Creation-->
+                  <div class="meta_created_at" style="display:none;">
+                    <span class="glyphicon glyphicon-floppy-disk"></span><strong>Created Around: </strong><p class="meta_created_at_value meta"></p>
+                    <hr>
+                  </div>
+
+                  <!--Edit Content-->
+                  <div class="meta_canupdate" style="display:none;">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                    <strong>Edit Content: </strong>
+                    <p class="meta_updated_at meta"></p>
+                    <a href="#" class="edit_link">
+                      <button class="edit-button">
+                        Edit
+                      </button>
+                    </a>
+                    <hr />
+                  </div>
+                  
+                  <!--Destruction-->
+                  <div class="meta_candestroy" style="display:none;">
+                    <span class="glyphicon glyphicon-minus"></span>
+                    <strong>Destroyed: </strong>
+                    <p class="meta_destroyed_around meta"></p>
+                    <a href="#" class="destroy_link">
+                      <button class="destroy-button">
+                        Destroy Now
+                      </button>
+                    </a>
+                    <hr />
+                  </div>
+
+                  <!--Source + Link-->
+                  <div class="url-container">
                     <span class="glyphicon glyphicon-link"></span>
-                    Source Link:
-                    <span class="meta_source_url break_all"></span>
-                  </p>
+                    <strong>Source Link: </strong>
+                    <a class="meta_source_url break_all"></a>
+                    <div class="topsource">
+                    <span class="glyphicon glyphicon-hdd"></span>
+                    <strong>Data Source: </strong>
+                    <p class="meta_source_domain"></p>
+                  </div>
+
                 </div>
               </div>
             </div>

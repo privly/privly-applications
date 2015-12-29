@@ -1,7 +1,7 @@
 # This test case checks whether the content at test.privly.org
 # injects into the host page properly. These specs only
 # run if the extension is loaded into the web browser.
-class TestInjected < Test::Unit::TestCase
+class TestInjected < Minitest::Test
 
   include Capybara::DSL # Provides for Webdriving
 

@@ -106,7 +106,7 @@ describe ("Login Suite", function() {
       json: {
         success: false,
         status: 401
-      }  
+      }
     }
     spyOn(callbacks, "pendingPost");
     spyOn(callbacks, "loginFailure");
@@ -115,4 +115,38 @@ describe ("Login Suite", function() {
     expect(callbacks.loginFailure).toHaveBeenCalled();
   });
 
+  it("calls pendingRegistration after checkRegistration pass", function() {
+    var response = {
+      json: {
+        success: true
+      }
+    }
+    spyOn(callbacks, "pendingRegistration");
+    spyOn(callbacks, "registrationFailure");
+    callbacks.checkRegistration(response);
+    expect(callbacks.pendingRegistration).toHaveBeenCalled();
+    expect(callbacks.registrationFailure).not.toHaveBeenCalled();
+  });
+
+  it("calls registrationFailure after checkRegistration fail", function() {
+    return;
+    var response = {
+      json: {
+        success: false
+      }
+    }
+    spyOn(callbacks, "pendingRegistration");
+    spyOn(callbacks, "registrationFailure");
+    callbacks.checkRegistration(response);
+    expect(callbacks.pendingRegistration).not.toHaveBeenCalled();
+    expect(callbacks.registrationFailure).toHaveBeenCalled();
+  });
+
+  it("shows failed login information", function() {
+    $("#messages").text("tmp").hide();
+    callbacks.loginFailure();
+    expect($("#messages").text()).toBe("Bad username or password. " +
+      "Too many failed attempts will lock the account.");
+    expect($("#messages:visible").length).toBe(1);
+  });
 });

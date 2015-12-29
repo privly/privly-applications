@@ -1,5 +1,5 @@
 # Test all the injectable show applications in their non-injected form.
-class TestShow < Test::Unit::TestCase
+class TestShow < Minitest::Test
 
   include Capybara::DSL # Provides for Webdriving
 
