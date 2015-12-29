@@ -5,7 +5,7 @@ class TestMessage < Test::Unit::TestCase
 
   def test_message_between_extension_and_application
     @background_url = Capybara.app_host + "/background.html"
-    @privly_app_url = @@privly_applications_folder_path + "Pages/MessageTest.html"
+    @privly_app_url = $privly_applications_folder_path + "Pages/MessageTest.html"
 
     page.driver.browser.get(@privly_app_url)
     # sometimes Chrome extension engine is not initialized at this time
@@ -33,7 +33,7 @@ class TestMessage < Test::Unit::TestCase
 
   def test_message_between_application_and_application
     @background_url = Capybara.app_host + "/background.html"
-    @privly_app_url = @@privly_applications_folder_path + "Pages/MessageTest.html"
+    @privly_app_url = $privly_applications_folder_path + "Pages/MessageTest.html"
 
     page.driver.browser.get(@privly_app_url)
     page.execute_script("window.location.reload();")

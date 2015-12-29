@@ -1,5 +1,5 @@
 # Test CRUD on posts for each application
-class TestNew < Minitest::Test
+class TestNew < Test::Unit::TestCase
 
   # Helps perform authentication with the content server
   require_relative "auth_helper"
@@ -8,14 +8,14 @@ class TestNew < Minitest::Test
   include Capybara::DSL # Provides for Webdriving
 
   def setup
-    page.driver.browser.get(@@privly_test_set[0][:url])
-    login(@@privly_test_set[0][:content_server])
+    page.driver.browser.get($privly_test_set[0][:url])
+    login($privly_test_set[0][:content_server])
     page.driver.browser.manage.timeouts.implicit_wait = 3
   end
 
   # Test post creation for each application that presents a "new" action.
   def test_creating_posts
-    @@privly_test_set.each do |to_test|
+    $privly_test_set.each do |to_test|
       if to_test[:manifest_dictionary]["action"] == "new" and
         not to_test[:manifest_dictionary]["name"] == "Help" and
         not to_test[:manifest_dictionary]["name"] == "Login"
@@ -30,7 +30,7 @@ class TestNew < Minitest::Test
 
   # Test CRUD on each application that presents a "new" action.
   def test_create_update_destroy
-    @@privly_test_set.each do |to_test|
+    $privly_test_set.each do |to_test|
       if not to_test[:manifest_dictionary]["action"] == "new" or
         to_test[:manifest_dictionary]["name"] == "Login" or
         to_test[:manifest_dictionary]["name"] == "Help"
@@ -77,7 +77,7 @@ class TestNew < Minitest::Test
   end
 
   def teardown
-    page.driver.browser.get(@@privly_test_set[0][:url])
+    page.driver.browser.get($privly_test_set[0][:url])
     page.driver.browser.navigate.refresh # force reload
     logout
     Capybara.reset_sessions!
