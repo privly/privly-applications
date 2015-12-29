@@ -81,12 +81,7 @@ var privlyNetworkService = {
   },
   
   /**
-   * Determines which platform the script is runing on. This helps determine
-   * which request function should be used. The current values are "CHROME"
-   * for the Google Chrome extension, and "HOSTED" for all other architectures.
-   * HOSTED functions use standard same-origin AJAX requests.
-   *
-   * @return {string} the name of the platform.
+   * @deprecated Use Privly.message.currentAdapter.getPlatformName() instead.
    */
   platformName: function() {
     if (navigator.userAgent.indexOf("iPhone") >= 0 || 
@@ -95,10 +90,12 @@ var privlyNetworkService = {
         return "IOS";
     } else if(typeof androidJsBridge !== "undefined") {
       return "ANDROID";
-    }  else if (typeof chrome !== "undefined" && typeof chrome.extension !== "undefined") {
+    } else if (typeof chrome !== "undefined" && typeof chrome.extension !== "undefined") {
       return "CHROME";
-    } else if(window.location.href.indexOf("chrome://") === 0) {
+    } else if (window.location.href.indexOf("chrome://") === 0) {
       return "FIREFOX";
+    } else if (window.location.href.indexOf("safari-extension://") === 0) {
+      return "SAFARI";
     } else {
       return "HOSTED";
     }
@@ -192,20 +189,8 @@ var privlyNetworkService = {
       privlyNetworkService.platformName() === "FIREFOX") {
       
       // get the user defined whitelist and add in the default whitelist
-      var whitelist = [];
-
-      // Legacy CSV Check, convert to JSON if found
-      if (ls.getItem('user_whitelist_csv') !== undefined) {
-        ls.setItem('user_whitelist_json', 
-          JSON.stringify(ls.getItem('user_whitelist_csv').split(' , ')));
-        ls.removeItem('user_whitelist_csv')
-      }
-
-      // There is no local storage API on Firefox XUL
-      if ( privlyNetworkService.platformName() === "CHROME" &&
-        ls.getItem("user_whitelist_json") !== undefined ) {
-        whitelist = ls.getItem('user_whitelist_json');
-      }
+      var whitelist = Privly.options.getWhitelistDomains();
+      
       whitelist.push("priv.ly");
       whitelist.push("dev.privly.org");
       whitelist.push("localhost");
@@ -247,8 +232,9 @@ var privlyNetworkService = {
       return protocolDomainPort;
     } else if (platformName === "CHROME" ||
                platformName === "FIREFOX" ||
+               platformName === "SAFARI" ||
                platformName === "IOS") {
-      return ls.getItem("posting_content_server_url");
+      return Privly.options.getServerUrl();
     } else if (platformName === "ANDROID") {
       return androidJsBridge.fetchDomainName();
     } else {
@@ -274,7 +260,7 @@ var privlyNetworkService = {
       url = privlyNetworkService.getAuthenticatedUrl(url);
     }
     
-    $.ajax({
+    return $.ajax({
       url: url,
       dataType: "json",
       headers: { 
@@ -307,7 +293,7 @@ var privlyNetworkService = {
    */
   sameOriginPostRequest: function(url, callback, data) {
     url = privlyNetworkService.getAuthenticatedUrl(url);
-    $.ajax({
+    return $.ajax({
       url: url,
       cache: false,
       type: "POST",
@@ -344,7 +330,7 @@ var privlyNetworkService = {
    */
   sameOriginPutRequest: function(url, callback, data) {
     url = privlyNetworkService.getAuthenticatedUrl(url);
-    $.ajax({
+    return $.ajax({
       url: url,
       cache: false,
       type: "PUT",
@@ -381,7 +367,7 @@ var privlyNetworkService = {
    */
   sameOriginDeleteRequest: function(url, callback, data) {
     url = privlyNetworkService.getAuthenticatedUrl(url);
-    $.ajax({
+    return $.ajax({
       url: url,
       cache: false,
       type: "DELETE",
@@ -422,9 +408,25 @@ var privlyNetworkService = {
     $(".account_url").attr("href", domain + "/pages/account");
     $(".legal_nav").attr("href", domain + "/pages/privacy");
     document.getElementById("logout_link").addEventListener('click', function(){
-      $.post(domain + "/users/sign_out", "_method=delete", function(data) {
-        window.location = "../Login/new.html";
+      var url = domain + "/users/sign_out";
+      $.ajax({
+        url: url,
+        type: "POST",
+        data: "_method=delete",
+        headers: {
+          Accept: "application/html",
+          "X-CSRF-Token": privlyNetworkService.getCSRFToken(url)
+        },
+        success: function (json, textStatus, jqXHR) {
+          window.location = "../Login/new.html";
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          $("#messages").text("We are unable to verify that this computer has " +
+            "been logged out from the server. Please refresh the page and try again.");
+        }
       });
+
+
     });
     
     // Change the target property to be self if the application is hosted

@@ -3,17 +3,9 @@ class TestShow < Test::Unit::TestCase
 
   include Capybara::DSL # Provides for Webdriving
 
-  def setup
-  end
-
   # Test the ability of the app to pull down content from the privly
   def test_showing_post_extension
-
-    # Don't test it if there is no extension
-    if not @@privly_extension_active
-      return
-    end
-
+    
     # These two addresses will be used for testing these applications
     testing_strings = {
       "PlainPost" => "?privlyOriginalURL=https%3A%2F%2Fprivlyalpha.org%2Fapps%2FPlainPost%2Fshow%3FprivlyApp%3DPlainPost%26privlyInject1%3Dtrue%26random_token%3D%26privlyDataURL%3Dhttps%253A%252F%252Fprivlyalpha.org%252Fposts%252F2.json%23privlyInject1",
@@ -21,7 +13,7 @@ class TestShow < Test::Unit::TestCase
     }
 
     # Loop over the applications and test them with their associated URL
-    @@privly_test_set.each do |to_test|
+    $privly_test_set.each do |to_test|
       if not testing_strings.has_key? to_test[:manifest_dictionary]["name"] or
         not to_test[:manifest_dictionary]["action"] == "show"
         next

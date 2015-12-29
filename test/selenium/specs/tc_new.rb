@@ -8,13 +8,14 @@ class TestNew < Test::Unit::TestCase
   include Capybara::DSL # Provides for Webdriving
 
   def setup
-    page.driver.browser.get(@@privly_test_set[0][:url])
-    login(@@privly_test_set[0][:content_server])
+    page.driver.browser.get($privly_test_set[0][:url])
+    login($privly_test_set[0][:content_server])
+    page.driver.browser.manage.timeouts.implicit_wait = 3
   end
 
   # Test post creation for each application that presents a "new" action.
   def test_creating_posts
-    @@privly_test_set.each do |to_test|
+    $privly_test_set.each do |to_test|
       if to_test[:manifest_dictionary]["action"] == "new" and
         not to_test[:manifest_dictionary]["name"] == "Help" and
         not to_test[:manifest_dictionary]["name"] == "Login"
@@ -29,7 +30,7 @@ class TestNew < Test::Unit::TestCase
 
   # Test CRUD on each application that presents a "new" action.
   def test_create_update_destroy
-    @@privly_test_set.each do |to_test|
+    $privly_test_set.each do |to_test|
       if not to_test[:manifest_dictionary]["action"] == "new" or
         to_test[:manifest_dictionary]["name"] == "Login" or
         to_test[:manifest_dictionary]["name"] == "Help"
@@ -66,16 +67,18 @@ class TestNew < Test::Unit::TestCase
         find_button("Update").click
 
         # Refresh
-        page.driver.browser.get(page.evaluate_script("window.location.href"))
+        page.driver.browser.navigate.refresh
 
         # Make sure the refreshed page has the new content
         assert page.has_text?('Updated!')
+        new_window.close()
       end
     end
   end
 
   def teardown
-    page.driver.browser.get(@@privly_test_set[0][:url])
+    page.driver.browser.get($privly_test_set[0][:url])
+    page.driver.browser.navigate.refresh # force reload
     logout
     Capybara.reset_sessions!
     Capybara.use_default_driver

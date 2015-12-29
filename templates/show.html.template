@@ -1,55 +1,34 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
-    <!--
-      This was likely rendered from the Privly-application templating system
-      See: https://github.com/privly/privly-applications/pull/19
-     -->
+{% extends "templates/base.html.template" %}
+{% block head %}
 
     <title>{{name}}</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content="This link contains your friend's private content. Click through to read.">
     <meta name="og:description" content="This link contains your friend's private content. Click through to read.">
     <meta name="twitter:description" content="This link contains your friend's private content. Click through to read.">
-    
-    <!-- Common Styles -->
-    <link href="../shared/css/common.css" media="screen" rel="stylesheet"
-     type="text/css"/>
-    <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet"
-     type="text/css"/>
-    
-    <!-- Shared JavaScripts -->  
-    <script type="text/javascript" src="../shared/javascripts/meta_loader.js"></script>
-    <script type="text/javascript" src="../shared/javascripts/parameters.js"></script>
+
+    <link href="../shared/css/tooltip.css" media="screen" rel="stylesheet" type="text/css"/>
+
     <script type="text/javascript" src="../shared/javascripts/host_page_integration.js"></script>
-    <script type="text/javascript" src="../shared/javascripts/network_service.js"></script>
     <script type="text/javascript" src="../shared/javascripts/tooltip.js"></script>
-    <script type="text/javascript" src="../shared/javascripts/local_storage.js">
-    </script>
-    
-    <!-- Application Specific JavaScripts -->
     {% block javascripts %}{% endblock %}
-    
+
     <!-- Top Styles, will be added by JS if not viewed in iframe -->
     <meta name="PrivlyTopCSS" content="../vendor/bootstrap/css/bootstrap.min.css;../shared/css/top/top.css"/>
-    
     <!-- Injected Styles, will be added by JS if viewed in iframe -->
-    <meta name="PrivlyInjectedCSS"
-     content="../shared/css/injected/injected.css"/>
-     
-  </head>
+    <meta name="PrivlyInjectedCSS" content="../shared/css/injected/injected.css"/>
+
+{% endblock %}
+{% block body %}
   <body data-privly-exclude="true">
-    
+
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
-    
+
     <div id="wrap"><!-- for bootstrap footer -->
       <div id="privlyHeightWrapper">
-        
+
         {% include "templates/partials/navigation.html.subtemplate" %}
-        
+
         <div class="container">
           {% block main %}
             <div class="row">
@@ -88,26 +67,59 @@
                     </noscript>
                   </div>
                 </div>
+                <br class="injected_hide" />
+                <div class="injected_hide">
+                <hr id="dashed_hr"></hr>
+                </div>
               </div>
 
               <div class="col-md-4 injected_hide">
                 <div id="side_block">
                   <h2>Metadata</h2>
-                  <p class="meta_created_at"></p>
-                  <p class="meta_destroyed_around"></p>
-                  <p class="meta_updated_at"></p>
-                  <p class="meta_candestroy" style="display:none;">
-                    You can destroy this content now.
-                  </p>
-                  <p class="meta_canupdate" style="display:none;">
-                    You can update this content.
-                  </p>
-                  <p class="meta_source_domain"></p>
-                  <p>
+                  
+                  <!--Creation-->
+                  <div class="meta_created_at" style="display:none;">
+                    <span class="glyphicon glyphicon-floppy-disk"></span><strong>Created Around: </strong><p class="meta_created_at_value meta"></p>
+                    <hr>
+                  </div>
+
+                  <!--Edit Content-->
+                  <div class="meta_canupdate" style="display:none;">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                    <strong>Edit Content: </strong>
+                    <p class="meta_updated_at meta"></p>
+                    <a href="#" class="edit_link">
+                      <button class="edit-button">
+                        Edit
+                      </button>
+                    </a>
+                    <hr />
+                  </div>
+                  
+                  <!--Destruction-->
+                  <div class="meta_candestroy" style="display:none;">
+                    <span class="glyphicon glyphicon-minus"></span>
+                    <strong>Destroyed: </strong>
+                    <p class="meta_destroyed_around meta"></p>
+                    <a href="#" class="destroy_link">
+                      <button class="destroy-button">
+                        Destroy Now
+                      </button>
+                    </a>
+                    <hr />
+                  </div>
+
+                  <!--Source + Link-->
+                  <div class="url-container">
                     <span class="glyphicon glyphicon-link"></span>
-                    Source Link:
-                    <span class="meta_source_url break_all"></span>
-                  </p>
+                    <strong>Source Link: </strong>
+                    <a class="meta_source_url break_all"></a>
+                    <div class="topsource">
+                    <span class="glyphicon glyphicon-hdd"></span>
+                    <strong>Data Source: </strong>
+                    <p class="meta_source_domain"></p>
+                  </div>
+
                 </div>
               </div>
             </div>
@@ -167,4 +179,4 @@
       </div>
     </div>
   </body>
-</html>
+{% endblock %}

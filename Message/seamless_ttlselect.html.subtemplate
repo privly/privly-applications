@@ -1,0 +1,6 @@
+{% extends "templates/seamless_ttlselect.html.template" %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="js/messageModel.js"></script>
+  <script type="text/javascript" src="js/controllers/seamless_ttlselect.js"></script>
+{% endblock %}
