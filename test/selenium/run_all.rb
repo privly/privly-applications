@@ -49,7 +49,7 @@ def initialize_CRUD_tests(args)
   # the content_server that the application is expected to be associated
   # with (default is the same as the domain of the URL), and the dictionary
   # that is passed to the template files.
-  @@privly_test_set = [
+  $privly_test_set = [
     # url,
     # content_server,
     # manifest_dictionary
@@ -75,9 +75,9 @@ def initialize_CRUD_tests(args)
       end
 
       # Pages to be tested
-      page_url = @@privly_applications_folder_path+outfile_path
+      page_url = $privly_applications_folder_path+outfile_path
 
-      @@privly_test_set.push({
+      $privly_test_set.push({
           :url => page_url,
           :content_server => content_server,
           :manifest_dictionary => app_manifest["subtemplate_dict"]
@@ -112,7 +112,7 @@ end
 
 # Global variable indicating whether the extension
 # is installed
-@@privly_extension_active = platform.include?("extension")
+$privly_extension_active = platform.include?("extension")
 
 # Assign the name of the browser controlled by Selenium
 if platform.include? "chrome"

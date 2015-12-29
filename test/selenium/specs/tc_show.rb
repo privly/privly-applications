@@ -1,5 +1,5 @@
 # Test all the injectable show applications in their non-injected form.
-class TestShow < Minitest::Test
+class TestShow < Test::Unit::TestCase
 
   include Capybara::DSL # Provides for Webdriving
 
@@ -13,7 +13,7 @@ class TestShow < Minitest::Test
     }
 
     # Loop over the applications and test them with their associated URL
-    @@privly_test_set.each do |to_test|
+    $privly_test_set.each do |to_test|
       if not testing_strings.has_key? to_test[:manifest_dictionary]["name"] or
         not to_test[:manifest_dictionary]["action"] == "show"
         next

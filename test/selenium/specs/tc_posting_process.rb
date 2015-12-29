@@ -9,7 +9,7 @@ class TestPostingProcess < Test::Unit::TestCase
   include Capybara::DSL # Provides for Webdriving
 
   def setup
-    page.driver.browser.get(@@privly_test_set[0][:url])
+    page.driver.browser.get($privly_test_set[0][:url])
     # Makes sure that the privly button is enabled
     click_on ('Options')
     click_on ('Extension Options')
@@ -47,7 +47,7 @@ class TestPostingProcess < Test::Unit::TestCase
   def enter_message(app_window)
     within_window app_window do
       assert page.has_text?('login')
-      login(@@privly_test_set[0][:content_server])
+      login($privly_test_set[0][:content_server])
       fill_in 'content', :with => 'Hello WebDriver!'
       Selenium::WebDriver::Support::Select.new(page.driver.browser.find_element(:id, 'seconds_until_burn')).select_by(:text, '1 Day')
       find_button('save').click
@@ -123,7 +123,7 @@ class TestPostingProcess < Test::Unit::TestCase
 
   def teardown
     remove_instance_variable(:@privly_testing)
-    page.driver.browser.get(@@privly_test_set[0][:url])
+    page.driver.browser.get($privly_test_set[0][:url])
     logout
     Capybara.reset_sessions!
     Capybara.use_default_driver

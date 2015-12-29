@@ -11,14 +11,14 @@ class TestEmbedPosting < Test::Unit::TestCase
   include Capybara::DSL # Provides for Webdriving
 
   def setup
-    if not @@privly_extension_active
+    if not $privly_extension_active
       return
     end
-    page.driver.browser.get(@@privly_test_set[0][:url])
-    login(@@privly_test_set[0][:content_server])
+    page.driver.browser.get($privly_test_set[0][:url])
+    login($privly_test_set[0][:content_server])
 
     # enable Privly button
-    @options_url = @@privly_applications_folder_path + '/Pages/ChromeOptions.html'
+    @options_url = $privly_applications_folder_path + '/Pages/ChromeOptions.html'
     page.driver.browser.get(@options_url)
     page.uncheck('disableBtn')
   end
@@ -31,7 +31,7 @@ class TestEmbedPosting < Test::Unit::TestCase
   end
 
   def test_forwarding_enter_event
-    if not @@privly_extension_active
+    if not $privly_extension_active
       return
     end
 
@@ -45,8 +45,8 @@ class TestEmbedPosting < Test::Unit::TestCase
     end
 
     # If it is running on SauceLabs, the OS of the keyboard can be different
-    if defined?(@@sauce_os)
-      if @@sauce_os == "OS X 10.10"
+    if defined?($sauce_os)
+      if $sauce_os == "OS X 10.10"
         meta_control = :meta
       else
         meta_control = :control
@@ -70,7 +70,7 @@ class TestEmbedPosting < Test::Unit::TestCase
   end
 
   def test_seamless_posting_form_not_closed
-    if not @@privly_extension_active
+    if not $privly_extension_active
       return
     end
 
@@ -89,7 +89,7 @@ class TestEmbedPosting < Test::Unit::TestCase
   end
 
   def teardown
-    page.driver.browser.get(@@privly_test_set[0][:url])
+    page.driver.browser.get($privly_test_set[0][:url])
     page.driver.browser.navigate.refresh # force reload
     logout
     Capybara.reset_sessions!
