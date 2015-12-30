@@ -71,12 +71,21 @@ def make_readable(html):
   #print(type(prettyHTML))
   
   #The if statement is needed to maintain support for both python2 and python3	
-  if(type(prettyHTML)==bytes):
-    prettyHTML=str(prettyHTML)
-  return re.sub(r'[\ \n]{2,}</textarea>',
+  if(type(prettyHTML)==str):
+    #For python2 the type is String
+    #print(type(prettyHTML)) 
+    return re.sub(r'[\ \n]{2,}</textarea>',
                "</textarea>",
                prettyHTML)
-
+  else:
+    #For python3 the type is bytes
+    #print(type(prettyHTML))
+    return re.sub(r'[\ \n]{2,}</textarea>',
+               "</textarea>",
+               prettyHTML.decode('utf-8'))
+  
+  
+   
 def render(outfile_path, subtemplate_path, subtemplate_dict):
   """
   Render the templates to html.
