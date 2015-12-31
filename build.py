@@ -67,25 +67,19 @@ def make_readable(html):
   # Beautiful soup breaks textarea formatting
   # since it adds extra whitespace. If you use "pre"
   # tags, you should be warry of the same problem
-  # To check the type of prettyHTML 
-  #print(type(prettyHTML))
-  
+    
   #The if statement is needed to maintain support for both python2 and python3	
   if(type(prettyHTML)==str):
     #For python2 the type is String
-    #print(type(prettyHTML)) 
     return re.sub(r'[\ \n]{2,}</textarea>',
                "</textarea>",
                prettyHTML)
   else:
     #For python3 the type is bytes
-    #print(type(prettyHTML))
     return re.sub(r'[\ \n]{2,}</textarea>',
                "</textarea>",
                prettyHTML.decode('utf-8'))
-  
-  
-   
+     
 def render(outfile_path, subtemplate_path, subtemplate_dict):
   """
   Render the templates to html.
@@ -123,7 +117,7 @@ def get_link_creation_apps():
   creation_apps = []
   for dirname, dirnames, filenames in os.walk('.'):
     if "manifest.json" in filenames:
-      f = open(dirname + "/manifest.json", 'r' )
+      f = open(dirname + "/manifest.json", 'r')
       template_list = json.load(f)
       f.close()
       for template in template_list:
@@ -185,7 +179,6 @@ if __name__ == "__main__":
     if "manifest.json" in filenames:
       f = open(dirname + "/manifest.json", 'r')
       template_list = json.load(f)
-
       f.close()
 
       for template in template_list:
