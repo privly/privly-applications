@@ -62,6 +62,10 @@
   <meta content="../shared/css/injected/injected.css" name="PrivlyInjectedCSS"/>
  </head>
  <body data-privly-exclude="true">
+  <noscript>
+   Your browser has scripting turned off.
+    This application requires scripting to function properly.
+  </noscript>
   <script src="../vendor/bootstrap/js/bootstrap.min.js">
   </script>
   <div id="wrap">
@@ -112,7 +116,7 @@
            Post Actions
           </li>
           <li>
-           <a class="edit_link" style="display:none;cursor:pointer;">
+           <a class="edit_link" style="display:none; cursor:pointer;">
             <span class="glyphicon glyphicon-edit">
             </span>
             Edit
@@ -242,33 +246,35 @@
           </option>
          </select>
         </div>
-        <br/>
-        <button class="btn btn-default" id="update">
-         <span class="glyphicon glyphicon-cloud-upload">
-         </span>
-         Update
-        </button>
-        <button class="btn btn-default" id="cancel_button">
-         <span class="glyphicon glyphicon-remove">
-         </span>
-         Cancel
-        </button>
-        <hr/>
+        <!-- /#destruction_select_block -->
+        <div>
+         <br/>
+         <button class="btn btn-default" id="update">
+          <span class="glyphicon glyphicon-cloud-upload">
+          </span>
+          Update
+         </button>
+         <button class="btn btn-default" id="cancel_button">
+          <span class="glyphicon glyphicon-remove">
+          </span>
+          Cancel
+         </button>
+         <hr/>
+        </div>
        </div>
        <div id="post_content">
         <div id="cleartext">
          Privly Message
          <img alt="loading" src="../shared/images/ajax-loader.gif"/>
-         <noscript>
-          Your browser has scripting turned off. 
-                      This application requires scripting to function properly.
-         </noscript>
         </div>
+        <!-- /#cleartext -->
        </div>
+       <!-- /#post_content -->
        <br class="injected_hide"/>
        <div class="injected_hide">
         <hr id="dashed_hr"/>
        </div>
+       <!-- /.injected_hide -->
       </div>
       <div class="col-md-4 injected_hide">
        <div id="side_block">
@@ -286,6 +292,7 @@
          </p>
          <hr/>
         </div>
+        <!-- /.meta_created_at -->
         <!--Edit Content-->
         <div class="meta_canupdate" style="display:none;">
          <span class="glyphicon glyphicon-pencil">
@@ -302,6 +309,7 @@
          </a>
          <hr/>
         </div>
+        <!-- /.meta_canupdate -->
         <!--Destruction-->
         <div class="meta_candestroy" style="display:none;">
          <span class="glyphicon glyphicon-minus">
@@ -318,6 +326,7 @@
          </a>
          <hr/>
         </div>
+        <!-- /.meta_candestroy -->
         <!--Source + Link-->
         <div class="url-container">
          <span class="glyphicon glyphicon-link">
@@ -336,17 +345,20 @@
           <p class="meta_source_domain">
           </p>
          </div>
+         <!-- /.topsource -->
         </div>
+        <!-- /url-container -->
        </div>
+       <!-- /sidebloack -->
       </div>
+      <!-- /.col-md-4 -->
      </div>
-     <!-- /.container -->
+     <!-- /.row -->
     </div>
-    <!-- /col-md-3 -->
+    <!-- /.container -->
    </div>
-   <!-- /row -->
+   <!-- /container -->
   </div>
-  <!-- /container -->
   <!-- /privlyHeightWrapper -->
   <!-- /wrap -->
   <div class="injected_hide" id="footer">
@@ -358,9 +370,9 @@
       Donate
      </a>
      to build a more private web.
-          You are viewing a
-          Privly
-     <span style="vertical-align: super;font-size: xx-small">
+        You are viewing a
+        Privly
+     <span style="vertical-align: super; font-size: xx-small">
       ®
      </span>
      Application,
