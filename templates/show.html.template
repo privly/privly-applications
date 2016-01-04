@@ -20,163 +20,170 @@
 
 {% endblock %}
 {% block body %}
-  <body data-privly-exclude="true">
+<body data-privly-exclude="true">
 
-    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+  <noscript>
+    Your browser has scripting turned off.
+    This application requires scripting to function properly.
+  </noscript>
 
-    <div id="wrap"><!-- for bootstrap footer -->
-      <div id="privlyHeightWrapper">
+  <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
 
-        {% include "templates/partials/navigation.html.subtemplate" %}
+  <div id="wrap"><!-- for bootstrap footer -->
+    <div id="privlyHeightWrapper">
 
-        <div class="container">
-          {% block main %}
-            <div class="row">
-              <div class="col-md-8">
-                <div id="edit_form" style="display:none;">
-                  <h1>Edit Existing {{name}}</h1>
-                  <label for="edit_text">Content</label>
-                  <textarea id="edit_text" class="form-control" rows="4"></textarea>
-                  <div id="destruction_select_block" style="display:none;">
-                   <label for="seconds_until_burn">Time until content is destroyed</label>
-                   <select id="seconds_until_burn" name="seconds_until_burn" class="form-control">
-                     <option value="" id="current_destruction_time" selected></option>
-                     <option value="86400">1 Day</option>
-                     <option value="604800">7 Days</option>
-                     <option value="1209600">14 Days</option>
-                     <option value="2419200">28 Days</option>
-                     <option value="">Infinite? - WARNING! Data in Alpha may still be destroyed.</option>
-                   </select>
-                 </div>
-                  <br/>
-                  <button id="update" class="btn btn-default">
-                     <span class="glyphicon glyphicon-cloud-upload"></span> Update
-                   </button>
-                   &nbsp;
-                   <button id="cancel_button" class="btn btn-default">
-                     <span class="glyphicon glyphicon-remove"></span> Cancel
-                   </button>
-                  <hr/>
-                </div>
-                <div id="post_content">
-                  <div id="cleartext">Privly {{name}} 
-                    <img src="../shared/images/ajax-loader.gif" alt="loading"/>
-                    <noscript>
-                      Your browser has scripting turned off. 
-                      This application requires scripting to function properly.
-                    </noscript>
-                  </div>
-                </div>
-                <br class="injected_hide" />
-                <div class="injected_hide">
-                <hr id="dashed_hr"></hr>
-                </div>
-              </div>
+      {% include "templates/partials/navigation.html.subtemplate" %}
 
-              <div class="col-md-4 injected_hide">
-                <div id="side_block">
-                  <h2>Metadata</h2>
-                  
-                  <!--Creation-->
-                  <div class="meta_created_at" style="display:none;">
-                    <span class="glyphicon glyphicon-floppy-disk"></span><strong>Created Around: </strong><p class="meta_created_at_value meta"></p>
-                    <hr>
-                  </div>
-
-                  <!--Edit Content-->
-                  <div class="meta_canupdate" style="display:none;">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                    <strong>Edit Content: </strong>
-                    <p class="meta_updated_at meta"></p>
-                    <a href="#" class="edit_link">
-                      <button class="edit-button">
-                        Edit
-                      </button>
-                    </a>
-                    <hr />
-                  </div>
-                  
-                  <!--Destruction-->
-                  <div class="meta_candestroy" style="display:none;">
-                    <span class="glyphicon glyphicon-minus"></span>
-                    <strong>Destroyed: </strong>
-                    <p class="meta_destroyed_around meta"></p>
-                    <a href="#" class="destroy_link">
-                      <button class="destroy-button">
-                        Destroy Now
-                      </button>
-                    </a>
-                    <hr />
-                  </div>
-
-                  <!--Source + Link-->
-                  <div class="url-container">
-                    <span class="glyphicon glyphicon-link"></span>
-                    <strong>Source Link: </strong>
-                    <a class="meta_source_url break_all"></a>
-                    <div class="topsource">
-                    <span class="glyphicon glyphicon-hdd"></span>
-                    <strong>Data Source: </strong>
-                    <p class="meta_source_domain"></p>
-                  </div>
-
-                </div>
+      <div class="container">
+        {% block main %}
+        <div class="row">
+          <div class="col-md-8">
+            <div id="edit_form" style="display:none;">
+              <h1>Edit Existing {{name}}</h1>
+              <label for="edit_text">Content</label>
+              <textarea id="edit_text" class="form-control" rows="4"></textarea>
+              <div id="destruction_select_block" style="display:none;">
+                <label for="seconds_until_burn">Time until content is destroyed</label>
+                <select id="seconds_until_burn" name="seconds_until_burn" class="form-control">
+                  <option value="" id="current_destruction_time" selected></option>
+                  <option value="86400">1 Day</option>
+                  <option value="604800">7 Days</option>
+                  <option value="1209600">14 Days</option>
+                  <option value="2419200">28 Days</option>
+                  <option value="">Infinite? - WARNING! Data in Alpha may still be destroyed.</option>
+                </select>
+              </div><!-- /#destruction_select_block -->
+              <div>
+                <br/>
+                <button id="update" class="btn btn-default">
+                  <span class="glyphicon glyphicon-cloud-upload"></span> Update
+                </button>
+                &nbsp;
+                <button id="cancel_button" class="btn btn-default">
+                  <span class="glyphicon glyphicon-remove"></span> Cancel
+                </button>
+                <hr/>
               </div>
             </div>
+            <div id="post_content">
+              <div id="cleartext">Privly {{name}}
+                <img src="../shared/images/ajax-loader.gif" alt="loading"/>
+              </div><!-- /#cleartext -->
+            </div><!-- /#post_content -->
+            <br class="injected_hide" />
+            <div class="injected_hide">
+              <hr id="dashed_hr" />
+            </div><!-- /.injected_hide -->
+          </div>
+
+          <div class="col-md-4 injected_hide">
+            <div id="side_block">
+              <h2>Metadata</h2>
+
+              <!--Creation-->
+              <div class="meta_created_at" style="display:none;">
+                <span class="glyphicon glyphicon-floppy-disk"></span><strong>Created Around: </strong>
+                <p class="meta_created_at_value meta"></p>
+                  <hr />
+              </div><!-- /.meta_created_at -->
+
+              <!--Edit Content-->
+              <div class="meta_canupdate" style="display:none;">
+                <span class="glyphicon glyphicon-pencil"></span>
+                <strong>Edit Content: </strong>
+                <p class="meta_updated_at meta"></p>
+                <a href="#" class="edit_link">
+                  <button class="edit-button">
+                    Edit
+                  </button>
+                </a>
+                <hr />
+              </div><!-- /.meta_canupdate -->
+
+              <!--Destruction-->
+              <div class="meta_candestroy" style="display:none;">
+                <span class="glyphicon glyphicon-minus"></span>
+                <strong>Destroyed: </strong>
+                <p class="meta_destroyed_around meta"></p>
+                <a href="#" class="destroy_link">
+                  <button class="destroy-button">
+                    Destroy Now
+                  </button>
+                </a>
+                <hr />
+              </div><!-- /.meta_candestroy -->
+
+              <!--Source + Link-->
+              <div class="url-container">
+                <span class="glyphicon glyphicon-link"></span>
+                <strong>Source Link: </strong>
+                <a class="meta_source_url break_all"></a>
+                <div class="topsource">
+                  <span class="glyphicon glyphicon-hdd"></span>
+                  <strong>Data Source: </strong>
+                  <p class="meta_source_domain"></p>
+                </div><!-- /.topsource -->
+              </div><!-- /url-container -->
+            </div><!-- /sidebloack -->
+          </div><!-- /.col-md-4 -->
+          </div><!-- /.row -->
           {% endblock %}
         </div><!-- /.container -->
+
         {% if args.platform == "web" %}
         <div id="downloadmessage" class="container" style="display:none;">
           <div class="row">
             <div class="col-xs-12">
               <hr />
-            </div>
-          </div>
+            </div><!-- /.col-xs-12 -->
+          </div><!-- /row -->
           <div class="row">
             <div class="col-md-3">
               <a data-privly-chrome="https://chrome.google.com/webstore/detail/pkokikcdapfpkkkjpdaamjanniaempol" data-privly-firefox="https://addons.mozilla.org/en-US/firefox/addon/privly/" href="https://">
-                <div style="position:relative;width:10em;padding:1em;height:150px">
-                  <img alt="Google Chrome Logo" src="../shared/images/chrome-logo_150.png" class="download-extension-img" id="chrome_img">
-                  <img alt="Firefox Logo" src="../shared/images/firefox-logo_150.png" class="download-extension-img" id="firefox_img">
-                  <img alt="Privly Icon" src="../shared/images/icon_96.png" style="position:absolute;right:33px;top:15px;">
+                <div style="position:relative; width:10em; padding:1em; height:150px">
+                  <img alt="Google Chrome Logo" src="../shared/images/chrome-logo_150.png" class="download-extension-img" id="chrome_img" />
+                  <img alt="Firefox Logo" src="../shared/images/firefox-logo_150.png" class="download-extension-img" id="firefox_img" />
+                  <img alt="Privly Icon" src="../shared/images/icon_96.png" style="position:absolute; right:33px; top:15px;" />
                 </div>
               </a>
-              </div>
-              <div class="col-md-9">
+            </div><!-- /.col-md-3 -->
+            <div class="col-md-9">
               <h2><span class="referrer"></span></h2>
               <p>
                 <a href="https://priv.ly/pages/download">Download</a>
                  the Privly Extension, and you will <strong>see this content instead
-                 of the link</strong> that brought you to this page. We don't want
+                 of the link</strong>. We don't want
                  you waste your time coming back to this website again.
                  <a href="https://priv.ly/pages/download">Download</a>
                  the extension and you won't have to.
               </p>
-              {% endif %}
-            </div><!-- /col-md-3 -->
+            </div><!-- /col-md-9 -->
           </div><!-- /row -->
-        </div><!-- /container -->
-      </div><!-- /privlyHeightWrapper -->
-    </div><!-- /wrap -->
+        </div><!-- /downloadmessage -->
+        {% endif %}
 
-    <div id="footer" class="injected_hide">
-      <div class="container">
-        <p class="text-muted credit">
-          <a href="https://www.priv.ly/pages/donate.html" target="_blank">
-            <span class="glyphicon glyphicon-gift"></span>
-            Donate
-          </a>
-          to build a more private web.
-          You are viewing a
-          Privly<span style="vertical-align: super;font-size: xx-small">&reg;</span>
-          Application,
-          <a href="https://priv.ly/pages/about" target="_blank">learn more</a>
-          about Privly.
-          <a href="/pages/privacy" target="_blank" class="legal_nav">Terms of Service</a>
-          and
-          <a href="/pages/privacy" target="_blank" class="legal_nav">DMCA</a>.
-        </p>
-      </div>
+      </div><!-- /container -->
+    </div><!-- /privlyHeightWrapper -->
+  </div><!-- /wrap -->
+
+  <div id="footer" class="injected_hide">
+    <div class="container">
+      <p class="text-muted credit">
+        <a href="https://www.priv.ly/pages/donate.html" target="_blank">
+          <span class="glyphicon glyphicon-gift"></span>
+          Donate
+        </a>
+        to build a more private web.
+        You are viewing a
+        Privly<span style="vertical-align: super; font-size: xx-small">&reg;</span>
+        Application,
+        <a href="https://priv.ly/pages/about" target="_blank">learn more</a>
+        about Privly.
+        <a href="/pages/privacy" target="_blank" class="legal_nav">Terms of Service</a>
+        and
+        <a href="/pages/privacy" target="_blank" class="legal_nav">DMCA</a>.
+      </p>
     </div>
-  </body>
+  </div>
+</body>
 {% endblock %}
