@@ -131,6 +131,9 @@ var callbacks = {
    */
   pendingContent: function(callback) {
 
+    // Show prompt to download extension, if in the hosted environment
+    callbacks.showDownloadMessage();
+
     // Set the application and data URLs
     var href = window.location.href;
     state.webApplicationURL = privlyParameters.getApplicationUrl(href);
@@ -238,7 +241,6 @@ var callbacks = {
         callback();
       }
     } else {
-      callbacks.showDownloadMessage();
       if(callbacks.functionExists(callback)) {
         callback();
       }
@@ -623,8 +625,8 @@ var callbacks = {
    * If the application is shown in the hosted context then the download
    * link should be shown.
    *
-   * @param {function} callback The function to call after the doubleclick
-   * handler is complete.
+   * @param {function} callback The function to call after completing this
+   * function.
    */
   showDownloadMessage: function(callback) {
 
@@ -645,7 +647,7 @@ var callbacks = {
       // Determine string of header
       var referrer = document.referrer;
       var msg = "You don't need to ";
-      if (referrer === ""){
+      if (referrer === "" || referrer.indexOf(window.location.origin) === 0){
         msg += "visit this page!";
       } else {
         var anchor = document.createElement("a");
