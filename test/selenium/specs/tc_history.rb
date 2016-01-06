@@ -27,7 +27,7 @@ class TestHistory < Test::Unit::TestCase
     assert page.has_text?("Updated")
 
     #Click the first preview button link
-    find(".btn", match: :first).click
+    find(".preview_link", match: :first).click
     modal_dialog = page.find(:css,".modal-dialog")
     assert modal_dialog.visible?
     assert page.has_text?("Hide Preview")
