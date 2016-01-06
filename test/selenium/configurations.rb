@@ -39,7 +39,7 @@ def common_configuration_for_firefox_extension
   system("cd ../../../../../ && pwd && jpm xpi && cd chrome/content/privly-applications/test/selenium")
   # Find out the xpi file name
   json = JSON.load(File.new("../../../../../package.json"))
-  xpi_filename = "@priv.ly-" + json['version'] + ".xpi"
+  xpi_filename = "privly@priv.ly-" + json['version'] + ".xpi"
   # Load the Firefox driver with the extension installed
   @profile = Selenium::WebDriver::Firefox::Profile.new
   @profile["extensions.privly.integration_test"] = "true"
