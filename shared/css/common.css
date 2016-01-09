@@ -20,6 +20,16 @@ fieldset{
   border: none;
 }
 
+
+
+.list-inline li.icon-soc img {
+	cursor: pointer;
+	float : left;
+	height:32px;
+	opacity:1;
+	transition: all 0.4s ease-out 0s;
+}
+
 fieldset#server_form, #user{
   display: none;
 }
