@@ -11,7 +11,7 @@ function previewMarkdown() {
   $( "#post_content" ).html(markdown.toHTML($( "#edit_text" ).val()));
   $( "#update" ).attr("class", "btn btn-warning");
   privlyHostPage.resizeToWrapper();
-} ;
+}
 
 /**
  * Application specific content type handler. This function
@@ -58,11 +58,10 @@ function processResponseContent(response) {
 
   // Make all text areas auto resize to show all their contents
   if ( ! privlyHostPage.isInjected() ) {
-   console.log("working correctly till here");
     $('textarea').autosize();
   }
-   privlyHostPage.resizeToWrapper();
-};
+  privlyHostPage.resizeToWrapper();
+}
 
 // Make the Tooltip display this App's name.
 privlyTooltip.appName = "PlainPost";
