@@ -20,7 +20,10 @@ fieldset{
   border: none;
 }
 
-
+#equal {
+	height:500px;
+	width:500px;	
+}
 
 .list-inline li.icon-soc img {
 	cursor: pointer;
