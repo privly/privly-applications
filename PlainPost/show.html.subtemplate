@@ -5,7 +5,7 @@
   <script type="text/javascript" src="../vendor/markdown.js"></script>
   <script type="text/javascript" src="../shared/javascripts/privly-web/show.js"></script>
   <script type="text/javascript" src="js/show.js"></script>
-  <meta name="PrivlyTopJS" content="../vendor/jquery.autosize.js" />
+  <script name="PrivlyTopJS" src="../vendor/jquery.autosize.js" type="text/javascript"></script>
 {% endblock %}
 
 
