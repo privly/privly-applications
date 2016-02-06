@@ -6,7 +6,7 @@
   <script type="text/javascript" src="../shared/javascripts/viewAdapters/show.js"></script>
   <script type="text/javascript" src="js/plainpostModel.js"></script>
   <script type="text/javascript" src="js/controllers/show.js"></script>
-  <meta name="PrivlyTopJS" content="../vendor/jquery.autosize.js" />
+  <script name="PrivlyTopJS" src="../vendor/jquery.autosize.js" type="text/javascript"></script>
 {% endblock %}
 
 
