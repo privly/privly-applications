@@ -12,6 +12,10 @@
 
     <link href="../shared/css/common.css" media="screen" rel="stylesheet" type="text/css"/>
 
+    {% if args.platform == "web" %}
+    <script src='../vendor/polyfill/es6-promise.js'></script>
+    {% endif %}
+
     <script type="text/javascript" src="../shared/javascripts/meta_loader.js"></script>
     <script type="text/javascript" src="../shared/javascripts/parameters.js"></script>
     <script type="text/javascript" src="../shared/javascripts/local_storage.js"></script>
