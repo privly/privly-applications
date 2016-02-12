@@ -3,6 +3,7 @@
  **/
 
 /* global historyModal:true */
+/*global privlyExtension,ls,privlyNetworkService*/
 
 /**
  * Message handlers for integration with extension framworks.

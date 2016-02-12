@@ -44,8 +44,8 @@ var privlyExtension = {
   messageExtension: function(handler, data) {
     
     var message = {};
-    message["handler"] = handler;
-    message["data"] = data;
+    message.handler = handler;
+    message.data = data;
     
     // Platform specific messaging
     if (privlyNetworkService.platformName() === "CHROME") {

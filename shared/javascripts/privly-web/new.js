@@ -59,6 +59,7 @@
  *    display it and fire the URL event.
  *    Callback=postCompleted
  */
+var messaging;
 var callbacks = {
   
   /**
@@ -264,7 +265,7 @@ var callbacks = {
 /**
  * Message handlers for integration with extension frameworks.
  */
-var messaging = {
+ messaging = {
   
   /**
    * Attach the message listeners to the interface between the extension
