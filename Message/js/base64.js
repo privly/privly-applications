@@ -5,6 +5,7 @@
  *  http://www.opensource.org/licenses/mit-license.php
  *
  */
+ /*jshint bitwise: false*/
 
 (function(global){
 
