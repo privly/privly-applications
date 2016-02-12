@@ -198,7 +198,7 @@ var privlyNetworkService = {
       if (ls.getItem('user_whitelist_csv') !== undefined) {
         ls.setItem('user_whitelist_json', 
           JSON.stringify(ls.getItem('user_whitelist_csv').split(' , ')));
-        ls.removeItem('user_whitelist_csv')
+        ls.removeItem('user_whitelist_csv');
       }
 
       // There is no local storage API on Firefox XUL
