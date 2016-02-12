@@ -22,7 +22,7 @@
  * 3. This notice may not be removed or altered from any source distribution.
  *
  */
-
+/*global Base64,RawDeflate,sjcl,i*/
 // Seed the SJCL entropy with the web crypto API or fall back to SJCL's
 // collectors
 var webCryptoEntropy = new Uint32Array(128);
