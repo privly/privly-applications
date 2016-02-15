@@ -8,6 +8,20 @@
   },
   {
     "release_status": "alpha",
+    "platforms": ["chrome", "firefox"],
+    "subtemplate_path": "Message/seamless.html.subtemplate",
+    "outfile_path": "Message/seamless.html",
+    "subtemplate_dict": {"name": "Message", "action": "seamless"}
+  },
+  {
+    "release_status": "alpha",
+    "platforms": ["chrome", "firefox"],
+    "subtemplate_path": "Message/seamless_ttlselect.html.subtemplate",
+    "outfile_path": "Message/seamless_ttlselect.html",
+    "subtemplate_dict": {"name": "Message", "action": "seamless_ttlselect"}
+  },
+  {
+    "release_status": "alpha",
     "subtemplate_path": "Message/show.html.subtemplate",
     "outfile_path": "Message/show.html",
     "subtemplate_dict": {"name": "Message", "action": "show"}

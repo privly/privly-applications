@@ -1,31 +1,29 @@
 // Karma configuration
 // Generated on Thu Mar 13 2014 14:12:04 GMT-0700 (PDT)
-
 module.exports = function(config) {
+
+  // If the script is not being executed from the testing directory
+  if(process.cwd() !== __dirname) {
+    console.warn(
+      "\n!!!\nYou are running this script from outside the test directory. " +
+      "If you do not have the required node modules on your NODE_PATH, " +
+      "you will not be able to run these tests.\n!!!\n");
+    console.warn(
+      "You may need to issue something like: " +
+      "`export NODE_PATH=/PATH/TO/privly-applications/test/node_modules");
+  }
+
+  // Force the script to execute from its directory
+  process.chdir(__dirname);
+
+  // All files will be referenced relative to the privly-applications folder
+  var basePath = "..";
 
   // List the files that you want to always test here.
   // The .travis.yml file can also pass in other files
   // by exporting an environment variable containing a list of
-  // Javascripts.
-  var filesToTest = [
-
-    // HTML files to use as a fixtures
-    '*/*.html',
-
-    // Force jquery to load first since it is a dependency
-    'vendor/jquery.min.js',
-
-    // Load all the vendor libraries
-    'vendor/*.js',
-    'vendor/datatables/jquery.dataTables.min.js',
-    'vendor/datatables/dataTables.bootstrap.min.js',
-    'vendor/bootstrap/js/*.js',
-
-    // Load all the shared libraries at the top level
-    'shared/javascripts/*.js',
-
-    // Test the shared libraries
-    'shared/test/*.js'];
+  // Javascript file paths.
+  var filesToTest = [];
 
   var filesToExcludeFromTest = [];
   if (process.env.FILES_TO_TEST) {
@@ -38,19 +36,11 @@ module.exports = function(config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '..',
+    basePath: basePath,
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine'],
-
-    // Provide the HTML document as a fixture
-    preprocessors: {
-          '*/*.html': ['html2js'],
-
-          // Load all the shared libraries at the top level
-          'shared/javascripts/*.js': 'coverage'
-        },
 
     // list of files / patterns to load in the browser
     files: filesToTest,
@@ -58,16 +48,11 @@ module.exports = function(config) {
     // files to exclude from testing
     exclude: filesToExcludeFromTest,
 
-    // test results reporter to use
-    // possible values: 'dots', 'progress'
+    // test result reporters to use
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress', 'coverage'],
-
-    coverageReporter: {
-      type : 'lcov',
-      dir : 'test/coverage/',
-      file : 'coverage.txt'
-    },
+    reporters: [
+      'progress'
+    ],
 
     // web server port
     port: 9876,
@@ -94,7 +79,7 @@ module.exports = function(config) {
     // - Safari (only Mac)
     // - PhantomJS
     // - IE (only Windows)
-    browsers: ['Chrome', 'Firefox'],
+    browsers: ['Firefox'],
 
 
     // Continuous Integration mode
