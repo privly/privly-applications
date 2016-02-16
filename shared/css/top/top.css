@@ -53,7 +53,7 @@ body {
 
 #cleartext {
   height: 100%;
-  pxfont-size: 18px;
+  font-size: 16px;
 }
 
 @media(min-width: 992px){
