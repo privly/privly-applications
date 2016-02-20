@@ -14,6 +14,9 @@
  * 3. Pending post: The user can make the post at this point.
  *    Callback=pendingPost
  */
+
+/* global Privly */
+/* global privlyNetworkService */
 var callbacks = {
   
   /**
