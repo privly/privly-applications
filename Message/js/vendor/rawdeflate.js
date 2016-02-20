@@ -4,6 +4,7 @@
  * Original:
  *   http://www.onicos.com/staff/iz/amuse/javascript/expert/deflate.txt
  */
+var RawDeflate;
 
 (function(){
 
@@ -1681,8 +1682,6 @@ var zip_deflate = function(str, level) {
     return aout.join("");
 };
 
-var RawDeflate;
 if (! window.RawDeflate) RawDeflate = {};
 RawDeflate.deflate = zip_deflate;
-
 })();

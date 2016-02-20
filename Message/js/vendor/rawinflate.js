@@ -4,6 +4,7 @@
  * original:
  * http://www.onicos.com/staff/iz/amuse/javascript/expert/inflate.txt
  */
+var RawInflate;
 
 (function(){
 
@@ -31,7 +32,7 @@ var zip_INBUFSIZ = 32768;	// Input buffer size
 var zip_INBUF_EXTRA = 64;	// Extra buffer
 
 /* variables (inflate) */
-var zip_slide;
+var zip_slide=[];
 var zip_wp;			// current position in slide
 var zip_fixed_tl = null;	// inflate static
 var zip_fixed_td;		// inflate static
@@ -749,8 +750,7 @@ var zip_inflate = function(str) {
     return aout.join("");
 };
 
-var RawDeflate;
-if (! window.RawDeflate) RawDeflate = {};
-RawDeflate.inflate = zip_inflate;
+if (! window.RawInflate) RawInflate = {};
+RawInflate.inflate = zip_inflate;
 
 })();
