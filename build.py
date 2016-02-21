@@ -75,10 +75,15 @@ def make_readable(html):
   # Beautiful soup breaks textarea formatting
   # since it adds extra whitespace. If you use "pre"
   # tags, you should be warry of the same problem
-  return re.sub(r'[\ \n]{2,}</textarea>',
-               "</textarea>",
-               prettyHTML)
+  #The if statement is needed to maintain support for both python2 and python3	
+  if(type(prettyHTML)!=str):
+  	#For python2 the type is String and for python3 the type is bytes
+ 		#Converting python3(bytes) to python2(str)
+    prettyHTML=prettyHTML.decode('utf-8')    
 
+  return re.sub(r'[\ \n]{2,}</textarea>',
+                "</textarea>",
+                prettyHTML)
 def render(outfile_path, subtemplate_path, subtemplate_dict):
   """
   Render the templates to html.
