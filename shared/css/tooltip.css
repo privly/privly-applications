@@ -10,12 +10,7 @@
   display:inline-block;
   font:14px Helvetica;
 }
-
-.glyph_empty {background-color:#ffffff;}
-
 .glyph_table {
-  border-collapse: collapse;
-  line-height: 4px;
   float: left;
   margin-right: 5px;
 }

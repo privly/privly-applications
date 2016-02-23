@@ -22,8 +22,7 @@ module AuthHelper
       user = "danger.dont.use.bork.bork.bork@privly.org"
       password = "danger.dont.use.bork.bork.bork"
     end
-    setServer = "ls.setItem('posting_content_server_url', '" +
-      content_server + "')"
+    setServer = "Privly.options.setServerUrl('" + content_server + "')"
     page.execute_script(setServer)
     page.driver.browser.navigate.refresh
     login_button = page.all(:css, '.login_url')
@@ -36,9 +35,8 @@ module AuthHelper
     fill_in 'user_password', :with => password
     domain = page.evaluate_script('privlyNetworkService.contentServerDomain()');
     click_on ('Login to ' + domain)
-    Timeout.timeout(Capybara.default_wait_time) do
-      loop until page.evaluate_script('jQuery.active').zero?
-    end
+    wait = Selenium::WebDriver::Wait.new(:timeout => 3)
+    wait.until { page.evaluate_script('jQuery.active').zero? }
   end
 
   # Click he logout link on the current page then wait for the

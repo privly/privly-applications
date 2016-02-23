@@ -17,7 +17,7 @@ args = {}
 optsHelp = ""
 OptionParser.new do |opts|
   opts.banner = "Usage: ruby run_all.rb [options]"
-  opts.on('-p', '--platform PLATFORM', 'The target platform (firefox_web, firefox_extension, chrome_web, chrome_extension, sauce_chrome_web, sauce_firefox_web, sauce_firefox_extension, sauce_chrome_extension)') { |v| args[:platform] = v }
+  opts.on('-p', '--platform PLATFORM', 'The target platform (firefox_web, firefox_extension, chrome_web, chrome_extension, safari_web, sauce_chrome_web, sauce_firefox_web, sauce_safari_web, sauce_firefox_extension, sauce_chrome_extension)') { |v| args[:platform] = v }
   opts.on('-r', '--release-status RELEASE', 'The target release stage (experimental, deprecated, alpha, beta, release)') { |v| args[:release_status] = v }
   opts.on('-c', '--content-server SERVER', 'The content server (http://localhost:3000)') { |v| args[:content_server] = v }
   optsHelp = opts.help
@@ -49,7 +49,7 @@ def initialize_CRUD_tests(args)
   # the content_server that the application is expected to be associated
   # with (default is the same as the domain of the URL), and the dictionary
   # that is passed to the template files.
-  @@privly_test_set = [
+  $privly_test_set = [
     # url,
     # content_server,
     # manifest_dictionary
@@ -75,9 +75,9 @@ def initialize_CRUD_tests(args)
       end
 
       # Pages to be tested
-      page_url = @@privly_applications_folder_path+outfile_path
+      page_url = $privly_applications_folder_path+outfile_path
 
-      @@privly_test_set.push({
+      $privly_test_set.push({
           :url => page_url,
           :content_server => content_server,
           :manifest_dictionary => app_manifest["subtemplate_dict"]
@@ -97,18 +97,22 @@ end
 #               This requires a webserver to run on localhost:3000
 #  firefox_extension: run Firefox locally with an extension.
 #  sauce_chrome_web: run Chrome on saucelabs without an extension.
-#                     This requires a webserver to run on localhost:3000
+#                    This requires a webserver to run on localhost:3000
 #  sauce_chrome_extension: run Chrome on saucelabs with an extension.
 #  chrome_web: run Chrome locally without an extension.
-#               This requires a webserver to run on localhost:3000
+#              This requires a webserver to run on localhost:3000
 #  chrome_extension: run Chrome locally with an extension.
+#  sauce_safari_web: run Safari on saucelabs without an extension.
+#                    This requires a webserver to run on localhost:3000
+#  safari_web: run Safari locally without an extension.
+#              This requires a webserver to run on localhost:3000
 if args[:platform]
   platform = args[:platform]
 end
 
 # Global variable indicating whether the extension
 # is installed
-@@privly_extension_active = platform.include?("extension")
+$privly_extension_active = platform.include?("extension")
 
 # Assign the name of the browser controlled by Selenium
 if platform.include? "chrome"
@@ -142,17 +146,23 @@ if platform == "sauce_firefox_web"
 elsif platform == "sauce_chrome_web"
   sanity_check "privly-web"
   configure_for_sauce_chrome_web(args)
+elsif platform == "sauce_safari_web"
+  sanity_check "privly-web"
+  configure_for_sauce_safari_web(args)
 elsif platform == "firefox_web"
   sanity_check "privly-web"
   configure_for_firefox_web(args)
 elsif platform == "chrome_web"
   sanity_check "privly-web"
   configure_for_chrome_web(args)
+elsif platform == "safari_web"
+  sanity_check "privly-web"
+  configure_for_safari_web(args)
 elsif platform == "firefox_extension"
-  sanity_check "privly-firefox"
+  sanity_check "privly-jetpack"
   configure_for_firefox_extension(args)
 elsif platform == "sauce_firefox_extension"
-  sanity_check "privly-firefox"
+  sanity_check "privly-jetpack"
   configure_for_sauce_firefox_extension(args)
 elsif platform == "chrome_extension"
   sanity_check "privly-chrome"

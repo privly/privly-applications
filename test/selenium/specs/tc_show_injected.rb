@@ -5,36 +5,17 @@ class TestInjected < Test::Unit::TestCase
 
   include Capybara::DSL # Provides for Webdriving
 
-  def setup
-    # pass
-  end
-
   def test_google_groups_injection
-
-    if not @@privly_extension_active
-      return
-    end
-
     visit "https://groups.google.com/forum/#!topic/privly/f6iBZ8Z-YMQ/discussion"
     page.assert_selector("iframe[data-privly-display='true']", :count => 1)
   end
 
   def test_twitter_injection
-
-    if not @@privly_extension_active
-      return
-    end
-
     visit "https://twitter.com/PrivlyTest/status/308809779655102464"
     page.assert_selector("iframe[data-privly-display='true']", :count => 1)
   end
 
   def test_showing_injected_posts
-
-    if not @@privly_extension_active
-      return
-    end
-
     # Open these pages
     test_pages = [
       "http://test.privly.org/test_pages/whitelist.html",
@@ -52,21 +33,11 @@ class TestInjected < Test::Unit::TestCase
   end
 
   def test_showing_injected_posts_reddit
-
-    if not @@privly_extension_active
-      return
-    end
-
     visit "http://www.reddit.com/r/Privly/comments/2xipzl/privly_demonstration_link/"
     page.assert_selector("iframe[data-privly-display='true']", :count => 1)
   end
 
   def test_non_whitelisted
-
-    if not @@privly_extension_active
-      return
-    end
-
     # Open these pages
     test_pages = ["http://test.privly.org/test_pages/nonwhitelist.html"]
     test_pages.each do |test_page|

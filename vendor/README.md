@@ -16,6 +16,7 @@ originals.
 * [jquery.dataTables.min.js](http://datatables.net/releases/DataTables-1.10.5.zip)
 * [dataTables.bootstrap.min.js](https://github.com/DataTables/Plugins/blob/master/integration/bootstrap/3/dataTables.bootstrap.min.js)
 * [jquery.autosize.js](https://github.com/jackmoore/autosize/releases/tag/1.18.7)
+* [es6-promise.js polyfill](https://github.com/jakearchibald/es6-promise/blob/6c49ef79609737bac2b496d508806a3d5e37303e/dist/es6-promise.js)
 
 ## Audited for Privly's Use Case ##
 
