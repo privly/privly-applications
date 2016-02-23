@@ -88,7 +88,7 @@ if (Privly === undefined) {
   Privly.storage.remove = function (key) {
     ls.removeItem(key);
 
-    // In SAFARI extension, if changes are made in the PRIVLY_APPLICAION, send
+    // In SAFARI extension, if changes are made in the PRIVLY_APPLICATION, send
     // the corresponding message to BACKGROUND_SCRIPT
     if (Privly.message.currentAdapter.getPlatformName() === 'SAFARI' &&
         Privly.message.currentAdapter.getContextName() === 'PRIVLY_APPLICATION') {
