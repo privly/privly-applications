@@ -54,10 +54,14 @@ body {
 #cleartext {
   height: 100%;
 <<<<<<< HEAD
+<<<<<<< HEAD
   font-size: 23px;
 =======
   font-size: 17px;
 >>>>>>> 5528863... Updated the cleartext element
+=======
+  font-size: 23px;
+>>>>>>> 5b863e5... Updated the font-size of the cleartext element
 }
 
 @media(min-width: 992px){
