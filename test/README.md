@@ -48,7 +48,10 @@ found below from this directory.
 
 > karma start
 
-Two browsers should open and run your tests every time you save them.
+Firefox should open and run your tests every time you save them.
+If you want different browsers to run, you can specify them in CSVs:
+
+> karma start --browsers Firefox,Chrome,Safari
 
 ### Running on Sauce Labs ###
 
@@ -59,13 +62,27 @@ you can also hook your local dev environment into SauceLabs by
 first associating your machine with Sauce Labs (see below), then
 issuing:
 
-> karma start karma.conf-ci.js
+Firefox should open and run your tests every time you save them.
+If you want different browsers to run, you can specify them in CSVs:
 
-For more details on how this was setup, see:
-https://docs.saucelabs.com/tutorials/js-unit-testing/
+> karma start karma.conf-ci.js --sauce-browsers=Firefox,Chrome,Safari
+
+For more details on how this was setup, see [SauceLab's tutorial](https://docs.saucelabs.com/tutorials/js-unit-testing/). There is different
+syntax for selecting browsers because the default syntax breaks the ability to
+run tests on SauceLabs.
 
 If you want your tests to run on the Continuous Integration server, you should
-appropriately edit the .travis.yml file to include your test set.
+appropriately edit the run_each.sh file to include your test set.
+
+### Running All the Tests ###
+
+This directory contains the script `run_each.sh` that will run all the test sets it defines.
+You can tell run_each to open a particular set of browsers by exporting an environment variable first:
+
+> export BROWSERS_TO_TEST=Firefox,Chrome,Safari
+> ./run_each.sh [karma config file]
+
+The Karma config variable defaults to running karma.conf.js which runs the tests locally.
 
 # Writing Your Own Unit Tests
 
@@ -114,7 +131,7 @@ Try adding:
 
 If that worked, it is time to learn the Jasmine syntax these tests are written in.
 
-## Jasmine Crash Course ## 
+## Jasmine Crash Course ##
 
 You should read through the [Jasmine docs](http://jasmine.github.io/2.0/introduction.html) to learn how to write Jasmine tests. It is a quick read and it will be *very* useful for writing good tests.
 

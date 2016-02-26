@@ -1,0 +1,16 @@
+{% extends "templates/base.html.template" %}
+{% block head %}
+  <link href="../shared/css/seamless/ttlselect.css" media="screen" rel="stylesheet" type="text/css"/>
+  {% block css %}{% endblock %}
+
+  <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+  <script type="text/javascript" src="../shared/javascripts/event_emitter.js"></script>
+  <script type="text/javascript" src="../shared/javascripts/viewAdapters/seamless_ttlselect.js"></script>
+  {% block javascripts %}{% endblock %}
+{% endblock %}
+
+{% block body %}
+<body data-privly-exclude="true">
+  <div id="menu"></div>
+</div>
+{% endblock %}

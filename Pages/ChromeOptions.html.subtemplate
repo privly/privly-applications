@@ -15,7 +15,7 @@
   
   <h1 class="page-header">Extension Options</h1>
 
-{% if args.platform == "chrome" %}
+{% if args.platform == "chrome" or args.platform == "firefox" %}
   <section id="button_option">
 
     <h2>Privly Button</h2>
@@ -24,7 +24,6 @@
     <label for="disableBtn">Disable the Privly button that appears in the top-right corner of textarea's</label>
     <br />
     <br />
-    <button id="save_btnAppearance" class="btn btn-primary">Save</button>
     <div id="button_status"></div>        
   </section>
 
@@ -68,12 +67,11 @@
         <span class="glyphicon glyphicon-remove remove_whitelist" ></span>
       </div>
     </div>
+    <div id="invalid_domain">Domains are not saved until all are valid</div>
     <div id="status"></div>
     <span id="add_more_urls">
       <span class="glyphicon glyphicon-plus-sign"></span> Add more 
     </span>
-
-    <button id="save_whitelist" class="btn btn-primary btn-sm">Save</button>
 
     <br />
     <br />

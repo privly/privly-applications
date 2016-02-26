@@ -23,8 +23,8 @@
 # ]
 #
 # Prerequisites for running this script include
-# BeautifulSoup and Jinja2. You can install
-# them both with:
+# html5lib, BeautifulSoup and Jinja2. You can install
+# them all with:
 #
 # `pip install -r requirements.txt`
 #
@@ -33,7 +33,7 @@
 #
 # Alternatively, these can be installed using `easy_install`:
 #
-# `sudo easy_install beautifulsoup4 jinja2`
+# `sudo easy_install html5lib beautifulsoup4 jinja2`
 #
 # This assumes you have python-setuptools:
 # `sudo apt-get install python-setuptools`
@@ -48,6 +48,14 @@
 #
 # You can run the script from the privly-applications directory:
 # `python build.py`
+#
+# When opening pull requests to the project, you should not include the
+# built HTML files. A useful command to permanently ignore all changes to
+# HTML is:
+# `find . -name \*.html -type f -exec git update-index --assume-unchanged '{}' \;`
+# You can undo this with:
+# find . -name \*.html -type f -exec git update-index --no-assume-unchanged '{}' \;
+# These commands find all HTML files and ignore or show changes.
 
 from jinja2 import Environment, FileSystemLoader
 from bs4 import BeautifulSoup as bs
@@ -61,7 +69,7 @@ def make_readable(html):
   Make the rendered HTML formatting readable
   @param {string} html The HTML that we need to make readable.
   """
-  soup = bs(html)
+  soup = bs(html, "html5lib")
   prettyHTML = soup.prettify().encode("utf8")
   
   # Beautiful soup breaks textarea formatting

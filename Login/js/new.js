@@ -1,6 +1,7 @@
 /**
  * @fileOverview Logs the user into the content server.
  **/
+/*global Privly, markdown */
 
 /**
  * The callbacks assign the state of the application.
@@ -38,38 +39,28 @@ var callbacks = {
     
     privlyNetworkService.showLoggedOutNav();
     
-    // Set the nav bar to the proper domain
-    privlyNetworkService.initializeNavigation();
-    
-    // Monitor the login button
-    document.querySelector('#login').addEventListener('click', callbacks.submitCredentials);
-    document.querySelector('#register').addEventListener('click', callbacks.submitRegistration);
-    $("#user_password").keyup(function (e) {
-        if (e.keyCode === 13) {
-            callbacks.submitCredentials();
-        }
+    var loginForm = document.getElementById("loginForm");
+    var registerForm = document.getElementById("registerForm");
+
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      callbacks.submitCredentials();
+    });
+    registerForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      $('#registerModal').modal('hide');
+      callbacks.submitRegistration();
     });
 
-    $('#register_email').keyup(function (e) {
-        if (e.keyCode === 13) {
-            callbacks.submitRegistration();
-        }
-    });
-    
-    // Add listeners to show loading animation while making ajax requests
-    $(document).ajaxStart(function() {
-      $('#loadingDiv').show(); 
-    });
-    $(document).ajaxStop(function() { 
-      $('#loadingDiv').hide(); 
-    });
-    
     // See if the user is currently logged in
     privlyNetworkService.initPrivlyService(
       privlyNetworkService.contentServerDomain(), 
       callbacks.pendingPost, 
       callbacks.notLoggedIn, 
       callbacks.loginError);
+
+    // prevent default
+    return true;
   },
   
   /**
@@ -85,7 +76,7 @@ var callbacks = {
    * Submit the posting form and await the return of the post.
    */
   submitCredentials: function() {
-    $("#save").prop('disabled', true);
+    $("#login").prop('disabled', true);
     privlyNetworkService.sameOriginPostRequest(
       privlyNetworkService.contentServerDomain() + "/users/sign_in", 
       callbacks.checkCredentials,
@@ -98,6 +89,7 @@ var callbacks = {
    * Submit the registration form and await the return of the registration.
    */
   submitRegistration: function() {
+    $("#register").prop('disabled', true);
     privlyNetworkService.sameOriginPostRequest(
       privlyNetworkService.contentServerDomain() + "/users/invitation", 
       callbacks.checkRegistration,
@@ -108,7 +100,7 @@ var callbacks = {
    * Check to see if the user's credentials were accepted by the server.
    */
   checkCredentials: function(response) {
-    
+    $("#login").prop('disabled', false);
     if ( response.json.success === true ) {
       callbacks.pendingPost();
     } else {
@@ -120,7 +112,8 @@ var callbacks = {
    * Check to see if the user's registration was accepted by the server.
    */
   checkRegistration: function(response) {
-     if ( response.json.success === true ) {
+    $("#register").prop('disabled', false); 
+    if ( response.json.success === true ) {
       callbacks.pendingRegistration();
     } else {
       callbacks.registrationFailure();
@@ -165,25 +158,33 @@ var callbacks = {
    * Tell the user they are now logged in to the server.
    */
   pendingPost: function() {
-    
-    // get from local storage the last known app to redirect to
-    if(ls.getItem("Login:redirect_to_app") !== undefined &&
-       ls.getItem("Login:redirect_to_app").indexOf("Login") < 0) {
-      window.location = ls.getItem("Login:redirect_to_app");
+    if (window.location.search.indexOf('?') === 0 &&
+        // we doesn't allow redirecting to other domain
+        window.location.search.replace(/\\/g, '/').indexOf('//') === -1) {
+      window.location = window.location.search.substr(1);
+    } else if (Privly.storage.get("Login:redirect_to_app") !== null &&
+               Privly.storage.get("Login:redirect_to_app").indexOf("Login") < 0) {
+      // get from local storage the last known app to redirect to
+      window.location = Privly.storage.get("Login:redirect_to_app");
     } else {
       window.location = "../Help/new.html";
     }
   }
 };
 
-// Initialize the application
-document.addEventListener('DOMContentLoaded',
-  function() {
-
-    // Don't start the script if it is running in a Headless
-    // browser
-    if( document.getElementById("logout_link") ) {
-      callbacks.pendingLogin();
-    }
+document.addEventListener('DOMContentLoaded', function () {
+  // Don't start the script if it is running in a Headless
+  // browser
+  if (!document.getElementById("logout_link")) {
+    return;
   }
-);
+
+  var adapter = new Privly.app.viewAdapter.New({});
+
+  adapter.on('beforePendingLogin', function () {
+    callbacks.pendingLogin();
+    return true;
+  });
+
+  adapter.start();
+});

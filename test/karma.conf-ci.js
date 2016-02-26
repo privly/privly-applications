@@ -1,6 +1,38 @@
 var fs = require('fs');
+var uuid = require('uuid');
 
 module.exports = function(config) {
+
+  // These are the default coverageFiles. They should be updated when run from
+  // the privly-safari repo, https://github.com/privly/privly-safari
+  var coverageFiles = {
+    '*/j*/!(raw*).js': 'coverage'
+  };
+
+  // If the script is not being executed from the testing directory
+  if(process.cwd() !== __dirname) {
+
+    if(process.cwd().indexOf("privly-safari") != -1) {
+      // When the script is run from the privly-safari repo, update the coverageFiles
+      coverageFiles = {
+        '../scripts/**/*.js': 'coverage'
+      };
+    }
+
+    console.warn(
+      "\n!!!\nYou are running this script from outside the test directory. " +
+      "If you do not have the required node modules on your NODE_PATH, " +
+      "you will not be able to run these tests.\n!!!\n");
+    console.warn(
+      "You may need to issue something like: " +
+      "`export NODE_PATH=/PATH/TO/privly-applications/test/node_modules");
+  }
+
+  // Force the script to execute from its directory
+  process.chdir(__dirname);
+
+  // All files will be referenced relative to the privly-applications folder
+  var basePath = "..";
 
   // Use ENV vars on Travis and sauce.json locally to get credentials
   if (!process.env.SAUCE_USERNAME) {
@@ -25,25 +57,7 @@ module.exports = function(config) {
   // The .travis.yml file can also pass in other files
   // by exporting an environment variable containing a list of
   // Javascripts.
-  var filesToTest = [
-
-    // HTML files to use as a fixtures
-    '*/*.html',
-
-    // Force jquery to load first since it is a dependency
-    'vendor/jquery.min.js',
-
-    // Load all the vendor libraries
-    'vendor/*.js',
-    'vendor/datatables/jquery.dataTables.min.js',
-    'vendor/datatables/dataTables.bootstrap.min.js',
-    'vendor/bootstrap/js/*.js',
-
-    // Load all the shared libraries at the top level
-    'shared/javascripts/*.js',
-
-    // Test the shared libraries
-    'shared/test/*.js'];
+  var filesToTest = [];
 
   var filesToExcludeFromTest = [];
   if (process.env.FILES_TO_TEST) {
@@ -53,37 +67,74 @@ module.exports = function(config) {
     filesToExcludeFromTest = filesToExcludeFromTest.concat(process.env.FILES_TO_EXCLUDE_FROM_TEST.split(","));
   }
 
-  // Browsers to run on Sauce Labs
-  var customLaunchers = {
-    'sl_chrome': {
-          base: 'SauceLabs',
-          browserName: 'chrome',
-          platform: 'Windows 7',
-          version: 'dev'
-        },
-    'sl_firefox': {
-      base: 'SauceLabs',
-      browserName: 'firefox',
-      version: 'dev'
+  // Define the different types of browsers
+  var sl_chrome = {
+    base: 'SauceLabs',
+    browserName: 'chrome',
+    platform: 'Windows 7',
+    version: 'beta'
+  }
+  var sl_firefox = {
+    base: 'SauceLabs',
+    browserName: 'firefox',
+    platform: 'Windows 7',
+    version: '39.0'
+  }
+  var sl_safari = {
+    base: 'SauceLabs',
+    browserName: 'safari',
+    platform: 'OS X 10.8',
+    version: '6.0'
+  }
+
+  // Browsers to run on Sauce Labs based on command line argument
+  var customLaunchers = {};
+  process.argv.forEach(function (value, index, array) {
+    if (value.indexOf('--sauce-browsers=') == 0) {
+      var sauceBrowsers = value.split('=')[1];
+      sauceBrowsers = sauceBrowsers.split(',');
+      sauceBrowsers.forEach(function (browser) {
+        if (browser == 'Chrome') {
+          customLaunchers['sl_chrome'] = sl_chrome;
+        }
+        else if (browser == 'Firefox') {
+          customLaunchers['sl_firefox'] = sl_firefox;
+        }
+        else if (browser == 'Safari') {
+          customLaunchers['sl_safari'] = sl_safari;
+        }
+        else {
+          console.error("You specified an unsupported browser:", browser);
+          console.log("Browser options are Firefox, Chrome, and Safari");
+          console.log("Example:");
+          console.log("`karma start karma.conf-ci.js --sauce-browsers=Firefox,Chrome,Safari`");
+          process.exit(9);
+        }
+      });
     }
-  };
+  });
+
+  // If no command line argument has been passed for specific browsers, run
+  // the tests on all the available browsers
+  if (Object.keys(customLaunchers).length == 0) {
+    customLaunchers['sl_chrome'] = sl_chrome;
+    customLaunchers['sl_firefox'] = sl_firefox;
+    customLaunchers['sl_safari'] = sl_safari;
+  }
 
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '..',
+    basePath: basePath,
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine'],
 
-    // Provide the HTML document as a fixture
-    preprocessors: {
-          '*/*.html': ['html2js'],
-
-          // Load all the shared libraries at the top level
-          'shared/javascripts/*.js': 'coverage'
-        },
+    // Provide test coverage information for the matched
+    // files. The compression library (both start with "raw")
+    // is excluded.
+    preprocessors: coverageFiles,
 
     // list of files / patterns to load in the browser
     files: filesToTest,
@@ -91,14 +142,21 @@ module.exports = function(config) {
     // files to exclude from testing
     exclude: filesToExcludeFromTest,
 
-    // test results reporter to use
-    // possible values: 'dots', 'progress'
+    // test result reporters to use
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['dots', 'coverage', 'saucelabs'],
+    reporters: ['dots', 'coverage', 'saucelabs', 'coveralls'],
 
     coverageReporter: {
       type : 'lcovonly',
       dir : 'test/coverage/'
+    },
+
+    // Where to save the coverage information to
+    coverageReporter: {
+      type : 'lcovonly',
+      dir : 'test/coverage/',
+      subdir: '.',
+      file : uuid.v1() + ".lcov"
     },
 
     // web server port
@@ -117,6 +175,9 @@ module.exports = function(config) {
       build: process.env.TRAVIS_BUILD_NUMBER
     },
     captureTimeout: 120000,
+    browserNoActivityTimeout: 20000,
+    browserDisconnectTolerance: 2,
+    browserDisconnectTimeout: 6000,
     customLaunchers: customLaunchers,
 
     // start these browsers
