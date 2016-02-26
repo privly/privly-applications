@@ -107,7 +107,7 @@ var historyModal = {
 
       //finds the next button with preview_link class and passes its reference.
       var index = $('.preview_link').index(historyModal.eventHandlers.buttonClicked);
-      if(index == $('.preview_link').length - 1){
+      if(index === $('.preview_link').length - 1){
         index = -1; //rolling back to the first message after the last.
       }
       var next = $('.preview_link').slice(index+1).first();

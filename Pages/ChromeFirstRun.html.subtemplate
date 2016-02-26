@@ -1,8 +1,9 @@
 {% extends "templates/new.html.template" %}
 
+{% block title %}<title>Welcome to the Priv.ly Project!</title>{% endblock %}
+
 {% block javascripts %}
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
-  <script type="text/javascript" src="../shared/javascripts/tooltip.js"></script>
   <script type="text/javascript" src="js/first_run.js"></script>
 {% endblock %}
 
@@ -12,6 +13,43 @@
 {% endblock %}
 
 {% block form %}
+
+<div class="modal fade" id="registerModal" role="dialog" aria-labelledby="registerModal" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h1 class="modal-title">Register</h1>
+      </div>
+      <form action="#" id="registerForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="register_email">Email</label>
+            <br />
+            <input id="register_email" name="user[email]" size="30" type="email"
+              value="" placeholder="Enter email" required/>
+          </div>
+          <div class="form-group">
+            <button id="register_btn" class="btn btn-primary">Request invite on
+              <span class="content_server"></span>
+            </button>
+            <p></p>
+            <p class="register_feedback_failure alert alert-danger" style="display:none" role="alert">
+              <strong class="register_feedback_strong">Error</strong>
+              <span class="register_feedback_description">communicating with registration server. Please try again.</span>
+            </p>
+            <p class="register_feedback_emailed alert alert-success" style="display:none" role="alert">
+              <strong class="register_feedback_strong">Please check your email.</strong>
+              <span class="register_feedback_description">Your account information should arrive soon</span>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <div class="container">
   <br/>
   <div class="row">
@@ -25,24 +63,17 @@
   <div class="row">
     <div class="col-md-5">
       <h2>What Now?</h2>
-      <p>
-        <strong>Accounts on PrivlyAlpha.org open March 1st.</strong>
-        After that date you can activate an account.
-        Developers can get an account by signing up for one on dev.privly.org,
-        but to associate the extension with dev.privly.org you will need to
-        change your server on the extension options page.
-      </p>
-      <p>How to get an account and test your extension:</p>
       <ol>
-        <li>Get an account on <a href="https://privlyalpha.org/apps/Login/new.html" target="_blank">PrivlyAlpha.org</a> then login.</li>
-        <li>
-           Now it is time to post content using Privly! Right click on the form and select "New Message." A window will popup.
+        <li><a href="../Login/new.html" target="_blank">Sign in</a> or <a href="#" data-toggle="modal" data-target="#registerModal">Register</a> for an account.
         </li>
         <li>
-           Type your content into the popup window.
+           Now it is time to post content using Privly!
+           Click on a form or chart window and then click the lock icon that appears.
+           If a lock icon does not appear, you should
+           <a href="ChromeOptions.html">enable it on the options page.</a>
         </li>
         <li>
-          Submit the form on the popup window.
+           Type your content into the green area.
         </li>
         <li>
           Submit the form on your webmail or social network.
@@ -97,7 +128,19 @@
     <div class="col-md-12">
       <h1>Change History</h1>
 
-      <p><strong>Version 0.4.1 (this version)</strong></p>
+      <p><strong>Version 0.5.0 (this version)</strong></p>
+      <ul>
+        <li>Added seamless posting.</li>
+        <li>Added inline registration.</li>
+        <li>Refactored shared libraries.</li>
+        <li>Added support for Safari extensions and Firefox Jetpack extensions.</li>
+        <li>Completed separation of unit (Karma) and integration (Selenium) tests.</li>
+        <li>Added test coverage.</li>
+        <li>Updated Stanford Javascript Cryptography Library (SJCL).</li>
+        <li>Numerous small bug and UX fixes.</li>
+      </ul>
+
+      <p><strong>Version 0.4.1</strong></p>
       <ul>
         <li>Renamed the "ZeroBin" application to "Message".</li>
         <li>Improved UX on History application.</li>
@@ -223,10 +266,34 @@
 
       <p>
         Sean McGregor,
+        Breezewish,
         Daniel Reichert,
         Vlad Fulgeanu,
+        Sambuddha Basu,
+        Hitesh Sharma,
+        Garrett Seward,
+        Trevor Bramwell,
+        Bhavul Gauri,
+        Hery Ratsimihah,
+        Ravi Kishore,
         Dragoș Alin Rotaru,
-        Jason Jacob
+        Jason Jacob,
+        Mikky Cecil,
+        Jatin Dhankhar,
+        Anmol Jagetia,
+        changjo512,
+        Manraj Singh,
+        Manik Singh,
+        Loïck Bonniot,
+        Ujjwal Wahi,
+        Arjun Vijayvargiya,
+        David Cardwell,
+        Vatsal Juneja,
+        Tomislav Jovanovic,
+        gordyvision,
+        jayco,
+        Dhruv Nenwani,
+        kabochya
       </p>
 
       <h1>Contact</h1>

@@ -1,20 +1,15 @@
 {% extends "templates/new.html.template" %}
 
-{% block specs %}
-  <meta name="PrivlySpec" 
-  content="../shared/test/privly-web/new.js,test/new.js,test/sjcl.js,test/ZeroBin.js,../shared/test/parameters.js,../shared/test/extension_integration.js,../shared/test/network_service.js"/>
-{% endblock %}
-
 {% block javascripts %}
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
   <script type="text/javascript" src="../vendor/sjcl.js"></script>
-  <script type="text/javascript" src="../Message/js/base64.js"></script>
-  <script type="text/javascript" src="../Message/js/rawdeflate.js"></script>
-  <script type="text/javascript" src="../Message/js/rawinflate.js"></script>
-  <script type="text/javascript" src="../Message/js/zerobin.js"></script>
+  <script type="text/javascript" src="../Message/js/vendor/base64.js"></script>
+  <script type="text/javascript" src="../Message/js/vendor/rawdeflate.js"></script>
+  <script type="text/javascript" src="../Message/js/vendor/rawinflate.js"></script>
+  <script type="text/javascript" src="../Message/js/vendor/zerobin.js"></script>
   <script type="text/javascript" src="js/file_processing.js"></script>
-  <script type="text/javascript" src="../shared/javascripts/privly-web/new.js"></script>
-  <script type="text/javascript" src="js/new.js"></script>
+  <script type="text/javascript" src="js/splitimageModel.js"></script>
+  <script type="text/javascript" src="js/controllers/new.js"></script>
 {% endblock %}
 
 {% block css %}

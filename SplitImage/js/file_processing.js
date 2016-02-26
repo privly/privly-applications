@@ -30,7 +30,7 @@ function handleFileSelect(evt, callback) {
   
   var files;
   if( evt.target.id === "drop_zone" ) {
-     files = evt.dataTransfer.files;
+    files = evt.dataTransfer.files;
   } else {
     files = evt.target.files;
   }
@@ -69,9 +69,5 @@ function handleFileSelect(evt, callback) {
 
     // Read in the image file as a data URL.
     reader.readAsDataURL(f);
-  }
-  
-  if ( callbacks.functionExists(callback) ) {
-    callback();
   }
 }

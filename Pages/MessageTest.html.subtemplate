@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    
+    <link href="css/message_test.css" media="screen" rel="stylesheet" type="text/css"/>
+    
+    <script type="text/javascript" src="../shared/javascripts/meta_loader.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/local_storage.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/storage.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/context_messenger.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/options.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/glyph.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/parameters.js"></script>
+    <script type="text/javascript" src="../shared/javascripts/network_service.js"></script>
+
+    <script type="text/javascript" src="../vendor/jquery.min.js"></script>
+    <script type="text/javascript" src="js/message_test.js"></script>
+     
+  </head>
+
+  <body data-privly-exclude="true">
+    
+    <h2>This page is used to test the functionality of context messenger.</h2>
+    <h3>Send</h3>
+    <p>
+      <label>Magic text: <input type="text" name="data"></label>
+      <button name="to_extension">Send to extension (background script)</button>
+      <button name="to_content_script">Send to content scripts</button>
+      <button name="to_privly_app">Send to Privly apps</button>
+    </p>
+    <h3>Response</h3>
+    <button name="clear">Clear</button>
+    <div id="response"></div>
+
+  </body>
+</html>

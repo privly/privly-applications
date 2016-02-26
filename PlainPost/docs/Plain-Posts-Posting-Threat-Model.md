@@ -1,7 +1,7 @@
-This threat model focuses on creating content and sharing links on host pages. For a complete picture of the system's threats, you should also see the [Plain Post Reading Threat Model](Plain Post Reading Threat Model).
+This threat model focuses on creating content and sharing links on host pages. For a complete picture of the system's threats, you should also see the [Plain Post Reading Threat Model](Plain-Posts-Reading-Threat-Model.md).
 
 ## Application Name and Description
-Privly is a browser-based application facilitating the injection of private content on any website. The client is loaded locally as a browser extension and plugin (available for Google Chrome and Mozilla Firefox) and communicates to a content server over HTTPS. Privly potentially supports many different cryptographic protocols. This document focuses on Privly's [Plain Post](Posts) [injectable application](Injectable-Applications). Other injectable applications have stronger security objectives.
+Privly is a browser-based application facilitating the injection of private content on any website. The client is loaded locally as a browser extension and plugin (available for Google Chrome and Mozilla Firefox) and communicates to a content server over HTTPS. Privly potentially supports many different cryptographic protocols. This document focuses on Privly's [Plain Post](Posts.md) [injectable application](https://github.com/privly/privly-organization/wiki/Injectable-Applications). Other injectable applications have stronger security objectives.
 
 ## Authors
 * Sean McGregor, Privly Lead Developer.  
@@ -233,7 +233,7 @@ No known threats when the application is packaged with the extension.
 
 ### See Also
 
-[Plain Posts Reading Threat Model](Plain Posts Reading Threat Model)
+[Plain Posts Reading Threat Model](Plain-Posts-Reading-Threat-Model.md)
 
 ## 5. Vulnerabilities
 *No vulnerabilities have been formally identified. Please contribute to this section!*

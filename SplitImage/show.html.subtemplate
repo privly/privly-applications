@@ -1,22 +1,16 @@
 {% extends "templates/show.html.template" %}
 
-
-{% block specs %}
-  <meta name="PrivlySpec" content="test/show.js,test/sjcl.js,test/ZeroBin.js,../shared/test/privly-web/show.js,../shared/test/parameters.js,../shared/test/network_service.js"/>
-{% endblock %}
-
-
 {% block javascripts %}
-  <script type="text/javascript" src="../vendor/markdown.js"></script>
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
   <script type="text/javascript" src="../vendor/sjcl.js"></script>
-  <script type="text/javascript" src="../Message/js/base64.js"></script>
-  <script type="text/javascript" src="../Message/js/rawdeflate.js"></script>
-  <script type="text/javascript" src="../Message/js/rawinflate.js"></script>
-  <script type="text/javascript" src="../Message/js/zerobin.js"></script>
+  <script type="text/javascript" src="../shared/javascripts/viewAdapters/show.js"></script>
+  <script type="text/javascript" src="../Message/js/vendor/base64.js"></script>
+  <script type="text/javascript" src="../Message/js/vendor/rawdeflate.js"></script>
+  <script type="text/javascript" src="../Message/js/vendor/rawinflate.js"></script>
+  <script type="text/javascript" src="../Message/js/vendor/zerobin.js"></script>
+  <script type="text/javascript" src="js/splitimageModel.js"></script>
+  <script type="text/javascript" src="js/controllers/show.js"></script>
   <script type="text/javascript" src="js/file_processing.js"></script>
-  <script type="text/javascript" src="../shared/javascripts/privly-web/show.js"></script>
-  <script type="text/javascript" src="js/show.js"></script>
 {% endblock %}
 
 
@@ -67,7 +61,7 @@
               This application requires scripting to function properly</h1>
           </noscript>
         </div>
-        <div id="clearimage"></div>
+        <output id="clearimage"></output>
       </div>
     </div>
 

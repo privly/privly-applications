@@ -1,5 +1,7 @@
 
 This guide is intended to teach you the basics of developing a Privly injectable application.
+You should start with the [developer guide](https://priv.ly/pages/develop) before
+starting with this guide.
 
 # Quick Start #
 
