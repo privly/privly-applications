@@ -5,4 +5,4 @@
 test/sauce.json
 test/node_modules/*
 test/coverage
-venv/
+

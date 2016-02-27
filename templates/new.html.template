@@ -1,7 +1,7 @@
 {% extends "templates/base.html.template" %}
 {% block head %}
 
-    {% block title %}<title> {{ name }}</title>{% endblock %}
+    {% block title %}<title>{{ name }}</title>{% endblock %}
 
     <link class="top" href="../vendor/bootstrap/css/bootstrap.min.css" media="screen" rel="stylesheet"/>
     <link class="top" href="../shared/css/top/top.css" rel="stylesheet"/>
