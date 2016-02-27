@@ -1,5 +1,7 @@
 {% extends "templates/new.html.template" %}
 
+{% block title %}<title>Options</title>{% endblock %}
+
 {% block javascripts %}
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
   <script type="text/javascript" src="js/options.js"></script>
