@@ -105,7 +105,7 @@ var privlyNetworkService = {
    * Helper for determining the protocol+domain of a
    * URL.
    *
-   * @param {string} url the URL for which we want the domain and protocl
+   * @param {string} url the URL for which we want the domain and protocol
    * @return {string} The string of the protocol and domain.
    */
   getProtocolAndDomain: function(url) {

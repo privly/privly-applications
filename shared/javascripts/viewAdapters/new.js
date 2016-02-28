@@ -77,7 +77,7 @@ if (Privly.app.viewAdapter === undefined) {
     this.started = false;
   };
 
-  // Inhreit EventEmitter
+  // Inherit EventEmitter
   Privly.EventEmitter.inherit(NewAdapter);
 
   Privly.app.viewAdapter.New = NewAdapter;
@@ -141,22 +141,12 @@ if (Privly.app.viewAdapter === undefined) {
 
   /**
    * When server connection checking succeeded.
-   * It will add event listeners to the submit button and
-   * make textarea able to auto resize. Finally it will call
-   * `pendingPost()` to prepare the posting form.
+   * It will enable the save button for user to submit their content.
    *
    * @return {Promise}
    */
   NewAdapter.prototype._connectionSucceeded = function () {
-    var self = this;
-
-    // Monitor the submit button
-    $(document).on('click', '#save', self.save.bind(self));
-
-    // Make all text areas auto resize to show all their contents
-    $('textarea').autosize();
-
-    self.pendingPost();
+    $('#save').prop("disabled", false);
   };
   addOverridableFunction('connectionSucceeded', NewAdapter.prototype._connectionSucceeded);
 
@@ -249,8 +239,8 @@ if (Privly.app.viewAdapter === undefined) {
    */
   NewAdapter.prototype._pendingLogin = function () {
     var self = this;
-
     Privly.storage.set("Login:redirect_to_app", window.location.href);
+    self.initializeContent();
     privlyNetworkService.initPrivlyService(
       privlyNetworkService.contentServerDomain(),
       self.connectionSucceeded.bind(self),
@@ -385,5 +375,27 @@ if (Privly.app.viewAdapter === undefined) {
     }
   };
   addOverridableFunction('postCompleted', NewAdapter.prototype._postCompleted);
+
+  /**
+   * Initializing the content submission form. It will add event listeners to the submit button and
+   * make textarea able to auto resize. The submit button is disabled until user is authenticated.
+   *
+   * @return {Promise}
+   */
+  NewAdapter.prototype._initializeContent = function() {
+    var self = this;
+
+    // Monitor the submit button
+    $(document).on('click', '#save', self.save.bind(self));
+
+    // Make all text areas auto resize to show all their contents
+    $('textarea').autosize();
+
+    privlyNetworkService.showLoggedInNav();
+    $("#save").prop('disabled', true); //save should be disabled until authenticated
+    $("#messages").toggle();
+    $("#form").toggle();
+  };
+  addOverridableFunction('initializeContent', NewAdapter.prototype._initializeContent);
 
 }());
