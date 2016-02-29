@@ -143,4 +143,9 @@ button.close {
     .preview_link {
         padding: 6px;
     }
+    #posts td:nth-child(2), #posts td:nth-child(3), #posts td:nth-child(4) {
+    max-width:60px;
+    min-width: 10px;
+    word-break: break-all;
+  }
 }
