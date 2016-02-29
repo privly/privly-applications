@@ -59,37 +59,44 @@
 {% endblock %}
 
 {% block form %}
- <div class="col-md-12" id="table_col">
-    <h1>History</h1>
-    <p id="loadingDiv">
-      <img src="../shared/images/ajax-loader.gif" alt="loading..." />
-    </p>
-    <table class="display" id="posts" width="100%">
-      <thead>
-        <tr>
-          <th>Preview</th>
-          <th>Created</th>
-          <th>Burnt After</th>
-          <th>Updated</th>
-        </tr>
-      </thead>
-      <tbody id="table_body">
-      </tbody>
-      <tfoot>
-        <tr>
-          <th>Preview</th>
-          <th>Created</th>
-          <th>Burnt After</th>
-          <th>Updated</th>
-        </tr>
-      </tfoot>
-    </table>
-  </div><!-- /.col-md-12 -->
+ <div class="row">
+   <div class="col-sx-12 col-md-12" id="table_col">
+      <h1>History</h1>
+      <p id="loadingDiv">
+        <img src="../shared/images/ajax-loader.gif" alt="loading..." />
+      </p>
+   </div>
+ </div>   
+ <div class="row">
+   <div class="col-sx-12 col-md-12">
+      <table class="display" id="posts" width="100%">
+        <thead>
+          <tr>
+            <th>Preview</th>
+            <th>Created</th>
+            <th>Burnt After</th>
+            <th>Updated</th>
+          </tr>
+        </thead>
+        <tbody id="table_body">
+        </tbody>
+        <tfoot>
+          <tr>
+            <th>Preview</th>
+            <th>Created</th>
+            <th>Burnt After</th>
+            <th>Updated</th>
+          </tr>
+        </tfoot>
+      </table>
+     </div>
+    </div>
+  </div><!-- /.col-sm-12 .col-md-12 -->
 {% endblock %}
 
 {% block app_info %}
   <hr/>
-  <div class="col-md-6">
+  <div class="col sx-6 col-md-6">
     <h2>What is History?</h2>
     <p>History is a special type of 
       <a href="http://www.privly.org/content/introducing-privly-applications" target="_blank">
@@ -97,7 +104,7 @@
         You can search all the content by typing into the search box at the top of the table.
     </p>
   </div>
-  <div class="col-md-6">
+  <div class="col-sx-6 col-md-6">
     <h2>Warnings</h2>
     <ul>
       <li>Privly is still in Alpha, <strong>do not</strong> post private information until the system reaches a Beta release.</li>
