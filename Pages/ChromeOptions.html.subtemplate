@@ -1,5 +1,7 @@
 {% extends "templates/new.html.template" %}
 
+{% block title %}<title>Options</title>{% endblock %}
+
 {% block javascripts %}
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
   <script type="text/javascript" src="js/options.js"></script>
@@ -13,104 +15,113 @@
 {% block form %}  
 <div class="container">
   
-  <h1 class="page-header">Extension Options</h1>
+  <h1 class="page-header" style="font-weight: bold">Extension Options</h1>
+  <div class="row">
 
-{% if args.platform == "chrome" or args.platform == "firefox" %}
-  <section id="button_option">
+  {% if args.platform == "chrome" or args.platform == "firefox" %}
+    
+    <div class="col-md-6">
+      <section id="button_option">
 
-    <h2>Privly Button</h2>
-    <br />
-    <input type="checkbox" id="disableBtn">
-    <label for="disableBtn">Disable the Privly button that appears in the top-right corner of textarea's</label>
-    <br />
-    <br />
-    <div id="button_status"></div>        
-  </section>
-
-  <hr />
-{% endif %}
-
-  <section id="glyph">
-
-    <h2>Security Glyph</h2>
-    <p>Content metadata is displayed when you hover your mouse over the content. To authenticate the metadata, a unique random glyph is associated with your extension. The glyph is displayed next to items that the extension verifies.</p>
-    <p>Your glyph:</p>
-    <div id="glyph_div"></div>
-    <br />
-    <button id="regenerate_glyph" class="btn btn-primary btn-sm">Regenerate Glyph</button>
-  </section>
-
-  <hr />
-
-  <section id="whitelist">
-
-    <h2>User Whitelist</h2>
-
-    <p>
-      The user 
-      <a target="_blank" 
-        href="https://github.com/privly/privly-organization/wiki/whitelist"
-        title="find out more about white listing">
-        whitelist
-      </a>
-      specifies which domains you trust not to track your browsing.
-      Properly formatted links to these domains will automatically
-      inject their associated Privly Applications.
-    </p>
-    <div id="urls">
-      <div>
-        <input type="text" class="whitelist_url form-control" placeholder="ex: domain.com" />
-        <span class="glyphicon glyphicon-remove remove_whitelist" ></span>
-      </div>
-      <div>
-        <input type="text" class="whitelist_url form-control" />
-        <span class="glyphicon glyphicon-remove remove_whitelist" ></span>
-      </div>
+        <h2>Privly Button</h2>
+        <br />
+        <input type="checkbox" id="disableBtn">
+        <label for="disableBtn">Disable the Privly button that appears in the top-right corner of textarea's</label>
+        <br />
+        <br />
+        <div id="button_status"></div>        
+      </section>
     </div>
-    <div id="invalid_domain">Domains are not saved until all are valid</div>
-    <div id="status"></div>
-    <span id="add_more_urls">
-      <span class="glyphicon glyphicon-plus-sign"></span> Add more 
-    </span>
 
-    <br />
-    <br />
+  {% endif %}
 
-  </section>
+    <div class="visible-sm visible-xs"> <hr></div>
+    <div class="col-md-6">
+      <section id="glyph">
+        <h2>Security Glyph</h2>
+        <div class ="row">
+          <div class ="col-md-6">
+            <p>Content metadata is displayed when you hover your mouse over the content. To authenticate the metadata, a unique random glyph is associated with your extension. The glyph is displayed next to items that the extension verifies.</p>
+          </div>
+          <div class = "col-md-6"
+            <p>Your glyph:</p>
+            <div id="glyph_div"></div>
+            <br />
+            <button id="regenerate_glyph" class="btn btn-primary btn-sm">Regenerate Glyph</button>
+          </div>
+        </div>
+      </section>
+    </div>
 
-  <hr />
+    <div class="visible-sm visible-xs"> <hr></div>   
+    <div class="col-md-6 top-buffer" >
+      <section id="whitelist">
+        <h2>User Whitelist</h2>
+        <p>
+          The user 
+          <a target="_blank" 
+            href="https://github.com/privly/privly-organization/wiki/whitelist"
+            title="find out more about white listing">
+            whitelist
+          </a>
+          specifies which domains you trust not to track your browsing.
+          Properly formatted links to these domains will automatically
+          inject their associated Privly Applications.
+        </p>
+        <div id="urls">
+          <div>
+            <input type="text" class="whitelist_url form-control" placeholder="ex: domain.com" />
+            <span class="glyphicon glyphicon-remove remove_whitelist" ></span>
+          </div>
+          <div>
+            <input type="text" class="whitelist_url form-control" />
+            <span class="glyphicon glyphicon-remove remove_whitelist" ></span>
+          </div>
+        </div>
+        <div id="invalid_domain">Domains are not saved until all are valid</div>
+        <div id="status"></div>
+        <span id="add_more_urls">
+          <span class="glyphicon glyphicon-plus-sign"></span> Add more 
+        </span>
 
-  <section id="content_server">
+        <br />
+        <br />
 
-    <h2>Content Servers</h2>
+      </section>
+    </div>
+    
+    <div class="visible-sm visible-xs"> <hr></div>   
+    <div class="col-md-6 top-buffer">
+      <section id="content_server">
+        <h2>Content Servers</h2>
+        <p>Set domain to upload your content when generating new links directly from the extension.</p>
+        <p>These are the recommended servers during development, select "other" to assign it to any trustworthy domain you like.<br /><a href="https://priv.ly/pages/servers.html" target="_blank"> Learn More.</a></p>
+        <form>
+          <fieldset id="server_form">
+            <select id="content_server_url" style="" class="btn btn-default" type="dropdown">
+              <option value="alpha">https://privlyalpha.org (recommended)</option>
+              <option value="dev">https://dev.privly.org</option>
+              <option value="local">http://localhost:3000</option>
+              <option value="other">Other</option>
+            </select>
+            <fieldset id="user">
+              <input type="text" id="other_content_server" 
+                class="form-control" size="200" 
+                title="Enter content server here" 
+                placeholder='ex: https://myContentServer.com' 
+                style="width:250px;">
+            </fieldset>
+            <button id="save_server" class="btn btn-primary" type="button" value="save_server" >
+            Save
+            </button>
+          </fieldset>
+        </form>
 
-    <p>Set domain to upload your content when generating new links directly from the extension.</p>
-    <p>These are the recommended servers during development, select "other" to assign it to any trustworthy domain you like.<br /><a href="https://priv.ly/pages/servers.html" target="_blank"> Learn More.</a></p>
+        <div id="server_status"></div>
+      </section>
+    </div>
 
-    <form>
-      <fieldset id="server_form">
-        <select id="content_server_url" style="" class="btn btn-default" type="dropdown">
-          <option value="alpha">https://privlyalpha.org (recommended)</option>
-          <option value="dev">https://dev.privly.org</option>
-          <option value="local">http://localhost:3000</option>
-          <option value="other">Other</option>
-        </select>
-        <fieldset id="user">
-          <input type="text" id="other_content_server" 
-            class="form-control" size="200" 
-            title="Enter content server here" 
-            placeholder='ex: https://myContentServer.com' 
-            style="width:250px;">
-        </fieldset>
-        <button id="save_server" class="btn btn-primary" type="button" value="save_server" >
-        Save
-        </button>
-      </fieldset>
-    </form>
-
-    <div id="server_status"></div>
-
-  </section>
+  </div> <!-- /row -->
 
   <br />
   
