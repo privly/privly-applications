@@ -78,3 +78,12 @@ input {
 li {
   line-height: 24px;
 }
+
+.top-buffer { 
+  margin-top: 30px; 
+}
+
+h2 {
+  font-weight: bold;
+}
+
