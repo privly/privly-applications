@@ -25,38 +25,44 @@ if (Privly === undefined) {
 
   /**
    * Add an event listener.
-   * 
+   *
    * @param  {String}   ev Event name
    * @param  {Function} listener
    */
   Privly.EventEmitter.prototype.on = function (ev, listener) {
+    if(ev === undefined) {
+      return false;
+    }
     if (this.__listeners === undefined) {
       this.__listeners = {};
     }
     if (!this.__listeners.hasOwnProperty(ev)) {
       this.__listeners[ev] = [];
     }
-    if (this.__listeners[ev].indexOf(listener) === -1) {
+    if (listener !== undefined && this.__listeners[ev].indexOf(listener) === -1) {
       this.__listeners[ev].push(listener);
     }
   };
 
   /**
    * Remove an event listener.
-   * 
+   *
    * @param  {String} ev Event name
    * @param  {Function} listener
    */
   Privly.EventEmitter.prototype.off = function (ev, listener) {
+    if(ev === undefined) {
+      return false;
+    }
     if (this.__listeners === undefined) {
       this.__listeners = {};
+    }
+    if (!this.__listeners.hasOwnProperty(ev)) {
+      return;
     }
     // delete all event listeners
     if (listener === undefined) {
       delete this.__listeners[ev];
-      return;
-    }
-    if (!this.__listeners.hasOwnProperty(ev)) {
       return;
     }
     var idx = this.__listeners[ev].indexOf(listener);
@@ -70,7 +76,7 @@ if (Privly === undefined) {
    * If an event listener returns non-undefiend values,
    * the rest of the listeners will not be called and
    * this value will be returned.
-   * 
+   *
    * @param  {String} ev Event name
    * @return {Any}
    */
@@ -95,7 +101,7 @@ if (Privly === undefined) {
    * if none of the event listeners returns a Promise.
    *
    * Requires Promise loaded.
-   * 
+   *
    * @param  {String} ev Event name
    * @return {Promise<Any>}
    */
@@ -114,7 +120,7 @@ if (Privly === undefined) {
   /**
    * Helper function to add event emitter feature
    * to an object or a class.
-   * 
+   *
    * @param  {Object|Function} obj
    */
   Privly.EventEmitter.inherit = function (obj) {

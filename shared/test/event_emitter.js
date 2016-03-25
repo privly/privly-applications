@@ -6,6 +6,18 @@
 /*global Privly */
 describe('Privly.EventEmitter', function () {
 
+  it('fails on adding to undefined event', function () {
+    var ee = new Privly.EventEmitter();
+
+    expect(ee.on(undefined, function(){})).toBe(false);
+  });
+
+  it('fails on removing from undefined event', function () {
+    var ee = new Privly.EventEmitter();
+
+    expect(ee.off(undefined, function(){})).toBe(false);
+  });
+
   it('can pass arguments to event listeners', function () {
     var ee = new Privly.EventEmitter();
     var c = null;
@@ -169,7 +181,7 @@ describe('Privly.EventEmitter', function () {
     ee.on('A', eventListener1);
     ee.on('A', eventListener1);
     ee.on('A', eventListener2);
-    
+
     ee.emit('A');
     expect(counter.A).toBe(1);
     expect(counter.B).toBe(1);

@@ -10,7 +10,7 @@ describe ("Messaging Test Suite", function() {
   it("can send a URL to the extension", function() {
     var message = {"handler": "privlyUrl"};
     Privly.message.messageExtension(message);
-  });
+    });
 
   it("can ask for the starting content from the extension", function() {
     var message = {"handler": "initialContent"};
@@ -97,7 +97,7 @@ describe ("Messaging Test Suite", function() {
 
 describe('Privly.message.adapter.*', function () {
 
-  it('can remove listeners', function (done) {
+  it('can add and remove listeners', function (done) {
     var totalListeners = Privly.message.listeners.length;
     var newListener = function(a,b){expect(true).toBe(false)};// Should never be called
     Privly.message.addListener(newListener);
