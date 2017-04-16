@@ -1,3 +1,4 @@
+/* global ls: false, privlyNetworkService: false*/
 /**
  * @fileOverview Checks whether the user is logged in.
  **/
