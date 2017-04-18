@@ -183,7 +183,7 @@ if (Privly.app.viewAdapter === undefined) {
       var context = this, args = arguments;
       var later = function () {
         timeout = null;
-        if (!immediate) {
+        if (!immediate || immediate === undefined) {
           func.apply(context, args);
         }
       };

@@ -36,7 +36,6 @@ if (window.crypto && window.crypto.getRandomValues) {
   sjcl.random.startCollectors();
 }
 
-
 /**
  * Compress a message (deflate compression).
  *
@@ -51,11 +50,10 @@ function compress(message) {
  * Decompress a message compressed with compress().
  *
  * @param {string} data Base64 encoded data.
- *
  * @return {string} Decompressed data.
  */
 function decompress(data) {
-    return Base64.btou( RawDeflate.inflate( Base64.fromBase64(data) ) );
+    return Base64.btou( RawInflate.inflate( Base64.fromBase64(data) ) );
 }
 
 /**

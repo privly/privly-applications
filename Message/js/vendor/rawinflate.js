@@ -4,6 +4,7 @@
  * original:
  * http://www.onicos.com/staff/iz/amuse/javascript/expert/inflate.txt
  */
+var RawInflate;
 
 (function(){
 
@@ -15,6 +16,8 @@
 /* Interface:
  * data = zip_inflate(src);
  */
+
+/*jshint bitwise: false*/
 
 /* constant parameters */
 var zip_WSIZE = 32768;		// Sliding Window size
@@ -29,11 +32,12 @@ var zip_INBUFSIZ = 32768;	// Input buffer size
 var zip_INBUF_EXTRA = 64;	// Extra buffer
 
 /* variables (inflate) */
-var zip_slide;
+var zip_slide=[];
 var zip_wp;			// current position in slide
 var zip_fixed_tl = null;	// inflate static
 var zip_fixed_td;		// inflate static
-var zip_fixed_bl, fixed_bd;	// inflate static
+var zip_fixed_bl;	    // inflate static
+var zip_fixed_bd;	    // inflate static
 var zip_bit_buf;		// bit buffer
 var zip_bit_len;		// bits in bit buffer
 var zip_method;
@@ -75,7 +79,7 @@ var zip_border = new Array(  // Order of the bit length code lengths
 var zip_HuftList = function() {
     this.next = null;
     this.list = null;
-}
+};
 
 var zip_HuftNode = function() {
     this.e = 0; // number of extra bits or operation
@@ -84,7 +88,7 @@ var zip_HuftNode = function() {
     // union
     this.n = 0; // literal, length base, or distance base
     this.t = null; // (zip_HuftNode) pointer to next level of table
-}
+};
 
 var zip_HuftBuild = function(b,	// code lengths in bits (all assumed <= BMAX)
 		       n,	// number of codes (assumed <= N_MAX)
@@ -161,13 +165,13 @@ var zip_HuftBuild = function(b,	// code lengths in bits (all assumed <= BMAX)
 
 	// Find minimum and maximum length, bound *m by those
 	for(j = 1; j <= this.BMAX; j++)
-	    if(c[j] != 0)
+	    if(c[j] !== 0)
 		break;
 	k = j;			// minimum code length
 	if(mm < j)
 	    mm = j;
-	for(i = this.BMAX; i != 0; i--)
-	    if(c[i] != 0)
+	for(i = this.BMAX; i !== 0; i--)
+	    if(c[i] !== 0)
 		break;
 	g = i;			// maximum code length
 	if(mm > i)
@@ -199,7 +203,7 @@ var zip_HuftBuild = function(b,	// code lengths in bits (all assumed <= BMAX)
 	p = b; pidx = 0;
 	i = 0;
 	do {
-	    if((j = p[pidx++]) != 0)
+	    if((j = p[pidx++]) !== 0)
 		v[x[j]++] = i;
 	} while(++i < n);
 	n = x[g];			// set n to length of v
@@ -245,7 +249,7 @@ var zip_HuftBuild = function(b,	// code lengths in bits (all assumed <= BMAX)
 			q[o] = new zip_HuftNode();
 		    }
 
-		    if(tail == null)
+		    if(tail === null)
 			tail = this.root = new zip_HuftList();
 		    else
 			tail = tail.next = new zip_HuftList();
@@ -289,7 +293,7 @@ var zip_HuftBuild = function(b,	// code lengths in bits (all assumed <= BMAX)
 		}
 
 		// backwards increment the k-bit code i
-		for(j = 1 << (k - 1); (i & j) != 0; j >>= 1)
+		for(j = 1 << (k - 1); (i & j) !== 0; j >>= 1)
 		    i ^= j;
 		i ^= j;
 
@@ -305,9 +309,9 @@ var zip_HuftBuild = function(b,	// code lengths in bits (all assumed <= BMAX)
 	this.m = lx[1];
 
 	/* Return true (1) if we were given an incomplete table */
-	this.status = ((y != 0 && g != 1) ? 1 : 0);
+	this.status = ((y !== 0 && g != 1) ? 1 : 0);
     } /* end of constructor */
-}
+};
 
 
 /* routines (inflate) */
@@ -316,23 +320,23 @@ var zip_GET_BYTE = function() {
     if(zip_inflate_data.length == zip_inflate_pos)
 	return -1;
     return zip_inflate_data.charCodeAt(zip_inflate_pos++) & 0xff;
-}
+};
 
 var zip_NEEDBITS = function(n) {
     while(zip_bit_len < n) {
 	zip_bit_buf |= zip_GET_BYTE() << zip_bit_len;
 	zip_bit_len += 8;
     }
-}
+};
 
 var zip_GETBITS = function(n) {
     return zip_bit_buf & zip_MASK_BITS[n];
-}
+};
 
 var zip_DUMPBITS = function(n) {
     zip_bit_buf >>= n;
     zip_bit_len -= n;
-}
+};
 
 var zip_inflate_codes = function(buff, off, size) {
     /* inflate (decompress) the codes in a deflated (compressed) block.
@@ -341,7 +345,7 @@ var zip_inflate_codes = function(buff, off, size) {
     var t;		// (zip_HuftNode) pointer to table entry
     var n;
 
-    if(size == 0)
+    if(size === 0)
       return 0;
 
     // inflate the coded data
@@ -404,8 +408,8 @@ var zip_inflate_codes = function(buff, off, size) {
 	    zip_copy_leng--;
 	    zip_copy_dist &= zip_WSIZE - 1;
 	    zip_wp &= zip_WSIZE - 1;
-	    buff[off + n++] = zip_slide[zip_wp++]
-		= zip_slide[zip_copy_dist++];
+	    buff[off + n++] = zip_slide[zip_wp++] =
+        zip_slide[zip_copy_dist++];
 	}
 
 	if(n == size)
@@ -414,7 +418,7 @@ var zip_inflate_codes = function(buff, off, size) {
 
     zip_method = -1; // done
     return n;
-}
+};
 
 var zip_inflate_stored = function(buff, off, size) {
     /* "decompress" an inflated type 0 (stored) block. */
@@ -446,10 +450,10 @@ var zip_inflate_stored = function(buff, off, size) {
 	zip_DUMPBITS(8);
     }
 
-    if(zip_copy_leng == 0)
+    if(zip_copy_leng === 0)
       zip_method = -1; // done
     return n;
-}
+};
 
 var zip_inflate_fixed = function(buff, off, size) {
     /* decompress an inflated type 1 (fixed Huffman codes) block.  We should
@@ -457,7 +461,7 @@ var zip_inflate_fixed = function(buff, off, size) {
        Huffman tables. */
 
     // if first time, set up tables for fixed blocks
-    if(zip_fixed_tl == null) {
+    if(zip_fixed_tl === null) {
 	var i;			// temporary variable
 	var l = new Array(288);	// length list for huft_build
 	var h;	// zip_HuftBuild
@@ -475,7 +479,7 @@ var zip_inflate_fixed = function(buff, off, size) {
 
 	h = new zip_HuftBuild(l, 288, 257, zip_cplens, zip_cplext,
 			      zip_fixed_bl);
-	if(h.status != 0) {
+	if(h.status !== 0) {
 	    alert("HufBuild error: "+h.status);
 	    return -1;
 	}
@@ -502,7 +506,7 @@ var zip_inflate_fixed = function(buff, off, size) {
     zip_bl = zip_fixed_bl;
     zip_bd = zip_fixed_bd;
     return zip_inflate_codes(buff, off, size);
-}
+};
 
 var zip_inflate_dynamic = function(buff, off, size) {
     // decompress an inflated type 2 (dynamic Huffman codes) block.
@@ -546,7 +550,7 @@ var zip_inflate_dynamic = function(buff, off, size) {
     // build decoding table for trees--single level, 7 bit lookup
     zip_bl = 7;
     h = new zip_HuftBuild(ll, 19, 19, null, null, zip_bl);
-    if(h.status != 0)
+    if(h.status !== 0)
 	return -1;	// incomplete code set
 
     zip_tl = h.root;
@@ -595,9 +599,9 @@ var zip_inflate_dynamic = function(buff, off, size) {
     // build the decoding tables for literal/length and distance codes
     zip_bl = zip_lbits;
     h = new zip_HuftBuild(ll, nl, 257, zip_cplens, zip_cplext, zip_bl);
-    if(zip_bl == 0)	// no literals or lengths
+    if(zip_bl === 0)	// no literals or lengths
 	h.status = 1;
-    if(h.status != 0) {
+    if(h.status !== 0) {
 	if(h.status == 1)
 	    ;// **incomplete literal tree**
 	return -1;		// incomplete code set
@@ -612,25 +616,24 @@ var zip_inflate_dynamic = function(buff, off, size) {
     zip_td = h.root;
     zip_bd = h.m;
 
-    if(zip_bd == 0 && nl > 257) {   // lengths but no distances
+    if(zip_bd === 0 && nl > 257) {   // lengths but no distances
 	// **incomplete distance tree**
 	return -1;
     }
 
     if(h.status == 1) {
-	;// **incomplete distance tree**
+	// **incomplete distance tree**
     }
-    if(h.status != 0)
+    if(h.status !== 0)
 	return -1;
 
     // decompress until an end-of-block code
     return zip_inflate_codes(buff, off, size);
-}
+};
 
 var zip_inflate_start = function() {
-    var i;
-
-    if(zip_slide == null)
+    
+    if(zip_slide === null)
 	zip_slide = new Array(2 * zip_WSIZE);
     zip_wp = 0;
     zip_bit_buf = 0;
@@ -639,7 +642,7 @@ var zip_inflate_start = function() {
     zip_eof = false;
     zip_copy_leng = zip_copy_dist = 0;
     zip_tl = null;
-}
+};
 
 var zip_inflate_internal = function(buff, off, size) {
     // decompress an inflated entry
@@ -668,7 +671,7 @@ var zip_inflate_internal = function(buff, off, size) {
 		    buff[off + n++] = zip_slide[zip_wp++] = zip_GETBITS(8);
 		    zip_DUMPBITS(8);
 		}
-		if(zip_copy_leng == 0)
+		if(zip_copy_leng === 0)
 		    zip_method = -1; // done
 	    }
 	    if(n == size)
@@ -681,7 +684,7 @@ var zip_inflate_internal = function(buff, off, size) {
 
 	    // read in last block bit
 	    zip_NEEDBITS(1);
-	    if(zip_GETBITS(1) != 0)
+	    if(zip_GETBITS(1) !== 0)
 		zip_eof = true;
 	    zip_DUMPBITS(1);
 
@@ -699,14 +702,14 @@ var zip_inflate_internal = function(buff, off, size) {
 	    break;
 
 	  case 1: // zip_STATIC_TREES
-	    if(zip_tl != null)
+	    if(zip_tl !== null)
 		i = zip_inflate_codes(buff, off + n, size - n);
 	    else
 		i = zip_inflate_fixed(buff, off + n, size - n);
 	    break;
 
 	  case 2: // zip_DYN_TREES
-	    if(zip_tl != null)
+	    if(zip_tl !== null)
 		i = zip_inflate_codes(buff, off + n, size - n);
 	    else
 		i = zip_inflate_dynamic(buff, off + n, size - n);
@@ -725,7 +728,7 @@ var zip_inflate_internal = function(buff, off, size) {
 	n += i;
     }
     return n;
-}
+};
 
 var zip_inflate = function(str) {
     var i, j;
@@ -745,9 +748,9 @@ var zip_inflate = function(str) {
     }
     zip_inflate_data = null; // G.C.
     return aout.join("");
-}
+};
 
-if (! window.RawDeflate) RawDeflate = {};
-RawDeflate.inflate = zip_inflate;
+if (! window.RawInflate) RawInflate = {};
+RawInflate.inflate = zip_inflate;
 
 })();
