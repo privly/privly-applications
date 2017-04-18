@@ -3,10 +3,16 @@
 {% block javascripts %}
   <script type="text/javascript" src="../vendor/jquery.min.js"></script>
   <script type="text/javascript" src="../vendor/markdown.js"></script>
+<<<<<<< HEAD
+  <script type="text/javascript" src="../shared/javascripts/privly-web/show.js"></script>
+  <script type="text/javascript" src="js/show.js"></script>
+  <script name="PrivlyTopJS" src="../vendor/jquery.autosize.js" type="text/javascript"></script>
+=======
   <script type="text/javascript" src="../shared/javascripts/viewAdapters/show.js"></script>
   <script type="text/javascript" src="js/plainpostModel.js"></script>
   <script type="text/javascript" src="js/controllers/show.js"></script>
   <meta name="PrivlyTopJS" content="../vendor/jquery.autosize.js" />
+>>>>>>> d1eba2dddfbcdea05ccd4d6b9e342a9e71c4f7ac
 {% endblock %}
 
 
