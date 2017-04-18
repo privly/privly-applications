@@ -311,7 +311,7 @@ if (Privly === undefined) {
   FirefoxAdapter.isPlatformMatched = function () {
 
     var validContext = ["BACKGROUND_SCRIPT", "CONTENT_SCRIPT",
-                        "PRIVLY_APPLICATION"]
+                        "PRIVLY_APPLICATION"];
     if (validContext.indexOf(FirefoxAdapter.prototype.getContextName()) !== -1) {
       return true;
     }
@@ -461,8 +461,9 @@ if (Privly === undefined) {
       // Listen for messages sent via postMessage.
       window.addEventListener("message", function(message) {
         var success = true;
+        var data;
         try {
-          var data = JSON.parse(message.data);
+           data = JSON.parse(message.data);
         } catch(e) {
           success = false;
         }
@@ -603,8 +604,8 @@ if (Privly === undefined) {
   IOSAdapter.isPlatformMatched = function () {
     if (typeof navigator !== "undefined") {
       return (
-        (navigator.userAgent.indexOf('iPhone') >= 0 || navigator.userAgent.indexOf('iPad') >= 0)
-        && navigator.userAgent.indexOf('Safari') === -1
+        (navigator.userAgent.indexOf('iPhone') >= 0 || navigator.userAgent.indexOf('iPad') >= 0) &&
+         navigator.userAgent.indexOf('Safari') === -1
       );
     }
     return false;
@@ -642,8 +643,8 @@ if (Privly === undefined) {
     }
     if (to === 'PRIVLY_APPLICATION') {
       throw new Error('Not implemented');
-      return;
     }
+    return;
   };
   Privly.message.adapter.IOS = IOSAdapter;
 
@@ -688,8 +689,8 @@ if (Privly === undefined) {
     }
     if (to === 'PRIVLY_APPLICATION') {
       throw new Error('Not implemented');
-      return;
     }
+    return;
   };
   Privly.message.adapter.Android = AndroidAdapter;
 
@@ -738,8 +739,8 @@ if (Privly === undefined) {
     }
     if (to === 'PRIVLY_APPLICATION') {
       throw new Error('Not implemented');
-      return;
     }
+    return;
   };
 
   /** @inheritdoc */
