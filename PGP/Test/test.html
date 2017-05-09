@@ -1,0 +1,84 @@
+<html>
+<head>
+<script type="text/javascript" src="./../openpgp.js" ></script>
+<script type="text/javascript" src="./../../shared/javascripts/jquery.min.js"></script>
+<script type="text/javascript">
+openpgp.init();
+
+function PGPEncrypt(plaintext, PGPKey){
+  var pubKey = openpgp.read_publicKey(PGPKey);
+  if (pubKey < 1) {
+      console.log("No public key found!")
+      return;
+  }
+  return openpgp.write_encrypted_message(pubKey, plaintext);
+}
+function encrypt(){
+	console.log($('#plaintext').val());
+	console.log($('#publickeyinput').val());
+	$('#cipherText').html(PGPEncrypt($('#plaintext')[0].value,$('#publickeyinput')[0].value));
+}
+
+function PGPDecrypt(ciphertext, PGPKey, password){
+	console.log(ciphertext);
+	console.log(PGPKey);
+	console.log(password);
+  var priv_key = openpgp.read_privateKey(PGPKey);
+
+  if (priv_key.length < 1) {
+    console.log("No private key found!")
+    return null;
+  }
+
+  var msg = openpgp.read_message(PGPEncrypt($('#plaintext').val(),$('#publickeyinput').val()));
+  var keymat = null;
+  var sesskey = null;
+  // Find the private (sub)key for the session key of the message
+  for (var i = 0; i< msg[0].sessionKeys.length; i++) {
+    if (priv_key[0].privateKeyPacket.publicKey.getKeyId() == msg[0].sessionKeys[i].keyId.bytes) {
+      keymat = { key: priv_key[0], keymaterial: priv_key[0].privateKeyPacket};
+      sesskey = msg[0].sessionKeys[i];
+      break;
+    }
+    for (var j = 0; j < priv_key[0].subKeys.length; j++) {
+      if (priv_key[0].subKeys[j].publicKey.getKeyId() == msg[0].sessionKeys[i].keyId.bytes) {
+        keymat = { key: priv_key[0], keymaterial: priv_key[0].subKeys[j]};
+        sesskey = msg[0].sessionKeys[i];
+        break;
+      }
+    }
+  }
+  if (keymat != null) {
+    if (!keymat.keymaterial.decryptSecretMPIs(password)) {
+      console.log("Password for secrect key was incorrect!");
+      return;
+
+    }
+    return msg[0].decrypt(keymat, sesskey);
+  } else {
+    console.log("No private key found!");
+  }
+  return null;
+}
+function decrypt(){
+	$('#PT').html(PGPDecrypt($('#cipherText').html(),$('#privatekeyinput').val(),$('#password').val()) );
+}
+</script>
+</head>
+<body>
+	<h2> Plaintext </h2>
+	<textarea id="plaintext" rows=5 cols=60></textarea>
+	<h2> Public Key </h2>
+	<textarea id="publickeyinput" rows=25 cols=80></textarea><br>
+	<input type="button" value="Encrypt" onclick="encrypt()" />
+	<div id='cipherText'></div>
+	<br>
+	<br>
+	<h2>Private Key</h2>
+  <br>
+	<textarea id="privatekeyinput" rows=25 cols=80></textarea> <br>
+	Password<textarea id="password" rows=5 cols=20></textarea><br>
+	<input type="button" value="Decrypt" onclick="decrypt()" />
+	<div id='PT'></div>
+	</body>
+</html>
