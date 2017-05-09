@@ -103,6 +103,8 @@ var callbacks = {
     $("#login").prop('disabled', false);
     if ( response.json.success === true ) {
       callbacks.pendingPost();
+    } else if ( response.json.error ) {
+      callbacks.loginConnectionError();
     } else {
       callbacks.loginFailure();
     }
@@ -126,6 +128,15 @@ var callbacks = {
   loginFailure: function() {
     $("#messages").text("Bad username or password. " + 
       "Too many failed attempts will lock the account.");
+    $("#messages").show();
+  },
+  
+  /**
+   * Tell the user there was a connection error.
+   */
+  loginConnectionError: function() {
+    $("#messages").text("The content server returned the error: " + json.error + 
+      ",This could mean the server is under maintenance or this application's address is not formatted properly");
     $("#messages").show();
   },
   
