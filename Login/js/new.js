@@ -103,9 +103,21 @@ var callbacks = {
     $("#login").prop('disabled', false);
     if ( response.json.success === true ) {
       callbacks.pendingPost();
+    } else if ( response.json.success ) {
+      callbacks.loginConnectionError();
     } else {
       callbacks.loginFailure();
     }
+  },
+  
+  
+  /**
+   * Tell the user there was a connection error.
+   */
+  loginConnectionError: function() {
+    $("#messages").text("The content server returned the error:" + json.error + 
+      ",<br/>This could mean the server is under maintenance or this application's address is not formatted properly");
+    $("#messages").show();
   },
   
   /**
